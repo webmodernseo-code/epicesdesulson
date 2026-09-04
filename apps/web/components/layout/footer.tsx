@@ -7,8 +7,11 @@ import Image from "next/image";
 
 const NAVIGATION_LINKS = [
   { label: "Accueil", href: "/" },
+  { label: "Épices Paris & Île-de-France", href: "/epices-paris" },
+  { label: "Épices Lyon & Auvergne-Rhône-Alpes", href: "/epices-lyon-auvergne-rhone-alpes" },
+  { label: "Pack 4 Saveurs (4x100g)", href: "/product-details/305" },
   { label: "Avis & Témoignages", href: "/avis" },
-  { label: "À propos", href: "/about" },
+  { label: "À propos de Sulson", href: "/about" },
   { label: "Foire Aux Questions", href: "/faq" },
   { label: "Contact & Support", href: "/contact" },
 ];

@@ -34,15 +34,23 @@ export const metadata: Metadata = {
     "Découvrez la boutique en ligne Les Épices de Sulson : une sélection d'épices d'exception, poivres rares, mélanges gourmets et condiments artisanaux pour sublimer vos créations culinaires.",
   keywords: [
     "Les Épices de Sulson",
+    "épices de sulson",
+    "epices de sulson",
+    "epice de sulson",
+    "epice sulson",
+    "épice paris",
+    "boutique épices paris",
+    "épicerie fine paris",
+    "épices lyon",
+    "épices auvergne rhône alpes",
     "épices fines",
-    "poivres rares",
-    "condiments artisanaux",
-    "mélanges d'épices",
-    "boutique épices",
-    "gastronomie",
-    "saveurs du monde",
-    "épices bio",
-    "terroirs",
+    "mélange épices poulet rôti",
+    "mélange épices viande grillade barbecue",
+    "poivre de guinée poisson",
+    "secret de sulson saveur gourmande",
+    "coffret épices artisanales 100g",
+    "saveurs du cameroun",
+    "terroirs gastronomiques",
   ],
   authors: [{ name: "Les Épices de Sulson" }],
   creator: "Les Épices de Sulson",
@@ -58,9 +66,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Les Épices de Sulson - Épices Fines & Saveurs d'Exception",
+    title: "Les Épices de Sulson - Épices Fines, Poivres Rares & Saveurs d'Exception",
     description:
-      "Boutique en ligne d'épices d'exception, poivres rares et mélanges gourmets.",
+      "Boutique en ligne officielle Les Épices de Sulson : mélanges artisanaux 100g (Poulet, Viande, Poisson, Gourmande) et Pack Intégral livrés à Paris, Lyon et partout en France.",
     type: "website",
     locale: "fr_FR",
     siteName: "Les Épices de Sulson",
@@ -69,11 +77,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Les Épices de Sulson - Épices Fines & Saveurs d'Exception",
     description:
-      "Boutique en ligne d'épices d'exception, poivres rares et mélanges gourmets.",
+      "Boutique officielle Les Épices de Sulson : mélanges gourmets 100g et coffrets authentiques.",
   },
 };
 
 import ChatbotBubble from "@/components/common/chatbot-bubble";
+import { OrganizationAndWebsiteJsonLd } from "@/components/seo/json-ld";
 
 export default function RootLayout({
   children,
@@ -88,6 +97,7 @@ export default function RootLayout({
       <body
         className={`${publicSans.variable} ${urbanist.variable} ${dmSans.variable} antialiased`}
       >
+        <OrganizationAndWebsiteJsonLd />
         <NextTopLoader color="#ffc107" showSpinner={false} />
         <CartProvider>
           <QuickViewProvider>
