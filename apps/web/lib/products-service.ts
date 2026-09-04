@@ -42,11 +42,7 @@ export const SULSON_CATALOGUE: SulsonProductModel[] = [
     imageRecto: "/images/products/epice-poulet-recto.jpg",
     imageVerso: "/images/products/epice-poulet-verso.jpg",
     formats: [
-      { label: "50g", weightGrams: 50, multiplier: 1, price: 6.90, oldPrice: 8.50 },
-      { label: "100g", weightGrams: 100, multiplier: 1.85, price: 12.77, oldPrice: 15.70 },
-      { label: "250g", weightGrams: 250, multiplier: 4.2, price: 28.98, oldPrice: 35.70 },
-      { label: "500g", weightGrams: 500, multiplier: 7.8, price: 53.82, oldPrice: 66.30 },
-      { label: "1 Kg", weightGrams: 1000, multiplier: 14.5, price: 100.05, oldPrice: 123.25 },
+      { label: "100g", weightGrams: 100, multiplier: 1, price: 6.90, oldPrice: 8.50 },
     ],
   },
   {
@@ -64,11 +60,7 @@ export const SULSON_CATALOGUE: SulsonProductModel[] = [
     imageRecto: "/images/products/epice-viande-recto.jpg",
     imageVerso: "/images/products/epice-viande-verso.jpg",
     formats: [
-      { label: "50g", weightGrams: 50, multiplier: 1, price: 6.90, oldPrice: 8.50 },
-      { label: "100g", weightGrams: 100, multiplier: 1.85, price: 12.77, oldPrice: 15.70 },
-      { label: "250g", weightGrams: 250, multiplier: 4.2, price: 28.98, oldPrice: 35.70 },
-      { label: "500g", weightGrams: 500, multiplier: 7.8, price: 53.82, oldPrice: 66.30 },
-      { label: "1 Kg", weightGrams: 1000, multiplier: 14.5, price: 100.05, oldPrice: 123.25 },
+      { label: "100g", weightGrams: 100, multiplier: 1, price: 6.90, oldPrice: 8.50 },
     ],
   },
   {
@@ -86,11 +78,7 @@ export const SULSON_CATALOGUE: SulsonProductModel[] = [
     imageRecto: "/images/products/epice-poisson-recto.jpg",
     imageVerso: "/images/products/epice-poisson-verso.jpg",
     formats: [
-      { label: "50g", weightGrams: 50, multiplier: 1, price: 6.90, oldPrice: 8.50 },
-      { label: "100g", weightGrams: 100, multiplier: 1.85, price: 12.77, oldPrice: 15.70 },
-      { label: "250g", weightGrams: 250, multiplier: 4.2, price: 28.98, oldPrice: 35.70 },
-      { label: "500g", weightGrams: 500, multiplier: 7.8, price: 53.82, oldPrice: 66.30 },
-      { label: "1 Kg", weightGrams: 1000, multiplier: 14.5, price: 100.05, oldPrice: 123.25 },
+      { label: "100g", weightGrams: 100, multiplier: 1, price: 6.90, oldPrice: 8.50 },
     ],
   },
   {
@@ -108,11 +96,7 @@ export const SULSON_CATALOGUE: SulsonProductModel[] = [
     imageRecto: "/images/products/epice-gourmande-recto.jpg",
     imageVerso: "/images/products/epice-gourmande-verso.jpg",
     formats: [
-      { label: "50g", weightGrams: 50, multiplier: 1, price: 6.90, oldPrice: 8.50 },
-      { label: "100g", weightGrams: 100, multiplier: 1.85, price: 12.77, oldPrice: 15.70 },
-      { label: "250g", weightGrams: 250, multiplier: 4.2, price: 28.98, oldPrice: 35.70 },
-      { label: "500g", weightGrams: 500, multiplier: 7.8, price: 53.82, oldPrice: 66.30 },
-      { label: "1 Kg", weightGrams: 1000, multiplier: 14.5, price: 100.05, oldPrice: 123.25 },
+      { label: "100g", weightGrams: 100, multiplier: 1, price: 6.90, oldPrice: 8.50 },
     ],
   },
   {
@@ -130,11 +114,7 @@ export const SULSON_CATALOGUE: SulsonProductModel[] = [
     imageRecto: "/images/products/pack-4-saveurs-sulson.jpg",
     isPack: true,
     formats: [
-      { label: "Pack 4x50g", weightGrams: 200, multiplier: 1, price: 24.90, oldPrice: 27.60 },
-      { label: "Pack 4x100g", weightGrams: 400, multiplier: 1.8, price: 44.90, oldPrice: 52.00 },
-      { label: "Pack 4x250g", weightGrams: 1000, multiplier: 3.97, price: 99.00, oldPrice: 115.00 },
-      { label: "Pack 4x500g", weightGrams: 2000, multiplier: 7.18, price: 179.00, oldPrice: 210.00 },
-      { label: "Pack 4x1 Kg", weightGrams: 4000, multiplier: 12.85, price: 320.00, oldPrice: 380.00 },
+      { label: "Pack 4x100g", weightGrams: 400, multiplier: 1, price: 24.90, oldPrice: 27.60 },
     ],
   },
 ];

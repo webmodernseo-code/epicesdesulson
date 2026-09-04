@@ -13,11 +13,7 @@ interface FormatOption {
 }
 
 const FORMAT_OPTIONS: FormatOption[] = [
-  { label: "50g", multiplier: 1, text: "50g (Sachet)" },
-  { label: "100g", multiplier: 1.85, text: "100g" },
-  { label: "250g", multiplier: 4.2, text: "250g" },
-  { label: "500g", multiplier: 7.8, text: "500g" },
-  { label: "1 Kg", multiplier: 14.5, text: "1 Kg (Kilo)" },
+  { label: "100g", multiplier: 1, text: "Sachet 100g" },
 ];
 
 interface SpiceProduct {
@@ -85,11 +81,7 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
 ];
 
 const FIFTH_FORMATS = [
-  { label: "Pack 4x50g", price: 24.9, oldPrice: 27.6, text: "Pack Découverte 4x50g (200g)" },
-  { label: "Pack 4x100g", price: 44.9, oldPrice: 52.0, text: "Pack Gourmet 4x100g (400g)" },
-  { label: "Pack 4x250g", price: 99.0, oldPrice: 115.0, text: "Pack Famille 4x250g (1 Kg)" },
-  { label: "Pack 4x500g", price: 179.0, oldPrice: 210.0, text: "Pack Passion 4x500g (2 Kg)" },
-  { label: "Pack 4x1 Kg", price: 320.0, oldPrice: 380.0, text: "Pack Chef 4x1 Kg (4 Kg)" },
+  { label: "Pack 4x100g", price: 24.9, oldPrice: 27.6, text: "Pack Intégral 4x100g (400g)" },
 ];
 
 const FIFTH_PRODUCT = {
@@ -190,7 +182,7 @@ function ProductCard({ product }: { product: SpiceProduct }) {
                 {selectedFormat.label === "1 Kg" ? "1 Kg (Kilo)" : selectedFormat.label}
               </span>
             </div>
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="grid grid-cols-1 gap-1.5">
               {FORMAT_OPTIONS.map((fmt) => (
                 <button
                   key={fmt.label}
@@ -202,7 +194,7 @@ function ProductCard({ product }: { product: SpiceProduct }) {
                       : "bg-gray-50 text-gray-800 border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  {fmt.label}
+                  {fmt.text || fmt.label}
                 </button>
               ))}
             </div>
@@ -278,7 +270,7 @@ export default function FirmFreshGrocery() {
             transition={{ duration: 0.4, delay: 0.1 }}
             className="text-sm text-gray-500"
           >
-            Sélectionnez votre format (100g, 250g, 500g ou 1 Kg) et ajoutez directement à votre panier.
+            Sachets fraîcheur 100g hermétiques — 100% Naturel, sans conservateur ni additif.
           </motion.p>
         </div>
 

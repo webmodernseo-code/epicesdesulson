@@ -16,8 +16,8 @@ export default function LoginDrawer({
 }: LoginDrawerProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect to dashboard (port 3001) or admin session
-    window.location.href = "http://localhost:3001";
+    // Redirect to dashboard or admin session
+    window.location.href = process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3001";
   };
 
   return (

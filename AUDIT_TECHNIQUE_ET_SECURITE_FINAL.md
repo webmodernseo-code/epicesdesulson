@@ -100,12 +100,14 @@ L'audit a passé au crible les vulnérabilités classiques des applications web 
 
 Le tableau de bord (`apps/dashboard`) a été complètement aligné avec l'identité de marque **Les Épices de Sulson** :
 
-### 4.1. Catalogue Produits Unifié
-1. **🍗 Épice de Sulson - Spéciale Poulet** (Réf: `SUL-301` — 6,90 € — Formats 50g à 1 Kg)
-2. **🥩 Épice de Sulson - Spéciale Viande** (Réf: `SUL-302` — 6,90 € — Formats 50g à 1 Kg)
-3. **🐟 Épice de Sulson - Spéciale Poisson** (Réf: `SUL-303` — 6,90 € — Formats 50g à 1 Kg)
-4. **✨ Épice de Sulson - Saveur Gourmande** (Réf: `SUL-304` — 6,90 € — Formats 50g à 1 Kg)
-5. **🎁 Le Pack Intégral : 4 Saveurs Authentiques** (Réf: `SUL-305` — 24,90 € — Formats 4x50g à 4x1 Kg)
+### 4.1. Catalogue Produits Unifié (Standard 100g)
+1. **🍗 Épice de Sulson - Spéciale Poulet** (Réf: `SUL-301` — 6,90 € — Sachet 100g)
+2. **🥩 Épice de Sulson - Spéciale Viande** (Réf: `SUL-302` — 6,90 € — Sachet 100g)
+3. **🐟 Épice de Sulson - Spéciale Poisson** (Réf: `SUL-303` — 6,90 € — Sachet 100g)
+4. **✨ Épice de Sulson - Saveur Gourmande** (Réf: `SUL-304` — 6,90 € — Sachet 100g)
+5. **🎁 Le Pack Intégral : 4 Saveurs Authentiques** (Réf: `SUL-305` — 24,90 € — Pack 4x100g soit 400g)
+
+*Note d'extensibilité :* La structure de base de données relationnelle (`ProductFormat`) et le service métier `ProductsService` restent conçus de manière modulaire, permettant d'ajouter facilement tout autre format (250g, 500g, 1 Kg, etc.) à tout moment dans le futur.
 
 ### 4.2. Catégories Métier Réconciliées
 - *Épices Volailles & Rôtis* (`CAT-01`)
@@ -121,21 +123,21 @@ Le tableau de bord (`apps/dashboard`) a été complètement aligné avec l'ident
 Le fichier `apps/web/prisma/schema.prisma` a été structuré et optimisé pour le moteur **Neon Serverless PostgreSQL** :
 
 - Modèles relationnels complets : `User`, `Address`, `Category`, `Product`, `ProductFormat`, `Order`, `OrderItem`, `Review`, `NewsletterSubscriber`.
-- Gestion native des formats de poids en cascade (`50g`, `100g`, `250g`, `500g`, `1 Kg`).
+- Gestion native des formats de conditionnement (`100g`, `Pack 4x100g`, extensible).
 - Indexation des champs uniques (`slug`, `code`, `orderNumber`, `stripeSessionId`).
 - Support du pooling de connexions pour les fonctions Serverless Edge / Vercel.
 
 ---
 
-## 6. Couche d'API & Tunnel de Vente Stripe
+## 6. Configuration Domaine & DNS (epicedesulson.com)
 
-Les routes d'API suivantes sont maintenant opérationnelles et intégrées dans `apps/web/app/api/` :
+Pour brancher le domaine officiel **`epicedesulson.com`** :
 
-- **`GET /api/products`** : Récupère la liste officielle des produits Sulson, formats et tarifs.
-- **`POST /api/orders`** : Crée et persiste une commande validée côté serveur avec calcul des remises (Code promo `SULSON10`).
-- **`POST /api/checkout`** : Initialise la session de paiement sécurisée Stripe.
-- **`POST /api/webhooks/stripe`** : Réceptionne les événements Stripe (`checkout.session.completed`) et passe la commande en statut `PAID`.
-- **`POST /api/auth/login` & `POST /api/auth/logout`** : Gestion des sessions sécurisées en cookies `HttpOnly`.
+- **Boutique Web Principale :** `https://epicedesulson.com` (et redirection `www.epicedesulson.com`)
+  - Type `A` : `@` ➔ `76.76.21.21` (IP Anycast Vercel)
+  - Type `CNAME` : `www` ➔ `cname.vercel-dns.com`
+- **Dashboard Admin & Gestion :** `https://admin.epicedesulson.com` (ou sous-domaine dédié)
+  - Type `CNAME` : `admin` ➔ `cname.vercel-dns.com`
 
 ---
 
@@ -145,7 +147,8 @@ Voici la liste exacte des tâches résiduelles pour le déploiement final en pro
 
 | Élément | Action Requise | Emplacement | Statut |
 | :--- | :--- | :--- | :--- |
-| **Base de Données Neon** | Schéma synchronisé (`prisma db push`) et données officielles injectées (`prisma db seed` : 5 catégories, 5 produits, 25 formats). | `.env` & Neon PostgreSQL | ✅ **Opérationnel & Connecté** |
+| **Base de Données Neon** | Schéma synchronisé (`prisma db push`) et catalogue 100g injecté (`prisma db seed`). | Neon PostgreSQL | ✅ **Opérationnel & Connecté** |
+| **Nom de Domaine** | Pointer les enregistrements DNS de `epicedesulson.com` vers l'hébergeur Vercel. | Registrar (OVH / Hostinger / etc.) | ⏳ À brancher au déploiement |
 | **Clés Stripe Live** | Renseigner vos clés d'API réelles Stripe (`pk_live_...`, `sk_live_...`, `whsec_...`). | `.env` (`STRIPE_SECRET_KEY`) | ⏳ En attente de vos clés Stripe |
 | **Emails Transactionnels** | Renseigner votre clé API Resend ou SMTP pour la confirmation automatique de commande. | `.env` (`RESEND_API_KEY`) | ⏳ Optionnel / En attente de clé |
-| **Dépôt GitHub** | Définir l'URL du dépôt distant et lancer `git push -u origin main`. | GitHub (`main`) | ✅ **Synchronisé & À jour** |
+| **Dépôt GitHub** | Définir l'URL du dépôt distant et synchroniser la branche `main`. | GitHub (`main`) | ✅ **Synchronisé & À jour** |

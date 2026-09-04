@@ -87,11 +87,7 @@ async function main() {
       categoryId: catPoulet.id,
       formats: {
         create: [
-          { label: "50g", weightGrams: 50, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
-          { label: "100g", weightGrams: 100, multiplier: 1.72, price: 11.90, oldPrice: 14.50 },
-          { label: "250g", weightGrams: 250, multiplier: 3.32, price: 22.90, oldPrice: 28.00 },
-          { label: "500g", weightGrams: 500, multiplier: 5.78, price: 39.90, oldPrice: 49.00 },
-          { label: "1 Kg", weightGrams: 1000, multiplier: 10.13, price: 69.90, oldPrice: 89.00 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
         ],
       },
     },
@@ -115,11 +111,7 @@ async function main() {
       categoryId: catViande.id,
       formats: {
         create: [
-          { label: "50g", weightGrams: 50, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
-          { label: "100g", weightGrams: 100, multiplier: 1.72, price: 11.90, oldPrice: 14.50 },
-          { label: "250g", weightGrams: 250, multiplier: 3.32, price: 22.90, oldPrice: 28.00 },
-          { label: "500g", weightGrams: 500, multiplier: 5.78, price: 39.90, oldPrice: 49.00 },
-          { label: "1 Kg", weightGrams: 1000, multiplier: 10.13, price: 69.90, oldPrice: 89.00 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
         ],
       },
     },
@@ -143,11 +135,7 @@ async function main() {
       categoryId: catPoisson.id,
       formats: {
         create: [
-          { label: "50g", weightGrams: 50, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
-          { label: "100g", weightGrams: 100, multiplier: 1.72, price: 11.90, oldPrice: 14.50 },
-          { label: "250g", weightGrams: 250, multiplier: 3.32, price: 22.90, oldPrice: 28.00 },
-          { label: "500g", weightGrams: 500, multiplier: 5.78, price: 39.90, oldPrice: 49.00 },
-          { label: "1 Kg", weightGrams: 1000, multiplier: 10.13, price: 69.90, oldPrice: 89.00 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
         ],
       },
     },
@@ -171,11 +159,7 @@ async function main() {
       categoryId: catSignature.id,
       formats: {
         create: [
-          { label: "50g", weightGrams: 50, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
-          { label: "100g", weightGrams: 100, multiplier: 1.72, price: 11.90, oldPrice: 14.50 },
-          { label: "250g", weightGrams: 250, multiplier: 3.32, price: 22.90, oldPrice: 28.00 },
-          { label: "500g", weightGrams: 500, multiplier: 5.78, price: 39.90, oldPrice: 49.00 },
-          { label: "1 Kg", weightGrams: 1000, multiplier: 10.13, price: 69.90, oldPrice: 89.00 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
         ],
       },
     },
@@ -199,17 +183,13 @@ async function main() {
       categoryId: catPacks.id,
       formats: {
         create: [
-          { label: "Pack 4 x 50g", weightGrams: 200, multiplier: 1.0, price: 24.90, oldPrice: 27.60 },
-          { label: "Pack 4 x 100g", weightGrams: 400, multiplier: 1.80, price: 44.90, oldPrice: 52.00 },
-          { label: "Pack 4 x 250g", weightGrams: 1000, multiplier: 3.21, price: 79.90, oldPrice: 95.00 },
-          { label: "Pack 4 x 500g", weightGrams: 2000, multiplier: 5.62, price: 139.90, oldPrice: 165.00 },
-          { label: "Pack 4 x 1 Kg", weightGrams: 4000, multiplier: 9.63, price: 239.90, oldPrice: 290.00 },
+          { label: "Pack 4x100g", weightGrams: 400, multiplier: 1.0, price: 24.90, oldPrice: 27.60 },
         ],
       },
     },
   });
 
-  console.log("✅ 5 Produits & 25 Formats créés.");
+  console.log("✅ 5 Produits Sulson (100g) créés.");
 
   // 4. Utilisateur Admin & Avis de dégustation
   await prisma.user.create({

@@ -29,7 +29,7 @@ const SPICES_DATA = [
     origin: "Cameroun (Recette Traditionnelle)",
     stock: 145,
     status: "Publié",
-    format: "50g, 100g, 250g, 500g, 1 Kg",
+    format: "Sachet 100g",
     image: "/images/products/epice-poulet-recto.jpg",
   },
   {
@@ -40,7 +40,7 @@ const SPICES_DATA = [
     origin: "Cameroun (Recette Traditionnelle)",
     stock: 120,
     status: "Publié",
-    format: "50g, 100g, 250g, 500g, 1 Kg",
+    format: "Sachet 100g",
     image: "/images/products/epice-viande-recto.jpg",
   },
   {
@@ -51,7 +51,7 @@ const SPICES_DATA = [
     origin: "Cameroun (Poivre de Guinée)",
     stock: 98,
     status: "Publié",
-    format: "50g, 100g, 250g, 500g, 1 Kg",
+    format: "Sachet 100g",
     image: "/images/products/epice-poisson-recto.jpg",
   },
   {
@@ -62,7 +62,7 @@ const SPICES_DATA = [
     origin: "Cameroun (Le Secret de Sulson)",
     stock: 210,
     status: "Publié",
-    format: "50g, 100g, 250g, 500g, 1 Kg",
+    format: "Sachet 100g",
     image: "/images/products/epice-gourmande-recto.jpg",
   },
   {
@@ -73,7 +73,7 @@ const SPICES_DATA = [
     origin: "Atelier Sulson (Pack Lot 4)",
     stock: 65,
     status: "Publié",
-    format: "Pack 4x50g à 4x1 Kg",
+    format: "Pack 4x100g (400g)",
     image: "/images/products/pack-4-saveurs-sulson.jpg",
   },
 ];
