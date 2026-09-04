@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/img/logo/favicon.png"
+      type="image/x-icon"
+    />
+    <title>Sellzy - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Public Sans"', "sans-serif"],
+            },
+            colors: {
+              primary: "#088178",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/style.css" />
+  </head>
+  <body
+    class="bg-gray-50 text-gray-800 antialiased selection:bg-primary selection:text-white"
+  >
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row min-h-screen">
+      <!-- Overlay for Mobile -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-gray-900/50 z-40 hidden md:hidden transition-opacity opacity-0"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white border-r border-gray-200 fixed h-full overflow-y-auto z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 left-0 top-0"
+      >
+        <div class="p-6">
+          <div class="flex items-center justify-between gap-2 mb-8">
+            <img
+              src="./assets/img/logo/logo.png"
+              width="120"
+              height="40"
+              alt=""
+            />
+            <button
+              id="close-sidebar"
+              class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <nav class="space-y-1">
+            <a
+              href="#introduction"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Introduction</a
+            >
+            <a
+              href="#key-features"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Key Features</a
+            >
+            <a
+              href="#template-structure"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Template Structure</a
+            >
+            <a
+              href="#route-map"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Route Map</a
+            >
+            <a
+              href="#component-library"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Component Library</a
+            >
+            <a
+              href="#getting-started"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Getting Started</a
+            >
+            <a
+              href="#building-deployment"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Building &amp; Deployment</a
+            >
+            <a
+              href="#sources-credits"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Sources &amp; Credits</a
+            >
+            <a
+              href="#support"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Support</a
+            >
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main
+        class="flex-1 md:ml-64 w-full max-w-4xl mx-auto bg-white min-h-screen shadow-sm border-l border-gray-100 flex flex-col"
+      >
+        <!-- Mobile Header -->
+        <header
+          class="md:hidden flex items-center justify-between p-5 border-b border-gray-100 bg-white sticky top-0 z-30"
+        >
+          <img
+            src="./assets/img/logo/logo.png"
+            width="120"
+            height="auto"
+            alt="Sellzy Logo"
+          />
+          <button
+            id="open-sidebar"
+            class="text-gray-600 hover:text-gray-900 p-1 focus:outline-none"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="p-6 md:p-12 lg:p-16 w-full flex-1">
+          <div class="prose max-w-none">
+            <!-- Introduction -->
+            <section id="introduction" class="mb-12 pt-8">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-primary text-xs font-semibold uppercase tracking-wider mb-4 border border-teal-100"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                Getting Started
+              </div>
+              <h1
+                class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight"
+              >
+                Sellzy Documentation
+              </h1>
+              <p class="text-lg text-gray-500 mt-4 leading-relaxed">
+                Welcome to <strong>Sellzy</strong>, a comprehensive,
+                modern multipurpose eCommerce storefront template. Sellzy
+                provides a complete set of beautifully designed pages and
+                components for building online stores, including 5 unique
+                homepage demos, 23 mega-menu shop layouts, 6 product detail
+                variations, vendor marketplaces, blogs, wishlists, carts,
+                checkouts, and much more. Built with
+                <strong>Next.js 16 (App Router)</strong>,
+                <strong>React 19</strong>, and
+                <strong>Tailwind CSS v4</strong>.
+              </p>
+            </section>
+
+            <!-- Key Features -->
+            <section id="key-features" class="mb-12 pt-8">
+              <h2>Key Features</h2>
+              <p>
+                The template includes a wide array of pre-built pages and
+                components for a complete eCommerce storefront:
+              </p>
+              <ul class="space-y-2 mt-4 text-gray-700">
+                <li>
+                  <strong>5 Homepage Demos:</strong> Unique home page designs
+                  (Home 1–5) with hero sliders, category grids, deal timers,
+                  product carousels, and promotional bento layouts.
+                </li>
+                <li>
+                  <strong>23 Mega-Menu Shop Layouts:</strong> Category filter
+                  grids, left-sidebar shops, full-banner layouts, horizontal
+                  filter pages, and list views — each in multiple column
+                  variants (2–6 columns).
+                </li>
+                <li>
+                  <strong>6 Product Detail Pages:</strong> Diverse product
+                  detail layouts with image galleries, accordions, size/color
+                  pickers, and related product sliders.
+                </li>
+                <li>
+                  <strong>Vendor &amp; Marketplace:</strong> Vendor grid/list
+                  pages, vendor dashboard, vendor account, and left-sidebar
+                  /left-top marketplace layouts.
+                </li>
+                <li>
+                  <strong>Blog System:</strong> Blog grid and blog list pages
+                  with individual blog detail views, search, pagination,
+                  categories, tags, and recent posts sidebar.
+                </li>
+                <li>
+                  <strong>Cart &amp; Checkout:</strong> Single-vendor and
+                  multi-vendor cart pages, two checkout variants, and an order
+                  success page.
+                </li>
+                <li>
+                  <strong>Wishlist &amp; Compare:</strong> Two wishlist style
+                  variants and a product comparison table.
+                </li>
+                <li>
+                  <strong>User Account:</strong> My Account dashboard with
+                  profile, orders, order details, address, and wishlist tabs.
+                </li>
+                <li>
+                  <strong>Interactive Drawers:</strong> QuickView drawer, cart
+                  drawer, login/register/OTP/forgot-password drawers, mobile
+                  sidebar, and size variation drawer.
+                </li>
+                <li>
+                  <strong>Utility Pages:</strong> About, Contact, FAQ, Privacy
+                  Policy, Return Policy, Terms &amp; Conditions, Coming Soon,
+                  and custom 404 page.
+                </li>
+                <li>
+                  <strong>Animations &amp; UX:</strong> Smooth scroll-triggered
+                  animations via Framer Motion, Swiper.js carousels, top-loader
+                  progress bar, scroll-to-top button, and sticky navigation.
+                </li>
+              </ul>
+            </section>
+
+            <!-- Template Structure -->
+            <section id="template-structure" class="mb-12 pt-8">
+              <h2>Template Structure</h2>
+              <p>
+                The application follows a modular and scalable Next.js App
+                Router directory structure:
+              </p>
+
+              <div
+                class="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-sm mt-6"
+              >
+                <ul class="space-y-3 m-0 block font-mono text-sm leading-6">
+                  <li class="flex items-start">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/app</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Next.js App Router — pages, layouts, and global styles.
+                      </p>
+                      <ul
+                        class="mt-2 ml-4 space-y-2 border-l border-gray-200 pl-4"
+                      >
+                        <li>
+                          <code>/app/(home-demo)</code> — 5 homepage demos
+                          (index, index-2 through index-5).
+                        </li>
+                        <li>
+                          <code>/app/(mega-menu)</code> — 23 shop/mega-menu
+                          layout variants.
+                        </li>
+                        <li>
+                          <code>/app/(product-details)</code> — 6 product detail
+                          page styles.
+                        </li>
+                        <li>
+                          <code>/app/(vendor)</code> — Vendor marketplace,
+                          dashboard, and account pages.
+                        </li>
+                        <li>
+                          <code>/app/(blogs)</code> — Blog grid and list views
+                          with dynamic detail routes.
+                        </li>
+                        <li>
+                          <code>/app/(cart)</code> — Single-vendor and
+                          multi-vendor cart pages.
+                        </li>
+                        <li>
+                          <code>/app/(checkout)</code> — Two checkout page
+                          variants.
+                        </li>
+                        <li>
+                          <code>/app/(wishlist)</code> — Two wishlist style
+                          variants.
+                        </li>
+                        <li>
+                          <code>/app/globals.css</code> — Global stylesheet with
+                          Tailwind CSS v4 <code>@theme</code> tokens, design
+                          system variables, and component styles.
+                        </li>
+                        <li>
+                          <code>/app/layout.tsx</code> — Root layout with
+                          Google Fonts (Public Sans, Urbanist, DM Sans), Navbar,
+                          Footer, NewsLetter, and QuickViewProvider.
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/components</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        146+ reusable React components organized into 26
+                        feature modules:
+                      </p>
+                      <ul
+                        class="mt-2 ml-4 space-y-2 border-l border-gray-200 pl-4"
+                      >
+                        <li>
+                          <code>/components/layout</code> — Navbar, Footer,
+                          main menu, mobile menu, header search, and category
+                          menu.
+                        </li>
+                        <li>
+                          <code>/components/card</code> — Reusable product card
+                          variants (ProductCardOne, ProductCardTwo,
+                          ProductCardFour).
+                        </li>
+                        <li>
+                          <code>/components/drawer</code> — QuickView, Cart,
+                          Login, Register, OTP, Forgot Password, Set Password,
+                          Mobile Sidebar, and Size Variation drawers.
+                        </li>
+                        <li>
+                          <code>/components/home-one</code> through
+                          <code>/components/home-five</code> — Homepage-specific
+                          sections (heroes, categories, deals, banners,
+                          carousels).
+                        </li>
+                        <li>
+                          <code>/components/common</code> — Shared utilities:
+                          Breadcrumb, StarRating, NewsLetter, ScrollToTop,
+                          FloatingSelect, RangeSlider, Testimonial.
+                        </li>
+                        <li>
+                          <code>/components/mega-menu</code> — Filter bars,
+                          shop banners, offcanvas filters, and grid layout
+                          components.
+                        </li>
+                        <li>
+                          <code>/components/product-details</code> — 6 product
+                          detail component sets with galleries, accordions, and
+                          size/color pickers.
+                        </li>
+                        <li>
+                          <code>/components/vendor</code> and
+                          <code>/components/vendor-dashboard</code> — Vendor
+                          listing cards, marketplace layouts, and dashboard
+                          charts.
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/context</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        React Context providers — currently includes
+                        <code>QuickViewProvider</code> for managing the product
+                        quick-view drawer state globally.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/lib</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Utility functions — includes <code>cn()</code> helper
+                        that combines <code>clsx</code> and
+                        <code>tailwind-merge</code> for conditional class
+                        merging.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/public</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Static assets including product images, homepage assets
+                        (<code>/images/home-1</code> through
+                        <code>/images/home-5</code>), blog images, vendor
+                        assets, Huge Icons CSS, and SVG logos.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Route Map -->
+            <section id="route-map" class="mb-12 pt-8">
+              <h2>Route Map</h2>
+              <p>
+                Below is a complete list of all page routes in the application,
+                organized by feature group:
+              </p>
+
+              <div class="overflow-x-auto mt-6">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-left text-sm font-semibold text-gray-700">
+                        Route
+                      </th>
+                      <th class="text-left text-sm font-semibold text-gray-700">
+                        Description
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm">
+                    <tr>
+                      <td
+                        colspan="2"
+                        class="font-semibold text-primary bg-teal-50 text-xs uppercase tracking-wider"
+                      >
+                        Homepage Demos
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>/</code></td>
+                      <td>Home 1 — Default homepage</td>
+                    </tr>
+                    <tr>
+                      <td><code>/index-2</code></td>
+                      <td>Home 2 — Multi-vendor slider layout</td>
+                    </tr>
+                    <tr>
+                      <td><code>/index-3</code></td>
+                      <td>Home 3 — Pharmacy / health store</td>
+                    </tr>
+                    <tr>
+                      <td><code>/index-4</code></td>
+                      <td>Home 4 — Fashion / lifestyle</td>
+                    </tr>
+                    <tr>
+                      <td><code>/index-5</code></td>
+                      <td>Home 5 — Electronics / gadgets</td>
+                    </tr>
+                    <tr>
+                      <td
+                        colspan="2"
+                        class="font-semibold text-primary bg-teal-50 text-xs uppercase tracking-wider"
+                      >
+                        Shop / Mega-Menu (23 layouts)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>/banner-category-filter-{3-6}col</code>
+                      </td>
+                      <td>Banner with category filter — 3/4/5/6 columns</td>
+                    </tr>
+                    <tr>
+                      <td><code>/banner-left-sidebar-{3-5}col</code></td>
+                      <td>Banner with left sidebar — 3/4/5 columns</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>/banner-with-horizontal-filter-{3-6}col</code>
+                      </td>
+                      <td>
+                        Banner with horizontal filter — 3/4/5/6 columns
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>/full-banner-{3-6}col</code></td>
+                      <td>Full-width banner — 3/4/5/6 columns</td>
+                    </tr>
+                    <tr>
+                      <td><code>/shop-left-sidebar-{3-5}col</code></td>
+                      <td>Shop with left sidebar — 3/4/5 columns</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>/top-banner-left-sidebar-{3-5}col</code>
+                      </td>
+                      <td>Top banner + left sidebar — 3/4/5 columns</td>
+                    </tr>
+                    <tr>
+                      <td><code>/banner-list-with-sidebar</code></td>
+                      <td>List view with sidebar</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>/banner-list-without-sidebar-2col</code>
+                      </td>
+                      <td>List view without sidebar — 2 columns</td>
+                    </tr>
+                    <tr>
+                      <td
+                        colspan="2"
+                        class="font-semibold text-primary bg-teal-50 text-xs uppercase tracking-wider"
+                      >
+                        Product Details (6 variants)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>/product-details</code></td>
+                      <td>Product Detail Style 1</td>
+                    </tr>
+                    <tr>
+                      <td><code>/product-details-{2-6}</code></td>
+                      <td>Product Detail Styles 2–6</td>
+                    </tr>
+                    <tr>
+                      <td
+                        colspan="2"
+                        class="font-semibold text-primary bg-teal-50 text-xs uppercase tracking-wider"
+                      >
+                        Vendor / Marketplace
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>/vendors-grid</code></td>
+                      <td>Vendor listing — grid view</td>
+                    </tr>
+                    <tr>
+                      <td><code>/vendors-list</code></td>
+                      <td>Vendor listing — list view</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>/vendor-left-sidebar-marketplace</code>
+                      </td>
+                      <td>Vendor marketplace — left sidebar</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <code>/vendor-left-top-marketplace</code>
+                      </td>
+                      <td>Vendor marketplace — left-top layout</td>
+                    </tr>
+                    <tr>
+                      <td><code>/vendor-dashboard</code></td>
+                      <td>Vendor dashboard with charts</td>
+                    </tr>
+                    <tr>
+                      <td><code>/vendor-account</code></td>
+                      <td>Vendor account settings</td>
+                    </tr>
+                    <tr>
+                      <td
+                        colspan="2"
+                        class="font-semibold text-primary bg-teal-50 text-xs uppercase tracking-wider"
+                      >
+                        Blog, Cart, Checkout &amp; Other Pages
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>/blog-grid</code></td>
+                      <td>Blog grid layout</td>
+                    </tr>
+                    <tr>
+                      <td><code>/blog-list</code></td>
+                      <td>Blog list layout</td>
+                    </tr>
+                    <tr>
+                      <td><code>/blog-grid/[id]</code></td>
+                      <td>Individual blog post detail</td>
+                    </tr>
+                    <tr>
+                      <td><code>/cart-single-vendor</code></td>
+                      <td>Cart (single vendor)</td>
+                    </tr>
+                    <tr>
+                      <td><code>/cart-multi-vendor</code></td>
+                      <td>Cart (multi-vendor)</td>
+                    </tr>
+                    <tr>
+                      <td><code>/checkout</code></td>
+                      <td>Checkout style 1</td>
+                    </tr>
+                    <tr>
+                      <td><code>/checkout-v2</code></td>
+                      <td>Checkout style 2</td>
+                    </tr>
+                    <tr>
+                      <td><code>/wishlist-style-v1</code></td>
+                      <td>Wishlist style 1</td>
+                    </tr>
+                    <tr>
+                      <td><code>/wishlist-style-v2</code></td>
+                      <td>Wishlist style 2</td>
+                    </tr>
+                    <tr>
+                      <td><code>/compare</code></td>
+                      <td>Product comparison</td>
+                    </tr>
+                    <tr>
+                      <td><code>/my-account</code></td>
+                      <td>User account dashboard</td>
+                    </tr>
+                    <tr>
+                      <td><code>/order-successful</code></td>
+                      <td>Order success confirmation</td>
+                    </tr>
+                    <tr>
+                      <td><code>/about</code></td>
+                      <td>About us</td>
+                    </tr>
+                    <tr>
+                      <td><code>/contact</code></td>
+                      <td>Contact page</td>
+                    </tr>
+                    <tr>
+                      <td><code>/faq</code></td>
+                      <td>FAQ page</td>
+                    </tr>
+                    <tr>
+                      <td><code>/privacy-policy</code></td>
+                      <td>Privacy policy</td>
+                    </tr>
+                    <tr>
+                      <td><code>/return-policy</code></td>
+                      <td>Return policy</td>
+                    </tr>
+                    <tr>
+                      <td><code>/terms-and-conditions</code></td>
+                      <td>Terms &amp; conditions</td>
+                    </tr>
+                    <tr>
+                      <td><code>/coming-soon</code></td>
+                      <td>Coming soon page</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Component Library -->
+            <section id="component-library" class="mb-12 pt-8">
+              <h2>Component Library</h2>
+              <p>
+                Sellzy ships with <strong>146+</strong> React components across
+                <strong>26</strong> feature modules. Below is a summary of the
+                key component groups:
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div
+                  class="p-4 border border-gray-200 rounded-xl bg-white"
+                >
+                  <h4
+                    class="font-semibold text-gray-900 mt-0 mb-2 text-base"
+                  >
+                    🏠 Layout
+                  </h4>
+                  <p class="text-xs text-gray-500 mb-0">
+                    Navbar, NavbarTop, Footer, MainMenu, MobileMenu,
+                    CategoryMenu, HeaderSearch, SearchDropdown
+                  </p>
+                </div>
+                <div
+                  class="p-4 border border-gray-200 rounded-xl bg-white"
+                >
+                  <h4
+                    class="font-semibold text-gray-900 mt-0 mb-2 text-base"
+                  >
+                    🃏 Product Cards
+                  </h4>
+                  <p class="text-xs text-gray-500 mb-0">
+                    ProductCardOne, ProductCardTwo, ProductCardFour — reusable
+                    across all shop and homepage layouts
+                  </p>
+                </div>
+                <div
+                  class="p-4 border border-gray-200 rounded-xl bg-white"
+                >
+                  <h4
+                    class="font-semibold text-gray-900 mt-0 mb-2 text-base"
+                  >
+                    📦 Drawers
+                  </h4>
+                  <p class="text-xs text-gray-500 mb-0">
+                    QuickViewDrawer, CartDrawer, LoginDrawer,
+                    RegisterDrawer, OTPDrawer, ForgetPasswordDrawer,
+                    SetPassword, MobileSidebar, SizeVariationDrawer
+                  </p>
+                </div>
+                <div
+                  class="p-4 border border-gray-200 rounded-xl bg-white"
+                >
+                  <h4
+                    class="font-semibold text-gray-900 mt-0 mb-2 text-base"
+                  >
+                    🔧 Common / Shared
+                  </h4>
+                  <p class="text-xs text-gray-500 mb-0">
+                    Breadcrumb, StarRating, NewsLetter, ScrollToTop,
+                    FloatingSelect, CustomRangeSlider, Testimonial,
+                    ComingSoon, HorizontalProductCard
+                  </p>
+                </div>
+                <div
+                  class="p-4 border border-gray-200 rounded-xl bg-white"
+                >
+                  <h4
+                    class="font-semibold text-gray-900 mt-0 mb-2 text-base"
+                  >
+                    🏪 Mega-Menu / Shop
+                  </h4>
+                  <p class="text-xs text-gray-500 mb-0">
+                    FilterBarOne–Four, OffcanvasFilter, ShopBanner variants,
+                    CategoryFilter, grid layout wrappers
+                  </p>
+                </div>
+                <div
+                  class="p-4 border border-gray-200 rounded-xl bg-white"
+                >
+                  <h4
+                    class="font-semibold text-gray-900 mt-0 mb-2 text-base"
+                  >
+                    🛒 Cart &amp; Checkout
+                  </h4>
+                  <p class="text-xs text-gray-500 mb-0">
+                    CartOneTable, CartTwoTable, CartSummary, CartSummaryTwo,
+                    CartQualitySection, FloatingSelect (checkout)
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Getting Started -->
+            <section id="getting-started" class="mb-12 pt-8">
+              <h2>Getting Started</h2>
+              <p>
+                Follow these steps to get started with the codebase and run the
+                development server:
+              </p>
+
+              <h3>1. Prerequisites &amp; Installation</h3>
+              <p>
+                Before you begin, ensure you have
+                <strong>Node.js</strong> (v18 or newer recommended) installed on
+                your machine. If you haven't installed it yet, please visit the
+                <a
+                  href="https://nodejs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                  >official Node.js website</a
+                >
+                to download and install the LTS (Long Term Support) version.
+              </p>
+              <p>
+                Once Node.js is installed, open your terminal, navigate to the
+                <code>sellzy-frontend</code> directory, and run the following
+                commands:
+              </p>
+
+              <pre><code class="language-bash"># Install dependencies
+npm install
+# or
+yarn install
+# or
+pnpm install
+
+# Start the development server
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev</code></pre>
+
+              <p>
+                Open
+                <a
+                  href="http://localhost:3000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >http://localhost:3000</a
+                >
+                with your browser to see the storefront. The application will
+                automatically update as you modify the source files.
+              </p>
+
+              <h3>2. Styling and Theming</h3>
+              <p>
+                The project uses <strong>Tailwind CSS v4</strong> integrated
+                via <code>@tailwindcss/postcss</code>.
+              </p>
+              <ul>
+                <li>
+                  <strong>Design System Tokens:</strong> All colors, shadows,
+                  typography, and animations are defined in
+                  <code>/app/globals.css</code> under the
+                  <code>@theme</code> directive. Updating these variables
+                  propagates changes throughout the entire template.
+                </li>
+                <li>
+                  <strong>Color Palette:</strong> Primary (teal), Secondary
+                  (blue), Info, Success, Warning, and Error — each with
+                  lighter/light/default/dark/darker variants.
+                </li>
+                <li>
+                  <strong>Fonts:</strong> Three Google Fonts auto-loaded via
+                  <code>next/font</code> — Public Sans (body), Urbanist
+                  (headings), and DM Sans (general text).
+                </li>
+                <li>
+                  <strong>Button System:</strong> Pre-built button classes
+                  (<code>.btn-primary</code>, <code>.btn-secondary</code>,
+                  etc.) with solid and outline variants, in small/medium/large
+                  sizes.
+                </li>
+                <li>
+                  <strong>Class Merging:</strong> Use the <code>cn()</code>
+                  utility from <code>/lib/utils.ts</code> which combines
+                  <code>clsx</code> + <code>tailwind-merge</code> for
+                  conditional and conflict-free class application.
+                </li>
+              </ul>
+
+              <h3>3. Modifying Components</h3>
+              <p>
+                Components are organized by feature in
+                <code>/components</code>. Each homepage demo has its own
+                subfolder (e.g., <code>home-one/</code>,
+                <code>home-two/</code>). To customize a section, find its
+                component file and modify the Tailwind classes and JSX
+                directly. Product cards in <code>/components/card/</code>
+                are shared across all pages.
+              </p>
+
+              <h3>4. Icons</h3>
+              <p>
+                Sellzy uses two icon systems:
+              </p>
+              <ul>
+                <li>
+                  <strong>Huge Icons (CSS):</strong> Loaded globally via
+                  <code>/public/icons/hugeicons/hgi-stroke-rounded.css</code>.
+                  Use with <code>&lt;i class="hgi hgi-..."&gt;</code> elements.
+                </li>
+                <li>
+                  <strong>Huge Icons (React):</strong> Import from
+                  <code>@hugeicons/react</code> and
+                  <code>@hugeicons/core-free-icons</code> for component-based
+                  SVG icons.
+                </li>
+              </ul>
+            </section>
+
+            <!-- Building & Deployment -->
+            <section id="building-deployment" class="mb-12 pt-8">
+              <h2>Building for Production &amp; Deployment</h2>
+              <h3>Building</h3>
+              <p>To create an optimized production build, run:</p>
+              <pre><code class="language-bash">npm run build</code></pre>
+              <p>
+                After the build completes, you can start the production server:
+              </p>
+              <pre><code class="language-bash">npm run start</code></pre>
+
+              <h3>Deployment</h3>
+              <p>
+                The easiest way to deploy this Next.js app is to use the
+                <a
+                  href="https://vercel.com/new"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Vercel Platform</a
+                >. Check out the
+                <a
+                  href="https://nextjs.org/docs/app/building-your-application/deploying"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                  >Next.js deployment documentation</a
+                >
+                for more details.
+              </p>
+            </section>
+
+            <!-- Sources and Credits -->
+            <section id="sources-credits" class="mb-12 pt-8">
+              <h2>Sources and Credits</h2>
+              <p>
+                This template relies on several excellent open-source libraries
+                that power its robust functionality and beautiful user
+                interface:
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <a
+                  href="https://nextjs.org/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/next.svg"
+                      alt="Next.js"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Next.js 16
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      The React Framework for the Web
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://react.dev/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/react.svg"
+                      alt="React"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      React 19
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      The library for web and native user interfaces
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://tailwindcss.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/tailwind.svg"
+                      alt="Tailwind CSS"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Tailwind CSS v4
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Rapidly build modern websites without ever leaving your
+                      HTML
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://www.framer.com/motion/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl"
+                  >
+                    🎬
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Framer Motion
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Production-ready animation library for React
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://swiperjs.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl"
+                  >
+                    🎠
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Swiper.js
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Modern touch slider for carousels and hero banners
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://apexcharts.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/apex.png"
+                      alt="ApexCharts"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      ApexCharts
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Interactive charts for vendor dashboard analytics
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://hugeicons.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center text-gray-800"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      color="currentColor"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Huge Icons
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Beautiful and extensive iconography (CSS + React)
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://fonts.google.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl text-blue-500"
+                  >
+                    G
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Google Fonts
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Public Sans, Urbanist, and DM Sans
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://www.npmjs.com/package/nextjs-toploader"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl text-yellow-500"
+                  >
+                    ⏳
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      NextJS TopLoader
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Slim progress bar for page transitions
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://www.freepik.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl text-blue-600"
+                  >
+                    F
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Freepik
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      High-quality photos, vectors, and PSD assets
+                    </p>
+                  </div>
+                </a>
+              </div>
+            </section>
+
+            <!-- Support -->
+            <section id="support" class="mb-12 pt-8">
+              <div
+                class="bg-blue-50 border border-blue-200 mt-4 rounded-2xl p-8 shadow-sm"
+              >
+                <h2
+                  class="mt-0 border-none text-blue-900 flex items-center gap-3"
+                >
+                  <svg
+                    class="w-8 h-8 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
+                    ></path>
+                  </svg>
+                  Support Scope
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                  <!-- Included -->
+                  <div
+                    class="bg-white p-6 rounded-xl shadow-sm border border-blue-100"
+                  >
+                    <h3 class="flex items-center gap-2 text-green-700 mt-0">
+                      <svg
+                        class="w-5 h-5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                      Included in Free Support
+                    </h3>
+                    <ul class="text-sm mt-3 space-y-2 mb-0 list-none pl-0">
+                      <li class="flex items-start text-gray-700">
+                        ✓ Fixing bugs
+                      </li>
+                      <li class="flex items-start text-gray-700">
+                        ✓ Helping clients in changing site contents by sending
+                        instructions that couldn't be covered by documentation.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Not Included -->
+                  <div
+                    class="bg-white p-6 rounded-xl shadow-sm border border-blue-100"
+                  >
+                    <h3 class="flex items-center gap-2 text-red-600 mt-0">
+                      <svg
+                        class="w-5 h-5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                      NOT Included
+                    </h3>
+                    <ul class="text-sm mt-3 space-y-2 mb-0 list-none pl-0">
+                      <li class="flex items-start text-gray-700">
+                        ✕ Any type of custom changes.
+                      </li>
+                      <li class="flex items-start text-gray-700">
+                        ✕ Any type of request to update clients' site contents.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div
+                  class="mt-8 bg-white p-6 rounded-xl border border-blue-100"
+                >
+                  
+                  <div class="flex flex-wrap gap-3 mb-6">
+                    <span
+                      class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm font-medium text-gray-700"
+                      >Custom change request</span
+                    >
+                    <span
+                      class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm font-medium text-gray-700"
+                      >Custom pages</span
+                    >
+                    <span
+                      class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-sm font-medium text-gray-700"
+                      >Custom features</span
+                    >
+                  </div>
+                </div>
+
+                <div class="mt-8 text-center pt-6 border-t border-blue-100">
+                  <h3 class="mt-0 mb-2 font-semibold">Need Help?</h3>
+                  <p class="text-sm text-gray-600 mb-6">
+                    Please send your support request via our ticket system. We
+                    will respond within 1 business day.
+                  </p>
+                  <a
+                    href="mailto:tauhid.ppi12@gmail.com"
+                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md bg-white hover:text-white hover:bg-teal-700 transition-colors shadow-sm"
+                  >
+                    Submit a Support Request
+                  </a>
+                  <p class="mt-6 text-sm text-gray-500 italic">
+                    Regards,<br /><strong
+                      class="not-italic text-gray-700 font-semibold"
+                      >Riveup Support Team</strong
+                    >
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Simple script to highlight active section in sidebar
+      document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        function onScroll() {
+          let current = "introduction";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (window.scrollY >= sectionTop - 150) {
+              current = section.getAttribute("id");
+            }
+          });
+
+          navLinks.forEach((li) => {
+            li.classList.remove("active");
+            if (li.getAttribute("href").includes(current)) {
+              li.classList.add("active");
+            }
+          });
+        }
+
+        window.addEventListener("scroll", onScroll);
+        // Trigger once on load
+        onScroll();
+
+        // Mobile Sidebar Toggle
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        const openBtn = document.getElementById("open-sidebar");
+        const closeBtn = document.getElementById("close-sidebar");
+
+        function openSidebar() {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+          setTimeout(() => {
+            overlay.classList.remove("opacity-0");
+          }, 10);
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeSidebar() {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("opacity-0");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+          }, 300);
+          document.body.style.overflow = "";
+        }
+
+        openBtn.addEventListener("click", openSidebar);
+        closeBtn.addEventListener("click", closeSidebar);
+        overlay.addEventListener("click", closeSidebar);
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (window.innerWidth < 768) {
+              closeSidebar();
+            }
+          });
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            document.body.style.overflow = "";
+          } else if (!sidebar.classList.contains("-translate-x-full")) {
+            document.body.style.overflow = "hidden";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

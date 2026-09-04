@@ -1,0 +1,38 @@
+{
+  "name": "les-epices-de-sulson-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@hugeicons/core-free-icons": "^3.3.0",
+    "@hugeicons/react": "^1.1.5",
+    "apexcharts": "^5.10.4",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.34.3",
+    "next": "16.1.6",
+    "nextjs-toploader": "^3.9.17",
+    "react": "19.2.3",
+    "react-apexcharts": "^2.1.0",
+    "react-dom": "19.2.3",
+    "react-range-slider-input": "^3.3.5",
+    "swiper": "^12.1.2",
+    "tailwind-merge": "^3.5.0",
+    "@prisma/client": "^6.4.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "prisma": "^6.4.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

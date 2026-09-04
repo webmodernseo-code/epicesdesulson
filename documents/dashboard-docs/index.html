@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="./assets/img/logo/favicon.png"
+      type="image/x-icon"
+    />
+    <title>Sellzy Dashboard - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Public Sans"', "sans-serif"],
+            },
+            colors: {
+              primary: "#088178",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/style.css" />
+  </head>
+  <body
+    class="bg-gray-50 text-gray-800 antialiased selection:bg-primary selection:text-white"
+  >
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row min-h-screen">
+      <!-- Overlay for Mobile -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-gray-900/50 z-40 hidden md:hidden transition-opacity opacity-0"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white border-r border-gray-200 fixed h-full overflow-y-auto z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 left-0 top-0"
+      >
+        <div class="p-6">
+          <div class="flex items-center justify-between gap-2 mb-8">
+            <img
+              src="./assets/img/logo/logo.png"
+              width="120"
+              height="40"
+              alt=""
+            />
+            <button
+              id="close-sidebar"
+              class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <nav class="space-y-1">
+            <a
+              href="#introduction"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Introduction</a
+            >
+            <a
+              href="#key-features"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Key Features</a
+            >
+            <a
+              href="#template-structure"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Template Structure</a
+            >
+            <a
+              href="#getting-started"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Getting Started</a
+            >
+            <a
+              href="#building-deployment"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Building & Deployment</a
+            >
+            <a
+              href="#sources-credits"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Sources & Credits</a
+            >
+            <a
+              href="#support"
+              class="nav-link block px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-primary rounded-md transition-colors border-l-2 border-transparent"
+              >Support</a
+            >
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main
+        class="flex-1 md:ml-64 w-full max-w-4xl mx-auto bg-white min-h-screen shadow-sm border-l border-gray-100 flex flex-col"
+      >
+        <!-- Mobile Header -->
+        <header
+          class="md:hidden flex items-center justify-between p-5 border-b border-gray-100 bg-white sticky top-0 z-30"
+        >
+          <img
+            src="./assets/img/logo/logo.png"
+            width="120"
+            height="auto"
+            alt="Sellzy Logo"
+          />
+          <button
+            id="open-sidebar"
+            class="text-gray-600 hover:text-gray-900 p-1 focus:outline-none"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </header>
+
+        <div class="p-6 md:p-12 lg:p-16 w-full flex-1">
+          <div class="prose max-w-none">
+            <!-- Introduction -->
+            <section id="introduction" class="mb-12 pt-8">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-primary text-xs font-semibold uppercase tracking-wider mb-4 border border-teal-100"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                Getting Started
+              </div>
+              <h1
+                class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight"
+              >
+                Sellzy Dashboard Documentation
+              </h1>
+              <p class="text-lg text-gray-500 mt-4 leading-relaxed">
+                Welcome to <strong>Sellzy Dashboard </strong>, a comprehensive,
+                modern Next.js admin dashboard template designed for e-commerce
+                platforms. The Sellzy Dashboard provides a robust set of tools
+                and interfaces to manage products, sellers, customers, orders,
+                marketing campaigns, and extensive reporting. Built with
+                <strong>Next.js (App Router)</strong>,
+                <strong>React 19</strong>, and <strong>Tailwind CSS v4</strong>.
+              </p>
+            </section>
+
+            <!-- Key Features -->
+            <section id="key-features" class="mb-12 pt-8">
+              <h2>Key Features</h2>
+              <p>
+                The dashboard includes a wide array of pre-built modules for
+                complete e-commerce management:
+              </p>
+              <ul class="space-y-2 mt-4 text-gray-700">
+                <li>
+                  <strong>E-commerce Core:</strong> Manage Products, Categories,
+                  Inventory, Orders, Transactions, and Refunds.
+                </li>
+                <li>
+                  <strong>User Management:</strong> Dedicated interfaces for
+                  Admins, Sellers, and Customers.
+                </li>
+                <li>
+                  <strong>Marketing &amp; Promotions:</strong> Tools for
+                  Coupons, Flash Sales, Featured Deals, Promo Popups, Abandoned
+                  Carts, and Clearance.
+                </li>
+                <li>
+                  <strong>Analytics &amp; Reporting:</strong> Interactive
+                  Dashboard metrics, detailed Financial Reports, and Top
+                  Products tracking.
+                </li>
+                <li>
+                  <strong>Site Controls:</strong> Manage Home Page layout, FAQs,
+                  Privacy Policies, Terms &amp; Conditions, and general site
+                  settings.
+                </li>
+                <li>
+                  <strong>Communication:</strong> Built-in Inbox and Support
+                  messaging interfaces.
+                </li>
+              </ul>
+            </section>
+
+            <!-- Template Structure -->
+            <section id="template-structure" class="mb-12 pt-8">
+              <h2>Template Structure</h2>
+              <p>
+                The application follows a modular and scalable Next.js directory
+                structure:
+              </p>
+
+              <div
+                class="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-sm mt-6"
+              >
+                <ul class="space-y-3 m-0 block font-mono text-sm leading-6">
+                  <li class="flex items-start">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/app</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Contains the Next.js App Router setup, including pages,
+                        layouts, and global styles.
+                      </p>
+                      <ul
+                        class="mt-2 ml-4 space-y-2 border-l border-gray-200 pl-4"
+                      >
+                        <li>
+                          <code>/app/(dashboard)</code> - Main application
+                          routes wrapped in the dashboard layout.
+                        </li>
+                        <li>
+                          <code>/app/globals.css</code> - Global stylesheet
+                          containing Tailwind CSS configs and custom CSS
+                          variables.
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/components</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Reusable React components organized by functionality:
+                      </p>
+                      <ul
+                        class="mt-2 ml-4 space-y-2 border-l border-gray-200 pl-4"
+                      >
+                        <li>
+                          <code>/components/ui</code> - Core building blocks
+                          like buttons, inputs, selects, and modals.
+                        </li>
+                        <li>
+                          <code>/components/layout</code> - Layout-specific
+                          components such as the Header, Sidebar, and various
+                          dropdowns.
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/icons</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Pre-configured, scalable SVG icons exported as React
+                        components.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/public</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Static assets including images, logos, and placeholder
+                        avatars.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start pt-3">
+                    <svg
+                      class="w-5 h-5 text-indigo-400 mr-3 mt-0.5 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      ></path>
+                    </svg>
+                    <div>
+                      <span class="font-bold text-gray-900">/lib</span>
+                      <p class="text-gray-500 font-sans mt-1">
+                        Helper functions and utility scripts (e.g.,
+                        tailwind-merge setups for dynamic classes).
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Getting Started -->
+            <section id="getting-started" class="mb-12 pt-8">
+              <h2>Getting Started</h2>
+              <p>
+                Follow these steps to get started with the codebase and run the
+                development server:
+              </p>
+
+              <h3>1. Prerequisites &amp; Installation</h3>
+              <p>
+                Before you begin, ensure you have
+                <strong>Node.js</strong> (v18 or newer recommended) installed on
+                your machine. If you haven't installed it yet, please visit the
+                <a
+                  href="https://nodejs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                  >official Node.js website</a
+                >
+                to download and install the LTS (Long Term Support) version.
+              </p>
+              <p>
+                Once Node.js is installed, open your terminal, navigate to the
+                project directory, and run the following commands:
+              </p>
+
+              <pre><code class="language-bash"># Install dependencies
+npm install
+# or
+yarn install
+# or
+pnpm install
+
+# Start the development server
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev</code></pre>
+
+              <p>
+                Open
+                <a
+                  href="http://localhost:3000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >http://localhost:3000</a
+                >
+                with your browser to see the dashboard. The application will
+                automatically update as you modify the source files.
+              </p>
+
+              <h3>2. Styling and Theming</h3>
+              <p>
+                The project uses <strong>Tailwind CSS v4</strong> seamlessly
+                integrated via <code>@tailwindcss/postcss</code>.
+              </p>
+              <ul>
+                <li>
+                  <strong>Global Colors & Tokens:</strong> You can easily update
+                  the primary color scheme, typography, and shadows directly
+                  inside <code>/app/globals.css</code> under the
+                  <code>@theme</code> directive. Modifying these variables will
+                  automatically propagate changes throughout the entire
+                  template.
+                </li>
+                <li>
+                  <strong>Components:</strong> UI components in
+                  <code>/components/ui</code> utilize standard Tailwind utility
+                  classes combined with
+                  <code>class-variance-authority</code> for variant management,
+                  making it trivial to adjust designs intuitively.
+                </li>
+              </ul>
+
+              <h3>3. Modifying Components</h3>
+              <p>
+                Most interactive elements are constructed using
+                <strong>Headless UI</strong> to ensure high accessibility and
+                unopinionated styling. To adapt complex components like
+                Dropdowns or Modals, navigate to
+                <code>components/layout/</code> and adjust the Tailwind classes
+                applied directly to the <code>@headlessui/react</code> elements.
+              </p>
+            </section>
+
+            <!-- Building & Deployment -->
+            <section id="building-deployment" class="mb-12 pt-8">
+              <h2>Building for Production &amp; Deployment</h2>
+              <h3>Building</h3>
+              <p>To create an optimized production build, run:</p>
+              <pre><code class="language-bash">npm run build</code></pre>
+              <p>
+                After the build completes, you can start the production server:
+              </p>
+              <pre><code class="language-bash">npm run start</code></pre>
+
+              <h3>Deployment</h3>
+              <p>
+                The easiest way to deploy this Next.js app is to use the
+                <a
+                  href="https://vercel.com/new"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Vercel Platform</a
+                >. Check out the
+                <a
+                  href="https://nextjs.org/docs/app/building-your-application/deploying"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                  >Next.js deployment documentation</a
+                >
+                for more details.
+              </p>
+            </section>
+
+            <!-- Sources and Credits -->
+            <section id="sources-credits" class="mb-12 pt-8">
+              <h2>Sources and Credits</h2>
+              <p>
+                This template relies on several excellent open-source libraries
+                that power its robust functionality and beautiful user
+                interface:
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <a
+                  href="https://nextjs.org/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/next.svg"
+                      alt="Next.js"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Next.js
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      The React Framework for the Web
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://react.dev/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/react.svg"
+                      alt="React"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      React
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      The library for web and native user interfaces
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://tailwindcss.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/tailwind.svg"
+                      alt="Tailwind CSS"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Tailwind CSS
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Rapidly build modern websites without ever leaving your
+                      HTML
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://headlessui.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/healess.svg"
+                      alt="Headless UI"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Headless UI
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Completely unstyled, fully accessible UI components
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://apexcharts.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center"
+                  >
+                    <img
+                      src="./assets/img/apex.png"
+                      alt="ApexCharts"
+                      class="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      ApexCharts
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Modern & Interactive Open-source Charts
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://sonner.emilkowal.ski/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl"
+                  >
+                    🍞
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Sonner
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      An opinionated toast component for React
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://react-day-picker.js.org/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl"
+                  >
+                    📅
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      React Day Picker
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Date picker component for React
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://hugeicons.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center text-gray-800"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      color="currentColor"
+                      fill="none"
+                    >
+                      <path
+                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Huge Icons
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Beautiful and extensive iconography
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://fonts.google.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl text-blue-500"
+                  >
+                    G
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Google Fonts
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      Making the web more beautiful, fast, and open
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://www.freepik.com/"
+                  target="_blank"
+                  class="flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow group bg-white"
+                >
+                  <div
+                    class="size-10 shrink-0 flex items-center justify-center font-bold text-2xl text-blue-600"
+                  >
+                    F
+                  </div>
+                  <div class="ml-4">
+                    <h4
+                      class="font-semibold text-gray-900 group-hover:text-primary transition-colors mt-0 mb-1"
+                    >
+                      Freepik
+                    </h4>
+                    <p class="text-xs text-gray-500 mb-0">
+                      High-quality photos, vectors, and PSD assets
+                    </p>
+                  </div>
+                </a>
+              </div>
+            </section>
+
+            <!-- Support -->
+            <section id="support" class="mb-12 pt-8">
+              <div
+                class="bg-blue-50 border border-blue-200 mt-4 rounded-2xl p-8 shadow-sm"
+              >
+                <h2
+                  class="mt-0 border-none text-blue-900 flex items-center gap-3"
+                >
+                  <svg
+                    class="w-8 h-8 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
+                    ></path>
+                  </svg>
+                  Support Scope
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                  <!-- Included -->
+                  <div
+                    class="bg-white p-6 rounded-xl shadow-sm border border-blue-100"
+                  >
+                    <h3 class="flex items-center gap-2 text-green-700 mt-0">
+                      <svg
+                        class="w-5 h-5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                      Included in Free Support
+                    </h3>
+                    <ul class="text-sm mt-3 space-y-2 mb-0 list-none pl-0">
+                      <li class="flex items-start text-gray-700">
+                        ✓ Fixing bugs
+                      </li>
+                      <li class="flex items-start text-gray-700">
+                        ✓ Helping clients in changing site contents by sending
+                        instructions that couldn't be covered by documentation.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Not Included -->
+                  <div
+                    class="bg-white p-6 rounded-xl shadow-sm border border-blue-100"
+                  >
+                    <h3 class="flex items-center gap-2 text-red-600 mt-0">
+                      <svg
+                        class="w-5 h-5 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                      NOT Included
+                    </h3>
+                    <ul class="text-sm mt-3 space-y-2 mb-0 list-none pl-0">
+                      <li class="flex items-start text-gray-700">
+                        ✕ Any type of custom changes.
+                      </li>
+                      <li class="flex items-start text-gray-700">
+                        ✕ Any type of request to update clients' site contents.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div
+                  class="mt-8 bg-white p-6 rounded-xl border border-blue-100"
+                >
+                  <h3 class="mt-0 text-gray-900 border-none pb-0 mb-3">
+                    Paid Support Options
+                  </h3>
+               
+                </div>
+
+                <div class="mt-8 text-center pt-6 border-t border-blue-100">
+                  <h3 class="mt-0 mb-2 font-semibold">Need Help?</h3>
+                  <p class="text-sm text-gray-600 mb-6">
+                    Please send your support request via our ticket system. We
+                    will respond within 1 business day.
+                  </p>
+                  <a
+                    href="mailto:touhid.ppi12@gmail.com"
+                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md bg-white hover:text-white hover:bg-teal-700 transition-colors shadow-sm"
+                  >
+                    Submit a Support Request
+                  </a>
+                  <p class="mt-6 text-sm text-gray-500 italic">
+                    Regards,<br /><strong
+                      class="not-italic text-gray-700 font-semibold"
+                      >Riveup Support Team</strong
+                    >
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Simple script to highlight active section in sidebar
+      document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        function onScroll() {
+          let current = "introduction";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (window.scrollY >= sectionTop - 150) {
+              current = section.getAttribute("id");
+            }
+          });
+
+          navLinks.forEach((li) => {
+            li.classList.remove("active");
+            if (li.getAttribute("href").includes(current)) {
+              li.classList.add("active");
+            }
+          });
+        }
+
+        window.addEventListener("scroll", onScroll);
+        // Trigger once on load
+        onScroll();
+
+        // Mobile Sidebar Toggle
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        const openBtn = document.getElementById("open-sidebar");
+        const closeBtn = document.getElementById("close-sidebar");
+
+        function openSidebar() {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+          setTimeout(() => {
+            overlay.classList.remove("opacity-0");
+          }, 10);
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeSidebar() {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("opacity-0");
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+          }, 300);
+          document.body.style.overflow = "";
+        }
+
+        openBtn.addEventListener("click", openSidebar);
+        closeBtn.addEventListener("click", closeSidebar);
+        overlay.addEventListener("click", closeSidebar);
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (window.innerWidth < 768) {
+              closeSidebar();
+            }
+          });
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            document.body.style.overflow = "";
+          } else if (!sidebar.classList.contains("-translate-x-full")) {
+            document.body.style.overflow = "hidden";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
