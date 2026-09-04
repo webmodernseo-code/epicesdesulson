@@ -145,7 +145,7 @@ Voici la liste exacte des tâches résiduelles pour le déploiement final en pro
 
 | Élément | Action Requise | Emplacement | Statut |
 | :--- | :--- | :--- | :--- |
-| **Base de Données Neon** | Coller l'URL de connexion PostgreSQL réelle dans `.env` puis exécuter `npx prisma db push`. | `.env` (`DATABASE_URL`) | ⏳ En attente de vos clés |
-| **Clés Stripe Live** | Renseigner vos clés d'API réelles Stripe (`pk_live_...`, `sk_live_...`, `whsec_...`). | `.env` (`STRIPE_SECRET_KEY`) | ⏳ En attente de votre compte Stripe |
-| **Emails Transactionnels** | Renseigner votre clé API Resend ou SMTP pour la confirmation automatique de commande. | `.env` (`RESEND_API_KEY`) | ⏳ En attente de votre clé Resend |
-| **Dépôt GitHub** | Définir l'URL du dépôt distant et lancer `git push -u origin main`. | Terminal Git | 🚀 Prêt (Dépôt Git initialisé localement) |
+| **Base de Données Neon** | Schéma synchronisé (`prisma db push`) et données officielles injectées (`prisma db seed` : 5 catégories, 5 produits, 25 formats). | `.env` & Neon PostgreSQL | ✅ **Opérationnel & Connecté** |
+| **Clés Stripe Live** | Renseigner vos clés d'API réelles Stripe (`pk_live_...`, `sk_live_...`, `whsec_...`). | `.env` (`STRIPE_SECRET_KEY`) | ⏳ En attente de vos clés Stripe |
+| **Emails Transactionnels** | Renseigner votre clé API Resend ou SMTP pour la confirmation automatique de commande. | `.env` (`RESEND_API_KEY`) | ⏳ Optionnel / En attente de clé |
+| **Dépôt GitHub** | Définir l'URL du dépôt distant et lancer `git push -u origin main`. | GitHub (`main`) | ✅ **Synchronisé & À jour** |
