@@ -174,35 +174,10 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             </span>
           </div>
 
-          {/* Format / Weight Selector (including 1 Kg / Kilo) */}
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs sm:text-sm text-gray-700 font-bold">Poids :</span>
-              <span className="text-xs sm:text-sm font-bold text-primary">
-                {selectedFormat.label === "1 Kg" ? "1 Kg (Kilo)" : selectedFormat.label}
-              </span>
-            </div>
-            <div className="grid grid-cols-1 gap-1.5">
-              {FORMAT_OPTIONS.map((fmt) => (
-                <button
-                  key={fmt.label}
-                  type="button"
-                  onClick={() => setSelectedFormat(fmt)}
-                  className={`py-1.5 text-xs sm:text-sm font-bold rounded-xl border transition-all text-center cursor-pointer ${
-                    selectedFormat.label === fmt.label
-                      ? "bg-primary text-white border-primary shadow-xs"
-                      : "bg-gray-50 text-gray-800 border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  {fmt.text || fmt.label}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Action button with direct Add to Cart */}
-        <div className="mt-3.5 pt-3 border-t border-gray-100">
+        <div className="mt-4 pt-3 border-t border-gray-100">
           <motion.button
             whileTap={{ scale: 0.94 }}
             type="button"
@@ -332,30 +307,9 @@ export default function FirmFreshGrocery() {
               </div>
             </div>
 
-            {/* Bottom Controls: Format Selection, Price, Direct Add to Cart */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-              {/* Left: Format Selector */}
-              <div className="flex flex-col gap-y-1.5">
-                <span className="text-xs text-gray-600 font-bold">Choisir le format :</span>
-                <div className="flex flex-wrap gap-2">
-                  {FIFTH_FORMATS.map((fmt) => (
-                    <button
-                      key={fmt.label}
-                      type="button"
-                      onClick={() => setSelectedFifthFormat(fmt)}
-                      className={`py-1.5 px-3.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                        selectedFifthFormat.label === fmt.label
-                          ? "bg-primary text-white border-primary shadow-xs font-bold"
-                          : "bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      {fmt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Middle: Price in Euros */}
+            {/* Bottom Controls: Price, Direct Add to Cart */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Left: Price in Euros */}
               <div className="flex items-baseline gap-x-3">
                 <span className="text-2xl sm:text-3xl font-extrabold text-gray-900">
                   {selectedFifthFormat.price.toFixed(2)} €
@@ -363,8 +317,8 @@ export default function FirmFreshGrocery() {
                 <span className="text-sm text-gray-400 line-through font-medium">
                   {selectedFifthFormat.oldPrice.toFixed(2)} €
                 </span>
-                <span className="text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                  {selectedFifthFormat.text}
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full">
+                  Coffret 4x100g (400g)
                 </span>
               </div>
 
