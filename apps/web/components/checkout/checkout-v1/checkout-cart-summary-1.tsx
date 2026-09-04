@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/cart-context";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export default function CheckoutCartSummary1() {
   const { items, subtotal, removeItem } = useCart();
