@@ -30,14 +30,6 @@ export const MAIN_MENU_DATA: MenuItem[] = [
     href: "/avis",
   },
   {
-    label: "Paris & Régions",
-    href: "/epices-paris",
-    subItems: [
-      { label: "📍 Épices Paris & Île-de-France", href: "/epices-paris" },
-      { label: "📍 Épices Lyon & Auvergne-Rhône-Alpes", href: "/epices-lyon-auvergne-rhone-alpes" },
-    ],
-  },
-  {
     label: "À propos",
     href: "/about",
   },

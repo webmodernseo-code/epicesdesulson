@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "À propos | Les Épices de Sulson",
-  description: "Découvrez l'histoire, la passion et les valeurs de Les Épices de Sulson : la recherche des meilleures saveurs et épices d'exception.",
+  title: "L'Histoire & la Maison | Les Épices de Sulson",
+  description:
+    "Découvrez l'histoire et les valeurs de la maison Les Épices de Sulson : créations d'épices artisanales 100g, poivres rares et recettes authentiques livrées à Paris, Lyon et dans toute la France.",
+  keywords: [
+    "Les Épices de Sulson",
+    "épices de sulson",
+    "epice de sulson",
+    "epice sulson",
+    "épice paris",
+    "épices lyon",
+    "épices auvergne rhône alpes",
+    "épicerie fine",
+    "épices artisanales cameroun",
+  ],
   openGraph: {
-    title: "À propos | Les Épices de Sulson",
-    description: "Découvrez l'histoire, la passion et les valeurs de Les Épices de Sulson.",
+    title: "L'Histoire & la Maison | Les Épices de Sulson",
+    description:
+      "Maison d'épices d'exception : mélanges artisanaux 100g pour volailles, viandes, poissons et créations gourmandes.",
   },
 };
 

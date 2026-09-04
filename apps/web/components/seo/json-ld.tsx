@@ -1,5 +1,4 @@
 import React from "react";
-import { SulsonProductModel } from "@/lib/products-service";
 
 export function OrganizationAndWebsiteJsonLd() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://epicesdesulson.com";
@@ -11,6 +10,14 @@ export function OrganizationAndWebsiteJsonLd() {
         "@type": "Organization",
         "@id": `${baseUrl}/#organization`,
         name: "Les Épices de Sulson",
+        alternateName: [
+          "Épices de Sulson",
+          "Epices de Sulson",
+          "Epice de Sulson",
+          "Epice Sulson",
+          "Les Epices de Sulson",
+          "Épice Paris - Les Épices de Sulson",
+        ],
         url: baseUrl,
         logo: {
           "@type": "ImageObject",
@@ -18,13 +25,13 @@ export function OrganizationAndWebsiteJsonLd() {
           caption: "Les Épices de Sulson",
         },
         description:
-          "Maison artisanale d'épices fines, poivres rares et mélanges gastronomiques authentiques du Cameroun.",
+          "Maison gastronomique d'épices artisanales, poivres rares et mélanges traditionnels d'exception du Cameroun. Livraison express à Paris, Lyon, et dans toute la France.",
         email: "contact@epicesdesulson.com",
         telephone: "+33 6 00 00 00 00",
         address: {
           "@type": "PostalAddress",
           addressCountry: "FR",
-          addressRegion: "Île-de-France / Auvergne-Rhône-Alpes",
+          addressRegion: "France / Paris & Île-de-France / Auvergne-Rhône-Alpes (Lyon)",
         },
         areaServed: [
           { "@type": "Country", name: "France" },
@@ -35,10 +42,14 @@ export function OrganizationAndWebsiteJsonLd() {
         ],
         knowsAbout: [
           "Épices fines",
-          "Mélange pour poulet rôti",
-          "Mélange pour viande et barbecue",
-          "Poivre de Guinée pour poisson",
-          "Assaisonnements naturels gastronomiques",
+          "Épice Paris",
+          "Épices Lyon",
+          "Épices de Sulson",
+          "Mélange pour poulet rôti (100g)",
+          "Mélange pour viande et barbecue (100g)",
+          "Poivre de Guinée pour poisson (100g)",
+          "Secret de Sulson Saveur Gourmande (100g)",
+          "Pack Intégral 4 Saveurs Authentiques (4x100g)",
         ],
       },
       {
@@ -52,158 +63,142 @@ export function OrganizationAndWebsiteJsonLd() {
         inLanguage: "fr-FR",
         potentialAction: {
           "@type": "SearchAction",
-          target: `${baseUrl}/shop?search={search_term_string}`,
+          target: `${baseUrl}/?search={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       },
-    ],
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
-
-export function LocalBusinessJsonLd({
-  region,
-  city,
-  title,
-  description,
-}: {
-  region: string;
-  city: string;
-  title: string;
-  description: string;
-}) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://epicesdesulson.com";
-
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "GourmetStore",
-    name: `Les Épices de Sulson - ${title}`,
-    url: baseUrl,
-    description: description,
-    image: `${baseUrl}/images/products/pack-4-saveurs-sulson.jpg`,
-    priceRange: "€€",
-    currenciesAccepted: "EUR",
-    paymentAccepted: "Credit Card, Stripe, Apple Pay, Visa, Mastercard",
-    areaServed: [
-      { "@type": "City", name: city },
-      { "@type": "AdministrativeArea", name: region },
-      { "@type": "Country", name: "France" },
-    ],
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Catalogue Épices Artisanales 100g",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Product",
-            name: "Épice de Sulson - Spéciale Poulet (100g)",
-            price: "6.90",
-            priceCurrency: "EUR",
-          },
+      {
+        "@type": "GourmetStore",
+        "@id": `${baseUrl}/#store`,
+        name: "Les Épices de Sulson - Épicerie Fine & Épices d'Exception",
+        url: baseUrl,
+        image: `${baseUrl}/images/products/pack-4-saveurs-sulson.jpg`,
+        priceRange: "€€",
+        currenciesAccepted: "EUR",
+        paymentAccepted: "Credit Card, Stripe, Apple Pay, Visa, Mastercard",
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "FR",
+          addressRegion: "France / Paris / Lyon",
         },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Product",
-            name: "Épice de Sulson - Spéciale Viande (100g)",
-            price: "6.90",
-            priceCurrency: "EUR",
-          },
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Catalogue Épices Artisanales 100g",
+          itemListElement: [
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Product",
+                name: "Épice de Sulson - Spéciale Poulet (100g)",
+                description: "Mélange curcuma frais, paprika, gingembre, muscade, ail et poivre noir pour des volailles dorées et juteuses.",
+                image: `${baseUrl}/images/products/epice-poulet-recto.jpg`,
+                sku: "SUL-301",
+                brand: { "@type": "Brand", name: "Les Épices de Sulson" },
+                offers: {
+                  "@type": "Offer",
+                  price: "6.90",
+                  priceCurrency: "EUR",
+                  availability: "https://schema.org/InStock",
+                },
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: "4.9",
+                  reviewCount: "196",
+                },
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Product",
+                name: "Épice de Sulson - Spéciale Viande (100g)",
+                description: "Mélange noble au paprika, poivre noir, clou de girofle, laurier et muscade pour viandes rouges et barbecues.",
+                image: `${baseUrl}/images/products/epice-viande-recto.jpg`,
+                sku: "SUL-302",
+                brand: { "@type": "Brand", name: "Les Épices de Sulson" },
+                offers: {
+                  "@type": "Offer",
+                  price: "6.90",
+                  priceCurrency: "EUR",
+                  availability: "https://schema.org/InStock",
+                },
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: "4.9",
+                  reviewCount: "228",
+                },
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Product",
+                name: "Épice de Sulson - Spéciale Poisson (100g)",
+                description: "Poivre de Guinée, céleri, graines de moutarde et thym pour poissons marinés et braisés.",
+                image: `${baseUrl}/images/products/epice-poisson-recto.jpg`,
+                sku: "SUL-303",
+                brand: { "@type": "Brand", name: "Les Épices de Sulson" },
+                offers: {
+                  "@type": "Offer",
+                  price: "6.90",
+                  priceCurrency: "EUR",
+                  availability: "https://schema.org/InStock",
+                },
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: "4.8",
+                  reviewCount: "184",
+                },
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Product",
+                name: "Épice de Sulson - Saveur Gourmande (100g)",
+                description: "La création signature Le Secret de Sulson : assaisonnement universel pour sauces mijotées et légumes.",
+                image: `${baseUrl}/images/products/epice-gourmande-recto.jpg`,
+                sku: "SUL-304",
+                brand: { "@type": "Brand", name: "Les Épices de Sulson" },
+                offers: {
+                  "@type": "Offer",
+                  price: "6.90",
+                  priceCurrency: "EUR",
+                  availability: "https://schema.org/InStock",
+                },
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: "4.9",
+                  reviewCount: "215",
+                },
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Product",
+                name: "Le Pack Intégral : Les 4 Saveurs Authentiques de Sulson (4x100g)",
+                description: "L'assortiment complet réunissant les 4 trésors artisanaux (Poulet, Viande, Poisson, Gourmande). 100% Naturel.",
+                image: `${baseUrl}/images/products/pack-4-saveurs-sulson.jpg`,
+                sku: "SUL-305",
+                brand: { "@type": "Brand", name: "Les Épices de Sulson" },
+                offers: {
+                  "@type": "Offer",
+                  price: "24.90",
+                  priceCurrency: "EUR",
+                  availability: "https://schema.org/InStock",
+                },
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: "5.0",
+                  reviewCount: "312",
+                },
+              },
+            },
+          ],
         },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Product",
-            name: "Épice de Sulson - Spéciale Poisson (100g)",
-            price: "6.90",
-            priceCurrency: "EUR",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Product",
-            name: "Épice de Sulson - Saveur Gourmande (100g)",
-            price: "6.90",
-            priceCurrency: "EUR",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Product",
-            name: "Pack Intégral 4 Saveurs Authentiques (4x100g)",
-            price: "24.90",
-            priceCurrency: "EUR",
-          },
-        },
-      ],
-    },
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
-
-export function ProductDetailJsonLd({ product }: { product: SulsonProductModel }) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://epicesdesulson.com";
-
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.title,
-    image: [
-      `${baseUrl}${product.imageRecto}`,
-      product.imageVerso ? `${baseUrl}${product.imageVerso}` : "",
-    ].filter(Boolean),
-    description: product.description,
-    sku: product.code,
-    mpn: product.code,
-    brand: {
-      "@type": "Brand",
-      name: "Les Épices de Sulson",
-    },
-    category: product.category,
-    countryOfOrigin: {
-      "@type": "Country",
-      name: "Cameroun",
-    },
-    weight: {
-      "@type": "QuantitativeValue",
-      value: product.isPack ? 400 : 100,
-      unitCode: "GRM",
-    },
-    offers: {
-      "@type": "Offer",
-      url: `${baseUrl}/product-details/${product.id}`,
-      priceCurrency: "EUR",
-      price: product.basePrice.toFixed(2),
-      priceValidUntil: "2027-12-31",
-      itemCondition: "https://schema.org/NewCondition",
-      availability: "https://schema.org/InStock",
-      seller: {
-        "@type": "Organization",
-        name: "Les Épices de Sulson",
       },
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.ratingScore.toString(),
-      reviewCount: product.ratingCount.toString(),
-      bestRating: "5",
-      worstRating: "1",
-    },
+    ],
   };
 
   return (
