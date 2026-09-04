@@ -175,12 +175,15 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             <span className="text-sm text-gray-400 line-through font-medium">
               {oldPriceNum} €
             </span>
+          {/* Poids format mention */}
+          <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+            <span className="text-xs sm:text-sm text-gray-700 font-bold">Poids :</span>
+            <span className="text-xs sm:text-sm font-bold text-primary">100g</span>
           </div>
-
         </div>
 
         {/* Action button with direct Add to Cart */}
-        <div className="mt-4 pt-3 border-t border-gray-100">
+        <div className="mt-3 pt-2">
           <motion.button
             whileTap={{ scale: 0.94 }}
             type="button"
