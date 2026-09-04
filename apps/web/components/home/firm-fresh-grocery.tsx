@@ -129,6 +129,9 @@ function ProductCard({ product }: { product: SpiceProduct }) {
         <div>
           {/* Image (Zoomed Recto / Verso on hover) */}
           <div className="relative rounded-xl overflow-hidden mb-3 bg-gray-50/80 h-[230px] sm:h-[250px] flex items-center justify-center p-1">
+            <span className="absolute top-2.5 left-2.5 bg-primary text-white text-[11px] font-extrabold tracking-wider py-1 px-3 rounded-full shadow-xs z-10">
+              100g
+            </span>
             <Image
               src={product.image}
               alt={product.alt}
@@ -294,6 +297,9 @@ export default function FirmFreshGrocery() {
 
             {/* Product Image */}
             <div className="relative w-full h-[260px] sm:h-[340px] md:h-[390px] rounded-2xl overflow-hidden bg-white p-2 border border-gray-200 shadow-xs mb-6 group flex items-center justify-center">
+              <span className="absolute top-3.5 left-3.5 bg-primary text-white text-xs font-bold tracking-wider py-1 px-3 rounded-full shadow-md z-10">
+                Lot 4 x 100g
+              </span>
               <Image
                 src={FIFTH_PRODUCT.image}
                 alt={FIFTH_PRODUCT.alt}
