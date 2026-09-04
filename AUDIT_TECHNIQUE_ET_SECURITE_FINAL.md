@@ -129,14 +129,14 @@ Le fichier `apps/web/prisma/schema.prisma` a été structuré et optimisé pour 
 
 ---
 
-## 6. Configuration Domaine & DNS (epicedesulson.com)
+## 6. Configuration Domaine & DNS (epicesdesulson.com)
 
-Pour brancher le domaine officiel **`epicedesulson.com`** :
+Pour brancher le domaine officiel **`epicesdesulson.com`** :
 
-- **Boutique Web Principale :** `https://epicedesulson.com` (et redirection `www.epicedesulson.com`)
+- **Boutique Web Principale :** `https://epicesdesulson.com` (et redirection `www.epicesdesulson.com`)
   - Type `A` : `@` ➔ `76.76.21.21` (IP Anycast Vercel)
   - Type `CNAME` : `www` ➔ `cname.vercel-dns.com`
-- **Dashboard Admin & Gestion :** `https://admin.epicedesulson.com` (ou sous-domaine dédié)
+- **Dashboard Admin & Gestion :** `https://admin.epicesdesulson.com` (ou sous-domaine dédié)
   - Type `CNAME` : `admin` ➔ `cname.vercel-dns.com`
 
 ---
@@ -148,7 +148,7 @@ Voici la liste exacte des tâches résiduelles pour le déploiement final en pro
 | Élément | Action Requise | Emplacement | Statut |
 | :--- | :--- | :--- | :--- |
 | **Base de Données Neon** | Schéma synchronisé (`prisma db push`) et catalogue 100g injecté (`prisma db seed`). | Neon PostgreSQL | ✅ **Opérationnel & Connecté** |
-| **Nom de Domaine** | Pointer les enregistrements DNS de `epicedesulson.com` vers l'hébergeur Vercel. | Registrar (OVH / Hostinger / etc.) | ⏳ À brancher au déploiement |
+| **Nom de Domaine** | Pointer les enregistrements DNS de `epicesdesulson.com` vers l'hébergeur Vercel. | Registrar (OVH / Hostinger / etc.) | ⏳ À brancher au déploiement |
 | **Clés Stripe Live** | Renseigner vos clés d'API réelles Stripe (`pk_live_...`, `sk_live_...`, `whsec_...`). | `.env` (`STRIPE_SECRET_KEY`) | ⏳ En attente de vos clés Stripe |
 | **Emails Transactionnels** | Renseigner votre clé API Resend ou SMTP pour la confirmation automatique de commande. | `.env` (`RESEND_API_KEY`) | ⏳ Optionnel / En attente de clé |
 | **Dépôt GitHub** | Définir l'URL du dépôt distant et synchroniser la branche `main`. | GitHub (`main`) | ✅ **Synchronisé & À jour** |

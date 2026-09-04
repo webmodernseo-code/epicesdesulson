@@ -226,10 +226,10 @@ export default function Footer() {
                       <i className="hgi hgi-stroke hgi-mail-02 text-lg"></i>
                     </span>
                     <a
-                      href="mailto:contact@lesepicesdesulson.com"
+                      href="mailto:contact@epicesdesulson.com"
                       className="text-primary-lighter hover:text-white text-xs sm:text-sm font-semibold transition-colors"
                     >
-                      contact@lesepicesdesulson.com
+                      contact@epicesdesulson.com
                     </a>
                   </li>
 

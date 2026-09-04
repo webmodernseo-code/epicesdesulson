@@ -80,9 +80,9 @@ export default function LoginDrawer({
                     type="text"
                     id="admin-username"
                     required
-                    defaultValue="admin@lesepicesdesulson.com"
+                    defaultValue="admin@epicesdesulson.com"
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm text-gray-900 focus:bg-white focus:border-primary focus:outline-none transition-colors"
-                    placeholder="admin@lesepicesdesulson.com"
+                    placeholder="admin@epicesdesulson.com"
                   />
                 </div>
               </div>

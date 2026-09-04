@@ -55,7 +55,7 @@ export default function MainMenu() {
               <span className="flex flex-col text-sm leading-[20px]">
                 <span className="text-light-secondary-text text-xs">Service client</span>
                 <span className="text-sm font-semibold text-light-primary-text">
-                  contact@lesepicesdesulson.com
+                  contact@epicesdesulson.com
                 </span>
               </span>
             </p>

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     // 1. Create and validate order in domain service
     const order = await OrdersService.createOrder({
       customerName: customerName || "Client Sulson",
-      customerEmail: customerEmail || "client@lesepicesdesulson.com",
+      customerEmail: customerEmail || "client@epicesdesulson.com",
       shippingStreet: shippingStreet || "Adresse",
       shippingCity: shippingCity || "Paris",
       shippingPostal: shippingPostal || "75001",

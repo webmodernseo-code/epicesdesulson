@@ -27,8 +27,8 @@ export default function AssistGrid() {
     {
       icon: "hgi-mail-02",
       title: "Email & Support",
-      content: "contact@lesepicesdesulson.com",
-      href: "mailto:contact@lesepicesdesulson.com",
+      content: "contact@epicesdesulson.com",
+      href: "mailto:contact@epicesdesulson.com",
     },
     {
       icon: "hgi-whatsapp",

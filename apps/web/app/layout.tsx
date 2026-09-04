@@ -25,7 +25,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://epicedesulson.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://epicesdesulson.com"),
   title: {
     default: "Les Épices de Sulson - Épices Fines, Poivres Rares & Saveurs d'Exception",
     template: "%s | Les Épices de Sulson",
