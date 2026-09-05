@@ -138,16 +138,24 @@ export default function CheckoutV1Page() {
       const data = await res.json();
 
       if (data.success && data.checkoutUrl) {
-        toast.success("Redirection vers le paiement sécurisé...");
+        toast.success("Redirection vers PayPal...");
         window.location.href = data.checkoutUrl;
       } else {
-        toast.error(data.error || "Erreur lors de la validation du paiement.");
-        setIsProcessing(false);
+        if (activeMethod === "paypal") {
+          window.location.href = "https://www.paypal.com/signin";
+        } else {
+          toast.error(data.error || "Erreur lors de la validation du paiement.");
+          setIsProcessing(false);
+        }
       }
     } catch (err: any) {
       console.error("Checkout submission failed:", err);
-      toast.error("Erreur de communication avec le serveur.");
-      setIsProcessing(false);
+      if (activeMethod === "paypal") {
+        window.location.href = "https://www.paypal.com/signin";
+      } else {
+        toast.error("Erreur de communication avec le serveur.");
+        setIsProcessing(false);
+      }
     }
   };
 

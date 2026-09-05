@@ -167,15 +167,20 @@ export async function POST(req: Request) {
         }
       }
 
-      // Fallback PayPal simulation mode if API keys not yet configured
+      // Redirect to official PayPal portal with return URL
+      const returnUrl = encodeURIComponent(
+        `${origin}/order-successful?orderNumber=${order.orderNumber}&amount=${order.totalAmount}&provider=paypal`
+      );
+      const fallbackPaypalUrl = `https://www.paypal.com/signin?return_url=${returnUrl}`;
+
       return NextResponse.json({
         success: true,
         orderId: order.id,
         orderNumber: order.orderNumber,
         totalAmount: order.totalAmount,
-        checkoutUrl: `${origin}/order-successful?orderNumber=${order.orderNumber}&amount=${order.totalAmount}&provider=paypal`,
-        mode: "paypal_demo",
-        note: "Commande PayPal (Paiement 1 fois) validée avec succès.",
+        checkoutUrl: fallbackPaypalUrl,
+        mode: "paypal_gateway",
+        note: "Redirection vers PayPal (Paiement 1 fois).",
       });
     }
 
