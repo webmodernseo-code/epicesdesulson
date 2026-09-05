@@ -19,7 +19,7 @@ const HERO_SLIDES = [
     title: "Pack 4 Saveurs Authentiques",
     subtitle: "Poulet • Viande • Poisson • Gourmande",
     description:
-      "100% Naturel & Fait au Cameroun. Réunissez les 4 trésors d'épices de Sulson dans un pack d'exception pour sublimer toutes vos recettes du quotidien.",
+      "100% Naturel & Fait au Cameroun. Réunissez les 4 trésors d'épices de Sulson dans un coffret d'exception pour sublimer toutes vos recettes du quotidien.",
     cta: "Commander le Pack",
   },
   {
@@ -63,7 +63,7 @@ const HERO_SLIDES = [
     title: "Épice Saveur Gourmande",
     subtitle: "Sublime Tous Vos Plats Mijotés",
     description:
-      "L'assaisonnement signature universel pour vos sauces onctueuses, légumes sautés et créations du Chef. Une explosion de goût 100% naturel.",
+      "L'assaisonnement signature universel pour vos sauces onctueuses, poêlées de légumes et créations du Chef. Une explosion de goût 100% naturel.",
     cta: "Découvrir la Gourmande",
   },
 ];
@@ -100,36 +100,39 @@ export default function HomeThreeHero() {
           >
             {HERO_SLIDES.map((slide) => (
               <SwiperSlide key={slide.id} className="bg-primary-darker">
-                <div className="relative w-full min-h-[300px] sm:min-h-[380px] md:min-h-[440px] lg:min-h-[500px] flex items-center px-4 sm:px-8 md:px-12 lg:px-16 py-5 sm:py-8 md:py-10 overflow-hidden">
-                  <div className="grid grid-cols-12 gap-3 sm:gap-6 md:gap-8 items-center w-full z-10 pb-4 sm:pb-6">
-                    {/* Left Column: Responsive & Balanced Typography */}
-                    <div className="col-span-7 sm:col-span-7 flex flex-col items-start justify-center">
-                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2.5">
-                        <span className="text-white text-[10px] sm:text-xs md:text-sm font-bold bg-white/20 backdrop-blur-xs px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/25 shadow-2xs whitespace-nowrap">
+                <div className="relative w-full min-h-[380px] sm:min-h-[420px] md:min-h-[460px] lg:min-h-[500px] flex items-center px-4 sm:px-8 md:px-12 lg:px-16 py-6 sm:py-8 md:py-10 overflow-hidden">
+                  <div className="flex flex-col-reverse md:grid md:grid-cols-12 gap-5 md:gap-8 items-center w-full z-10 pb-6 md:pb-4">
+                    {/* Left / Bottom Column: Typography & Action */}
+                    <div className="w-full md:col-span-7 flex flex-col items-center md:items-start text-center md:text-left justify-center">
+                      {/* Badges */}
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                        <span className="text-white text-[11px] sm:text-xs md:text-sm font-bold bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full border border-white/25 shadow-2xs whitespace-nowrap">
                           {slide.offer}
                         </span>
-                        <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 text-gray-950 text-[10px] sm:text-xs md:text-sm font-bold bg-warning-light rounded-full shadow-2xs whitespace-nowrap">
+                        <span className="px-3 py-1 text-gray-950 text-[11px] sm:text-xs md:text-sm font-bold bg-warning-light rounded-full shadow-2xs whitespace-nowrap">
                           {slide.discount}
                         </span>
                       </div>
 
-                      <h2 className="text-white text-base sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight tracking-tight my-1 sm:my-1.5">
+                      {/* Main Title */}
+                      <h2 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight tracking-tight my-1 sm:my-1.5">
                         {slide.title}
-                        <span className="block text-amber-300 text-xs sm:text-base md:text-xl lg:text-2xl font-bold mt-1 sm:mt-1.5 line-clamp-1 sm:line-clamp-none">
+                        <span className="block text-amber-300 text-xs sm:text-base md:text-lg lg:text-2xl font-bold mt-1 sm:mt-1.5">
                           {slide.subtitle}
                         </span>
                       </h2>
 
-                      {/* Description visible and readable */}
-                      <p className="text-white/85 text-[11px] sm:text-xs md:text-sm lg:text-base leading-relaxed max-w-xl my-1.5 sm:my-3 line-clamp-2 md:line-clamp-none">
+                      {/* Description */}
+                      <p className="text-white/90 text-xs sm:text-sm md:text-base leading-relaxed max-w-lg my-2 sm:my-3">
                         {slide.description}
                       </p>
 
-                      <div className="mt-2 sm:mt-4">
+                      {/* CTA */}
+                      <div className="mt-2 sm:mt-4 w-full sm:w-auto flex justify-center md:justify-start">
                         <button
                           type="button"
                           onClick={scrollToProducts}
-                          className="btn btn-primary text-white text-xs sm:text-sm md:text-base font-bold rounded-full py-2 px-4 sm:py-2.5 sm:px-6 md:py-3.5 md:px-8 inline-flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+                          className="btn btn-primary text-white text-xs sm:text-sm md:text-base font-bold rounded-full py-2.5 px-6 sm:py-3 sm:px-8 inline-flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
                         >
                           <span>{slide.cta}</span>
                           <i className="hgi hgi-stroke hgi-arrow-down-02 text-xs sm:text-base animate-bounce" />
@@ -137,21 +140,21 @@ export default function HomeThreeHero() {
                       </div>
                     </div>
 
-                    {/* Right Column: Studio Card Showcase */}
-                    <div className="col-span-5 sm:col-span-5 flex items-center justify-center">
-                      <div className="relative w-full max-w-[150px] sm:max-w-[240px] md:max-w-[320px] lg:max-w-[420px] h-[140px] sm:h-[200px] md:h-[270px] lg:h-[350px] flex items-center justify-center">
+                    {/* Right / Top Column: Studio Product Showcase */}
+                    <div className="w-full md:col-span-5 flex items-center justify-center">
+                      <div className="relative w-full max-w-[190px] sm:max-w-[240px] md:max-w-[320px] lg:max-w-[380px] h-[160px] sm:h-[210px] md:h-[270px] lg:h-[340px] flex items-center justify-center">
                         {/* Luxury Ambient Glow */}
                         <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/25 via-emerald-400/20 to-transparent rounded-3xl blur-md -z-10" />
                         
                         {/* Studio Card Frame */}
-                        <div className="relative w-full h-full rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/25 p-1.5 sm:p-3 shadow-xl flex items-center justify-center overflow-hidden group/card hover:scale-103 transition-transform duration-300">
+                        <div className="relative w-full h-full rounded-2xl bg-white/10 backdrop-blur-sm border border-white/25 p-2 sm:p-3 shadow-xl flex items-center justify-center overflow-hidden group/card hover:scale-103 transition-transform duration-300">
                           <Image
                             src={slide.productImage}
                             alt={slide.title}
-                            width={420}
-                            height={350}
+                            width={400}
+                            height={320}
                             unoptimized
-                            className="object-contain w-full h-full max-h-full max-w-full rounded-lg sm:rounded-xl transition-transform duration-500 group-hover/card:scale-105 drop-shadow-md"
+                            className="object-contain w-full h-full max-h-full max-w-full rounded-xl transition-transform duration-500 group-hover/card:scale-105 drop-shadow-md"
                             priority
                           />
                         </div>

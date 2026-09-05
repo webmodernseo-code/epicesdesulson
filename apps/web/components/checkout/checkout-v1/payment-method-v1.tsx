@@ -31,13 +31,11 @@ export default function PaymentMethodV1() {
     const truncated = raw.slice(0, maxLen);
 
     if (isAmex) {
-      // Amex formatting 4-6-5
       const p1 = truncated.slice(0, 4);
       const p2 = truncated.slice(4, 10);
       const p3 = truncated.slice(10, 15);
       setCardNumber([p1, p2, p3].filter(Boolean).join(" "));
     } else {
-      // Standard 4-4-4-4
       const parts = truncated.match(/.{1,4}/g) || [];
       setCardNumber(parts.join(" "));
     }
@@ -61,33 +59,33 @@ export default function PaymentMethodV1() {
   };
 
   return (
-    <div className="border border-gray-200 rounded-3xl bg-white shadow-xs overflow-hidden">
-      {/* Header bar in original theme green with premium SVG icons */}
-      <div className="py-4 px-6 bg-gradient-to-r from-primary-darker via-primary-dark to-primary text-white flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="size-8 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0 border border-white/25">
-            <i className="hgi hgi-stroke hgi-credit-card text-lg text-white" />
+    <div className="border border-gray-200 rounded-2xl sm:rounded-3xl bg-white shadow-2xs overflow-hidden">
+      {/* Header bar */}
+      <div className="py-3.5 px-4 sm:px-6 bg-gradient-to-r from-primary-darker via-primary-dark to-primary text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="flex items-center gap-2.5">
+          <span className="size-7 sm:size-8 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0 border border-white/25">
+            <i className="hgi hgi-stroke hgi-credit-card text-base sm:text-lg text-white" />
           </span>
-          <h5 className="font-bold text-base text-white tracking-wide">
-            Mode de Règlement
+          <h5 className="font-bold text-sm sm:text-base text-white tracking-wide">
+            2. Mode de Règlement
           </h5>
         </div>
-        <span className="text-xs font-bold text-white bg-white/20 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-white/30 flex items-center gap-2 shadow-2xs">
-          <i className="hgi hgi-stroke hgi-lock-password text-sm text-white" />
-          <span>100% Sécurisé SSL</span>
+        <span className="text-[11px] sm:text-xs font-bold text-white bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full border border-white/30 inline-flex items-center gap-1.5 shadow-2xs self-start sm:self-auto">
+          <i className="hgi hgi-stroke hgi-lock-password text-xs sm:text-sm text-white" />
+          <span>100% Sécurisé SSL / Stripe</span>
         </span>
       </div>
 
-      <div className="p-5 sm:p-7">
-        {/* Main Payment Container */}
-        <div className="border-2 border-primary/40 bg-primary/[0.02] rounded-2xl p-4 sm:p-6 transition-all duration-300 shadow-xs">
-          {/* Header Row: Radio + Title + Official Logos (Visa, Mastercard, Amex, Apple Pay) */}
+      <div className="p-4 sm:p-7">
+        {/* Main Payment Box */}
+        <div className="border-2 border-primary/40 bg-primary/[0.02] rounded-2xl p-4 sm:p-6 transition-all duration-300 shadow-2xs">
+          {/* Header Row: Radio + Title + Payment Logos */}
           <div
-            className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 cursor-pointer"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
             onClick={() => setSelectedMethod("stripe-card")}
           >
             <div className="flex items-center gap-3">
-              {/* Custom Radio Button */}
+              {/* Radio Indicator */}
               <span className="relative flex items-center justify-center size-5 shrink-0">
                 <input
                   type="radio"
@@ -104,93 +102,83 @@ export default function PaymentMethodV1() {
                 <span className="text-sm sm:text-base font-bold text-gray-900 block leading-tight">
                   Carte Bancaire & Apple Pay
                 </span>
-                <span className="text-xs text-gray-500 block mt-0.5">
-                  Paiement direct sécurisé via la passerelle <strong>Stripe</strong>
+                <span className="text-[11px] sm:text-xs text-gray-500 block mt-0.5">
+                  Paiement sécurisé crypté via <strong>Stripe 3D-Secure</strong>
                 </span>
               </div>
             </div>
 
-            {/* Official Payment Brand Logos */}
-            <div className="flex items-center flex-wrap gap-2 pl-8 lg:pl-0">
-              {/* Visa Logo */}
+            {/* Payment Logos */}
+            <div className="flex items-center flex-wrap gap-1.5 pl-8 sm:pl-0">
               <div
-                className={`relative transition-all duration-200 rounded-md overflow-hidden shadow-2xs hover:scale-105 ${
-                  detectedBrand === "visa" ? "ring-2 ring-primary ring-offset-1" : "opacity-95"
+                className={`relative rounded-md overflow-hidden shadow-2xs bg-white p-0.5 border ${
+                  detectedBrand === "visa" ? "border-primary ring-1 ring-primary" : "border-gray-200"
                 }`}
-                title="Visa"
               >
                 <Image
                   src="/images/payments/visa.svg"
                   alt="Visa"
-                  width={44}
-                  height={28}
-                  className="h-7 w-auto object-contain"
+                  width={38}
+                  height={24}
+                  className="h-5 sm:h-6 w-auto object-contain"
                 />
               </div>
 
-              {/* Mastercard Logo */}
               <div
-                className={`relative transition-all duration-200 rounded-md overflow-hidden shadow-2xs hover:scale-105 ${
-                  detectedBrand === "mastercard" ? "ring-2 ring-primary ring-offset-1" : "opacity-95"
+                className={`relative rounded-md overflow-hidden shadow-2xs bg-white p-0.5 border ${
+                  detectedBrand === "mastercard" ? "border-primary ring-1 ring-primary" : "border-gray-200"
                 }`}
-                title="Mastercard"
               >
                 <Image
                   src="/images/payments/mastercard.svg"
                   alt="Mastercard"
-                  width={44}
-                  height={28}
-                  className="h-7 w-auto object-contain"
+                  width={38}
+                  height={24}
+                  className="h-5 sm:h-6 w-auto object-contain"
                 />
               </div>
 
-              {/* American Express Logo */}
               <div
-                className={`relative transition-all duration-200 rounded-md overflow-hidden shadow-2xs hover:scale-105 ${
-                  detectedBrand === "amex" ? "ring-2 ring-primary ring-offset-1" : "opacity-95"
+                className={`relative rounded-md overflow-hidden shadow-2xs bg-white p-0.5 border ${
+                  detectedBrand === "amex" ? "border-primary ring-1 ring-primary" : "border-gray-200"
                 }`}
-                title="American Express"
               >
                 <Image
                   src="/images/payments/amex.svg"
                   alt="American Express"
-                  width={44}
-                  height={28}
-                  className="h-7 w-auto object-contain"
+                  width={38}
+                  height={24}
+                  className="h-5 sm:h-6 w-auto object-contain"
                 />
               </div>
 
-              {/* Apple Pay Logo */}
-              <div
-                className="relative transition-all duration-200 rounded-md overflow-hidden shadow-2xs hover:scale-105 opacity-95"
-                title="Apple Pay"
-              >
+              <div className="relative rounded-md overflow-hidden shadow-2xs bg-white p-0.5 border border-gray-200">
                 <Image
                   src="/images/payments/apple-pay.svg"
                   alt="Apple Pay"
-                  width={44}
-                  height={28}
-                  className="h-7 w-auto object-contain"
+                  width={38}
+                  height={24}
+                  className="h-5 sm:h-6 w-auto object-contain"
                 />
               </div>
             </div>
           </div>
 
-          {/* Unfolded Stripe Form Container */}
+          {/* Card Form */}
           <AnimatePresence initial={false}>
             {selectedMethod === "stripe-card" && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className="pt-6 mt-5 border-t border-gray-200 space-y-4">
+                <div className="pt-5 mt-4 border-t border-gray-200/80 space-y-3.5">
                   {/* Cardholder Name */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                      Nom sur la carte *
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                      Nom complet sur la carte *
                     </label>
                     <input
                       type="text"
@@ -198,13 +186,13 @@ export default function PaymentMethodV1() {
                       placeholder="Ex: JEAN DUPONT"
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                     />
                   </div>
 
-                  {/* Card Number Input with dynamic icon */}
+                  {/* Card Number Input */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                       Numéro de carte bancaire *
                     </label>
                     <div className="relative">
@@ -215,68 +203,63 @@ export default function PaymentMethodV1() {
                         placeholder="4242 •••• •••• 4242"
                         value={cardNumber}
                         onChange={handleCardNumberChange}
-                        className="w-full pl-4 pr-14 py-2.5 rounded-xl border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition"
+                        className="w-full pl-3.5 pr-12 py-2.5 rounded-xl border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                       />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
                         {detectedBrand === "visa" && (
                           <Image
                             src="/images/payments/visa.svg"
                             alt="Visa"
-                            width={32}
-                            height={20}
-                            className="h-5 w-auto"
+                            width={30}
+                            height={18}
+                            className="h-4.5 w-auto"
                           />
                         )}
                         {detectedBrand === "mastercard" && (
                           <Image
                             src="/images/payments/mastercard.svg"
                             alt="Mastercard"
-                            width={32}
-                            height={20}
-                            className="h-5 w-auto"
+                            width={30}
+                            height={18}
+                            className="h-4.5 w-auto"
                           />
                         )}
                         {detectedBrand === "amex" && (
                           <Image
                             src="/images/payments/amex.svg"
                             alt="Amex"
-                            width={32}
-                            height={20}
-                            className="h-5 w-auto"
+                            width={30}
+                            height={18}
+                            className="h-4.5 w-auto"
                           />
                         )}
                         {!detectedBrand && (
-                          <i className="hgi hgi-stroke hgi-credit-card text-xl text-gray-400" />
+                          <i className="hgi hgi-stroke hgi-credit-card text-lg text-gray-400" />
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Expiration + CVC */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                         Expiration (MM/AA) *
                       </label>
                       <input
                         type="text"
                         required
                         maxLength={5}
-                        placeholder="MM / AA"
+                        placeholder="MM/AA"
                         value={cardExpiry}
                         onChange={handleExpiryChange}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition"
+                        className="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                       />
                     </div>
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                          Cryptogramme (CVC) *
-                        </label>
-                        <span className="text-[10px] text-gray-400">
-                          {detectedBrand === "amex" ? "4 chiffres au recto" : "3 chiffres au verso"}
-                        </span>
-                      </div>
+                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                        Cryptogramme (CVC) *
+                      </label>
                       <div className="relative">
                         <input
                           type="password"
@@ -285,10 +268,10 @@ export default function PaymentMethodV1() {
                           placeholder={detectedBrand === "amex" ? "••••" : "•••"}
                           value={cardCvc}
                           onChange={handleCvcChange}
-                          className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition"
+                          className="w-full pl-3 pr-8 py-2.5 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                         />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <i className="hgi hgi-stroke hgi-shield-security text-base" />
+                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                          <i className="hgi hgi-stroke hgi-shield-security text-sm" />
                         </div>
                       </div>
                     </div>
@@ -296,31 +279,28 @@ export default function PaymentMethodV1() {
 
                   {/* Save card option */}
                   <div className="pt-1">
-                    <label className="flex items-center gap-2.5 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
                       <input
                         type="checkbox"
                         checked={saveCard}
                         onChange={(e) => setSaveCard(e.target.checked)}
                         className="rounded border-gray-300 text-primary focus:ring-primary size-4 cursor-pointer"
                       />
-                      <span>Enregistrer cette carte en toute sécurité pour mes prochains achats</span>
+                      <span>Mémoriser ma carte pour mes prochaines commandes</span>
                     </label>
                   </div>
 
                   {/* Stripe 3D Secure Guarantee Box */}
-                  <div className="p-3.5 bg-emerald-50/80 border border-emerald-200/80 rounded-2xl flex items-start gap-3 mt-4">
-                    <div className="p-2 bg-emerald-100 text-emerald-800 rounded-xl shrink-0 mt-0.5">
-                      <i className="hgi hgi-stroke hgi-shield-check text-xl" />
+                  <div className="p-3 bg-emerald-50 border border-emerald-200/80 rounded-xl flex items-start gap-2.5 mt-3">
+                    <div className="p-1.5 bg-emerald-100 text-emerald-800 rounded-lg shrink-0 mt-0.5">
+                      <i className="hgi hgi-stroke hgi-shield-check text-lg" />
                     </div>
-                    <div className="text-xs text-emerald-950 space-y-1 leading-relaxed">
-                      <p className="font-bold flex items-center gap-1.5 text-emerald-900">
-                        <span>Paiement Sécurisé Stripe & 3D Secure 2.0</span>
-                        <span className="text-[10px] bg-emerald-200/60 text-emerald-800 font-bold px-2 py-0.2 rounded-full">
-                          Chiffrement SSL 256-bit
-                        </span>
+                    <div className="text-[11px] text-emerald-950 space-y-0.5 leading-relaxed">
+                      <p className="font-bold text-emerald-900">
+                        Paiement Sécurisé Stripe & 3D-Secure
                       </p>
-                      <p className="text-emerald-800/90 text-[11px]">
-                        Vos coordonnées bancaires sont transmises directement à <strong>Stripe</strong> (norme bancaire PCI-DSS Niveau 1). Aucune information de paiement ne transite ni n'est stockée sur nos serveurs.
+                      <p className="text-emerald-800/90 text-[10px] sm:text-[11px]">
+                        Transaction chiffrée SSL 256-bit certifiée PCI-DSS Niveau 1.
                       </p>
                     </div>
                   </div>
