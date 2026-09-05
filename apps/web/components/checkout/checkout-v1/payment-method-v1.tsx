@@ -53,7 +53,7 @@ function ApplePaySvg({ className = "h-7 w-auto" }: { className?: string }) {
 }
 
 // 100% Authentic Official PayPal Logo Vector Component
-export function OfficialPaypalLogo({ className = "h-6 w-auto" }: { className?: string }) {
+export function OfficialPaypalLogo({ className = "h-5 w-auto" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 130 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Monogram Double P */}
@@ -336,11 +336,11 @@ export default function PaymentMethodV1({
           </AnimatePresence>
         </div>
 
-        {/* ── OPTION 2: PAYPAL (PAIEMENT EN 1 FOIS UNIQUEMENT) ── */}
+        {/* ── OPTION 2: PAYPAL (PAIEMENT EN 1 FOIS) ── */}
         <div
           className={`border rounded-xl p-4 sm:p-5 transition-all duration-200 ${
             selectedMethod === "paypal"
-              ? "border-[#0079C1]/50 bg-gradient-to-br from-blue-50/30 via-white to-amber-50/20 shadow-xs"
+              ? "border-[#0079C1]/50 bg-gray-50/50 shadow-xs"
               : "border-gray-200 bg-white hover:border-gray-300"
           }`}
         >
@@ -357,25 +357,25 @@ export default function PaymentMethodV1({
                 onChange={() => onSelectMethod("paypal")}
                 className="size-4.5 text-[#0079C1] accent-[#0079C1] cursor-pointer"
               />
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <OfficialPaypalLogo className="h-6 w-auto shrink-0" />
-                <span className="text-xs font-semibold text-[#003087] bg-blue-100/70 px-2 py-0.5 rounded-md">
-                  Paiement en 1 fois
+              <div>
+                <span className="text-sm sm:text-base font-bold text-gray-900 block leading-tight">
+                  PayPal
+                </span>
+                <span className="text-xs text-gray-500 block mt-0.5">
+                  Paiement sécurisé et immédiat en 1 fois
                 </span>
               </div>
             </div>
 
-            {/* Micro Badge */}
-            <div className="pl-7 sm:pl-0 flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-              <svg className="size-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-              <span>Protection des Achats</span>
+            {/* Official PayPal Badge */}
+            <div className="pl-7 sm:pl-0 flex items-center gap-2">
+              <div className="bg-white border border-gray-200 rounded-lg px-2.5 py-1 shadow-2xs flex items-center justify-center">
+                <OfficialPaypalLogo className="h-4.5 w-auto" />
+              </div>
             </div>
           </div>
 
-          {/* Dedicated Luxury PayPal Experience Box when active */}
+          {/* Compact & Ultra-Premium PayPal Button when active */}
           <AnimatePresence initial={false}>
             {selectedMethod === "paypal" && (
               <motion.div
@@ -385,63 +385,43 @@ export default function PaymentMethodV1({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 mt-3.5 border-t border-blue-100/80 space-y-4">
-                  {/* Reassurance points */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-gray-600 bg-white/80 p-3 rounded-xl border border-blue-100/60">
-                    <div className="flex items-center gap-2">
-                      <svg className="size-4 text-[#0079C1] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-                      </svg>
-                      <span>Protection des achats</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <svg className="size-4 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
-                      </svg>
-                      <span>Règlement en 1 clic</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <svg className="size-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                      <span>Sécurité 100% garantie</span>
-                    </div>
-                  </div>
+                <div className="pt-4 mt-3.5 border-t border-gray-200/80 flex flex-col items-center gap-3">
+                  <p className="text-xs text-gray-600 text-center">
+                    Réglez votre commande en 1 fois avec votre solde PayPal ou votre carte bancaire liée.
+                  </p>
 
-                  {/* Iconic Official PayPal Gold Pill Button */}
-                  <div className="flex flex-col items-center gap-2 pt-1">
-                    <button
-                      type="button"
-                      disabled={isProcessing}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onPaypalSubmit?.();
-                      }}
-                      className="w-full max-w-sm h-12 bg-[#FFC439] hover:bg-[#F4BB38] active:bg-[#E9B131] active:scale-[0.98] rounded-full flex items-center justify-center gap-2.5 shadow-xs hover:shadow-sm transition-all cursor-pointer border border-[#E5A800]/50 disabled:opacity-60"
-                    >
-                      {isProcessing ? (
-                        <div className="flex items-center gap-2 text-gray-950 font-bold text-xs">
-                          <svg className="animate-spin size-4 text-gray-950" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                          </svg>
-                          <span>Connexion sécurisée à PayPal...</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center gap-2">
-                          <OfficialPaypalLogo className="h-6 w-auto" />
-                          <span className="text-xs sm:text-sm font-bold text-gray-900 ml-1">
-                            — Payer en 1 fois
-                          </span>
-                        </div>
-                      )}
-                    </button>
+                  {/* Compact, Official PayPal Action Button (Not oversized, strictly proportioned) */}
+                  <button
+                    type="button"
+                    disabled={isProcessing}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onPaypalSubmit?.();
+                    }}
+                    className="w-56 sm:w-64 h-11 bg-[#FFC439] hover:bg-[#F2BA36] active:bg-[#E5AE2E] active:scale-[0.98] rounded-full flex items-center justify-center gap-2 shadow-xs hover:shadow transition-all cursor-pointer border border-[#E0A800]/50 disabled:opacity-60"
+                  >
+                    {isProcessing ? (
+                      <div className="flex items-center gap-2 text-gray-950 font-bold text-xs">
+                        <svg className="animate-spin size-4 text-gray-950" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        <span>Connexion à PayPal...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center">
+                        <OfficialPaypalLogo className="h-5.5 w-auto" />
+                      </div>
+                    )}
+                  </button>
 
-                    <p className="text-[11px] sm:text-xs text-gray-500 text-center font-medium">
-                      Vous allez être redirigé vers l'interface officielle de <strong>PayPal</strong> pour valider votre commande en toute sécurité.
-                    </p>
+                  <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 font-medium">
+                    <svg className="size-3.5 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                    <span>Protection des Achats PayPal incluse</span>
                   </div>
                 </div>
               </motion.div>
