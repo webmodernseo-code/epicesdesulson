@@ -45,13 +45,8 @@ export default function Sidebar({
     return navItems;
   }, []);
 
-  const [prevPathname, setPrevPathname] = useState<string | null>(null);
-
-  if (pathname !== prevPathname) {
-    setPrevPathname(pathname);
-    let hasChanges = false;
-    const newOpenSubMenus = { ...openSubMenus };
-
+  useEffect(() => {
+    // Synchronize active submenu with pathname
     filteredNavItems.slice(1).forEach((group) => {
       if ("items" in group && Array.isArray(group.items)) {
         group.items.forEach((item) => {
@@ -60,19 +55,14 @@ export default function Sidebar({
               (sub) =>
                 pathname === sub.href || pathname.startsWith(`${sub.href}/`),
             );
-            if (isChildActive && !newOpenSubMenus[item.label]) {
-              newOpenSubMenus[item.label] = true;
-              hasChanges = true;
+            if (isChildActive) {
+              setOpenSubMenus((prev) => ({ ...prev, [item.label]: true }));
             }
           }
         });
       }
     });
-
-    if (hasChanges) {
-      setOpenSubMenus(newOpenSubMenus);
-    }
-  }
+  }, [pathname, filteredNavItems]);
 
   const toggleSubMenu = (label: string) => {
     if (isCollapsed && toggleCollapse) {

@@ -43,6 +43,12 @@ const destinations = [
 ];
 
 export default function TopCountryCard() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const getChartOptions = (color: string): ApexOptions => ({
     chart: {
       type: "area",
@@ -107,13 +113,17 @@ export default function TopCountryCard() {
             </div>
 
             <div className="flex-1 h-7 max-w-[70px]">
-              <Chart
-                options={getChartOptions(dest.color)}
-                series={[{ data: dest.data }]}
-                type="area"
-                height={28}
-                width="100%"
-              />
+              {mounted ? (
+                <Chart
+                  options={getChartOptions(dest.color)}
+                  series={[{ data: dest.data }]}
+                  type="area"
+                  height={28}
+                  width="100%"
+                />
+              ) : (
+                <div className="h-6 bg-gray-100 rounded animate-pulse" />
+              )}
             </div>
 
             <div className="text-right">

@@ -1,273 +1,535 @@
 "use client";
 
-import { useState } from "react";
-import { VideoCamera, Trash } from "@/icons";
-import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/ui/page-header";
-import { FloatingInput } from "@/components/ui/floating-input";
-import { FloatingTextarea } from "@/components/ui/floating-textarea";
-import CustomFloatingSelect from "@/components/ui/custom-floating-select";
-import StatusSelect, { Option } from "@/components/ui/status-select";
-import FileUploader from "@/components/ui/file-uploader";
-import DatePicker from "@/components/ui/date-picker";
-import Switch from "@/components/ui/switch";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import Switch from "@/components/ui/switch";
+import { 
+  ArrowLeft, 
+  UploadCloud, 
+  Sparkles, 
+  CheckCircle2, 
+  Package, 
+  Tag, 
+  Flame, 
+  Globe, 
+  Layers,
+  Euro,
+  FileText
+} from "lucide-react";
 
-const categoryOptions = [
-  { label: "Poivres Rares & Baies", value: "poivres" },
-  { label: "Mélanges d'Épices", value: "melanges" },
-  { label: "Vanilles d'Exception", value: "vanilles" },
-  { label: "Sels & Condiments", value: "sels" },
-  { label: "Herbes & Aromates", value: "aromates" },
-  { label: "Coffrets Cadeaux", value: "coffrets" },
+const CATEGORIES = [
+  "Épices Volailles & Rôtis",
+  "Épices Viandes & Grillades",
+  "Épices Poissons & Marinades",
+  "Assaisonnements Signatures",
+  "Poivres Rares & Baies",
+  "Vanilles d'Exception",
+  "Packs & Coffrets Gourmets",
+  "Sels & Condiments Nobles",
 ];
 
-const productTypeOptions = [
-  { label: "Épice en grain entier", value: "grain" },
-  { label: "Épice moulue / Poudre", value: "poudre" },
-  { label: "Gousse entière", value: "gousse" },
-  { label: "Coffret assortiment", value: "coffret" },
+const ORIGINS = [
+  "Cameroun (Recette Artisanale)",
+  "Madagascar (Sambava / Terroir Sauvage)",
+  "Cambodge (Kampot IGP)",
+  "Inde (Madras / Kerala)",
+  "Sri Lanka (Ceylan)",
+  "France (Atelier Sulson)",
+  "Autre terroir d'exception",
 ];
 
-const originOptions = [
-  { label: "Cambodge (Kampot IGP)", value: "kampot" },
-  { label: "Madagascar (Sambava / Forêt)", value: "madagascar" },
-  { label: "Inde (Tamil Nadu)", value: "inde" },
-  { label: "Sri Lanka (Ceylan)", value: "srilanka" },
-  { label: "France (Atelier Sulson / Guérande)", value: "france" },
-  { label: "Népal (Himalaya)", value: "nepal" },
+const FORMATS = [
+  "Sachet kraft fraîcheur 100g",
+  "Sachet kraft fraîcheur 250g",
+  "Format économique 500g",
+  "Grand Format Chef 1 Kg (1000g)",
+  "Pot verre hermétique 50g",
+  "Tube verre 3 gousses entières",
+  "Coffret dégustation 4 saveurs",
 ];
 
-const formatOptions = [
-  { label: "Pot verre 100g", value: "100g" },
-  { label: "Pot verre 250g", value: "250g" },
-  { label: "Format 500g", value: "500g" },
-  { label: "Grand Format 1 Kg (Kilo)", value: "1kg" },
-  { label: "Tube verre 3 gousses", value: "3gousses" },
-  { label: "Coffret bois gravé 5x50g", value: "coffret50g" },
-];
-
-const statusOptions: Option[] = [
-  { label: "Publié sur la boutique", value: "publish" },
-  { label: "Brouillon (Non visible)", value: "draft" },
+const TEXTURES = [
+  "Mouture fine / Poudre",
+  "Concassé / Flocons",
+  "Grains entiers / Baies",
+  "Gousses entières",
+  "Mélange d'herbes & épices",
 ];
 
 export default function AddProductForm() {
-  const [discountEnabled, setDiscountEnabled] = useState(false);
-  const [status, setStatus] = useState<Option | null>(statusOptions[0]);
-  const [discountDuration, setDiscountDuration] = useState<Date | undefined>();
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
 
   // Form State
-  const [category, setCategory] = useState("");
-  const [productType, setProductType] = useState("");
-  const [brand, setBrand] = useState("");
-  const [seller, setSeller] = useState("");
-  const [variant, setVariant] = useState("");
-  const [variantValue, setVariantValue] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [name, setName] = useState("");
+  const [sku, setSku] = useState(`SUL-${Math.floor(100 + Math.random() * 900)}`);
+  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [origin, setOrigin] = useState(ORIGINS[0]);
+  const [format, setFormat] = useState(FORMATS[0]);
+  const [texture, setTexture] = useState(TEXTURES[0]);
+  const [price, setPrice] = useState("6.90");
+  const [comparePrice, setComparePrice] = useState("");
+  const [stock, setStock] = useState("100");
+  const [lowStockThreshold, setLowStockThreshold] = useState("15");
+  const [intensity, setIntensity] = useState<"1" | "2" | "3" | "4" | "5">("3");
+  const [aromaticNotes, setAromaticNotes] = useState("");
+  const [culinaryPairing, setCulinaryPairing] = useState("");
+  const [description, setDescription] = useState("");
+  const [isPublished, setIsPublished] = useState(true);
 
-  const handleAddTag = (tag: string) => {
-    if (tag && !tags.includes(tag)) {
-      setTags([...tags, tag]);
+  // Photo uploads
+  const [primaryImage, setPrimaryImage] = useState<string | null>(null);
+  const [textureImage, setTextureImage] = useState<string | null>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: "primary" | "texture") => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      if (type === "primary") setPrimaryImage(url);
+      else setTextureImage(url);
+      toast.success("Image importée avec succès");
     }
   };
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) {
+      toast.error("Veuillez indiquer le nom de l'épice.");
+      return;
+    }
+
+    setSaving(true);
+    // Simulate brief save
+    setTimeout(() => {
+      setSaving(false);
+      toast.success(`L'épice "${name}" a été ajoutée avec succès au catalogue !`);
+      router.push("/products");
+    }, 600);
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl mx-auto p-4 sm:p-6">
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+    <form onSubmit={handleSave} className="max-w-5xl mx-auto space-y-6 pb-12">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/products"
+            className="size-9 rounded-xl bg-gray-100 hover:bg-gray-200/80 flex items-center justify-center text-gray-700 transition-colors"
+          >
+            <ArrowLeft className="size-4.5" />
+          </Link>
           <div>
-            <PageHeader title="Create Product" backHref="/products" />
-          </div>
-          <div className="w-28">
-            <StatusSelect
-              value={status}
-              onChange={setStatus}
-              options={statusOptions}
-            />
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight">
+              Ajouter une Nouvelle Épice
+            </h1>
+            <p className="text-xs text-gray-500">
+              Formulaire dédié au catalogue gourmet des Épices de Sulson
+            </p>
           </div>
         </div>
 
-        {/* Basic Information */}
-        <div className="bg-white rounded-2xl p-4 sm:p-6  border border-gray-500/20">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6">
-            Basic Information
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <FloatingInput label="Product Name" />
-            <FloatingInput label="Slug" />
-            <CustomFloatingSelect
-              label="Category"
-              options={categoryOptions}
-              value={category}
-              onChange={setCategory}
-            />
-            <CustomFloatingSelect
-              label="Product Type"
-              options={productTypeOptions}
-              value={productType}
-              onChange={setProductType}
-            />
-            <CustomFloatingSelect
-              label="Brand"
-              options={brandOptions}
-              value={brand}
-              onChange={setBrand}
-            />
-
-            <CustomFloatingSelect
-              label="Seller"
-              options={sellerOptions}
-              value={seller}
-              onChange={setSeller}
-            />
-          </div>
-          <div className="mt-4 sm:mt-6">
-            <FloatingTextarea label="Short Description" className="h-32" />
-          </div>
+        <div className="flex items-center gap-3 self-end sm:self-auto">
+          <Link
+            href="/products"
+            className="px-4 py-2 rounded-full border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Annuler
+          </Link>
+          <Button
+            type="submit"
+            disabled={saving}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-full text-xs cursor-pointer shadow-sm"
+          >
+            {saving ? "Enregistrement..." : "Publier l'épice"}
+          </Button>
         </div>
+      </div>
 
-        {/* Media */}
-        <div className="bg-white rounded-2xl p-4 sm:p-6  border border-gray-500/20">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6">
-            Media
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <FileUploader
-              title="Upload Cover photo"
-              maxSizeText="Max size of 3.1 MB"
-            />
-            <FileUploader
-              title="Upload Product photo"
-              maxSizeText="Max size of 3.1 MB"
-            />
-            <FileUploader
-              title="Upload Video"
-              maxSizeText="Max size of 5.1 MB"
-              accept=".mp4,.mov,.avi,.wmv"
-              description="Allowed *.MP4, .MOV, .AVI, .WMV"
-              icon={<VideoCamera />}
-            />
-          </div>
-        </div>
+      {/* Grid: 2 Columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left 2 Cols: Main Info */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Card 1: Identité & Origine */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <Sparkles className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">
+                1. Identité de l'Épice & Origine
+              </h2>
+            </div>
 
-        {/* Variant */}
-        <div className="bg-white rounded-2xl p-4 sm:p-6  border border-gray-500/20">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Variant</h2>
-            <Button variant="primary-outline" size="xs">
-              Add More Variant
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <CustomFloatingSelect
-              label="Select Variant"
-              options={variantOptions}
-              value={variant}
-              onChange={setVariant}
-            />
-            <CustomFloatingSelect
-              label="Value"
-              options={valueOptions}
-              value={variantValue}
-              onChange={setVariantValue}
-            />
-          </div>
-        </div>
-
-        {/* Tags */}
-        <div className="bg-white rounded-2xl p-4 sm:p-6  border border-gray-500/20">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 sm:mb-6">Tags</h2>
-          <div className="space-y-4">
-            <CustomFloatingSelect
-              label="Select Tags"
-              options={tagOptions}
-              value=""
-              onChange={(value) => handleAddTag(value)}
-            />
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex h-5.5 items-center text-light-secondary-text border rounded-full border-gray-500/20 gap-1 px-3 py-1 text-sm  bg-transparent"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(tag)}
-                      className="text-light-primary-text hover:text-error transition-colors"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Discount */}
-        <div className="bg-white rounded-2xl p-4 sm:p-6  border border-gray-500/20">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Discount</h2>
-            <Button variant="primary-outline" size="xs">
-              Add New Discount
-            </Button>
-          </div>
-
-          <div className="bg-gray-100  rounded-lg p-4 sm:p-6">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-light-primary-text">
-                  1 Discount
-                </span>
-                <Switch
-                  checked={discountEnabled}
-                  onChange={setDiscountEnabled}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  Nom de l'épice *
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="ex: Épice Spéciale Poulet & Rôtis, Poivre Noir Voatsiperifery..."
+                  required
+                  className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
-              <Button
-                variant="icon"
-                size="xs"
-                className="text-light-primary-text hover:text-error transition-colors"
-              >
-                <Trash className="w-5 h-5" />
-              </Button>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Référence interne (SKU)
+                  </label>
+                  <input
+                    type="text"
+                    value={sku}
+                    onChange={(e) => setSku(e.target.value)}
+                    className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Catégorie d'épice
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Terroir d'origine & Récolte
+                  </label>
+                  <select
+                    value={origin}
+                    onChange={(e) => setOrigin(e.target.value)}
+                    className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                  >
+                    {ORIGINS.map((orig) => (
+                      <option key={orig} value={orig}>
+                        {orig}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Format & Poids net
+                  </label>
+                  <select
+                    value={format}
+                    onChange={(e) => setFormat(e.target.value)}
+                    className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                  >
+                    {FORMATS.map((fmt) => (
+                      <option key={fmt} value={fmt}>
+                        {fmt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Profil Aromatique & Accords */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <Flame className="size-5 text-amber-500" />
+              <h2 className="text-sm font-bold text-gray-900">
+                2. Profil Gustatif & Accords Culinaires
+              </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-              <FloatingInput
-                label="Discount Title"
-                className="bg-transparent"
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-2">
+                  Intensité aromatique / Piquant (Échelle 1 à 5)
+                </label>
+                <div className="grid grid-cols-5 gap-2">
+                  {(["1", "2", "3", "4", "5"] as const).map((level) => {
+                    const labels = ["Très Doux", "Doux", "Équilibré", "Puissant", "Très Piquant"];
+                    const isSelected = intensity === level;
+                    return (
+                      <button
+                        key={level}
+                        type="button"
+                        onClick={() => setIntensity(level)}
+                        className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-amber-500 text-white border-amber-600 shadow-xs font-bold"
+                            : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 font-medium"
+                        }`}
+                      >
+                        <span className="block text-sm">Niv. {level}</span>
+                        <span className="block text-[10px] opacity-80 mt-0.5 truncate">
+                          {labels[parseInt(level) - 1]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Notes aromatiques dominantes
+                  </label>
+                  <input
+                    type="text"
+                    value={aromaticNotes}
+                    onChange={(e) => setAromaticNotes(e.target.value)}
+                    placeholder="ex: Boisé, poivré, touches d'agrumes, fumé..."
+                    className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">
+                    Accords culinaires recommandés
+                  </label>
+                  <input
+                    type="text"
+                    value={culinaryPairing}
+                    onChange={(e) => setCulinaryPairing(e.target.value)}
+                    placeholder="ex: Poulet rôti, grillades, poissons blancs, sauces..."
+                    className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  Description de l'épice & Conseils de dégustation
+                </label>
+                <textarea
+                  rows={4}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Décrivez l'histoire de cette épice, son terroir, son parfum à l'ouverture du sachet et la meilleure manière de la cuisiner..."
+                  className="w-full p-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Visuels Photos */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <UploadCloud className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">
+                3. Visuels Photos du Produit
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Photo 1: Packaging */}
+              <div className="border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-2xl p-5 text-center transition-all bg-gray-50/50">
+                {primaryImage ? (
+                  <div className="space-y-3">
+                    <img
+                      src={primaryImage}
+                      alt="Aperçu principal"
+                      className="size-32 object-cover rounded-xl mx-auto border border-gray-200 shadow-2xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPrimaryImage(null)}
+                      className="text-xs text-red-500 hover:underline font-semibold"
+                    >
+                      Remplacer la photo
+                    </button>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer block space-y-2">
+                    <div className="size-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                      <UploadCloud className="size-6" />
+                    </div>
+                    <span className="block text-xs font-bold text-gray-800">
+                      Photo Principale (Sachet / Pot)
+                    </span>
+                    <span className="block text-[11px] text-gray-400">
+                      Format JPG ou PNG (recommandé 800x800)
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, "primary")}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* Photo 2: Texture / Zoom */}
+              <div className="border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-2xl p-5 text-center transition-all bg-gray-50/50">
+                {textureImage ? (
+                  <div className="space-y-3">
+                    <img
+                      src={textureImage}
+                      alt="Aperçu texture"
+                      className="size-32 object-cover rounded-xl mx-auto border border-gray-200 shadow-2xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setTextureImage(null)}
+                      className="text-xs text-red-500 hover:underline font-semibold"
+                    >
+                      Remplacer la photo
+                    </button>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer block space-y-2">
+                    <div className="size-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+                      <Layers className="size-6" />
+                    </div>
+                    <span className="block text-xs font-bold text-gray-800">
+                      Photo Texture / Grains (Optionnel)
+                    </span>
+                    <span className="block text-[11px] text-gray-400">
+                      Zoom sur la poudre ou les grains
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, "texture")}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right 1 Col: Pricing & Stock & Status */}
+        <div className="space-y-6">
+          {/* Card: Tarification */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <Euro className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">Tarification</h2>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Prix de Vente TTC (€) *
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.01"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="6.90"
+                  required
+                  className="w-full h-11 pl-3.5 pr-8 rounded-xl border border-gray-300 text-base font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">
+                  €
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Prix barré / Référence (€)
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.01"
+                  value={comparePrice}
+                  onChange={(e) => setComparePrice(e.target.value)}
+                  placeholder="Facultatif (ex: 8.90)"
+                  className="w-full h-11 pl-3.5 pr-8 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">
+                  €
+                </span>
+              </div>
+              <p className="text-[11px] text-gray-400 mt-1">
+                Affiché comme prix barré pour indiquer une remise.
+              </p>
+            </div>
+          </div>
+
+          {/* Card: Stock & Disponibilité */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <Package className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">Stock & Logistique</h2>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Quantité en stock disponible
+              </label>
+              <input
+                type="number"
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+                placeholder="100"
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
-              <FloatingInput label="Discount Price" />
-              <DatePicker
-                label="Discount Duration"
-                date={discountDuration}
-                setDate={setDiscountDuration}
-                className="w-full"
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Seuil d'alerte stock bas
+              </label>
+              <input
+                type="number"
+                value={lowStockThreshold}
+                onChange={(e) => setLowStockThreshold(e.target.value)}
+                placeholder="15"
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
+              <p className="text-[11px] text-gray-400 mt-1">
+                Une alerte orange apparaîtra sur le cockpit en dessous de ce seuil.
+              </p>
+            </div>
+          </div>
+
+          {/* Card: Statut & Mise en ligne */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900">Mise en Ligne</h3>
+                <p className="text-xs text-gray-500">
+                  {isPublished ? "Visible sur epicesdesulson.com" : "Brouillon masqué"}
+                </p>
+              </div>
+              <Switch checked={isPublished} onChange={setIsPublished} />
+            </div>
+
+            <div className="pt-2 border-t border-gray-100">
+              <Button
+                type="submit"
+                disabled={saving}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-full text-xs cursor-pointer shadow-sm flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="size-4" />
+                <span>{saving ? "Publication..." : "Enregistrer et publier"}</span>
+              </Button>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Footer Actions */}
-      <div className="flex items-center justify-end gap-4 pt-4 sm:pt-6">
-        <Button variant="outline">Cancel</Button>
-        <Button
-          variant="primary"
-          onClick={() => toast.success("Product saved successfully!")}
-        >
-          Save
-        </Button>
-      </div>
-    </div>
+    </form>
   );
 }

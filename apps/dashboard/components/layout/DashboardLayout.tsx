@@ -14,15 +14,9 @@ export default function DashboardLayout({
   children,
   defaultUserRole = "master",
 }: DashboardLayoutProps) {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
-  const pathname = usePathname();
-
-  const [prevPathname, setPrevPathname] = useState(pathname);
-  if (pathname !== prevPathname) {
-    setPrevPathname(pathname);
+  useEffect(() => {
     setIsMobileSidebarOpen(false);
-  }
+  }, [pathname]);
 
   return (
     <div className="xl:flex min-h-screen">

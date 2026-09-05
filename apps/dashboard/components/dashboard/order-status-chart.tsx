@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { DashboardCard } from "@/components/ui/dashboard-card";
@@ -11,24 +12,29 @@ const chartData = {
     "Commandes Livrées",
     "En cours d'acheminement",
     "En préparation atelier",
-    "En attente de validation",
-    "Retours & Échanges",
+    "En attente de paiement",
+    "Retours & Rétractations",
   ],
-  series: [225, 52, 42, 18, 11],
+  series: [225, 52, 42, 18, 3],
   colors: [
-    "#088178", // Livrées (Primary Green)
-    "#2D99FF", // En cours (Blue)
-    "#FFC107", // En préparation (Amber)
-    "#826AF9", // En attente (Purple)
-    "#E02D69", // Retours (Red)
+    "#059669", // Livrées (Emerald)
+    "#0284c7", // En cours (Sky)
+    "#d97706", // En préparation (Amber)
+    "#6366f1", // En attente (Indigo)
+    "#e11d48", // Retours (Rose)
   ],
 };
 
 export default function OrderStatusChart() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const options: ApexOptions = {
     chart: {
       type: "pie",
-      fontFamily: "var(--font-dm-sans)",
       animations: {
         enabled: true,
       },
@@ -58,16 +64,12 @@ export default function OrderStatusChart() {
     tooltip: {
       enabled: true,
       theme: "dark",
-      style: {
-        fontSize: "12px",
-        fontFamily: "var(--font-dm-sans)",
-      },
     },
   };
 
   return (
-    <DashboardCard title="Statut des Commandes">
-      <div className="flex flex-col md:flex-row justify-between gap-6 items-center">
+    <DashboardCard title="Statut des Commandes" subtitle="Répartition en temps réel des commandes">
+      <div className="flex flex-col md:flex-row justify-between gap-6 items-center pt-2">
         {/* Custom Legend */}
         <div className="w-full md:w-1/2 space-y-3">
           {chartData.labels.map((label, index) => (
@@ -77,7 +79,7 @@ export default function OrderStatusChart() {
             >
               <div className="flex items-center gap-2.5">
                 <span
-                  className="w-3 h-3 rounded-full shrink-0"
+                  className="size-3 rounded-full shrink-0"
                   style={{ backgroundColor: chartData.colors[index] }}
                 />
                 <span className="text-xs sm:text-sm text-gray-700 font-medium">
@@ -92,16 +94,22 @@ export default function OrderStatusChart() {
         </div>
 
         {/* Chart */}
-        <div className="w-full md:w-1/2 flex justify-center items-center">
-          <div className="relative w-full">
-            <Chart
-              options={options}
-              series={chartData.series}
-              type="pie"
-              width="100%"
-              height="250"
-            />
-          </div>
+        <div className="w-full md:w-1/2 flex justify-center items-center min-h-[240px]">
+          {mounted ? (
+            <div className="relative w-full">
+              <Chart
+                options={options}
+                series={chartData.series}
+                type="pie"
+                width="100%"
+                height="240"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-48 bg-gray-50 rounded-2xl animate-pulse flex items-center justify-center text-xs text-gray-400">
+              Chargement du graphique...
+            </div>
+          )}
         </div>
       </div>
     </DashboardCard>

@@ -1,59 +1,63 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-// Data for different time periods
 const chartData = {
-  "12 months": {
+  "12 mois": {
     categories: [
       "Jan",
-      "Feb",
+      "Fév",
       "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
+      "Avr",
+      "Mai",
+      "Juin",
+      "Juil",
+      "Août",
       "Sep",
       "Oct",
       "Nov",
-      "Dec",
+      "Déc",
     ],
     earnings: [
-      12000, 35000, 18000, 45000, 8000, 32000, 38000, 22000, 25000, 18000,
-      20000, 12000,
+      3800, 5200, 7100, 8400, 6900, 9200, 11500, 10100, 12800, 14200, 13500,
+      14850,
     ],
     profits: [
-      8000, 18000, 12000, 35000, 5000, 12000, 15000, 14000, 18000, 20000, 25000,
-      28000,
+      2100, 2900, 4100, 4900, 3900, 5300, 6800, 5900, 7600, 8400, 7900,
+      8900,
     ],
   },
-  "30 days": {
-    categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    earnings: [28000, 42000, 35000, 48000],
-    profits: [18000, 32000, 25000, 38000],
+  "30 jours": {
+    categories: ["Semaine 1", "Semaine 2", "Semaine 3", "Semaine 4"],
+    earnings: [3200, 4100, 3700, 4850],
+    profits: [1900, 2450, 2200, 2900],
   },
-  "7 days": {
-    categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    earnings: [8000, 12000, 15000, 10000, 18000, 22000, 16000],
-    profits: [5000, 8000, 12000, 7000, 14000, 18000, 12000],
+  "7 jours": {
+    categories: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+    earnings: [450, 620, 580, 710, 890, 1120, 980],
+    profits: [270, 370, 350, 420, 530, 670, 590],
   },
-  "24 hours": {
-    categories: ["12am", "4am", "8am", "12pm", "4pm", "8pm"],
-    earnings: [2000, 1500, 4500, 8000, 6500, 5000],
-    profits: [1200, 800, 3200, 5500, 4800, 3500],
+  "24 heures": {
+    categories: ["00h", "04h", "08h", "12h", "16h", "20h"],
+    earnings: [80, 45, 190, 380, 420, 310],
+    profits: [48, 27, 114, 228, 252, 186],
   },
 };
 
-const timeFilters = ["12 months", "30 days", "7 days", "24 hours"] as const;
+const timeFilters = ["12 mois", "30 jours", "7 jours", "24 heures"] as const;
 type TimeFilter = (typeof timeFilters)[number];
 
 export default function ProfitMarginChart() {
-  const [activeFilter, setActiveFilter] = useState<TimeFilter>("12 months");
+  const [mounted, setMounted] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<TimeFilter>("12 mois");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const currentData = useMemo(() => chartData[activeFilter], [activeFilter]);
 
@@ -67,20 +71,17 @@ export default function ProfitMarginChart() {
         zoom: {
           enabled: false,
         },
-        fontFamily: "inherit",
         animations: {
           enabled: true,
-          easing: "easeinout",
-          speed: 500,
         },
       },
-      colors: ["#088178", "rgba(250, 184, 81, 0.90)"],
+      colors: ["#059669", "#d97706"],
       stroke: {
-        width: 4,
-        curve: "straight",
+        width: 3,
+        curve: "smooth",
       },
       grid: {
-        borderColor: "#F1F4F9",
+        borderColor: "#f3f4f6",
         strokeDashArray: 4,
         xaxis: {
           lines: {
@@ -103,37 +104,31 @@ export default function ProfitMarginChart() {
         },
         labels: {
           style: {
-            colors: "#6B7280",
-            fontSize: "12px",
+            colors: "#9ca3af",
+            fontSize: "11px",
           },
         },
       },
       yaxis: {
         labels: {
           style: {
-            colors: "#6B7280",
-            fontSize: "12px",
+            colors: "#9ca3af",
+            fontSize: "11px",
           },
           formatter: (value: number) => {
             if (value >= 1000) {
-              return `${value / 1000}k`;
+              return `${(value / 1000).toFixed(1)}k€`;
             }
-            return value.toString();
+            return `${value}€`;
           },
         },
       },
       legend: {
         show: false,
       },
-      markers: {
-        size: 0,
-        hover: {
-          size: 6,
-        },
-      },
       tooltip: {
         y: {
-          formatter: (value: number) => `$${value.toLocaleString()}`,
+          formatter: (value: number) => `${value.toLocaleString("fr-FR")} €`,
         },
       },
     }),
@@ -143,11 +138,11 @@ export default function ProfitMarginChart() {
   const series = useMemo(
     () => [
       {
-        name: "Earnings",
+        name: "Chiffre d'Affaires",
         data: currentData.earnings,
       },
       {
-        name: "Total Profits",
+        name: "Marge Nette",
         data: currentData.profits,
       },
     ],
@@ -157,56 +152,64 @@ export default function ProfitMarginChart() {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="pt-5">
-        <h3 className="text-xl mb-2 font-bold text-light-primary-text">
-          Profit margin
+      <div className="pt-4 pb-2">
+        <h3 className="text-base sm:text-lg font-bold text-gray-900">
+          Évolution des Ventes & Marge
         </h3>
+        <p className="text-xs text-gray-500">
+          Suivi des encaissements et rentabilité sur la période
+        </p>
+
         {/* Time Filter Tabs */}
-        <div className="flex flex-col lg:flex-row py-4 items-start gap-5 lg:items-center justify-between ">
-          <div className="flex items-center h-11.5 ring ring-gray-300 rounded-lg overflow-hidden w-full lg:w-auto">
-            <div className="flex divide-x divide-gray-300 items-center h-full overflow-x-auto scrollbar-hide min-w-max">
-              {timeFilters.map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
-                  className={`px-3 lg:px-5 py-3.5 text-[15px] font-semibold transition-colors whitespace-nowrap ${
-                    activeFilter === filter
-                      ? "bg-gray-100 text-light-primary-text"
-                      : "bg-white text-light-disabled-text hover:bg-gray-50"
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
+        <div className="flex flex-col sm:flex-row py-4 items-start gap-4 sm:items-center justify-between">
+          <div className="inline-flex rounded-xl bg-gray-100 p-1 border border-gray-200/80">
+            {timeFilters.map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  activeFilter === filter
+                    ? "bg-white text-gray-900 shadow-2xs"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
           </div>
 
-          {/* Legend with Ring indicators */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full border-2 border-primary bg-transparent"></span>
-              <span className="text-sm text-light-secondary-text">
-                Earnings
-              </span>
+          {/* Legend */}
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <div className="flex items-center gap-1.5">
+              <span className="size-2.5 rounded-full bg-emerald-600" />
+              <span className="text-gray-700 font-semibold">Chiffre d'Affaires</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full border-2 border-[#FAB851] bg-transparent"></span>
-              <span className="text-sm text-light-secondary-text">
-                Total Profits
-              </span>
+            <div className="flex items-center gap-1.5">
+              <span className="size-2.5 rounded-full bg-amber-500" />
+              <span className="text-gray-700 font-semibold">Marge Nette</span>
             </div>
           </div>
         </div>
       </div>
+
       {/* Chart */}
-      <div className="h-[300px] w-full -ml-4">
-        <Chart
-          options={options}
-          series={series}
-          type="line"
-          height="100%"
-          width="100%"
-        />
+      <div className="h-[280px] w-full min-h-[280px] flex items-center justify-center">
+        {mounted ? (
+          <div className="w-full h-full">
+            <Chart
+              options={options}
+              series={series}
+              type="line"
+              height="100%"
+              width="100%"
+            />
+          </div>
+        ) : (
+          <div className="w-full h-full bg-gray-50 rounded-2xl animate-pulse flex items-center justify-center text-xs text-gray-400">
+            Chargement de l'évolution...
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { DashboardCard } from "@/components/ui/dashboard-card";
@@ -28,29 +29,34 @@ const chartData = {
     "Déc",
   ],
   colors: [
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#088178",
-    "#FFC107",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#059669",
+    "#10b981",
   ],
 };
 
 export default function AccommodationRevenueChart() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const options: ApexOptions = {
     chart: {
       type: "bar",
       toolbar: {
         show: false,
       },
-      fontFamily: "var(--font-dm-sans)",
     },
     plotOptions: {
       bar: {
@@ -71,9 +77,8 @@ export default function AccommodationRevenueChart() {
       categories: chartData.categories,
       labels: {
         style: {
-          colors: "#919eab",
-          fontSize: "12px",
-          fontFamily: "var(--font-dm-sans)",
+          colors: "#9ca3af",
+          fontSize: "11px",
         },
       },
       axisBorder: {
@@ -90,18 +95,17 @@ export default function AccommodationRevenueChart() {
       labels: {
         formatter: (value) => `${value} k€`,
         style: {
-          colors: "#919eab",
-          fontSize: "12px",
-          fontFamily: "var(--font-dm-sans)",
+          colors: "#9ca3af",
+          fontSize: "11px",
         },
       },
     },
     grid: {
       padding: {
-        left: 24,
+        left: 20,
       },
       strokeDashArray: 4,
-      borderColor: "rgba(145,158,171,0.20)",
+      borderColor: "rgba(229, 231, 235, 0.8)",
       yaxis: {
         lines: {
           show: true,
@@ -116,7 +120,7 @@ export default function AccommodationRevenueChart() {
     tooltip: {
       y: {
         formatter: function (val) {
-          return `${val} k€ (soit ${(val * 1000).toLocaleString("fr-FR")} €)`;
+          return `${val} k€ (${(val * 1000).toLocaleString("fr-FR")} €)`;
         },
       },
     },
@@ -125,16 +129,24 @@ export default function AccommodationRevenueChart() {
   return (
     <DashboardCard
       title="Chiffre d'Affaires Mensuel"
-      subtitle="(+34%) par rapport à l'année précédente"
+      subtitle="(+34%) de progression des ventes d'épices"
     >
-      <div className="-ml-5 -mb-5">
-        <Chart
-          options={options}
-          series={chartData.series}
-          type="bar"
-          height={300}
-          width="100%"
-        />
+      <div className="-ml-4 -mb-4 min-h-[300px] flex items-center justify-center">
+        {mounted ? (
+          <div className="w-full">
+            <Chart
+              options={options}
+              series={chartData.series}
+              type="bar"
+              height={300}
+              width="100%"
+            />
+          </div>
+        ) : (
+          <div className="w-full h-64 bg-gray-50 rounded-2xl animate-pulse flex items-center justify-center text-xs text-gray-400">
+            Chargement des revenus...
+          </div>
+        )}
       </div>
     </DashboardCard>
   );
