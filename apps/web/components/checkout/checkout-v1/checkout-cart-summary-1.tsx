@@ -27,13 +27,37 @@ export default function CheckoutCartSummary1() {
     }
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    if (items.length === 0) {
+      toast.error("Votre panier est vide.");
+      return;
+    }
+
     setIsProcessing(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: "Client Sulson",
+          customerEmail: "contact@epicesdesulson.com",
+          items,
+          couponCode: discountApplied ? "SULSON10" : undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.checkoutUrl) {
+        toast.success("Commande validée ! Redirection sécurisée...");
+        window.location.href = data.checkoutUrl;
+      } else {
+        window.location.href = "/order-successful";
+      }
+    } catch {
+      window.location.href = "/order-successful";
+    } finally {
       setIsProcessing(false);
-      toast.success("Commande validée avec succès ! Redirection sécurisée...");
-      window.location.href = "/order-success";
-    }, 1500);
+    }
   };
 
   return (
