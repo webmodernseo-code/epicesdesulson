@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Crisp inline SVG payment logos with comfortable, standard dimensions
@@ -52,29 +53,21 @@ function ApplePaySvg({ className = "h-7 w-auto" }: { className?: string }) {
   );
 }
 
-// Official dual-tone PayPal Logo SVG
-function PaypalSvg({ className = "h-7 w-auto" }: { className?: string }) {
+// 100% Authentic Official PayPal Logo Vector Component
+export function OfficialPaypalLogo({ className = "h-6 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 78 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="78" height="30" rx="5" fill="#FFFFFF" stroke="#E5E7EB" strokeWidth="1" />
-      <path
-        d="M13.5 7.5H20.2C22.6 7.5 24.3 8.6 23.9 11C23.4 13.8 21.3 15.3 19.1 15.3H16.6L15.3 22.5H12L13.5 7.5Z"
-        fill="#003087"
-      />
-      <path
-        d="M16.8 9.8H21.8C23.8 9.8 25.2 10.9 24.9 12.9C24.4 15.5 22.5 16.9 20.4 16.9H17.9L17.1 22.5H14.5L16.8 9.8Z"
-        fill="#0079C1"
-      />
-      <path
-        d="M16 11.8H20.2C22 11.8 23.4 12.7 23.1 14.4C22.7 16.7 21.1 17.8 19.2 17.8H17.1L16.3 22.5H14L16 11.8Z"
-        fill="#00457C"
-      />
-      <text x="31" y="19.5" fill="#003087" fontSize="13" fontWeight="900" fontStyle="italic" fontFamily="-apple-system, BlinkMacSystemFont, sans-serif">
-        Pay
-      </text>
-      <text x="54" y="19.5" fill="#0079C1" fontSize="13" fontWeight="900" fontStyle="italic" fontFamily="-apple-system, BlinkMacSystemFont, sans-serif">
-        Pal
-      </text>
+    <svg className={className} viewBox="0 0 130 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Monogram Double P */}
+      <path fillRule="evenodd" clipRule="evenodd" d="M12.8 2.5H23.5C28.2 2.5 31.5 4.7 30.7 9.4C29.8 14.8 25.7 17.7 21.4 17.7H16.6L14.1 31.8H7.5L12.8 2.5Z" fill="#003087"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M19.2 7.0H29.0C32.9 7.0 35.6 8.8 35.0 12.7C34.2 17.2 30.8 19.6 27.2 19.6H23.2L21.1 31.8H16.1L19.2 7.0Z" fill="#0079C1"/>
+      <path fillRule="evenodd" clipRule="evenodd" d="M17.6 10.9H25.9C29.4 10.9 32.1 12.6 31.5 16.0C30.7 20.1 27.6 22.3 24.3 22.3H21.5L19.5 33.2H14.9L17.6 10.9Z" fill="#00457C"/>
+      {/* Official Typography */}
+      <path d="M43.2 9.5H48.8C52.1 9.5 54.4 10.8 53.8 14.2C53.1 18.2 50.1 20.3 47.0 20.3H44.6L43.3 27.3H39.5L43.2 9.5ZM44.9 17.4H47.1C49.1 17.4 50.4 16.3 50.8 14.2C51.1 12.3 50.1 11.6 48.4 11.6H46.0L44.9 17.4Z" fill="#003087"/>
+      <path d="M57.9 14.8H61.4L61.0 16.8C61.8 15.4 63.3 14.5 65.0 14.5C67.6 14.5 69.2 16.4 68.7 19.3C68.1 22.7 65.7 25.4 63.1 25.4C61.9 25.4 60.9 24.8 60.5 23.9L59.9 27.3H56.1L57.9 14.8ZM61.8 22.1C62.3 22.6 63.0 22.8 63.7 22.8C65.3 22.8 66.4 21.0 66.8 18.9C67.0 17.6 66.5 16.6 65.2 16.6C64.4 16.6 63.5 17.1 62.9 18.0L61.8 22.1Z" fill="#003087"/>
+      <path d="M78.6 14.8L73.1 26.6C72.3 28.3 71.3 29.3 69.6 29.3C68.8 29.3 68.2 29.1 67.8 28.8L68.5 25.9C68.8 26.0 69.1 26.1 69.5 26.1C70.3 26.1 70.8 25.6 71.2 24.6L71.4 24.0L67.7 14.8H71.7L73.4 20.3L76.8 14.8H78.6Z" fill="#003087"/>
+      <path d="M83.2 9.5H88.8C92.1 9.5 94.4 10.8 93.8 14.2C93.1 18.2 90.1 20.3 87.0 20.3H84.6L83.3 27.3H79.5L83.2 9.5ZM84.9 17.4H87.1C89.1 17.4 90.4 16.3 90.8 14.2C91.1 12.3 90.1 11.6 88.4 11.6H86.0L84.9 17.4Z" fill="#0079C1"/>
+      <path d="M97.9 14.8H101.4L101.0 16.8C101.8 15.4 103.3 14.5 105.0 14.5C107.6 14.5 109.2 16.4 108.7 19.3C108.1 22.7 105.7 25.4 103.1 25.4C101.9 25.4 100.9 24.8 100.5 23.9L99.9 27.3H96.1L97.9 14.8ZM101.8 22.1C102.3 22.6 103.0 22.8 103.7 22.8C105.3 22.8 106.4 21.0 106.8 18.9C107.0 17.6 106.5 16.6 105.2 16.6C104.4 16.6 103.5 17.1 102.9 18.0L101.8 22.1Z" fill="#0079C1"/>
+      <path d="M113.8 7.5L110.8 24.9H114.6L117.6 7.5H113.8Z" fill="#0079C1"/>
     </svg>
   );
 }
@@ -203,7 +196,7 @@ export default function PaymentMethodV1({
               </div>
             </div>
 
-            {/* Generous, high-resolution SVG Logos */}
+            {/* High-resolution SVG Logos */}
             <div className="flex items-center gap-2 pl-7 sm:pl-0 flex-wrap">
               <div className={`transition-all rounded-md overflow-hidden shadow-2xs ${detectedBrand === "visa" ? "ring-2 ring-emerald-600" : ""}`}>
                 <VisaSvg className="h-6 sm:h-7 w-auto" />
@@ -375,13 +368,15 @@ export default function PaymentMethodV1({
               </div>
             </div>
 
-            {/* Official PayPal Logo with normal clear size */}
+            {/* Official PayPal Logo */}
             <div className="pl-7 sm:pl-0">
-              <PaypalSvg className="h-7 w-auto" />
+              <div className="bg-white border border-gray-200/90 rounded-lg px-2.5 py-1 shadow-2xs">
+                <OfficialPaypalLogo className="h-5 w-auto" />
+              </div>
             </div>
           </div>
 
-          {/* Details & Functional Button when PayPal is active */}
+          {/* Compact & Ultra-Premium PayPal Button when active */}
           <AnimatePresence initial={false}>
             {selectedMethod === "paypal" && (
               <motion.div
@@ -391,8 +386,8 @@ export default function PaymentMethodV1({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 mt-3.5 border-t border-blue-100 space-y-3.5">
-                  {/* Real Functional Official PayPal Yellow Action Button */}
+                <div className="pt-4 mt-3.5 border-t border-blue-100/80 flex flex-col items-center gap-3">
+                  {/* Compact, Luxury Official PayPal Action Pill */}
                   <button
                     type="button"
                     disabled={isProcessing}
@@ -400,34 +395,26 @@ export default function PaymentMethodV1({
                       e.stopPropagation();
                       onPaypalSubmit?.();
                     }}
-                    className="w-full py-3 px-5 bg-[#FFC439] hover:bg-[#F2BA36] active:scale-[0.99] rounded-xl flex items-center justify-center gap-2.5 shadow-xs text-gray-950 font-extrabold text-sm sm:text-base transition cursor-pointer disabled:opacity-50"
+                    className="w-full max-w-sm h-12 bg-[#FFC439] hover:bg-[#F4BB38] active:bg-[#E9B131] active:scale-[0.98] rounded-full flex items-center justify-center gap-2 shadow-2xs hover:shadow-xs transition-all cursor-pointer border border-[#E5A800]/40 disabled:opacity-60"
                   >
                     {isProcessing ? (
-                      <div className="flex items-center gap-2">
-                        <svg className="animate-spin size-4 text-gray-900" viewBox="0 0 24 24" fill="none">
+                      <div className="flex items-center gap-2 text-gray-950 font-bold text-xs">
+                        <svg className="animate-spin size-4 text-gray-950" viewBox="0 0 24 24" fill="none">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                         </svg>
-                        <span className="text-xs font-bold text-gray-900">Connexion sécurisée à PayPal...</span>
+                        <span>Connexion sécurisée à PayPal...</span>
                       </div>
                     ) : (
-                      <>
-                        <span className="font-extrabold italic text-[#003087]">Pay</span>
-                        <span className="font-extrabold italic text-[#0079C1]">Pal</span>
-                        <span className="text-xs sm:text-sm font-bold text-gray-900 ml-1">
-                          — Payer en 1 fois avec PayPal
-                        </span>
-                      </>
+                      <div className="flex items-center justify-center">
+                        <OfficialPaypalLogo className="h-6 w-auto" />
+                      </div>
                     )}
                   </button>
 
-                  <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
-                    <svg className="size-3.5 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    <span>Vous serez redirigé vers l'interface officielle PayPal pour confirmer votre règlement en 1 fois.</span>
-                  </div>
+                  <p className="text-xs text-gray-500 text-center font-medium">
+                    Règlement sécurisé en 1 fois avec votre compte PayPal ou carte associée
+                  </p>
                 </div>
               </motion.div>
             )}

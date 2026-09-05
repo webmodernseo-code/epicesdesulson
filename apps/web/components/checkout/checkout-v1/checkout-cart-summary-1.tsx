@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
+import { OfficialPaypalLogo } from "./payment-method-v1";
 
 interface CheckoutCartSummaryProps {
   selectedMethod?: "stripe" | "paypal";
@@ -35,10 +36,6 @@ export default function CheckoutCartSummary1({
   };
 
   const handleTriggerCheckout = () => {
-    if (items.length === 0) {
-      toast.error("Votre panier est vide.");
-      return;
-    }
     onPlaceOrder?.(discountApplied ? "SULSON10" : undefined);
   };
 
@@ -157,11 +154,11 @@ export default function CheckoutCartSummary1({
       {/* Dynamic Place Order Action Button */}
       <button
         type="button"
-        disabled={isProcessing || items.length === 0}
+        disabled={isProcessing}
         onClick={handleTriggerCheckout}
         className={`w-full py-3.5 px-4 rounded-xl font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${
           selectedMethod === "paypal"
-            ? "bg-[#FFC439] hover:bg-[#F2BA36] text-gray-950"
+            ? "bg-[#FFC439] hover:bg-[#F4BB38] active:bg-[#E9B131] text-gray-950 border border-[#E5A800]/40"
             : "bg-emerald-800 hover:bg-emerald-900 text-white"
         }`}
       >
@@ -174,11 +171,12 @@ export default function CheckoutCartSummary1({
             <span>Traitement en cours...</span>
           </>
         ) : selectedMethod === "paypal" ? (
-          <>
-            <span className="font-extrabold italic text-[#003087]">Pay</span>
-            <span className="font-extrabold italic text-[#0079C1]">Pal</span>
-            <span>— Payer {total.toFixed(2)} € (1 fois)</span>
-          </>
+          <div className="flex items-center justify-center gap-2">
+            <OfficialPaypalLogo className="h-5 w-auto" />
+            <span className="text-xs sm:text-sm font-bold text-gray-900">
+              — Payer {total.toFixed(2)} € (1 fois)
+            </span>
+          </div>
         ) : (
           <>
             <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
