@@ -14,6 +14,8 @@ import {
   UserSettings,
   StoreAddIcon,
   MoneyCheckIcon,
+  CreditCardPosIcon,
+  CustomerSupportIcon,
 } from "../../icons";
 
 export type NavItem = {
@@ -128,9 +130,14 @@ export const navItems: NavItem[] = [
     category: "PARAMÈTRES & INTÉGRATIONS",
     items: [
       {
+        label: "Passerelles API & Clés Stripe",
+        href: "/settings/payment-api",
+        icon: <CreditCardPosIcon className="size-5.5" />,
+      },
+      {
         label: "Support WhatsApp & Chatbot",
         href: "/settings/chatbot",
-        icon: <span className="text-base">💬</span>,
+        icon: <CustomerSupportIcon className="size-5.5" />,
       },
       {
         label: "Paramètres Généraux",
@@ -146,11 +153,6 @@ export const navItems: NavItem[] = [
         label: "Méthodes de Paiement",
         href: "/payment-method",
         icon: <MoneyCheckIcon className="size-5.5" />,
-      },
-      {
-        label: "Passerelles API & Clés Stripe",
-        href: "/settings/payment-api",
-        icon: <span className="text-base">💳</span>,
       },
       {
         label: "Configuration Firebase",

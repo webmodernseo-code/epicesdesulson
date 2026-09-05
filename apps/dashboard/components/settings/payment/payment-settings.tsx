@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Switch from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Eye, EyeOff, CheckCircle2, AlertCircle, ShieldCheck, Banknote, Sparkles, RefreshCw } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
+import { MoneyBagIcon, SheildIcon, CreditCardPosIcon, FlashIcon } from "@/icons";
 
 interface GatewayState {
   isEnabled: boolean;
@@ -177,7 +178,7 @@ export default function PaymentApiSettings() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="size-12 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center shrink-0">
-              <Banknote className="size-6 text-emerald-400" />
+              <MoneyBagIcon className="size-6 text-emerald-400" />
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold">
@@ -189,7 +190,7 @@ export default function PaymentApiSettings() {
             </div>
           </div>
           <div className="flex items-center gap-2 bg-emerald-900/80 px-3 py-1.5 rounded-full border border-emerald-700/60 text-xs font-semibold text-emerald-300 shrink-0">
-            <ShieldCheck className="size-4 text-emerald-400" />
+            <SheildIcon className="size-4 text-emerald-400" />
             <span>Chiffrement SSL & Sécurisé</span>
           </div>
         </div>
@@ -368,7 +369,7 @@ export default function PaymentApiSettings() {
               </>
             ) : (
               <>
-                <Sparkles className="size-3.5 text-amber-500" />
+                <FlashIcon className="size-3.5 text-amber-500" />
                 <span>Tester la connexion Stripe</span>
               </>
             )}

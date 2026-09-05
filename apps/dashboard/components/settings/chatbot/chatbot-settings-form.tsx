@@ -13,6 +13,7 @@ import {
   type ChatbotConfig,
   DEFAULT_CHATBOT_CONFIG,
 } from "@/lib/chatbot-config";
+import { CustomerSupportIcon } from "@/icons";
 
 export default function ChatbotSettingsForm() {
   const [config, setConfig] = useState<ChatbotConfig>(DEFAULT_CHATBOT_CONFIG);
@@ -25,7 +26,7 @@ export default function ChatbotSettingsForm() {
   const handleSave = () => {
     saveChatbotConfig(config);
     setIsSaved(true);
-    toast.success("Paramètres WhatsApp & Chatbot enregistrés avec succès !");
+    toast.success("Configuration WhatsApp et Chatbot enregistrée avec succès !");
     setTimeout(() => setIsSaved(false), 3000);
   };
 
@@ -47,7 +48,7 @@ export default function ChatbotSettingsForm() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-bold text-amber-200 mb-3">
-              <span>💬</span> Module Chatbot & Assistance WhatsApp
+              <CustomerSupportIcon className="size-4 text-amber-200" /> Module Chatbot & Assistance WhatsApp
             </div>
             <h2 className="text-xl sm:text-2xl font-bold font-urbanist text-white">
               Gestion du Contact WhatsApp & Assistant Client
