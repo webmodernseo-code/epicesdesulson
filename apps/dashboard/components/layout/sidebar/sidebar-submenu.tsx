@@ -56,12 +56,10 @@ export function SidebarSubmenu({
         {!isCollapsed &&
           (isOpen ? (
             <ChevronDown
-              size={16}
               className={`shrink-0 size-4 ${userRole === "seller" && !hasActiveChild ? "text-light-secondary-text" : ""}`}
             />
           ) : (
             <ChevronRight
-              size={16}
               className={`shrink-0 size-4 ${userRole === "seller" && !hasActiveChild ? "text-light-secondary-text" : ""}`}
             />
           ))}
