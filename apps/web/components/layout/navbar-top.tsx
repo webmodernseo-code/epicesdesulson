@@ -4,7 +4,8 @@ export default function NavbarTop() {
   return (
     <div className="bg-primary header-top">
       <div className="container">
-        <div className="flex items-center xl:justify-between justify-center py-2.5">
+        <div className="flex items-center xl:justify-between justify-center py-1.5 sm:py-2">
+          {/* Left: Support (Desktop only) */}
           <div className="xl:flex items-center gap-x-6 hidden">
             <p className="flex items-center gap-x-2 text-white text-sm leading-[22px]">
               <span>
@@ -19,17 +20,22 @@ export default function NavbarTop() {
               </Link>
             </p>
           </div>
-          <div className="text-center py-1">
-            <p className="flex items-center gap-x-[7px] text-white text-sm leading-[22px] font-dm-sans">
-              <span className="inline-flex items-center">
-                <i className="hgi hgi-stroke hgi-discount-01 text-white text-xl" />
+
+          {/* Center: Strict Single Line Announcement on Mobile & Desktop */}
+          <div className="text-center overflow-hidden">
+            <p className="flex items-center justify-center gap-x-1.5 sm:gap-x-2 text-white text-[11px] sm:text-sm font-dm-sans whitespace-nowrap">
+              <span className="inline-flex items-center shrink-0">
+                <i className="hgi hgi-stroke hgi-discount-01 text-white text-sm sm:text-lg" />
               </span>
-              Épices d'exception & Poivres rares
-              <span className="bg-warning py-0.5 px-2.5 text-xs font-bold rounded-[60px] text-gray-900">
-                Livraison offerte dès 50€
+              <span className="hidden md:inline">Épices d'exception & Poivres rares —</span>
+              <span className="font-semibold">Livraison offerte dès 50€</span>
+              <span className="bg-warning py-0.5 px-2 text-[10px] sm:text-xs font-bold rounded-full text-gray-950 shrink-0">
+                France & Europe
               </span>
             </p>
           </div>
+
+          {/* Right: Quick Links (Desktop only) */}
           <div className="hidden xl:flex">
             <ul className="flex items-center text-white text-sm">
               <li>
@@ -55,4 +61,3 @@ export default function NavbarTop() {
     </div>
   );
 }
-

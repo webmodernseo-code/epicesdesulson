@@ -31,7 +31,7 @@ const HERO_SLIDES = [
     subtitle: "Rôtis, Grillades & Cuisses Dorées",
     description:
       "L'alliance magique du curcuma frais, paprika, gingembre et muscade pour une chair tendre et savoureuse à chaque cuisson.",
-    cta: "Découvrir le Sachet",
+    cta: "Découvrir le Poulet",
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ const HERO_SLIDES = [
     subtitle: "Pour Bœufs, Agneaux & Grillades",
     description:
       "Un mélange noble au paprika, poivre noir, clou de girofle et laurier conçu pour révéler la richesse de vos pièces de viande au feu ou au four.",
-    cta: "Découvrir le Sachet",
+    cta: "Découvrir la Viande",
   },
   {
     id: 4,
@@ -53,7 +53,7 @@ const HERO_SLIDES = [
     subtitle: "Poissons Grillés & Marinades",
     description:
       "L'arôme authentique du poivre de Guinée, céleri, graines de moutarde et thym pour des poissons marinés à la perfection.",
-    cta: "Découvrir le Sachet",
+    cta: "Découvrir le Poisson",
   },
   {
     id: 5,
@@ -64,7 +64,7 @@ const HERO_SLIDES = [
     subtitle: "Sublime Tous Vos Plats Mijotés",
     description:
       "L'assaisonnement signature universel pour vos sauces, poêlées de légumes et créations du Chef. Une explosion de goût 100% naturel.",
-    cta: "Découvrir le Sachet",
+    cta: "Découvrir la Gourmande",
   },
 ];
 
@@ -81,7 +81,7 @@ export default function HomeThreeHero() {
   };
 
   return (
-    <section className="pt-2 sm:pt-6">
+    <section className="pt-2 sm:pt-4 md:pt-6">
       <div className="container">
         <div className="w-full relative group">
           <Swiper
@@ -96,62 +96,62 @@ export default function HomeThreeHero() {
               clickable: true,
             }}
             navigation={{ prevEl, nextEl }}
-            className="rounded-2xl sm:rounded-3xl bg-primary-darker overflow-hidden shadow-2xl relative"
+            className="rounded-2xl sm:rounded-3xl bg-primary-darker overflow-hidden shadow-xl relative"
           >
             {HERO_SLIDES.map((slide) => (
               <SwiperSlide key={slide.id} className="bg-primary-darker">
-                <div className="relative w-full min-h-[190px] sm:min-h-[340px] md:min-h-[440px] flex items-center px-4 sm:px-10 md:px-14 py-3 sm:py-7 md:py-9 overflow-hidden">
-                  <div className="grid grid-cols-12 gap-3 sm:gap-6 md:gap-8 items-center w-full z-10 pb-4 sm:pb-6">
-                    {/* Left Column: Responsive & Punchy Typography */}
+                <div className="relative w-full min-h-[175px] sm:min-h-[260px] md:min-h-[340px] lg:min-h-[380px] flex items-center px-3.5 sm:px-8 md:px-12 py-3 sm:py-5 md:py-7 overflow-hidden">
+                  <div className="grid grid-cols-12 gap-2.5 sm:gap-6 md:gap-8 items-center w-full z-10 pb-3 sm:pb-5">
+                    {/* Left Column: Responsive & Balanced Typography */}
                     <div className="col-span-7 sm:col-span-7 flex flex-col items-start justify-center">
-                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1 sm:mb-2.5">
-                        <span className="text-white text-[10px] sm:text-xs md:text-sm font-bold bg-white/20 backdrop-blur-xs px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/25 shadow-xs whitespace-nowrap">
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                        <span className="text-white text-[9px] sm:text-xs md:text-sm font-bold bg-white/20 backdrop-blur-xs px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full border border-white/25 shadow-2xs whitespace-nowrap">
                           {slide.offer}
                         </span>
-                        <span className="px-2 py-0.5 sm:px-3 sm:py-1 text-gray-950 text-[10px] sm:text-xs md:text-sm font-bold bg-warning-light rounded-full shadow-xs whitespace-nowrap">
+                        <span className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-gray-950 text-[9px] sm:text-xs md:text-sm font-bold bg-warning-light rounded-full shadow-2xs whitespace-nowrap">
                           {slide.discount}
                         </span>
                       </div>
 
-                      <h2 className="text-white text-base sm:text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight my-0.5 sm:my-1.5">
+                      <h2 className="text-white text-sm sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight my-0.5 sm:my-1">
                         {slide.title}
-                        <span className="block text-amber-300 text-xs sm:text-lg md:text-2xl lg:text-3xl font-bold mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-none">
+                        <span className="block text-amber-300 text-[11px] sm:text-base md:text-xl lg:text-2xl font-bold mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-none">
                           {slide.subtitle}
                         </span>
                       </h2>
 
-                      {/* Description visible on sm+ screens to keep mobile super compact */}
-                      <p className="hidden sm:block text-white/90 text-xs sm:text-sm md:text-base leading-relaxed max-w-xl my-1 sm:my-2.5">
+                      {/* Description visible on sm+ screens */}
+                      <p className="hidden md:block text-white/90 text-xs sm:text-sm leading-relaxed max-w-lg my-1 sm:my-2">
                         {slide.description}
                       </p>
 
-                      <div className="mt-1.5 sm:mt-4">
+                      <div className="mt-1 sm:mt-3">
                         <button
                           type="button"
                           onClick={scrollToProducts}
-                          className="btn btn-primary text-white text-[11px] sm:text-sm md:text-base font-bold rounded-full py-1.5 px-3 sm:py-3 sm:px-7 inline-flex items-center gap-1.5 sm:gap-2.5 shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer"
+                          className="btn btn-primary text-white text-[10px] sm:text-xs md:text-sm font-bold rounded-full py-1.5 px-3 sm:py-2.5 sm:px-6 inline-flex items-center gap-1 sm:gap-2 shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
                         >
                           <span>{slide.cta}</span>
-                          <i className="hgi hgi-stroke hgi-arrow-down-02 text-sm sm:text-base animate-bounce" />
+                          <i className="hgi hgi-stroke hgi-arrow-down-02 text-xs sm:text-sm animate-bounce" />
                         </button>
                       </div>
                     </div>
 
-                    {/* Right Column: Pristine High-Definition Studio Card Showcase (No Distortion) */}
+                    {/* Right Column: Studio Card Showcase */}
                     <div className="col-span-5 sm:col-span-5 flex items-center justify-center">
-                      <div className="relative w-full max-w-[140px] sm:max-w-[280px] md:max-w-[380px] h-[130px] sm:h-[230px] md:h-[320px] flex items-center justify-center">
+                      <div className="relative w-full max-w-[125px] sm:max-w-[220px] md:max-w-[300px] h-[115px] sm:h-[180px] md:h-[250px] flex items-center justify-center">
                         {/* Luxury Ambient Glow */}
-                        <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-tr from-amber-400/25 via-emerald-400/20 to-transparent rounded-2xl sm:rounded-3xl blur-md sm:blur-lg -z-10" />
+                        <div className="absolute -inset-1 bg-gradient-to-tr from-amber-400/25 via-emerald-400/20 to-transparent rounded-2xl blur-md -z-10" />
                         
                         {/* Studio Card Frame */}
-                        <div className="relative w-full h-full rounded-xl sm:rounded-2xl md:rounded-3xl bg-white/10 backdrop-blur-sm border border-white/25 p-1 sm:p-2.5 shadow-2xl flex items-center justify-center overflow-hidden group/card hover:scale-103 transition-transform duration-300">
+                        <div className="relative w-full h-full rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/25 p-1 sm:p-2 shadow-xl flex items-center justify-center overflow-hidden group/card hover:scale-103 transition-transform duration-300">
                           <Image
                             src={slide.productImage}
                             alt={slide.title}
-                            width={420}
-                            height={360}
+                            width={340}
+                            height={280}
                             unoptimized
-                            className="object-contain w-full h-full max-h-full max-w-full rounded-lg sm:rounded-xl md:rounded-2xl transition-transform duration-500 group-hover/card:scale-105 drop-shadow-md"
+                            className="object-contain w-full h-full max-h-full max-w-full rounded-lg sm:rounded-xl transition-transform duration-500 group-hover/card:scale-105 drop-shadow-md"
                             priority
                           />
                         </div>
@@ -163,25 +163,25 @@ export default function HomeThreeHero() {
             ))}
           </Swiper>
 
-          {/* Signature Bottom Scooped Cutout with Centered Green Pagination Dots */}
-          <div className="absolute -bottom-px left-1/2 -translate-x-1/2 h-7 sm:h-11 px-5 sm:px-10 bg-white rounded-t-[18px] sm:rounded-t-[32px] flex items-center justify-center z-30 shadow-xs pointer-events-auto">
-            <div className="home-three-hero-pagination-dots flex items-center justify-center gap-1.5 sm:gap-2.5" />
+          {/* Signature Bottom Scooped Cutout with Centered Pagination Dots */}
+          <div className="absolute -bottom-px left-1/2 -translate-x-1/2 h-6 sm:h-9 px-4 sm:px-8 bg-white rounded-t-[14px] sm:rounded-t-[24px] flex items-center justify-center z-30 shadow-xs pointer-events-auto">
+            <div className="home-three-hero-pagination-dots flex items-center justify-center gap-1.5 sm:gap-2" />
           </div>
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows (Desktop) */}
           <button
             ref={setPrevEl}
             aria-label="Précédent"
-            className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-4 size-9 sm:size-11 rounded-full bg-black/30 hover:bg-primary text-white items-center justify-center z-30 transition-all pointer-events-auto backdrop-blur-xs hidden lg:flex opacity-0 group-hover:opacity-100 shadow-md"
+            className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-4 size-8 sm:size-10 rounded-full bg-black/30 hover:bg-primary text-white items-center justify-center z-30 transition-all pointer-events-auto backdrop-blur-xs hidden lg:flex opacity-0 group-hover:opacity-100 shadow-md"
           >
-            <i className="hgi hgi-stroke hgi-arrow-left-01 text-xl sm:text-2xl" />
+            <i className="hgi hgi-stroke hgi-arrow-left-01 text-lg sm:text-xl" />
           </button>
           <button
             ref={setNextEl}
             aria-label="Suivant"
-            className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-4 size-9 sm:size-11 rounded-full bg-black/30 hover:bg-primary text-white items-center justify-center z-30 transition-all pointer-events-auto backdrop-blur-xs hidden lg:flex opacity-0 group-hover:opacity-100 shadow-md"
+            className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-4 size-8 sm:size-10 rounded-full bg-black/30 hover:bg-primary text-white items-center justify-center z-30 transition-all pointer-events-auto backdrop-blur-xs hidden lg:flex opacity-0 group-hover:opacity-100 shadow-md"
           >
-            <i className="hgi hgi-stroke hgi-arrow-right-01 text-xl sm:text-2xl" />
+            <i className="hgi hgi-stroke hgi-arrow-right-01 text-lg sm:text-xl" />
           </button>
         </div>
       </div>

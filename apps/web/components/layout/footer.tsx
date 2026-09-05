@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const NAVIGATION_LINKS = [
   { label: "Accueil", href: "/" },
-  { label: "Nos Épices & Packs", href: "/#products" },
+  { label: "Nos Épices & Packs", href: "/#nos-epices" },
   { label: "Avis & Témoignages", href: "/avis" },
   { label: "À propos de Sulson", href: "/about" },
   { label: "Foire Aux Questions", href: "/faq" },
@@ -39,17 +39,17 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="pb-12 md:pb-15 bg-primary-darker pt-20 sm:pt-24 xl:rounded-tr-[22px] xl:rounded-tl-[22px]">
+      <footer className="pb-10 md:pb-14 bg-primary-darker pt-16 sm:pt-20 xl:rounded-tr-[22px] xl:rounded-tl-[22px]">
         <div className="container">
           {/* <!-- ========== Footer Top Section Start ========== --> */}
-          <div className="pb-10 grid grid-cols-12 gap-6 md:gap-8">
+          <div className="pb-8 grid grid-cols-12 gap-6 md:gap-8">
             {/* ── Logo & Brand Presentation Column ── */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="col-span-12 md:col-span-6 xl:col-span-3 flex flex-col gap-y-5"
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="col-span-12 md:col-span-6 xl:col-span-3 flex flex-col gap-y-4"
             >
               <div>
                 <Link href="/">
@@ -61,57 +61,57 @@ export default function Footer() {
                   />
                 </Link>
               </div>
-              <p className="text-primary-lighter text-sm leading-relaxed">
-                Les Épices de Sulson : Sélection rigoureuse des meilleures épices du monde, poivres rares et mélanges artisanaux pour sublimer tous vos plats.
+              <p className="text-primary-lighter text-xs sm:text-sm leading-relaxed">
+                Les Épices de Sulson : Sélection rigoureuse des meilleures épices du Cameroun, poivres rares et mélanges artisanaux 100% naturels pour sublimer toutes vos créations culinaires.
               </p>
               
               {/* Social networks */}
-              <div className="flex flex-wrap gap-3 pt-1">
+              <div className="flex flex-wrap gap-2.5 pt-1">
                 <a
-                  className="inline-flex items-center justify-center size-9 rounded-full bg-[rgba(145,158,171,0.16)] hover:bg-primary hover:text-white transition-all text-white"
+                  className="inline-flex items-center justify-center size-8 rounded-full bg-[rgba(145,158,171,0.16)] hover:bg-primary hover:text-white transition-all text-white"
                   href="#"
                   aria-label="Facebook"
                 >
-                  <i className="hgi hgi-stroke hgi-facebook-01 text-xl"></i>
+                  <i className="hgi hgi-stroke hgi-facebook-01 text-lg"></i>
                 </a>
                 <a
-                  className="inline-flex items-center justify-center size-9 rounded-full bg-[rgba(145,158,171,0.16)] hover:bg-primary hover:text-white transition-all text-white"
+                  className="inline-flex items-center justify-center size-8 rounded-full bg-[rgba(145,158,171,0.16)] hover:bg-primary hover:text-white transition-all text-white"
                   href="#"
                   aria-label="Instagram"
                 >
-                  <i className="hgi hgi-stroke hgi-instagram text-xl"></i>
+                  <i className="hgi hgi-stroke hgi-instagram text-lg"></i>
                 </a>
                 <a
-                  className="inline-flex items-center justify-center size-9 rounded-full bg-[rgba(145,158,171,0.16)] hover:bg-primary hover:text-white transition-all text-white"
+                  className="inline-flex items-center justify-center size-8 rounded-full bg-[rgba(145,158,171,0.16)] hover:bg-primary hover:text-white transition-all text-white"
                   href="#"
                   aria-label="LinkedIn"
                 >
-                  <i className="hgi hgi-stroke hgi-linkedin-01 text-xl"></i>
+                  <i className="hgi hgi-stroke hgi-linkedin-01 text-lg"></i>
                 </a>
               </div>
             </motion.div>
 
             {/* ── Colonne 1 : NAVIGATION ── */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
               className="col-span-12 md:col-span-6 xl:col-span-3"
             >
               <button
                 type="button"
                 onClick={() => toggleSection("navigation")}
-                className="w-full text-left md:pointer-events-none flex items-center justify-between pb-4 md:pb-6 border-b border-[rgba(145,158,171,0.24)]"
+                className="w-full text-left md:pointer-events-none flex items-center justify-between pb-3 md:pb-5 border-b border-[rgba(145,158,171,0.24)]"
               >
-                <h5 className="text-primary-lighter font-bold tracking-wide">NAVIGATION</h5>
+                <h5 className="text-primary-lighter font-bold text-sm sm:text-base tracking-wide">NAVIGATION</h5>
                 <span className="md:hidden text-primary-lighter transition-transform duration-200">
                   <i
                     className={`hgi hgi-stroke ${
                       openSections.navigation
                         ? "hgi-arrow-up-01"
                         : "hgi-arrow-down-01"
-                    } text-xl`}
+                    } text-lg`}
                   />
                 </span>
               </button>
@@ -120,18 +120,18 @@ export default function Footer() {
                   openSections.navigation ? "block" : "hidden md:block"
                 } transition-all`}
               >
-                <ul className="flex flex-col gap-y-2 pt-4">
+                <ul className="flex flex-col gap-y-1.5 pt-3">
                   {NAVIGATION_LINKS.map((link, index) => (
                     <li
                       key={index}
-                      className="py-1 flex items-center gap-x-2"
+                      className="py-0.5 flex items-center gap-x-2"
                     >
                       <span className="inline-flex items-center">
-                        <i className="hgi hgi-stroke hgi-arrow-right-01 text-base text-primary-lighter"></i>
+                        <i className="hgi hgi-stroke hgi-arrow-right-01 text-xs text-primary-lighter"></i>
                       </span>
                       <Link
                         href={link.href}
-                        className="text-primary-lighter text-sm font-semibold hover:underline hover:text-white transition-colors"
+                        className="text-primary-lighter text-xs sm:text-sm font-medium hover:underline hover:text-white transition-colors"
                       >
                         {link.label}
                       </Link>
@@ -143,25 +143,25 @@ export default function Footer() {
 
             {/* ── Colonne 2 : POLITIQUE ── */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
               className="col-span-12 md:col-span-6 xl:col-span-3"
             >
               <button
                 type="button"
                 onClick={() => toggleSection("politique")}
-                className="w-full text-left md:pointer-events-none flex items-center justify-between pb-4 md:pb-6 border-b border-[rgba(145,158,171,0.24)]"
+                className="w-full text-left md:pointer-events-none flex items-center justify-between pb-3 md:pb-5 border-b border-[rgba(145,158,171,0.24)]"
               >
-                <h5 className="text-primary-lighter font-bold tracking-wide">POLITIQUE</h5>
+                <h5 className="text-primary-lighter font-bold text-sm sm:text-base tracking-wide">POLITIQUE & LÉGAL</h5>
                 <span className="md:hidden text-primary-lighter transition-transform duration-200">
                   <i
                     className={`hgi hgi-stroke ${
                       openSections.politique
                         ? "hgi-arrow-up-01"
                         : "hgi-arrow-down-01"
-                    } text-xl`}
+                    } text-lg`}
                   />
                 </span>
               </button>
@@ -170,18 +170,18 @@ export default function Footer() {
                   openSections.politique ? "block" : "hidden md:block"
                 } transition-all`}
               >
-                <ul className="flex flex-col gap-y-2 pt-4">
+                <ul className="flex flex-col gap-y-1.5 pt-3">
                   {POLITIQUE_LINKS.map((link, index) => (
                     <li
                       key={index}
-                      className="py-1 flex items-center gap-x-2"
+                      className="py-0.5 flex items-center gap-x-2"
                     >
                       <span className="inline-flex items-center">
-                        <i className="hgi hgi-stroke hgi-arrow-right-01 text-base text-primary-lighter"></i>
+                        <i className="hgi hgi-stroke hgi-arrow-right-01 text-xs text-primary-lighter"></i>
                       </span>
                       <Link
                         href={link.href}
-                        className="text-primary-lighter text-sm font-semibold hover:underline hover:text-white transition-colors"
+                        className="text-primary-lighter text-xs sm:text-sm font-medium hover:underline hover:text-white transition-colors"
                       >
                         {link.label}
                       </Link>
@@ -191,27 +191,27 @@ export default function Footer() {
               </div>
             </motion.div>
 
-            {/* ── Colonne 3 (Droite) : CONTACT & PAIEMENT ── */}
+            {/* ── Colonne 3 (Droite) : CONTACT ── */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="col-span-12 md:col-span-6 xl:col-span-3 flex flex-col gap-y-4"
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="col-span-12 md:col-span-6 xl:col-span-3 flex flex-col gap-y-3"
             >
               <button
                 type="button"
                 onClick={() => toggleSection("contact")}
-                className="w-full text-left md:pointer-events-none flex items-center justify-between pb-4 md:pb-6 border-b border-[rgba(145,158,171,0.24)]"
+                className="w-full text-left md:pointer-events-none flex items-center justify-between pb-3 md:pb-5 border-b border-[rgba(145,158,171,0.24)]"
               >
-                <h5 className="text-primary-lighter font-bold tracking-wide">CONTACT & PAIEMENT</h5>
+                <h5 className="text-primary-lighter font-bold text-sm sm:text-base tracking-wide">CONTACT & SUPPORT</h5>
                 <span className="md:hidden text-primary-lighter transition-transform duration-200">
                   <i
                     className={`hgi hgi-stroke ${
                       openSections.contact
                         ? "hgi-arrow-up-01"
                         : "hgi-arrow-down-01"
-                    } text-xl`}
+                    } text-lg`}
                   />
                 </span>
               </button>
@@ -221,22 +221,22 @@ export default function Footer() {
                   openSections.contact ? "block" : "hidden md:block"
                 } transition-all`}
               >
-                <ul className="flex flex-col gap-y-3 pt-2">
-                  <li className="flex items-center gap-x-3">
-                    <span className="size-8 inline-flex items-center justify-center rounded-full bg-[rgba(145,158,171,0.16)] text-white shrink-0">
-                      <i className="hgi hgi-stroke hgi-mail-02 text-lg"></i>
+                <ul className="flex flex-col gap-y-2.5 pt-2">
+                  <li className="flex items-center gap-x-2.5">
+                    <span className="size-7 inline-flex items-center justify-center rounded-full bg-[rgba(145,158,171,0.16)] text-white shrink-0">
+                      <i className="hgi hgi-stroke hgi-mail-02 text-base"></i>
                     </span>
                     <a
                       href="mailto:contact@epicesdesulson.com"
-                      className="text-primary-lighter hover:text-white text-xs sm:text-sm font-semibold transition-colors"
+                      className="text-primary-lighter hover:text-white text-xs sm:text-sm font-semibold transition-colors truncate"
                     >
                       contact@epicesdesulson.com
                     </a>
                   </li>
 
-                  <li className="flex items-center gap-x-3">
-                    <span className="size-8 inline-flex items-center justify-center rounded-full bg-emerald-600/30 text-emerald-400 shrink-0">
-                      <i className="hgi hgi-stroke hgi-whatsapp text-lg"></i>
+                  <li className="flex items-center gap-x-2.5">
+                    <span className="size-7 inline-flex items-center justify-center rounded-full bg-emerald-600/30 text-emerald-400 shrink-0">
+                      <i className="hgi hgi-stroke hgi-whatsapp text-base"></i>
                     </span>
                     <Link
                       href="/contact"
@@ -246,64 +246,70 @@ export default function Footer() {
                     </Link>
                   </li>
 
-                  <li className="flex items-center gap-x-3">
-                    <span className="size-8 inline-flex items-center justify-center rounded-full bg-[rgba(145,158,171,0.16)] text-white shrink-0">
-                      <i className="hgi hgi-stroke hgi-clock-01 text-lg"></i>
+                  <li className="flex items-center gap-x-2.5">
+                    <span className="size-7 inline-flex items-center justify-center rounded-full bg-[rgba(145,158,171,0.16)] text-white shrink-0">
+                      <i className="hgi hgi-stroke hgi-clock-01 text-base"></i>
                     </span>
                     <span className="text-primary-lighter text-xs font-medium">
                       Lun - Sam : 9h00 - 18h00
                     </span>
                   </li>
                 </ul>
-
-                {/* Secure Payment methods */}
-                <div className="pt-4 border-t border-[rgba(145,158,171,0.15)] mt-3">
-                  <p className="text-[11px] text-primary-lighter/80 uppercase font-bold tracking-wider mb-2.5">
-                    Transactions 100% Sécurisées (Stripe)
-                  </p>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Image
-                      src="/images/payments/visa.svg"
-                      alt="Visa"
-                      width={38}
-                      height={24}
-                      className="h-6 w-auto rounded shadow-2xs"
-                    />
-                    <Image
-                      src="/images/payments/mastercard.svg"
-                      alt="Mastercard"
-                      width={38}
-                      height={24}
-                      className="h-6 w-auto rounded shadow-2xs"
-                    />
-                    <Image
-                      src="/images/payments/amex.svg"
-                      alt="American Express"
-                      width={38}
-                      height={24}
-                      className="h-6 w-auto rounded shadow-2xs"
-                    />
-                    <Image
-                      src="/images/payments/apple-pay.svg"
-                      alt="Apple Pay"
-                      width={38}
-                      height={24}
-                      className="h-6 w-auto rounded shadow-2xs"
-                    />
-                  </div>
-                </div>
               </div>
             </motion.div>
           </div>
           {/* <!-- ========== Footer Top Section End ========== --> */}
 
+          {/* ── Secure Payment Methods ALWAYS VISIBLE ON MOBILE & DESKTOP ── */}
+          <div className="py-5 border-t border-[rgba(145,158,171,0.18)] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="flex items-center gap-2">
+              <span className="size-6 inline-flex items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
+                <i className="hgi hgi-stroke hgi-shield-check text-sm" />
+              </span>
+              <p className="text-[11px] sm:text-xs text-primary-lighter uppercase font-bold tracking-wider">
+                Paiement 100% Sécurisé & Chiffré (SSL / Stripe)
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-2.5 flex-wrap">
+              <Image
+                src="/images/payments/visa.svg"
+                alt="Visa"
+                width={38}
+                height={24}
+                className="h-5 sm:h-6 w-auto rounded shadow-2xs bg-white/90 p-0.5"
+              />
+              <Image
+                src="/images/payments/mastercard.svg"
+                alt="Mastercard"
+                width={38}
+                height={24}
+                className="h-5 sm:h-6 w-auto rounded shadow-2xs bg-white/90 p-0.5"
+              />
+              <Image
+                src="/images/payments/amex.svg"
+                alt="American Express"
+                width={38}
+                height={24}
+                className="h-5 sm:h-6 w-auto rounded shadow-2xs bg-white/90 p-0.5"
+              />
+              <Image
+                src="/images/payments/apple-pay.svg"
+                alt="Apple Pay"
+                width={38}
+                height={24}
+                className="h-5 sm:h-6 w-auto rounded shadow-2xs bg-white/90 p-0.5"
+              />
+            </div>
+          </div>
+
           {/* <!-- ========== Footer Bottom Section Start ========== --> */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center text-white/80 text-xs sm:text-sm bg-[url(/images/bottom-border.png)] pt-6 bg-center pb-px bg-no-repeat border-t border-[rgba(145,158,171,0.15)]"
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="text-center text-white/80 text-[11px] sm:text-xs pt-4 border-t border-[rgba(145,158,171,0.12)]"
           >
             {new Date().getFullYear()} © Les Épices de Sulson. Tous droits réservés.
           </motion.div>
