@@ -1,41 +1,44 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { DashboardCard } from "@/components/ui/dashboard-card";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const countries = [
+const destinations = [
   {
-    name: "Canada",
-    flag: "/images/flag/flag-1.png",
-    sales: "2400k",
-    data: [10, 15, 12, 18, 16, 22, 18], // Up trend
-    color: "#00c853", // Green
+    name: "France Métropolitaine",
+    code: "FR",
+    sales: "11 580 €",
+    percentage: "78%",
+    data: [12, 14, 15, 18, 20, 22, 25],
+    color: "#059669", // Emerald
   },
   {
-    name: "Korean",
-    flag: "/images/flag/flag-2.png",
-    sales: "200k",
-    data: [20, 15, 18, 12, 14, 10, 8], // Down trend
-    color: "#ff3d60", // Red
+    name: "Belgique",
+    code: "BE",
+    sales: "1 780 €",
+    percentage: "12%",
+    data: [8, 10, 11, 12, 14, 15, 17],
+    color: "#0284c7", // Sky
   },
   {
-    name: "France",
-    flag: "/images/flag/flag-3.png",
-    sales: "300k",
-    data: [12, 18, 14, 16, 12, 10, 8], // Down trend
-    color: "#ff3d60", // Red
+    name: "Suisse",
+    code: "CH",
+    sales: "890 €",
+    percentage: "6%",
+    data: [5, 6, 7, 7, 8, 9, 10],
+    color: "#d97706", // Amber
   },
   {
-    name: "German",
-    flag: "/images/flag/flag-4.png",
-    sales: "48000k",
-    data: [10, 12, 11, 14, 13, 16, 20], // Up trend
-    color: "#00c853", // Green
+    name: "Luxembourg & Autres",
+    code: "LU",
+    sales: "600 €",
+    percentage: "4%",
+    data: [3, 4, 4, 5, 5, 6, 7],
+    color: "#7c3aed", // Purple
   },
 ];
 
@@ -48,15 +51,15 @@ export default function TopCountryCard() {
       },
     },
     stroke: {
-      curve: "straight",
-      width: 1,
+      curve: "smooth",
+      width: 1.5,
     },
     fill: {
       type: "gradient",
       gradient: {
         shadeIntensity: 1,
-        opacityFrom: 0.4,
-        opacityTo: 0.1,
+        opacityFrom: 0.35,
+        opacityTo: 0.05,
         stops: [0, 90, 100],
       },
     },
@@ -81,35 +84,32 @@ export default function TopCountryCard() {
     },
   });
 
-  // ... inside component
   return (
     <DashboardCard
-      title="Top Countries By sales"
-      subtitle="Total Sale 300M"
-      className=""
+      title="Destinations de Livraison"
+      subtitle="Répartition des commandes expédiées"
     >
-      <div className="space-y-10 pt-6">
-        {countries.map((country, index) => (
+      <div className="space-y-6 pt-4">
+        {destinations.map((dest, index) => (
           <div key={index} className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-6 relative rounded overflow-hidden  shrink-0">
-                <Image
-                  src={country.flag}
-                  alt={country.name}
-                  width={32}
-                  height={24}
-                  className="object-cover"
-                />
+            <div className="flex items-center gap-3">
+              <div className="size-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-xs text-gray-700 shrink-0">
+                {dest.code}
               </div>
-              <span className="font-semibold font-dm-sans text-light-primary-text text-sm">
-                {country.name}
-              </span>
+              <div>
+                <span className="font-semibold text-gray-900 text-xs sm:text-sm block">
+                  {dest.name}
+                </span>
+                <span className="text-[11px] text-gray-500 font-medium">
+                  {dest.percentage} des livraisons
+                </span>
+              </div>
             </div>
 
-            <div className="flex-1 h-7 max-w-[80px]">
+            <div className="flex-1 h-7 max-w-[70px]">
               <Chart
-                options={getChartOptions(country.color)}
-                series={[{ data: country.data }]}
+                options={getChartOptions(dest.color)}
+                series={[{ data: dest.data }]}
                 type="area"
                 height={28}
                 width="100%"
@@ -117,8 +117,8 @@ export default function TopCountryCard() {
             </div>
 
             <div className="text-right">
-              <span className="font-semibold text-sm text-light-primary-text">
-                {country.sales}
+              <span className="font-bold text-xs sm:text-sm text-gray-900">
+                {dest.sales}
               </span>
             </div>
           </div>

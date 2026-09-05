@@ -12,8 +12,6 @@ import {
   StoreIcon,
   CartRemoveIcon,
   UserSettings,
-  StoreAddIcon,
-  MoneyCheckIcon,
   CreditCardPosIcon,
   CustomerSupportIcon,
 } from "../../icons";
@@ -29,41 +27,9 @@ export type NavItem = {
 
 export const navItems: NavItem[] = [
   {
-    label: "Tableau de bord",
+    label: "Vue d'ensemble",
     href: "/",
     icon: <DashboardGridIcon className="size-5.5" />,
-  },
-  {
-    label: "Category",
-    category: "CATALOGUE & ÉPICES",
-    items: [
-      {
-        label: "Produits",
-        href: "/products",
-        icon: <DeliveryBoxIcon className="size-5.5" />,
-        subItems: [
-          { label: "Toutes les épices", href: "/products" },
-          { label: "Brouillons", href: "/products/drafts" },
-          { label: "Gestion des stocks", href: "/products/stocks" },
-          { label: "Avis clients", href: "/products/review" },
-        ],
-      },
-      {
-        label: "Catégories",
-        href: "/categories",
-        icon: <StructureIcon className="size-5.5" />,
-        subItems: [
-          { label: "Liste des catégories", href: "/categories" },
-          { label: "Attributs & Origines", href: "/categories/attributes" },
-          { label: "Tags", href: "/categories/tags" },
-        ],
-      },
-      {
-        label: "Inventaire & Lots",
-        href: "/inventory",
-        icon: <StoreIcon className="size-5.5" />,
-      },
-    ],
   },
   {
     label: "Category",
@@ -82,14 +48,44 @@ export const navItems: NavItem[] = [
         ],
       },
       {
+        label: "Transactions & Paiements",
+        href: "/transactions",
+        icon: <TransactionIcon className="size-5.5" />,
+      },
+      {
         label: "Paniers abandonnés",
         href: "/abandon-cart",
         icon: <CartRemoveIcon className="size-5.5" />,
       },
+    ],
+  },
+  {
+    label: "Category",
+    category: "CATALOGUE & ÉPICES",
+    items: [
       {
-        label: "Transactions",
-        href: "/transactions",
-        icon: <TransactionIcon className="size-5.5" />,
+        label: "Catalogue Épices",
+        href: "/products",
+        icon: <DeliveryBoxIcon className="size-5.5" />,
+        subItems: [
+          { label: "Toutes les épices", href: "/products" },
+          { label: "Niveaux de stocks", href: "/products/stocks" },
+          { label: "Avis clients", href: "/products/review" },
+        ],
+      },
+      {
+        label: "Catégories & Origines",
+        href: "/categories",
+        icon: <StructureIcon className="size-5.5" />,
+        subItems: [
+          { label: "Liste des catégories", href: "/categories" },
+          { label: "Origines & Terroirs", href: "/categories/attributes" },
+        ],
+      },
+      {
+        label: "Inventaire & Lots",
+        href: "/inventory",
+        icon: <StoreIcon className="size-5.5" />,
       },
     ],
   },
@@ -111,15 +107,15 @@ export const navItems: NavItem[] = [
   },
   {
     label: "Category",
-    category: "PROMOTIONS & OFFRES",
+    category: "PROMOTIONS & FIDÉLITÉ",
     items: [
       {
-        label: "Codes Promo",
+        label: "Codes Promo (ex: SULSON10)",
         href: "/coupon",
         icon: <CuponPercentIcon className="size-5.5" />,
       },
       {
-        label: "Ventes Flash & Offres",
+        label: "Ventes Flash & Packs",
         href: "/flash-sales",
         icon: <FlashIcon className="size-5.5" />,
       },
@@ -127,37 +123,22 @@ export const navItems: NavItem[] = [
   },
   {
     label: "Category",
-    category: "PARAMÈTRES & INTÉGRATIONS",
+    category: "PASSERELLES & CONFIGURATION",
     items: [
       {
-        label: "Passerelles API & Clés Stripe",
+        label: "Passerelles API (Stripe & PayPal)",
         href: "/settings/payment-api",
         icon: <CreditCardPosIcon className="size-5.5" />,
       },
       {
-        label: "Support WhatsApp & Chatbot",
-        href: "/settings/chatbot",
-        icon: <CustomerSupportIcon className="size-5.5" />,
-      },
-      {
-        label: "Paramètres Généraux",
+        label: "Paramètres Boutique",
         href: "/settings/general",
         icon: <SettingsIcon className="size-5.5" />,
       },
       {
-        label: "Paramètres Boutique",
-        href: "/settings/shop",
-        icon: <StoreAddIcon className="size-5.5" />,
-      },
-      {
-        label: "Méthodes de Paiement",
-        href: "/payment-method",
-        icon: <MoneyCheckIcon className="size-5.5" />,
-      },
-      {
-        label: "Configuration Firebase",
-        href: "/firebase",
-        icon: <FlashIcon className="size-5.5 text-amber-500" />,
+        label: "Support Client & Chatbot",
+        href: "/settings/chatbot",
+        icon: <CustomerSupportIcon className="size-5.5" />,
       },
     ],
   },

@@ -5,59 +5,61 @@ import { DashboardCard } from "@/components/ui/dashboard-card";
 
 const fulfillmentData = [
   {
-    label: "Shipped orders",
-    count: 30,
-    percentage: 30,
-    color: "bg-info", // Blue
-    trackColor: "bg-info-lighter", // Light blue
+    label: "Expédiées (Colissimo / Relais)",
+    count: 148,
+    percentage: 62,
+    color: "bg-emerald-500",
+    trackColor: "bg-emerald-100",
   },
   {
-    label: "Delivered",
-    count: 40,
-    percentage: 56,
-    color: "bg-primary", // Teal
-    trackColor: "bg-primary-lighter", // Light teal
+    label: "Livrées & Réceptionnées",
+    count: 185,
+    percentage: 78,
+    color: "bg-teal-600",
+    trackColor: "bg-teal-100",
   },
   {
-    label: "Pending shipments",
-    count: 20,
-    percentage: 56,
-    color: "bg-warning", // Yellow
-    trackColor: "bg-warning-lighter", // Light yellow
+    label: "En préparation à l'atelier",
+    count: 42,
+    percentage: 18,
+    color: "bg-amber-500",
+    trackColor: "bg-amber-100",
   },
   {
-    label: "Stuck orders",
-    count: 10,
-    percentage: 10,
-    color: "bg-gray-900", // Dark
-    trackColor: "bg-gray-200", // Gray
+    label: "En attente de paiement",
+    count: 12,
+    percentage: 5,
+    color: "bg-blue-500",
+    trackColor: "bg-blue-100",
   },
   {
-    label: "Back Product",
-    count: 2,
-    percentage: 2,
-    color: "bg-error", // Red
-    trackColor: "bg-error-lighter", // Light red
+    label: "Retours & Rétractations",
+    count: 3,
+    percentage: 1,
+    color: "bg-rose-500",
+    trackColor: "bg-rose-100",
   },
 ];
 
-// ... inside component
 export default function OrderFulfillmentStatus() {
   return (
-    <DashboardCard title="Order Fulfillment Status">
-      <div className="space-y-6 pt-3">
+    <DashboardCard
+      title="Suivi Logistique & Expéditions"
+      subtitle="Progression globale du traitement des colis"
+    >
+      <div className="space-y-5 pt-3">
         {fulfillmentData.map((item, index) => (
-          <div key={index} className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-light-primary-text leading-5.5">
+          <div key={index} className="space-y-2">
+            <div className="flex items-center justify-between text-xs sm:text-sm">
+              <span className="font-semibold text-gray-800">
                 {item.label}
               </span>
               <div className="flex items-center gap-1">
-                <span className="font-semibold text-light-primary-text leading-5.5">
+                <span className="font-bold text-gray-900">
                   {item.count}
                 </span>
-                <span className="text-light-secondary-text">
-                  ({item.percentage.toString().padStart(2, "0")}%)
+                <span className="text-gray-400 text-xs">
+                  ({item.percentage}%)
                 </span>
               </div>
             </div>
@@ -65,7 +67,7 @@ export default function OrderFulfillmentStatus() {
               value={item.percentage}
               color={item.color}
               trackColor={item.trackColor}
-              className="h-2"
+              className="h-2 rounded-full"
             />
           </div>
         ))}

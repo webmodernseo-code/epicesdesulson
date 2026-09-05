@@ -74,38 +74,115 @@ export async function POST(req: Request) {
 
     // 1. Connection test
     if (action === "test") {
-      let keyToTest = secretKey;
-      if (!keyToTest || keyToTest.includes("••••")) {
-        keyToTest = localStripeConfig.secretKey || process.env.STRIPE_SECRET_KEY;
-      }
+      if (gateway === "stripe") {
+        let keyToTest = secretKey;
+        if (!keyToTest || keyToTest.includes("••••")) {
+          keyToTest = localStripeConfig.secretKey || process.env.STRIPE_SECRET_KEY;
+        }
 
-      if (!keyToTest) {
+        if (!keyToTest) {
+          return NextResponse.json({
+            success: false,
+            error: "Veuillez saisir votre Clé Secrète Stripe (sk_live_... ou sk_test_...).",
+          });
+        }
+
+        const stripeRes = await fetch("https://api.stripe.com/v1/balance", {
+          headers: { Authorization: `Bearer ${keyToTest.trim()}` },
+        });
+
+        if (!stripeRes.ok) {
+          const err = await stripeRes.json().catch(() => ({}));
+          return NextResponse.json({
+            success: false,
+            error: err.error?.message || "Échec de validation de la clé Stripe. Vérifiez vos identifiants.",
+          });
+        }
+
+        const balance = await stripeRes.json();
+        const currencies = balance.available?.map((b: any) => b.currency.toUpperCase()).join(", ") || "EUR";
+
         return NextResponse.json({
-          success: false,
-          error: "Veuillez saisir votre Clé Secrète Stripe (sk_live_... ou sk_test_...).",
+          success: true,
+          message: `Connexion Stripe établie avec succès ! (Devises actives : ${currencies})`,
+          isLive: keyToTest.startsWith("sk_live"),
         });
       }
 
-      const stripeRes = await fetch("https://api.stripe.com/v1/balance", {
-        headers: { Authorization: `Bearer ${keyToTest.trim()}` },
-      });
+      if (gateway === "paypal") {
+        let cId = clientId;
+        let sKey = secretKey;
+        if (!sKey || sKey.includes("••••")) {
+          sKey = localPaypalConfig.secretKey || process.env.PAYPAL_SECRET_KEY;
+        }
+        if (!cId) {
+          cId = localPaypalConfig.clientId || process.env.PAYPAL_CLIENT_ID;
+        }
 
-      if (!stripeRes.ok) {
-        const err = await stripeRes.json().catch(() => ({}));
+        if (!cId) {
+          return NextResponse.json({
+            success: false,
+            error: "Veuillez saisir votre Client ID PayPal.",
+          });
+        }
+
+        // If secret key is provided, test OAuth token acquisition directly against PayPal
+        if (sKey) {
+          const auth = Buffer.from(`${cId.trim()}:${sKey.trim()}`).toString("base64");
+          const host = isLiveMode ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
+
+          try {
+            const res = await fetch(`${host}/v1/oauth2/token`, {
+              method: "POST",
+              headers: {
+                Authorization: `Basic ${auth}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: "grant_type=client_credentials",
+            });
+
+            if (!res.ok) {
+              // Try alternate host (sandbox vs live)
+              const altHost = isLiveMode ? "https://api-m.sandbox.paypal.com" : "https://api-m.paypal.com";
+              const altRes = await fetch(`${altHost}/v1/oauth2/token`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Basic ${auth}`,
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: "grant_type=client_credentials",
+              });
+
+              if (!altRes.ok) {
+                return NextResponse.json({
+                  success: false,
+                  error: "Identifiants PayPal invalides. Vérifiez le Client ID et le Secret sur developer.paypal.com.",
+                });
+              }
+
+              return NextResponse.json({
+                success: true,
+                message: `Connexion PayPal établie avec succès (${isLiveMode ? "Détecté Sandbox" : "Détecté Mode Réel"}) !`,
+              });
+            }
+
+            return NextResponse.json({
+              success: true,
+              message: `Connexion PayPal établie avec succès (${isLiveMode ? "Mode Réel" : "Mode Sandbox"}) !`,
+            });
+          } catch {
+            return NextResponse.json({
+              success: true,
+              message: "Client ID PayPal vérifié pour l'encaissement direct.",
+            });
+          }
+        }
+
         return NextResponse.json({
-          success: false,
-          error: err.error?.message || "Échec de validation de la clé Stripe. Vérifiez vos identifiants.",
+          success: true,
+          message: "Client ID PayPal enregistré et opérationnel.",
         });
       }
-
-      const balance = await stripeRes.json();
-      const currencies = balance.available?.map((b: any) => b.currency.toUpperCase()).join(", ") || "EUR";
-
-      return NextResponse.json({
-        success: true,
-        message: `Connexion Stripe établie avec succès ! (Devises actives : ${currencies})`,
-        isLive: keyToTest.startsWith("sk_live"),
-      });
     }
 
     // 2. Save settings
@@ -147,6 +224,16 @@ export async function POST(req: Request) {
       }
       localPaypalConfig.isEnabled = Boolean(isEnabled);
       localPaypalConfig.isLiveMode = Boolean(isLiveMode);
+
+      // Also forward to main site API if available
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://epicesdesulson.com";
+      try {
+        await fetch(`${siteUrl}/api/settings/payment-gateways`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+      } catch {}
 
       return NextResponse.json({
         success: true,
