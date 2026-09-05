@@ -69,23 +69,10 @@ export const navItems: NavItem[] = [
         icon: <DeliveryBoxIcon className="size-5.5" />,
         subItems: [
           { label: "Toutes les épices", href: "/products" },
+          { label: "Ajouter une épice", href: "/products/add" },
           { label: "Niveaux de stocks", href: "/products/stocks" },
           { label: "Avis clients", href: "/products/review" },
         ],
-      },
-      {
-        label: "Catégories & Origines",
-        href: "/categories",
-        icon: <StructureIcon className="size-5.5" />,
-        subItems: [
-          { label: "Liste des catégories", href: "/categories" },
-          { label: "Origines & Terroirs", href: "/categories/attributes" },
-        ],
-      },
-      {
-        label: "Inventaire & Lots",
-        href: "/inventory",
-        icon: <StoreIcon className="size-5.5" />,
       },
     ],
   },

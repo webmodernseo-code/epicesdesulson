@@ -5,7 +5,6 @@ import OrderStatusChart from "@/components/dashboard/order-status-chart";
 import AccommodationRevenueChart from "@/components/dashboard/accommodation-revenue-chart";
 import OrderFulfillmentStatus from "@/components/dashboard/order-fullfillment-status-progress";
 import RecentOrdersTable from "@/components/dashboard/recent-order-table";
-import TopCountryCard from "@/components/dashboard/top-country-card";
 import StockUpdateTable from "@/components/dashboard/stock-update-table";
 
 export const metadata: Metadata = {
@@ -24,23 +23,22 @@ export default function Home() {
         <DashboardStatsGrid />
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="sm:col-span-2 order-1 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
+      {/* Charts Row: Statut des Commandes & Suivi Logistique */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
           <OrderStatusChart />
         </div>
-        <div className="lg:col-span-1 order-4 lg:order-2 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
-          <TopCountryCard />
-        </div>
-        <div className="sm:col-span-2 order-2 lg:order-3 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
-          <AccommodationRevenueChart />
-        </div>
-        <div className="lg:col-span-1 order-3 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
           <OrderFulfillmentStatus />
         </div>
       </div>
 
-      {/* Orders Table */}
+      {/* Monthly Revenue Progression Chart */}
+      <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
+        <AccommodationRevenueChart />
+      </div>
+
+      {/* Orders Table with Manual Shipping Status Controls */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs">
         <RecentOrdersTable />
       </div>
