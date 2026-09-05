@@ -20,7 +20,7 @@ export default function UserDropdown() {
                 <span className="text-xs font-bold text-gray-900 block leading-tight">
                   Admin Sulson
                 </span>
-                <span className="text-[10px] text-emerald-700 font-semibold block flex items-center gap-1">
+                <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
                   <ShieldCheck className="size-3 text-emerald-600 inline" />
                   Boutique
                 </span>

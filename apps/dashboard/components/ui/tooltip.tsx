@@ -16,9 +16,14 @@ export default function Tooltip({
   side = "right",
   offset = 8,
 }: TooltipProps) {
+  const [mounted, setMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleMouseEnter = () => {
     if (triggerRef.current) {
@@ -46,7 +51,9 @@ export default function Tooltip({
         {children}
       </div>
 
-      {isVisible &&
+      {mounted &&
+        isVisible &&
+        typeof document !== "undefined" &&
         createPortal(
           <div
             className="fixed z-60 px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded shadow-md pointer-events-none whitespace-nowrap animate-in fade-in zoom-in-95 duration-150"

@@ -42,6 +42,8 @@ export function Avatar({
   width,
   height,
 }: AvatarProps) {
+  const [hasError, setHasError] = useState(false);
+
   useEffect(() => {
     setHasError(false);
   }, [src]);

@@ -88,24 +88,34 @@ interface PaymentMethodProps {
   isProcessing?: boolean;
 }
 
+const defaultCardData: CardFormData = {
+  name: "",
+  number: "",
+  expiry: "",
+  cvc: "",
+  saveCard: false,
+};
+
 export default function PaymentMethodV1({
-  selectedMethod,
+  selectedMethod = "stripe",
   onSelectMethod,
-  cardData,
+  cardData = defaultCardData,
   onCardDataChange,
   onPaypalSubmit,
   isProcessing = false,
 }: PaymentMethodProps) {
+  const safeCardData = cardData || defaultCardData;
+
   // Detect card brand based on input digits
-  const getCardBrand = (num: string) => {
-    const clean = num.replace(/\s+/g, "");
+  const getCardBrand = (num: string = "") => {
+    const clean = (num || "").replace(/\s+/g, "");
     if (/^4/.test(clean)) return "visa";
     if (/^(5[1-5]|2[2-7])/.test(clean)) return "mastercard";
     if (/^3[47]/.test(clean)) return "amex";
     return null;
   };
 
-  const detectedBrand = getCardBrand(cardData.number);
+  const detectedBrand = getCardBrand(safeCardData.number);
 
   // Format Card Number (XXXX XXXX XXXX XXXX)
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,10 +128,10 @@ export default function PaymentMethodV1({
       const p1 = truncated.slice(0, 4);
       const p2 = truncated.slice(4, 10);
       const p3 = truncated.slice(10, 15);
-      onCardDataChange("number", [p1, p2, p3].filter(Boolean).join(" "));
+      onCardDataChange?.("number", [p1, p2, p3].filter(Boolean).join(" "));
     } else {
       const parts = truncated.match(/.{1,4}/g) || [];
-      onCardDataChange("number", parts.join(" "));
+      onCardDataChange?.("number", parts.join(" "));
     }
   };
 
@@ -129,9 +139,9 @@ export default function PaymentMethodV1({
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
     if (raw.length >= 3) {
-      onCardDataChange("expiry", `${raw.slice(0, 2)}/${raw.slice(2)}`);
+      onCardDataChange?.("expiry", `${raw.slice(0, 2)}/${raw.slice(2)}`);
     } else {
-      onCardDataChange("expiry", raw);
+      onCardDataChange?.("expiry", raw);
     }
   };
 
@@ -139,7 +149,7 @@ export default function PaymentMethodV1({
   const handleCvcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const maxLen = detectedBrand === "amex" ? 4 : 3;
     const raw = e.target.value.replace(/\D/g, "").slice(0, maxLen);
-    onCardDataChange("cvc", raw);
+    onCardDataChange?.("cvc", raw);
   };
 
   return (
@@ -232,8 +242,8 @@ export default function PaymentMethodV1({
                       type="text"
                       required
                       placeholder="Nom complet figurant sur la carte"
-                      value={cardData.name}
-                      onChange={(e) => onCardDataChange("name", e.target.value.toUpperCase())}
+                      value={safeCardData.name}
+                      onChange={(e) => onCardDataChange?.("name", e.target.value.toUpperCase())}
                       className="w-full h-11 px-3.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
                     />
                   </div>
@@ -249,7 +259,7 @@ export default function PaymentMethodV1({
                         required
                         maxLength={19}
                         placeholder="4242 •••• •••• 4242"
-                        value={cardData.number}
+                        value={safeCardData.number}
                         onChange={handleCardNumberChange}
                         className="w-full h-11 pl-3.5 pr-14 rounded-xl border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
                       />
@@ -278,7 +288,7 @@ export default function PaymentMethodV1({
                         required
                         maxLength={5}
                         placeholder="MM / AA"
-                        value={cardData.expiry}
+                        value={safeCardData.expiry}
                         onChange={handleExpiryChange}
                         className="w-full h-11 px-3.5 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
                       />
@@ -294,7 +304,7 @@ export default function PaymentMethodV1({
                           required
                           maxLength={detectedBrand === "amex" ? 4 : 3}
                           placeholder={detectedBrand === "amex" ? "••••" : "•••"}
-                          value={cardData.cvc}
+                          value={safeCardData.cvc}
                           onChange={handleCvcChange}
                           className="w-full h-11 pl-3.5 pr-9 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
                         />
@@ -312,8 +322,8 @@ export default function PaymentMethodV1({
                     <label className="flex items-center gap-2.5 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
                       <input
                         type="checkbox"
-                        checked={cardData.saveCard}
-                        onChange={(e) => onCardDataChange("saveCard", e.target.checked)}
+                        checked={safeCardData.saveCard}
+                        onChange={(e) => onCardDataChange?.("saveCard", e.target.checked)}
                         className="rounded border-gray-300 text-emerald-700 focus:ring-emerald-700 size-4 cursor-pointer"
                       />
                       <span>Mémoriser ma carte pour mes prochains achats</span>

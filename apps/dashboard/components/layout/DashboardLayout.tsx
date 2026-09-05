@@ -14,6 +14,10 @@ export default function DashboardLayout({
   children,
   defaultUserRole = "master",
 }: DashboardLayoutProps) {
+  const pathname = usePathname();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+
   useEffect(() => {
     setIsMobileSidebarOpen(false);
   }, [pathname]);
