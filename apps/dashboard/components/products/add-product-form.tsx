@@ -84,13 +84,13 @@ export default function AddProductForm() {
   const [primaryImage, setPrimaryImage] = useState<string | null>(null);
   const [textureImage, setTextureImage] = useState<string | null>(null);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: "primary" | "texture") => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "primary" | "texture") => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      if (type === "primary") setPrimaryImage(url);
-      else setTextureImage(url);
-      toast.success("Image importée avec succès");
+      const preview = URL.createObjectURL(file);
+      if (type === "primary") setPrimaryImage(preview); else setTextureImage(preview);
+      const form = new FormData(); form.set("file", file);
+      try { const response = await fetch("/api/admin/uploads", { method: "POST", body: form }); const json = await response.json(); if (!response.ok) throw new Error(json.error); if (type === "primary") setPrimaryImage(json.data.url); else setTextureImage(json.data.url); URL.revokeObjectURL(preview); toast.success("Image envoyée sur Cloudinary."); } catch (error) { toast.error(error instanceof Error ? error.message : "Téléversement impossible."); }
     }
   };
 
@@ -101,13 +101,13 @@ export default function AddProductForm() {
       return;
     }
 
+    if (!primaryImage || primaryImage.startsWith("blob:")) { toast.error("Ajoutez d'abord une image produit via Cloudinary."); return; }
     setSaving(true);
-    // Simulate brief save
-    setTimeout(() => {
-      setSaving(false);
-      toast.success(`L'épice "${name}" a été ajoutée avec succès au catalogue !`);
-      router.push("/products");
-    }, 600);
+    try {
+      const response = await fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, sku, category, origin, format, price, comparePrice, stock: Number(stock), description, image: primaryImage, secondaryImage: textureImage?.startsWith("blob:") ? null : textureImage, isPublished }) });
+      const json = await response.json(); if (!response.ok) throw new Error(json.error);
+      toast.success(`L'épice "${name}" a été ajoutée au catalogue.`); router.push("/products");
+    } catch (error) { toast.error(error instanceof Error ? error.message : "Enregistrement impossible."); setSaving(false); }
   };
 
   return (

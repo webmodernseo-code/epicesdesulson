@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -94,6 +94,7 @@ const statusOptions = [
 ];
 
 export default function ProductListTable() {
+  const [products, setProducts] = useState(SPICES_DATA);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<Option | null>(null);
@@ -101,7 +102,9 @@ export default function ProductListTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const filteredProducts = SPICES_DATA.filter((item) => {
+  useEffect(() => { fetch("/api/admin/products", { cache: "no-store" }).then((r) => r.json()).then((json) => { if (json.success) setProducts(json.data.map((p: any) => ({ id: p.code, name: p.title, category: p.category?.name || "Sans catégorie", price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`, origin: p.origin, stock: p.stockQuantity, status: p.isAvailable ? "Publié" : "Brouillon", format: p.formats?.[0]?.label || "—", image: p.imageRecto }))); }).catch(() => undefined); }, []);
+
+  const filteredProducts = products.filter((item) => {
     const matchesCategory =
       !selectedCategory?.value || item.category === selectedCategory.value;
     const matchesStatus =

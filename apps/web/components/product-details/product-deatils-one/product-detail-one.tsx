@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import StarRating from "@/components/common/star-rating";
 import { useCart } from "@/context/cart-context";
+import { toast } from "@/lib/toast";
 
 const PRODUCT_IMAGES = [
   {

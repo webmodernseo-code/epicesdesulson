@@ -1,8 +1,15 @@
 const { PrismaClient } = require("@prisma/client");
+const { randomBytes, scryptSync } = require("node:crypto");
 
 const prisma = new PrismaClient();
 
 async function main() {
+  const adminPassword = process.env.ADMIN_INITIAL_PASSWORD;
+  if (!adminPassword || adminPassword.length < 12) {
+    throw new Error("ADMIN_INITIAL_PASSWORD doit contenir au moins 12 caractères avant le seed.");
+  }
+  const passwordSalt = randomBytes(16).toString("hex");
+  const passwordHash = `scrypt:${passwordSalt}:${scryptSync(adminPassword, passwordSalt, 64).toString("hex")}`;
   console.log("🌱 Démarrage du Seed Neon PostgreSQL pour Les Épices de Sulson...");
 
   // 1. Nettoyage initial
@@ -196,6 +203,7 @@ async function main() {
     data: {
       name: "Chef Sulson",
       email: "contact@epicesdesulson.com",
+      passwordHash,
       role: "MASTER_ADMIN",
     },
   });

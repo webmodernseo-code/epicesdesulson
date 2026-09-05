@@ -80,10 +80,10 @@ export interface CardFormData {
 }
 
 interface PaymentMethodProps {
-  selectedMethod: "stripe" | "paypal";
-  onSelectMethod: (method: "stripe" | "paypal") => void;
-  cardData: CardFormData;
-  onCardDataChange: (field: keyof CardFormData, value: any) => void;
+  selectedMethod?: "stripe" | "paypal";
+  onSelectMethod?: (method: "stripe" | "paypal") => void;
+  cardData?: CardFormData;
+  onCardDataChange?: (field: keyof CardFormData, value: any) => void;
   onPaypalSubmit?: () => void;
   isProcessing?: boolean;
 }
@@ -185,14 +185,14 @@ export default function PaymentMethodV1({
           {/* Option Header */}
           <div
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
-            onClick={() => onSelectMethod("stripe")}
+            onClick={() => onSelectMethod?.("stripe")}
           >
             <div className="flex items-center gap-3">
               <input
                 type="radio"
                 name="payment-method-selector"
                 checked={selectedMethod === "stripe"}
-                onChange={() => onSelectMethod("stripe")}
+                onChange={() => onSelectMethod?.("stripe")}
                 className="size-4.5 text-emerald-700 accent-emerald-700 cursor-pointer"
               />
               <div>
@@ -222,9 +222,19 @@ export default function PaymentMethodV1({
             </div>
           </div>
 
-          {/* Form Fields when Stripe is active */}
+          {selectedMethod === "stripe" && (
+            <div className="mt-3.5 border-t border-gray-200/80 pt-4 flex items-start gap-2.5 text-xs text-gray-600">
+              <svg className="size-4 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect width="18" height="11" x="3" y="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span>Vous saisirez vos informations bancaires sur la page sécurisée Stripe. Elles ne transitent pas par notre site.</span>
+            </div>
+          )}
+
+          {/* Stripe Checkout collecte les données sensibles. */}
           <AnimatePresence initial={false}>
-            {selectedMethod === "stripe" && (
+            {false && selectedMethod === "stripe" && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -357,14 +367,14 @@ export default function PaymentMethodV1({
           {/* Option Header */}
           <div
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
-            onClick={() => onSelectMethod("paypal")}
+            onClick={() => onSelectMethod?.("paypal")}
           >
             <div className="flex items-center gap-3">
               <input
                 type="radio"
                 name="payment-method-selector"
                 checked={selectedMethod === "paypal"}
-                onChange={() => onSelectMethod("paypal")}
+                onChange={() => onSelectMethod?.("paypal")}
                 className="size-4.5 text-[#0079C1] accent-[#0079C1] cursor-pointer"
               />
               <div>
@@ -387,7 +397,7 @@ export default function PaymentMethodV1({
 
           {/* Compact & Ultra-Premium PayPal Button when active */}
           <AnimatePresence initial={false}>
-            {selectedMethod === "paypal" && (
+            {false && selectedMethod === "paypal" && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import StarRating from "@/components/common/star-rating";
 import { useCart } from "@/context/cart-context";
+import { toast } from "@/lib/toast";
 
 const SPICE_FORMATS = [
   { id: "100g", name: "Pot Verre 100g", multiplier: 1 },

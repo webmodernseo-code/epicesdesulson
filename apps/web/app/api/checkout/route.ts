@@ -18,6 +18,13 @@ export async function POST(req: Request) {
       paymentMethod = "stripe",
     } = body;
 
+    if (!["stripe", "paypal"].includes(paymentMethod)) {
+      return NextResponse.json({ success: false, error: "Moyen de paiement invalide." }, { status: 400 });
+    }
+    if (!customerName || !customerEmail || !shippingStreet || !shippingCity || !shippingPostal) {
+      return NextResponse.json({ success: false, error: "Les coordonnées de livraison sont requises." }, { status: 400 });
+    }
+
     if (!items || items.length === 0) {
       return NextResponse.json(
         { success: false, error: "Le panier est vide." },
@@ -27,18 +34,18 @@ export async function POST(req: Request) {
 
     // 1. Create and validate order in domain service / database
     const order = await OrdersService.createOrder({
-      customerName: customerName || "Client Sulson",
-      customerEmail: customerEmail || "client@epicesdesulson.com",
+      customerName,
+      customerEmail,
       customerPhone: customerPhone || undefined,
-      shippingStreet: shippingStreet || "Adresse",
-      shippingCity: shippingCity || "Paris",
-      shippingPostal: shippingPostal || "75001",
+      shippingStreet,
+      shippingCity,
+      shippingPostal,
       shippingCountry: shippingCountry || "France",
       couponCode,
       items,
     });
 
-    const origin = req.headers.get("origin") || "https://epicesdesulson.com";
+    const origin = (process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin).replace(/\/$/, "");
 
     // ── 2. PAYPAL INTEGRATION (STRICTEMENT PAIEMENT EN 1 FOIS) ──
     if (paymentMethod === "paypal") {
@@ -148,6 +155,10 @@ export async function POST(req: Request) {
               const approveLink = paypalOrder.links?.find((l: any) => l.rel === "approve")?.href;
 
               if (approveLink) {
+                await prisma.order.updateMany({
+                  where: { id: order.id },
+                  data: { stripeSessionId: paypalOrder.id, paymentMethod: "paypal", paymentStatus: "PENDING" },
+                });
                 return NextResponse.json({
                   success: true,
                   orderId: order.id,
@@ -167,21 +178,7 @@ export async function POST(req: Request) {
         }
       }
 
-      // Redirect to official PayPal portal with return URL
-      const returnUrl = encodeURIComponent(
-        `${origin}/order-successful?orderNumber=${order.orderNumber}&amount=${order.totalAmount}&provider=paypal`
-      );
-      const fallbackPaypalUrl = `https://www.paypal.com/signin?return_url=${returnUrl}`;
-
-      return NextResponse.json({
-        success: true,
-        orderId: order.id,
-        orderNumber: order.orderNumber,
-        totalAmount: order.totalAmount,
-        checkoutUrl: fallbackPaypalUrl,
-        mode: "paypal_gateway",
-        note: "Redirection vers PayPal (Paiement 1 fois).",
-      });
+      return NextResponse.json({ success: false, error: "PayPal n'est pas configuré ou est indisponible." }, { status: 503 });
     }
 
     // ── 3. STRIPE INTEGRATION (CARTE BANCAIRE & APPLE PAY) ──
@@ -216,14 +213,12 @@ export async function POST(req: Request) {
         stripeParams.append("metadata[orderNumber]", order.orderNumber);
         stripeParams.append("metadata[orderId]", order.id);
 
-        items.forEach((item: any, idx: number) => {
-          const unitPriceCents = Math.round(
-            (parseFloat(item.currentPrice.replace("€", "").replace(",", ".").trim()) || 6.9) * 100
-          );
+        order.items.forEach((item, idx) => {
+          const unitPriceCents = Math.round(item.unitPrice * 100);
           stripeParams.append(`line_items[${idx}][price_data][currency]`, "eur");
           stripeParams.append(
             `line_items[${idx}][price_data][product_data][name]`,
-            `${item.title} (${item.pack || "100g"})`
+            `${item.productName} (${item.formatLabel})`
           );
           stripeParams.append(
             `line_items[${idx}][price_data][product_data][description]`,
@@ -235,7 +230,7 @@ export async function POST(req: Request) {
           );
           stripeParams.append(
             `line_items[${idx}][quantity]`,
-            (item.quantity || 1).toString()
+            item.quantity.toString()
           );
         });
 
@@ -250,6 +245,10 @@ export async function POST(req: Request) {
 
         if (stripeRes.ok) {
           const session = await stripeRes.json();
+          await prisma.order.updateMany({
+            where: { id: order.id },
+            data: { stripeSessionId: session.id, paymentMethod: "stripe", paymentStatus: "PENDING" },
+          });
           return NextResponse.json({
             success: true,
             orderId: order.id,
@@ -264,16 +263,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fallback confirmation for card / test mode
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      orderNumber: order.orderNumber,
-      totalAmount: order.totalAmount,
-      checkoutUrl: `${origin}/order-successful?orderNumber=${order.orderNumber}&amount=${order.totalAmount}&provider=stripe`,
-      mode: "test_mode",
-      note: "Commande enregistrée avec succès.",
-    });
+    return NextResponse.json({ success: false, error: "Stripe n'est pas configuré ou est indisponible." }, { status: 503 });
   } catch (error: any) {
     return NextResponse.json(
       {

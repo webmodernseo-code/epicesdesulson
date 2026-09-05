@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,8 @@ function maskSecret(key: string | null | undefined): string {
 }
 
 // GET /api/settings/payment-gateways
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!isAdmin(req)) return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
   try {
     let stripeConfig = null;
     let paypalConfig = null;
@@ -60,7 +62,8 @@ export async function GET() {
 }
 
 // POST /api/settings/payment-gateways
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  if (!isAdmin(req)) return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
   try {
     const body = await req.json();
     const { action, gateway, isEnabled, isLiveMode, publishableKey, secretKey, webhookSecret, clientId } = body;

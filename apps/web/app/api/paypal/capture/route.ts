@@ -55,7 +55,17 @@ export async function GET(req: Request) {
           });
 
           if (captureRes.ok) {
-            await OrdersService.markOrderPaid(orderNumber, token);
+            const capture = await captureRes.json();
+            const matchingOrder = await prisma.order.findFirst({
+              where: { orderNumber, stripeSessionId: token, paymentMethod: "paypal" },
+            });
+            if (capture.status === "COMPLETED" && matchingOrder) {
+              const captureId = capture.purchase_units?.[0]?.payments?.captures?.[0]?.id;
+              await OrdersService.markOrderPaid(orderNumber, captureId);
+              return NextResponse.redirect(
+                `${origin}/order-successful?orderNumber=${encodeURIComponent(orderNumber)}&provider=paypal`
+              );
+            }
           }
         }
       }
@@ -64,10 +74,5 @@ export async function GET(req: Request) {
     }
   }
 
-  // Always mark paid if returning from successful PayPal redirect
-  await OrdersService.markOrderPaid(orderNumber, token || undefined);
-
-  return NextResponse.redirect(
-    `${origin}/order-successful?orderNumber=${orderNumber}&session_id=${token || "paypal_direct"}&provider=paypal`
-  );
+  return NextResponse.redirect(`${origin}/checkout?error=payment_failed`);
 }

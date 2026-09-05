@@ -213,3 +213,17 @@ model PaymentGatewayConfig {
   @@map("payment_gateway_configs")
 }
 
+model MediaStorageConfig {
+  id            String   @id @default(cuid())
+  provider      String   @unique @default("cloudinary")
+  cloudName     String
+  apiKey        String
+  apiSecret     String
+  uploadFolder  String   @default("les-epices-de-sulson/products")
+  isEnabled     Boolean  @default(false)
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+
+  @@map("media_storage_configs")
+}
+

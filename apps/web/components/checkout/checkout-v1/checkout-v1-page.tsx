@@ -87,27 +87,13 @@ export default function CheckoutV1Page() {
   const handleSubmitOrder = async (methodOverride?: "stripe" | "paypal", couponCode?: string) => {
     const activeMethod = methodOverride || paymentMethod;
 
-    // For Card payments, ensure required fields are validated
-    if (activeMethod === "stripe") {
-      const isValid = validateForm();
-      if (!isValid) return;
-    }
+    const isValid = validateForm();
+    if (!isValid) return;
 
-    // Default sample cart items if cart was empty during live testing
-    const checkoutItems =
-      items.length > 0
-        ? items
-        : [
-            {
-              id: "pack-4-saveurs-sulson",
-              productId: "SUL-301",
-              title: "Coffret Prestige 4 Saveurs Sulson",
-              currentPrice: "27.60 €",
-              quantity: 1,
-              pack: "100g",
-              image: "/images/products/pack-4-saveurs-sulson.jpg",
-            },
-          ];
+    if (items.length === 0) {
+      toast.error("Votre panier est vide.");
+      return;
+    }
 
     setIsProcessing(true);
 
@@ -130,7 +116,7 @@ export default function CheckoutV1Page() {
           shippingCountry: shippingData.country || "France",
           deliveryInstructions: shippingData.instructions.trim() || undefined,
           couponCode: couponCode || undefined,
-          items: checkoutItems,
+          items,
           paymentMethod: activeMethod,
         }),
       });
@@ -138,24 +124,16 @@ export default function CheckoutV1Page() {
       const data = await res.json();
 
       if (data.success && data.checkoutUrl) {
-        toast.success("Redirection vers PayPal...");
+        toast.success(activeMethod === "paypal" ? "Redirection vers PayPal..." : "Redirection vers Stripe...");
         window.location.href = data.checkoutUrl;
       } else {
-        if (activeMethod === "paypal") {
-          window.location.href = "https://www.paypal.com/signin";
-        } else {
-          toast.error(data.error || "Erreur lors de la validation du paiement.");
-          setIsProcessing(false);
-        }
+        toast.error(data.error || "Erreur lors de la validation du paiement.");
+        setIsProcessing(false);
       }
     } catch (err: any) {
       console.error("Checkout submission failed:", err);
-      if (activeMethod === "paypal") {
-        window.location.href = "https://www.paypal.com/signin";
-      } else {
-        toast.error("Erreur de communication avec le serveur.");
-        setIsProcessing(false);
-      }
+      toast.error("Erreur de communication avec le serveur.");
+      setIsProcessing(false);
     }
   };
 

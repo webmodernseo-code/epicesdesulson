@@ -1,7 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { OrdersService } from "@/lib/orders-service";
+import { isAdmin } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!isAdmin(req)) {
+    return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
+  }
   try {
     const orders = await OrdersService.listOrders();
     return NextResponse.json({

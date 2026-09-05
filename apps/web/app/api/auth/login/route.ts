@@ -1,58 +1,42 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { createSessionToken, SESSION_COOKIE, verifyPassword } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const { email, password, role } = await req.json();
-
-    if (!email) {
-      return NextResponse.json(
-        { success: false, error: "Email requis." },
-        { status: 400 }
-      );
+    const { email, password } = await req.json();
+    if (typeof email !== "string" || typeof password !== "string" || !email.trim() || !password) {
+      return NextResponse.json({ success: false, error: "Email et mot de passe requis." }, { status: 400 });
     }
 
-    // Role assignment (defaults to customer, or admin if requested with valid demo/master credentials)
-    const userRole = role === "master" || email.includes("admin") ? "ADMIN" : "CUSTOMER";
-    const user = {
-      id: "usr_" + Math.random().toString(36).substring(2, 9),
-      name: email.split("@")[0],
-      email: email.toLowerCase(),
-      role: userRole,
-    };
+    const dbUser = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
+    if (!dbUser || !(await verifyPassword(password, dbUser.passwordHash))) {
+      return NextResponse.json({ success: false, error: "Identifiants invalides." }, { status: 401 });
+    }
 
-    const response = NextResponse.json({
-      success: true,
-      message: `Connexion réussie (${userRole})`,
-      user,
-    });
-
-    // Set secure HTTP-Only cookie for server-side auth guards
+    const user = { id: dbUser.id, name: dbUser.name, email: dbUser.email, role: dbUser.role };
+    const response = NextResponse.json({ success: true, message: "Connexion réussie.", user });
     response.cookies.set({
-      name: "sulson_session",
-      value: JSON.stringify({ userId: user.id, email: user.email, role: userRole }),
+      name: SESSION_COOKIE,
+      value: createSessionToken({ userId: user.id, email: user.email, role: user.role }),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 604800,
       path: "/",
     });
-
-    // Also set a non-sensitive cookie for client UI state
     response.cookies.set({
       name: "userRole",
-      value: userRole.toLowerCase(),
+      value: user.role.toLowerCase(),
       httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 604800,
       path: "/",
     });
-
     return response;
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, error: error.message || "Erreur de connexion" },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Erreur de connexion";
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

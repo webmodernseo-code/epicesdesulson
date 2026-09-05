@@ -14,6 +14,8 @@ interface SearchInputProps {
   placeholder?: string;
   className?: string;
   onSearch?: (query: string) => void;
+  value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const recentSearches = [
@@ -27,6 +29,8 @@ export default function SearchInput({
   placeholder = "Search...",
   className,
   onSearch,
+  value,
+  onChange,
 }: SearchInputProps) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState("");
@@ -54,7 +58,8 @@ export default function SearchInput({
           <ComboboxInput
             className="pl-9 w-full pr-3.5 ring h-9 ring-gray-500/20 py-2 bg-gray-100 border-none rounded-full text-sm focus:outline-none focus:ring-primary transition-all font-normal text-light-primary-text placeholder:text-light-secondary-text"
             placeholder={placeholder}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => { setQuery(event.target.value); onSearch?.(event.target.value); onChange?.(event); }}
+            value={value ?? query}
             // displayValue should return the string to display in input.
             // If selected is set, we show it.
             // If user types, query updates.

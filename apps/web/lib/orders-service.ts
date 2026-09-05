@@ -49,21 +49,36 @@ export class OrdersService {
     if (!input.items || input.items.length === 0) {
       throw new Error("Le panier est vide.");
     }
+    if (input.items.length > 50) throw new Error("Le panier contient trop d'articles.");
+    if (!input.customerName?.trim() || !input.customerEmail?.trim() ||
+        !input.shippingStreet?.trim() || !input.shippingCity?.trim() || !input.shippingPostal?.trim()) {
+      throw new Error("Les coordonnées de livraison sont incomplètes.");
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.customerEmail.trim())) {
+      throw new Error("L'adresse email est invalide.");
+    }
 
     let calculatedSubtotal = 0;
     const validatedItems = [];
 
     for (const item of input.items) {
       // Always verify prices on the server side (never trust client payload)
-      const rawId = item.productId.split("-")[0];
+      if (typeof item.productId !== "string" || typeof item.formatLabel !== "string") {
+        throw new Error("Article invalide.");
+      }
+      const rawId = item.productId.match(/^(SUL-\d+|\d+)/i)?.[1] || item.productId;
       const product = await ProductsService.getProductById(rawId);
       if (!product) {
         throw new Error(`Produit introuvable (ID: ${item.productId})`);
       }
 
-      const priceInfo = await ProductsService.calculatePrice(rawId, item.formatLabel);
-      const unitPrice = priceInfo?.unitPrice || product.basePrice;
-      const quantity = Math.max(1, Math.floor(item.quantity || 1));
+      const selectedFormat = product.formats.find((format) => format.label.toLowerCase() === item.formatLabel.toLowerCase());
+      if (!selectedFormat) throw new Error(`Format invalide pour ${product.title}.`);
+      const unitPrice = selectedFormat.price;
+      const quantity = Math.floor(Number(item.quantity));
+      if (!Number.isFinite(quantity) || quantity < 1 || quantity > 99) {
+        throw new Error("La quantité doit être comprise entre 1 et 99.");
+      }
       const rowTotal = parseFloat((unitPrice * quantity).toFixed(2));
 
       calculatedSubtotal += rowTotal;

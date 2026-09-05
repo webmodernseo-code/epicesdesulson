@@ -86,6 +86,11 @@ export const navItems: NavItem[] = [
         icon: <SettingsIcon className="size-5.5" />,
       },
       {
+        label: "Images produits",
+        href: "/settings/media",
+        icon: <DeliveryBoxIcon className="size-5.5" />,
+      },
+      {
         label: "Administrateurs",
         href: "/admin-users",
         icon: <UserSettings className="size-5.5" />,

@@ -156,7 +156,7 @@ export default function CheckoutCartSummary1({
         type="button"
         disabled={isProcessing}
         onClick={handleTriggerCheckout}
-        className={`w-full py-3.5 px-4 rounded-xl font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${
+        className={`${selectedMethod === "paypal" ? "w-56 sm:w-64 mx-auto h-11 px-5 rounded-full" : "w-full py-3.5 px-4 rounded-xl"} font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${
           selectedMethod === "paypal"
             ? "bg-[#FFC439] hover:bg-[#F4BB38] active:bg-[#E9B131] text-gray-950 border border-[#E5A800]/40"
             : "bg-emerald-800 hover:bg-emerald-900 text-white"

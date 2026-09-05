@@ -1,74 +1,29 @@
 "use client";
 
-import React from "react";
-import { TrendUpIcon, TrendDownIcon } from "../../icons";
+import { useEffect, useState } from "react";
 
-const statsData = [
-  {
-    label: "Chiffre d'Affaires",
-    value: "14 850 €",
-    trend: "+12.4%",
-    isPositive: true,
-    bgClass: "bg-emerald-50 border border-emerald-100",
-  },
-  {
-    label: "Commandes Traitées",
-    value: "348",
-    trend: "+8.2%",
-    isPositive: true,
-    bgClass: "bg-amber-50 border border-amber-100",
-  },
-  {
-    label: "Taux de Conversion",
-    value: "3,8%",
-    trend: "+1.2%",
-    isPositive: true,
-    bgClass: "bg-blue-50 border border-blue-100",
-  },
-  {
-    label: "Panier Moyen",
-    value: "42,70 €",
-    trend: "+4.3%",
-    isPositive: true,
-    bgClass: "bg-purple-50 border border-purple-100",
-  },
-];
+type Summary = { revenue: number; revenueTrend: number | null; paidOrders: number; averageOrder: number; activeProducts: number; lowStock: number };
+
+const euros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
 export default function DashboardStatsGrid() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      {statsData.map((stat, index) => (
-        <div
-          key={index}
-          className={`${stat.bgClass} p-5 rounded-2xl flex flex-col justify-between relative shadow-xs`}
-        >
-          <div>
-            <p className="text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-              {stat.label}
-            </p>
-            <h3 className="text-2xl font-bold text-gray-900 font-urbanist">
-              {stat.value}
-            </h3>
-          </div>
+  const [data, setData] = useState<Summary | null>(null);
+  const [error, setError] = useState(false);
+  useEffect(() => {
+    fetch("/api/admin/summary", { cache: "no-store" }).then(async (res) => {
+      if (!res.ok) throw new Error();
+      return res.json();
+    }).then((json) => setData(json.data)).catch(() => setError(true));
+  }, []);
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-1 bg-white/90 px-2.5 py-1 text-xs rounded-full shadow-2xs border border-gray-100">
-              <span
-                className={`text-xs font-bold ${stat.isPositive ? "text-emerald-600" : "text-red-500"}`}
-              >
-                {stat.trend}
-              </span>
-              <span className={stat.isPositive ? "text-emerald-600" : "text-red-500"}>
-                {stat.isPositive ? (
-                  <TrendUpIcon width={14} height={14} />
-                ) : (
-                  <TrendDownIcon width={14} height={14} />
-                )}
-              </span>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  if (error) return <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">Données indisponibles : vérifiez la connexion Neon dans la configuration du déploiement.</div>;
+  if (!data) return <div className="h-28 animate-pulse rounded-xl bg-gray-100" />;
+
+  const stats = [
+    { label: "Chiffre d’affaires du mois", value: euros.format(data.revenue), note: data.revenueTrend == null ? "Premier mois mesuré" : `${data.revenueTrend >= 0 ? "+" : ""}${data.revenueTrend.toFixed(1)} % vs mois précédent`, color: "bg-emerald-50 border-emerald-100" },
+    { label: "Commandes payées", value: String(data.paidOrders), note: "Mois en cours", color: "bg-amber-50 border-amber-100" },
+    { label: "Panier moyen", value: euros.format(data.averageOrder), note: "Commandes encaissées", color: "bg-blue-50 border-blue-100" },
+    { label: "Catalogue actif", value: String(data.activeProducts), note: data.lowStock ? `${data.lowStock} produit(s) en stock bas` : "Stocks suffisants", color: "bg-purple-50 border-purple-100" },
+  ];
+  return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">{stats.map((stat) => <div key={stat.label} className={`${stat.color} border p-5 rounded-2xl`}><p className="text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">{stat.label}</p><h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3><p className="mt-3 text-xs text-gray-600">{stat.note}</p></div>)}</div>;
 }
