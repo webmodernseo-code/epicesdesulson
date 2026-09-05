@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Crisp inline SVG payment logos for 100% vector sharpness on all screens
@@ -52,7 +53,28 @@ function ApplePaySvg({ className = "h-5 w-auto" }: { className?: string }) {
   );
 }
 
+function PaypalSvg({ className = "h-5 w-auto" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="36" height="24" rx="4" fill="#003087" />
+      <path
+        d="M14.5 6.5H20.2C22.2 6.5 23.6 7.4 23.3 9.4C22.9 11.8 21.1 13 19.3 13H17.2L16.2 18.5H13.5L15.3 7.8C15.4 7.2 15 6.5 14.5 6.5Z"
+        fill="#0079C1"
+      />
+      <path
+        d="M17.2 8.5H21.5C23.2 8.5 24.5 9.4 24.2 11.2C23.8 13.5 22.1 14.7 20.3 14.7H18.2L17.5 18.5H15.2L17.2 8.5Z"
+        fill="#00457C"
+      />
+      <path
+        d="M16.5 10.2H20.2C21.8 10.2 23 11 22.8 12.5C22.4 14.5 21 15.5 19.3 15.5H17.5L16.8 19H14.8L16.5 10.2Z"
+        fill="#0079C1"
+      />
+    </svg>
+  );
+}
+
 export default function PaymentMethodV1() {
+  const [selectedMethod, setSelectedMethod] = useState<"stripe" | "paypal">("stripe");
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvc, setCardCvc] = useState("");
@@ -106,7 +128,7 @@ export default function PaymentMethodV1() {
   };
 
   return (
-    <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden">
+    <div className="border border-gray-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-2xs overflow-hidden">
       {/* Header bar in sleek luxury dark green */}
       <div className="py-3 px-4 sm:px-6 bg-gradient-to-r from-primary-darker via-primary-dark to-primary text-white flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
         <div className="flex items-center gap-2">
@@ -119,20 +141,30 @@ export default function PaymentMethodV1() {
         </div>
         <span className="text-[11px] font-semibold text-emerald-100 bg-white/15 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 self-start sm:self-auto">
           <i className="hgi hgi-stroke hgi-lock-password text-xs text-emerald-200" />
-          <span>Cryptage SSL & 3D Secure</span>
+          <span>Cryptage SSL 256-bit & 3D Secure</span>
         </span>
       </div>
 
-      <div className="p-4 sm:p-6">
-        {/* Main Payment Container */}
-        <div className="border border-gray-200 rounded-xl p-3.5 sm:p-5 bg-gray-50/50 space-y-4">
-          {/* Header Row: Radio + Title + Crisp Vector Logos */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-gray-200/80">
+      <div className="p-4 sm:p-6 space-y-4">
+        {/* ── OPTION 1: CARTE BANCAIRE & APPLE PAY (STRIPE) ── */}
+        <div
+          className={`border rounded-xl p-3.5 sm:p-5 transition-all duration-200 ${
+            selectedMethod === "stripe"
+              ? "border-emerald-700/40 bg-gray-50/70 shadow-xs"
+              : "border-gray-200 bg-white hover:border-gray-300"
+          }`}
+        >
+          {/* Header Row */}
+          <div
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 cursor-pointer"
+            onClick={() => setSelectedMethod("stripe")}
+          >
             <div className="flex items-center gap-2.5">
               <input
                 type="radio"
-                name="payment-method"
-                defaultChecked
+                name="payment-method-selector"
+                checked={selectedMethod === "stripe"}
+                onChange={() => setSelectedMethod("stripe")}
                 className="size-4 text-primary accent-primary cursor-pointer"
               />
               <div>
@@ -145,7 +177,7 @@ export default function PaymentMethodV1() {
               </div>
             </div>
 
-            {/* Crisp Inline Vector SVGs */}
+            {/* Vector SVGs */}
             <div className="flex items-center gap-1.5 pl-6 sm:pl-0">
               <div className={`transition-all rounded overflow-hidden shadow-2xs ${detectedBrand === "visa" ? "ring-2 ring-primary" : ""}`}>
                 <VisaSvg className="h-5 w-auto" />
@@ -162,108 +194,181 @@ export default function PaymentMethodV1() {
             </div>
           </div>
 
-          {/* Form Fields: Elegant, Clean, Normal Sentence Case */}
-          <div className="space-y-3 pt-0.5">
-            {/* Titulaire de la carte */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Titulaire de la carte <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Nom figurant sur la carte"
-                value={cardName}
-                onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
-              />
-            </div>
+          {/* Form Fields when Stripe is active */}
+          <AnimatePresence initial={false}>
+            {selectedMethod === "stripe" && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="space-y-3 pt-3 mt-3 border-t border-gray-200/80">
+                  {/* Titulaire de la carte */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Titulaire de la carte <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nom figurant sur la carte"
+                      value={cardName}
+                      onChange={(e) => setCardName(e.target.value.toUpperCase())}
+                      className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                    />
+                  </div>
 
-            {/* Numéro de carte */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Numéro de carte <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  required
-                  maxLength={19}
-                  placeholder="4242 •••• •••• 4242"
-                  value={cardNumber}
-                  onChange={handleCardNumberChange}
-                  className="w-full h-10 pl-3 pr-12 rounded-lg border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
-                />
-                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
-                  {detectedBrand === "visa" && <VisaSvg className="h-4 w-auto" />}
-                  {detectedBrand === "mastercard" && <MastercardSvg className="h-4 w-auto" />}
-                  {detectedBrand === "amex" && <AmexSvg className="h-4 w-auto" />}
-                  {!detectedBrand && (
-                    <i className="hgi hgi-stroke hgi-credit-card text-base text-gray-400" />
-                  )}
-                </div>
-              </div>
-            </div>
+                  {/* Numéro de carte */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Numéro de carte <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        maxLength={19}
+                        placeholder="4242 •••• •••• 4242"
+                        value={cardNumber}
+                        onChange={handleCardNumberChange}
+                        className="w-full h-10 pl-3 pr-12 rounded-lg border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                      />
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                        {detectedBrand === "visa" && <VisaSvg className="h-4 w-auto" />}
+                        {detectedBrand === "mastercard" && <MastercardSvg className="h-4 w-auto" />}
+                        {detectedBrand === "amex" && <AmexSvg className="h-4 w-auto" />}
+                        {!detectedBrand && (
+                          <i className="hgi hgi-stroke hgi-credit-card text-base text-gray-400" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
-            {/* Date d'expiration & Cryptogramme CVC */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Expiration (MM/AA) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  maxLength={5}
-                  placeholder="MM / AA"
-                  value={cardExpiry}
-                  onChange={handleExpiryChange}
-                  className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
-                />
-              </div>
+                  {/* Date d'expiration & CVC */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Expiration (MM/AA) <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={5}
+                        placeholder="MM / AA"
+                        value={cardExpiry}
+                        onChange={handleExpiryChange}
+                        className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                      />
+                    </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Cryptogramme (CVC) <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    required
-                    maxLength={detectedBrand === "amex" ? 4 : 3}
-                    placeholder={detectedBrand === "amex" ? "••••" : "•••"}
-                    value={cardCvc}
-                    onChange={handleCvcChange}
-                    className="w-full h-10 pl-3 pr-8 rounded-lg border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
-                  />
-                  <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400">
-                    <i className="hgi hgi-stroke hgi-shield-security text-sm" />
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        Cryptogramme (CVC) <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="password"
+                          required
+                          maxLength={detectedBrand === "amex" ? 4 : 3}
+                          placeholder={detectedBrand === "amex" ? "••••" : "•••"}
+                          value={cardCvc}
+                          onChange={handleCvcChange}
+                          className="w-full h-10 pl-3 pr-8 rounded-lg border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                        />
+                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                          <i className="hgi hgi-stroke hgi-shield-security text-sm" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Save Card Checkbox */}
+                  <div className="pt-0.5">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
+                      <input
+                        type="checkbox"
+                        checked={saveCard}
+                        onChange={(e) => setSaveCard(e.target.checked)}
+                        className="rounded border-gray-300 text-primary focus:ring-primary size-3.5 cursor-pointer"
+                      />
+                      <span>Mémoriser ma carte pour mes prochains achats</span>
+                    </label>
+                  </div>
+
+                  {/* Minimalist Reassurance */}
+                  <div className="pt-2 border-t border-gray-200/70 flex items-center gap-2 text-[11px] text-gray-500">
+                    <i className="hgi hgi-stroke hgi-shield-check text-emerald-600 text-sm shrink-0" />
+                    <span>
+                      Transaction chiffrée <strong>SSL 256-bit</strong> certifiée PCI-DSS Niveau 1 par <strong>Stripe</strong>.
+                    </span>
                   </div>
                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ── OPTION 2: PAYPAL (COMPTE & 4X SANS FRAIS) ── */}
+        <div
+          className={`border rounded-xl p-3.5 sm:p-5 transition-all duration-200 ${
+            selectedMethod === "paypal"
+              ? "border-blue-500/40 bg-blue-50/30 shadow-xs"
+              : "border-gray-200 bg-white hover:border-gray-300"
+          }`}
+        >
+          {/* Header Row */}
+          <div
+            className="flex items-center justify-between gap-2.5 cursor-pointer"
+            onClick={() => setSelectedMethod("paypal")}
+          >
+            <div className="flex items-center gap-2.5">
+              <input
+                type="radio"
+                name="payment-method-selector"
+                checked={selectedMethod === "paypal"}
+                onChange={() => setSelectedMethod("paypal")}
+                className="size-4 text-blue-600 accent-blue-600 cursor-pointer"
+              />
+              <div>
+                <span className="text-sm font-bold text-gray-900 block leading-tight">
+                  PayPal
+                </span>
+                <span className="text-[11px] text-gray-500 block">
+                  Paiement en 1 clic ou en 4X sans frais
+                </span>
               </div>
             </div>
 
-            {/* Save Card Checkbox */}
-            <div className="pt-0.5">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
-                <input
-                  type="checkbox"
-                  checked={saveCard}
-                  onChange={(e) => setSaveCard(e.target.checked)}
-                  className="rounded border-gray-300 text-primary focus:ring-primary size-3.5 cursor-pointer"
-                />
-                <span>Mémoriser ma carte pour mes prochains achats</span>
-              </label>
-            </div>
-
-            {/* Minimalist, Elegant Reassurance line */}
-            <div className="pt-2 border-t border-gray-200/70 flex items-center gap-2 text-[11px] text-gray-500">
-              <i className="hgi hgi-stroke hgi-shield-check text-emerald-600 text-sm shrink-0" />
-              <span>
-                Transaction chiffrée <strong>SSL 256-bit</strong> certifiée PCI-DSS Niveau 1 par <strong>Stripe</strong>.
-              </span>
+            <div className="rounded overflow-hidden shadow-2xs">
+              <PaypalSvg className="h-5 w-auto" />
             </div>
           </div>
+
+          {/* Details when PayPal is active */}
+          <AnimatePresence initial={false}>
+            {selectedMethod === "paypal" && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-3.5 mt-3 border-t border-blue-100 space-y-3">
+                  <div className="p-3 bg-white rounded-lg border border-blue-100 flex items-start gap-2.5 text-xs text-gray-600 leading-relaxed">
+                    <span className="size-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
+                      ℹ
+                    </span>
+                    <p>
+                      Vous serez redirigé en toute sécurité vers l'interface officielle <strong>PayPal</strong> pour valider votre commande via votre solde PayPal ou votre compte bancaire lié.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
