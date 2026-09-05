@@ -19,9 +19,9 @@ const statsData = [
     bgClass: "bg-amber-50 border border-amber-100",
   },
   {
-    label: "Clients Boutique",
-    value: "1 250",
-    trend: "+15.1%",
+    label: "Taux de Conversion",
+    value: "3,8%",
+    trend: "+1.2%",
     isPositive: true,
     bgClass: "bg-blue-50 border border-blue-100",
   },

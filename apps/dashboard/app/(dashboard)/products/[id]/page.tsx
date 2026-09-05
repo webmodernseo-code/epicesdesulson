@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import BasicInfo from "@/components/products/product-details/basic-info";
 import ProductMedia from "@/components/products/product-details/product-media";
 import ProductVariantTable from "@/components/products/product-details/product-variant-table";
-import Discount from "@/components/products/product-details/discount";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default function ProductDetailsPage({
@@ -21,16 +20,15 @@ export default function ProductDetailsPage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <PageHeader title="Product Details" backHref="/products" />
+          <PageHeader title="Détails du Produit" backHref="/products" />
         </div>
         <Button variant="outline" size="xs" href={`/products/edit/${id}`}>
-          Edit
+          Modifier
         </Button>
       </div>
       <BasicInfo />
       <ProductMedia />
       <ProductVariantTable />
-      <Discount />
     </div>
   );
 }

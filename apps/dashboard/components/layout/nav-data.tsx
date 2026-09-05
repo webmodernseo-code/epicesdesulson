@@ -3,13 +3,8 @@ import {
   DashboardGridIcon,
   DeliveryBoxIcon,
   ShoppingCartIcon,
-  UserGroupIcon,
   TransactionIcon,
-  CuponPercentIcon,
-  FlashIcon,
-  StructureIcon,
   SettingsIcon,
-  StoreIcon,
   CartRemoveIcon,
   UserSettings,
   CreditCardPosIcon,
@@ -78,39 +73,7 @@ export const navItems: NavItem[] = [
   },
   {
     label: "Category",
-    category: "CLIENTS & ÉQUIPE",
-    items: [
-      {
-        label: "Clients & Newsletter",
-        href: "/customers",
-        icon: <UserGroupIcon className="size-5.5" />,
-      },
-      {
-        label: "Administrateurs",
-        href: "/admin-users",
-        icon: <UserSettings className="size-5.5" />,
-      },
-    ],
-  },
-  {
-    label: "Category",
-    category: "PROMOTIONS & FIDÉLITÉ",
-    items: [
-      {
-        label: "Codes Promo (ex: SULSON10)",
-        href: "/coupon",
-        icon: <CuponPercentIcon className="size-5.5" />,
-      },
-      {
-        label: "Ventes Flash & Packs",
-        href: "/flash-sales",
-        icon: <FlashIcon className="size-5.5" />,
-      },
-    ],
-  },
-  {
-    label: "Category",
-    category: "PASSERELLES & CONFIGURATION",
+    category: "PARAMÈTRES & CONFIGURATION",
     items: [
       {
         label: "Passerelles API (Stripe & PayPal)",
@@ -121,6 +84,11 @@ export const navItems: NavItem[] = [
         label: "Paramètres Boutique",
         href: "/settings/general",
         icon: <SettingsIcon className="size-5.5" />,
+      },
+      {
+        label: "Administrateurs",
+        href: "/admin-users",
+        icon: <UserSettings className="size-5.5" />,
       },
       {
         label: "Support Client & Chatbot",
