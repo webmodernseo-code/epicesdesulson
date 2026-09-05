@@ -4,71 +4,80 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Crisp inline SVG payment logos for 100% vector sharpness on all screens
-function VisaSvg({ className = "h-5 w-auto" }: { className?: string }) {
+// Crisp inline SVG payment logos with comfortable, standard dimensions
+function VisaSvg({ className = "h-7 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="36" height="24" rx="4" fill="#1434CB" />
+    <svg className={className} viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="30" rx="5" fill="#1434CB" />
       <path
-        d="M14.5 16.5L16.4 7.5H18.7L16.8 16.5H14.5ZM23.8 7.7C23.3 7.5 22.5 7.3 21.5 7.3C19.1 7.3 17.4 8.6 17.4 10.4C17.4 11.8 18.6 12.5 19.5 13C20.5 13.5 20.8 13.8 20.8 14.3C20.8 15 19.9 15.4 19.1 15.4C18 15.4 17.3 15.2 16.4 14.8L16 16.7C16.9 17.1 18.2 17.3 19.4 17.3C22 17.3 23.6 16 23.6 14.2C23.6 13 22.8 12.1 21.4 11.4C20.6 11 20.1 10.7 20.1 10.2C20.1 9.7 20.7 9.2 21.8 9.2C22.6 9.2 23.3 9.4 23.8 9.6L23.8 7.7ZM29 16.5H31L29.3 7.5H27.5C27 7.5 26.6 7.8 26.4 8.3L23 16.5H25.4L25.9 15.1H28.7L29 16.5ZM26.5 13.4L27.6 9.9L28.3 13.4H26.5ZM13.8 7.5L11.7 13.6L11.5 12.4C11.1 11.1 9.9 9.6 8.5 8.9L10.5 16.5H13L16.1 7.5H13.8Z"
+        d="M19.5 21L22 9H25.1L22.6 21H19.5ZM31.8 9.3C31.1 9 30 8.8 28.7 8.8C25.5 8.8 23.2 10.5 23.2 12.9C23.2 14.8 24.8 15.7 26 16.4C27.3 17.1 27.7 17.5 27.7 18.2C27.7 19.1 26.5 19.7 25.4 19.7C24 19.7 23 19.4 21.8 18.9L21.3 21.4C22.5 22 24.2 22.2 25.8 22.2C29.3 22.2 31.4 20.5 31.4 18.1C31.4 16.5 30.3 15.3 28.5 14.4C27.4 13.8 26.8 13.4 26.8 12.8C26.8 12.1 27.6 11.4 29 11.4C30.1 11.4 31 11.7 31.7 12L31.8 9.3ZM38.8 21H41.5L39.2 9H36.8C36.2 9 35.6 9.4 35.4 10.1L30.8 21H34L34.7 19.1H38.4L38.8 21ZM35.5 16.9L37 12.2L37.9 16.9H35.5ZM18.5 9H15.4C14.7 9 14.1 9.4 13.8 10L9.5 21H12.8L13.5 19.2C13.8 19.2 16.5 19.2 16.9 19.2C17 19.6 17.4 21 17.4 21H20.3L18.5 9Z"
         fill="white"
       />
     </svg>
   );
 }
 
-function MastercardSvg({ className = "h-5 w-auto" }: { className?: string }) {
+function MastercardSvg({ className = "h-7 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="36" height="24" rx="4" fill="#222326" />
-      <circle cx="14" cy="12" r="6.5" fill="#EB001B" />
-      <circle cx="22" cy="12" r="6.5" fill="#F79E1B" fillOpacity="0.9" />
+    <svg className={className} viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="30" rx="5" fill="#222326" />
+      <circle cx="18" cy="15" r="8.5" fill="#EB001B" />
+      <circle cx="30" cy="15" r="8.5" fill="#F79E1B" fillOpacity="0.9" />
       <path
-        d="M18 7.5C19.6 8.7 20.6 10.2 20.6 12C20.6 13.8 19.6 15.3 18 16.5C16.4 15.3 15.4 13.8 15.4 12C15.4 10.2 16.4 8.7 18 7.5Z"
+        d="M24 8.8C26.1 10.4 27.5 12.6 27.5 15C27.5 17.4 26.1 19.6 24 21.2C21.9 19.6 20.5 17.4 20.5 15C20.5 12.6 21.9 10.4 24 8.8Z"
         fill="#FF5F00"
       />
     </svg>
   );
 }
 
-function AmexSvg({ className = "h-5 w-auto" }: { className?: string }) {
+function AmexSvg({ className = "h-7 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="36" height="24" rx="4" fill="#016FD0" />
-      <text x="50%" y="58%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="8" fontWeight="900" fontFamily="sans-serif" letterSpacing="0.5">
+    <svg className={className} viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="30" rx="5" fill="#016FD0" />
+      <text x="50%" y="58%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="10.5" fontWeight="900" fontFamily="sans-serif" letterSpacing="1">
         AMEX
       </text>
     </svg>
   );
 }
 
-function ApplePaySvg({ className = "h-5 w-auto" }: { className?: string }) {
+function ApplePaySvg({ className = "h-7 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="36" height="24" rx="4" fill="#000000" />
-      <text x="50%" y="58%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="7.5" fontWeight="700" fontFamily="-apple-system, BlinkMacSystemFont, sans-serif">
+    <svg className={className} viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="30" rx="5" fill="#000000" />
+      <text x="50%" y="58%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="9.5" fontWeight="700" fontFamily="-apple-system, BlinkMacSystemFont, sans-serif">
         Pay
       </text>
     </svg>
   );
 }
 
-function PaypalSvg({ className = "h-5 w-auto" }: { className?: string }) {
+// Authentic PayPal Logo with official dual-tone Blue
+function PaypalSvg({ className = "h-7 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="36" height="24" rx="4" fill="#003087" />
+    <svg className={className} viewBox="0 0 78 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="78" height="30" rx="5" fill="#FFFFFF" stroke="#E5E7EB" strokeWidth="1" />
+      {/* PayPal Monogram PP */}
       <path
-        d="M14.5 6.5H20.2C22.2 6.5 23.6 7.4 23.3 9.4C22.9 11.8 21.1 13 19.3 13H17.2L16.2 18.5H13.5L15.3 7.8C15.4 7.2 15 6.5 14.5 6.5Z"
+        d="M13.5 7.5H20.2C22.6 7.5 24.3 8.6 23.9 11C23.4 13.8 21.3 15.3 19.1 15.3H16.6L15.3 22.5H12L13.5 7.5Z"
+        fill="#003087"
+      />
+      <path
+        d="M16.8 9.8H21.8C23.8 9.8 25.2 10.9 24.9 12.9C24.4 15.5 22.5 16.9 20.4 16.9H17.9L17.1 22.5H14.5L16.8 9.8Z"
         fill="#0079C1"
       />
       <path
-        d="M17.2 8.5H21.5C23.2 8.5 24.5 9.4 24.2 11.2C23.8 13.5 22.1 14.7 20.3 14.7H18.2L17.5 18.5H15.2L17.2 8.5Z"
+        d="M16 11.8H20.2C22 11.8 23.4 12.7 23.1 14.4C22.7 16.7 21.1 17.8 19.2 17.8H17.1L16.3 22.5H14L16 11.8Z"
         fill="#00457C"
       />
-      <path
-        d="M16.5 10.2H20.2C21.8 10.2 23 11 22.8 12.5C22.4 14.5 21 15.5 19.3 15.5H17.5L16.8 19H14.8L16.5 10.2Z"
-        fill="#0079C1"
-      />
+      {/* "PayPal" Text */}
+      <text x="31" y="19.5" fill="#003087" fontSize="13" fontWeight="900" fontStyle="italic" fontFamily="-apple-system, BlinkMacSystemFont, sans-serif">
+        Pay
+      </text>
+      <text x="54" y="19.5" fill="#0079C1" fontSize="13" fontWeight="900" fontStyle="italic" fontFamily="-apple-system, BlinkMacSystemFont, sans-serif">
+        Pal
+      </text>
     </svg>
   );
 }
@@ -128,18 +137,18 @@ export default function PaymentMethodV1() {
   };
 
   return (
-    <div className="border border-gray-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-2xs overflow-hidden">
-      {/* Header bar in sleek luxury dark green */}
-      <div className="py-3 px-4 sm:px-6 bg-gradient-to-r from-primary-darker via-primary-dark to-primary text-white flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
-        <div className="flex items-center gap-2">
-          <span className="size-6 sm:size-7 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
-            <i className="hgi hgi-stroke hgi-credit-card text-sm sm:text-base text-white" />
+    <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden">
+      {/* Clean, Refined Header Bar */}
+      <div className="py-3.5 px-4 sm:px-6 bg-gradient-to-r from-primary-darker via-primary-dark to-primary text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex items-center gap-3">
+          <span className="size-8 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0 border border-white/25">
+            <i className="hgi hgi-stroke hgi-credit-card text-base text-white" />
           </span>
           <h4 className="font-bold text-sm sm:text-base text-white tracking-wide">
             2. Mode de Paiement Sécurisé
           </h4>
         </div>
-        <span className="text-[11px] font-semibold text-emerald-100 bg-white/15 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 self-start sm:self-auto">
+        <span className="text-xs font-semibold text-emerald-100 bg-white/15 px-3 py-1 rounded-full border border-white/20 inline-flex items-center gap-1.5 self-start sm:self-auto">
           <i className="hgi hgi-stroke hgi-lock-password text-xs text-emerald-200" />
           <span>Cryptage SSL 256-bit & 3D Secure</span>
         </span>
@@ -148,48 +157,48 @@ export default function PaymentMethodV1() {
       <div className="p-4 sm:p-6 space-y-4">
         {/* ── OPTION 1: CARTE BANCAIRE & APPLE PAY (STRIPE) ── */}
         <div
-          className={`border rounded-xl p-3.5 sm:p-5 transition-all duration-200 ${
+          className={`border rounded-xl p-4 sm:p-5 transition-all duration-200 ${
             selectedMethod === "stripe"
-              ? "border-emerald-700/40 bg-gray-50/70 shadow-xs"
+              ? "border-emerald-700/40 bg-gray-50/60 shadow-xs"
               : "border-gray-200 bg-white hover:border-gray-300"
           }`}
         >
-          {/* Header Row */}
+          {/* Option Header */}
           <div
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 cursor-pointer"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
             onClick={() => setSelectedMethod("stripe")}
           >
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <input
                 type="radio"
                 name="payment-method-selector"
                 checked={selectedMethod === "stripe"}
                 onChange={() => setSelectedMethod("stripe")}
-                className="size-4 text-primary accent-primary cursor-pointer"
+                className="size-4.5 text-primary accent-primary cursor-pointer"
               />
               <div>
-                <span className="text-sm font-bold text-gray-900 block leading-tight">
+                <span className="text-sm sm:text-base font-bold text-gray-900 block leading-tight">
                   Carte Bancaire & Apple Pay
                 </span>
-                <span className="text-[11px] text-gray-500 block">
-                  Paiement sécurisé instantané via Stripe
+                <span className="text-xs text-gray-500 block mt-0.5">
+                  Paiement sécurisé par carte bancaire via Stripe
                 </span>
               </div>
             </div>
 
-            {/* Vector SVGs */}
-            <div className="flex items-center gap-1.5 pl-6 sm:pl-0">
-              <div className={`transition-all rounded overflow-hidden shadow-2xs ${detectedBrand === "visa" ? "ring-2 ring-primary" : ""}`}>
-                <VisaSvg className="h-5 w-auto" />
+            {/* Generous, high-resolution SVG Logos */}
+            <div className="flex items-center gap-2 pl-7 sm:pl-0 flex-wrap">
+              <div className={`transition-all rounded-md overflow-hidden shadow-2xs ${detectedBrand === "visa" ? "ring-2 ring-primary" : ""}`}>
+                <VisaSvg className="h-6 sm:h-7 w-auto" />
               </div>
-              <div className={`transition-all rounded overflow-hidden shadow-2xs ${detectedBrand === "mastercard" ? "ring-2 ring-primary" : ""}`}>
-                <MastercardSvg className="h-5 w-auto" />
+              <div className={`transition-all rounded-md overflow-hidden shadow-2xs ${detectedBrand === "mastercard" ? "ring-2 ring-primary" : ""}`}>
+                <MastercardSvg className="h-6 sm:h-7 w-auto" />
               </div>
-              <div className={`transition-all rounded overflow-hidden shadow-2xs ${detectedBrand === "amex" ? "ring-2 ring-primary" : ""}`}>
-                <AmexSvg className="h-5 w-auto" />
+              <div className={`transition-all rounded-md overflow-hidden shadow-2xs ${detectedBrand === "amex" ? "ring-2 ring-primary" : ""}`}>
+                <AmexSvg className="h-6 sm:h-7 w-auto" />
               </div>
-              <div className="rounded overflow-hidden shadow-2xs">
-                <ApplePaySvg className="h-5 w-auto" />
+              <div className="rounded-md overflow-hidden shadow-2xs">
+                <ApplePaySvg className="h-6 sm:h-7 w-auto" />
               </div>
             </div>
           </div>
@@ -204,7 +213,7 @@ export default function PaymentMethodV1() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="space-y-3 pt-3 mt-3 border-t border-gray-200/80">
+                <div className="space-y-3.5 pt-4 mt-3.5 border-t border-gray-200/80">
                   {/* Titulaire de la carte */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -213,10 +222,10 @@ export default function PaymentMethodV1() {
                     <input
                       type="text"
                       required
-                      placeholder="Nom figurant sur la carte"
+                      placeholder="Nom complet figurant sur la carte"
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                      className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                      className="w-full h-11 px-3.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                     />
                   </div>
 
@@ -233,24 +242,24 @@ export default function PaymentMethodV1() {
                         placeholder="4242 •••• •••• 4242"
                         value={cardNumber}
                         onChange={handleCardNumberChange}
-                        className="w-full h-10 pl-3 pr-12 rounded-lg border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                        className="w-full h-11 pl-3.5 pr-14 rounded-xl border border-gray-300 bg-white font-mono text-sm tracking-wider text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                       />
-                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
-                        {detectedBrand === "visa" && <VisaSvg className="h-4 w-auto" />}
-                        {detectedBrand === "mastercard" && <MastercardSvg className="h-4 w-auto" />}
-                        {detectedBrand === "amex" && <AmexSvg className="h-4 w-auto" />}
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+                        {detectedBrand === "visa" && <VisaSvg className="h-5 w-auto" />}
+                        {detectedBrand === "mastercard" && <MastercardSvg className="h-5 w-auto" />}
+                        {detectedBrand === "amex" && <AmexSvg className="h-5 w-auto" />}
                         {!detectedBrand && (
-                          <i className="hgi hgi-stroke hgi-credit-card text-base text-gray-400" />
+                          <i className="hgi hgi-stroke hgi-credit-card text-lg text-gray-400" />
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Date d'expiration & CVC */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3.5">
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-1">
-                        Expiration (MM/AA) <span className="text-red-500">*</span>
+                        Date d'expiration <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -259,13 +268,13 @@ export default function PaymentMethodV1() {
                         placeholder="MM / AA"
                         value={cardExpiry}
                         onChange={handleExpiryChange}
-                        className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                        className="w-full h-11 px-3.5 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                       />
                     </div>
 
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-1">
-                        Cryptogramme (CVC) <span className="text-red-500">*</span>
+                        Code de sécurité (CVC) <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <input
@@ -275,9 +284,9 @@ export default function PaymentMethodV1() {
                           placeholder={detectedBrand === "amex" ? "••••" : "•••"}
                           value={cardCvc}
                           onChange={handleCvcChange}
-                          className="w-full h-10 pl-3 pr-8 rounded-lg border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
+                          className="w-full h-11 pl-3.5 pr-9 rounded-xl border border-gray-300 bg-white font-mono text-sm text-center text-gray-900 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition"
                         />
-                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                           <i className="hgi hgi-stroke hgi-shield-security text-sm" />
                         </div>
                       </div>
@@ -286,20 +295,20 @@ export default function PaymentMethodV1() {
 
                   {/* Save Card Checkbox */}
                   <div className="pt-0.5">
-                    <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
+                    <label className="flex items-center gap-2.5 cursor-pointer text-xs text-gray-600 hover:text-gray-900 select-none">
                       <input
                         type="checkbox"
                         checked={saveCard}
                         onChange={(e) => setSaveCard(e.target.checked)}
-                        className="rounded border-gray-300 text-primary focus:ring-primary size-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-primary focus:ring-primary size-4 cursor-pointer"
                       />
                       <span>Mémoriser ma carte pour mes prochains achats</span>
                     </label>
                   </div>
 
                   {/* Minimalist Reassurance */}
-                  <div className="pt-2 border-t border-gray-200/70 flex items-center gap-2 text-[11px] text-gray-500">
-                    <i className="hgi hgi-stroke hgi-shield-check text-emerald-600 text-sm shrink-0" />
+                  <div className="pt-2.5 border-t border-gray-200/70 flex items-center gap-2 text-xs text-gray-500">
+                    <i className="hgi hgi-stroke hgi-shield-check text-emerald-600 text-base shrink-0" />
                     <span>
                       Transaction chiffrée <strong>SSL 256-bit</strong> certifiée PCI-DSS Niveau 1 par <strong>Stripe</strong>.
                     </span>
@@ -310,39 +319,40 @@ export default function PaymentMethodV1() {
           </AnimatePresence>
         </div>
 
-        {/* ── OPTION 2: PAYPAL (COMPTE & 4X SANS FRAIS) ── */}
+        {/* ── OPTION 2: PAYPAL (PAIEMENT EN 1 FOIS UNIQUEMENT) ── */}
         <div
-          className={`border rounded-xl p-3.5 sm:p-5 transition-all duration-200 ${
+          className={`border rounded-xl p-4 sm:p-5 transition-all duration-200 ${
             selectedMethod === "paypal"
-              ? "border-blue-500/40 bg-blue-50/30 shadow-xs"
+              ? "border-blue-500/50 bg-blue-50/25 shadow-xs"
               : "border-gray-200 bg-white hover:border-gray-300"
           }`}
         >
-          {/* Header Row */}
+          {/* Option Header */}
           <div
-            className="flex items-center justify-between gap-2.5 cursor-pointer"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
             onClick={() => setSelectedMethod("paypal")}
           >
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <input
                 type="radio"
                 name="payment-method-selector"
                 checked={selectedMethod === "paypal"}
                 onChange={() => setSelectedMethod("paypal")}
-                className="size-4 text-blue-600 accent-blue-600 cursor-pointer"
+                className="size-4.5 text-blue-600 accent-blue-600 cursor-pointer"
               />
               <div>
-                <span className="text-sm font-bold text-gray-900 block leading-tight">
-                  PayPal
+                <span className="text-sm sm:text-base font-bold text-gray-900 block leading-tight">
+                  PayPal (Paiement en 1 fois)
                 </span>
-                <span className="text-[11px] text-gray-500 block">
-                  Paiement en 1 clic ou en 4X sans frais
+                <span className="text-xs text-gray-500 block mt-0.5">
+                  Règlement sécurisé et immédiat avec votre compte PayPal
                 </span>
               </div>
             </div>
 
-            <div className="rounded overflow-hidden shadow-2xs">
-              <PaypalSvg className="h-5 w-auto" />
+            {/* Official PayPal Logo with normal clear size */}
+            <div className="pl-7 sm:pl-0">
+              <PaypalSvg className="h-7 w-auto" />
             </div>
           </div>
 
@@ -356,15 +366,19 @@ export default function PaymentMethodV1() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-3.5 mt-3 border-t border-blue-100 space-y-3">
-                  <div className="p-3 bg-white rounded-lg border border-blue-100 flex items-start gap-2.5 text-xs text-gray-600 leading-relaxed">
-                    <span className="size-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">
-                      ℹ
+                <div className="pt-4 mt-3.5 border-t border-blue-100 space-y-3.5">
+                  {/* Official PayPal Yellow Action Banner */}
+                  <div className="p-4 bg-gradient-to-r from-amber-400 to-amber-300 rounded-xl flex items-center justify-center gap-2.5 shadow-xs text-gray-900 font-extrabold text-sm sm:text-base">
+                    <span className="font-extrabold italic text-[#003087]">Pay</span>
+                    <span className="font-extrabold italic text-[#0079C1]">Pal</span>
+                    <span className="text-xs sm:text-sm font-bold text-gray-900 ml-1">
+                      — Valider le paiement en 1 fois
                     </span>
-                    <p>
-                      Vous serez redirigé en toute sécurité vers l'interface officielle <strong>PayPal</strong> pour valider votre commande via votre solde PayPal ou votre compte bancaire lié.
-                    </p>
                   </div>
+
+                  <p className="text-xs text-gray-600 text-center leading-relaxed">
+                    Vous serez redirigé vers la page sécurisée <strong>PayPal</strong> pour confirmer votre règlement en 1 fois.
+                  </p>
                 </div>
               </motion.div>
             )}
