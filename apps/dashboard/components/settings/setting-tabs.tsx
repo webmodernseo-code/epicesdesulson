@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { name: "General", href: "/settings/general" },
-  { name: "Shop", href: "/settings/shop" },
-  { name: "SEO", href: "/settings/seo" },
-  { name: "Payment API", href: "/settings/payment-api" },
-  { name: "Maintains", href: "/settings/maintenance" },
+  { name: "Général", href: "/settings/general" },
+  { name: "Boutique", href: "/settings/shop" },
+  { name: "SEO & Référencement", href: "/settings/seo" },
+  { name: "Passerelles API & Paiements", href: "/settings/payment-api" },
+  { name: "Maintenance", href: "/settings/maintenance" },
 ];
 
 export default function SettingTabs() {

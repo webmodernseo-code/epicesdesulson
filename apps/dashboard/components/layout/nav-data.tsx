@@ -148,6 +148,11 @@ export const navItems: NavItem[] = [
         icon: <MoneyCheckIcon className="size-5.5" />,
       },
       {
+        label: "Passerelles API & Clés Stripe",
+        href: "/settings/payment-api",
+        icon: <span className="text-base">💳</span>,
+      },
+      {
         label: "Configuration Firebase",
         href: "/firebase",
         icon: <FlashIcon className="size-5.5 text-amber-500" />,

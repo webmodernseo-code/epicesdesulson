@@ -191,3 +191,25 @@ model NewsletterSubscriber {
 
   @@map("newsletter_subscribers")
 }
+
+model PaymentGatewayConfig {
+  id                   String   @id @default(cuid())
+  gateway              String   @unique // "stripe", "paypal", "apple_pay"
+  isEnabled            Boolean  @default(false)
+  isLiveMode           Boolean  @default(false)
+  
+  // Configuration Stripe
+  stripePublishableKey String?
+  stripeSecretKey      String?
+  stripeWebhookSecret  String?
+  
+  // Configuration PayPal
+  paypalClientId       String?
+  paypalSecretKey      String?
+  
+  updatedAt            DateTime @updatedAt
+  createdAt            DateTime @default(now())
+
+  @@map("payment_gateway_configs")
+}
+
