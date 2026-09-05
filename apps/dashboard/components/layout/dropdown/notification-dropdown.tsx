@@ -6,33 +6,27 @@ import { BellAltIcon, BellIcon } from "@/icons";
 const notifications = [
   {
     id: 1,
-    title: "New Order Product",
-    time: "14 Sec ago",
-    description: "Discover 1000s of premium WordPress themes & website tem...",
+    title: "Nouvelle commande reçue",
+    time: "Il y a 4 min",
+    description: "Commande #CMD-84920 (3 articles - 58,50 €) prête pour préparation atelier.",
   },
   {
     id: 2,
-    title: "New Order Product",
-    time: "14 Sec ago",
-    description: "Discover 1000s of premium WordPress themes & website tem...",
+    title: "Paiement direct validé (PayPal)",
+    time: "Il y a 28 min",
+    description: "Paiement de 64,00 € versé sur votre compte PayPal Business.",
   },
   {
     id: 3,
-    title: "New Order Product",
-    time: "14 Sec ago",
-    description: "Discover 1000s of premium WordPress themes & website tem...",
+    title: "Alerte Stock Faible",
+    time: "Il y a 2h",
+    description: "Vanille Bourbon Gourmet : seuil d'alerte atteint (8 tubes restants).",
   },
   {
     id: 4,
-    title: "New Order Product",
-    time: "14 Sec ago",
-    description: "Discover 1000s of premium WordPress themes & website tem...",
-  },
-  {
-    id: 5,
-    title: "New Order Product",
-    time: "14 Sec ago",
-    description: "Discover 1000s of premium WordPress themes & website tem...",
+    title: "Nouvel avis client ★★★★★",
+    time: "Hier",
+    description: "Claire D. : « L'épice de Sulson spéciale poulet est exceptionnelle ! »",
   },
 ];
 

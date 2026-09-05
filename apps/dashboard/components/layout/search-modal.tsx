@@ -17,17 +17,17 @@ interface SearchModalProps {
 }
 
 const initialProducts: SearchItem[] = [
-  { id: 1, text: "Wireless Bluetooth Headphones" },
-  { id: 2, text: "USB-C Charging Cable" },
-  { id: 3, text: "Laptop Cooling Pad" },
+  { id: 1, text: "Épice de Sulson - Spéciale Poulet" },
+  { id: 2, text: "Épice de Sulson - Spéciale Viande" },
+  { id: 3, text: "Épice de Sulson - Spéciale Poisson" },
 ];
 
 const initialNewItems: SearchItem[] = [
-  { id: 4, text: "Mechanical Keyboard RGB" },
-  { id: 5, text: "Portable Power Bank" },
-  { id: 6, text: "Smart Watch Pro" },
-  { id: 7, text: "Wireless Mouse Ergonomic" },
-  { id: 8, text: "Webcam HD 1080p" },
+  { id: 4, text: "Saveur Gourmande Signature" },
+  { id: 5, text: "Le Pack Intégral (4 Saveurs 4x100g)" },
+  { id: 6, text: "Poivre Rouge de Kampot IGP" },
+  { id: 7, text: "Vanille Bourbon Gourmet Madagascar" },
+  { id: 8, text: "Safran Impérial en Pistils" },
 ];
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
@@ -35,15 +35,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [products, setProducts] = useState<SearchItem[]>(initialProducts);
   const [newItems, setNewItems] = useState<SearchItem[]>(initialNewItems);
 
-  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
-  if (isOpen !== prevIsOpen) {
-    setPrevIsOpen(isOpen);
+  useEffect(() => {
     if (isOpen) {
       setQuery("");
       setProducts(initialProducts);
       setNewItems(initialNewItems);
     }
-  }
+  }, [isOpen]);
 
   const removeProduct = useCallback((id: number) => {
     setProducts((prev) => {

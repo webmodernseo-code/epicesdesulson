@@ -1,54 +1,32 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown } from "@/icons";
-import { DashboardGridIcon, LogoutIcon, SettingsIcon, UserIcon } from "@/icons";
+import { ChevronDown, DashboardGridIcon, LogoutIcon, SettingsIcon, UserIcon } from "@/icons";
+import { ShieldCheck } from "lucide-react";
 
 export default function UserDropdown() {
-  const [userRole, setUserRole] = useState<"master" | "seller">("master");
-
-  useEffect(() => {
-    Promise.resolve().then(() => {
-      if (typeof window !== "undefined") {
-        const storedRole = localStorage.getItem("userRole");
-        if (storedRole === "seller" || storedRole === "master") {
-          setUserRole(storedRole as "master" | "seller");
-        }
-      }
-    });
-  }, []);
-
   return (
     <div className="text-right">
       <Menu as="div" className="relative inline-block text-left">
         {({ open }) => (
           <>
-            <MenuButton className="inline-flex items-center gap-2 w-full justify-center focus:outline-none  text-sm">
-              <span className="h-8 w-8 relative rounded-full overflow-hidden block">
-                <Image
-                  src={
-                    userRole === "seller"
-                      ? "/images/seller/seller-grid/user_03.png"
-                      : "/images/user/user_05.png"
-                  }
-                  alt="User"
-                  width={32}
-                  height={32}
-                  className="object-cover"
-                />
+            <MenuButton className="inline-flex items-center gap-2.5 justify-center focus:outline-none text-sm cursor-pointer p-1 rounded-xl hover:bg-gray-100 transition-colors">
+              <span className="size-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                AS
               </span>
               <span className="hidden text-left md:block">
-                <span className="text-sm font-semibold text-text-primary-text block">
-                  {userRole === "seller" ? "Alex Smith" : "John Smith"}
+                <span className="text-xs font-bold text-gray-900 block leading-tight">
+                  Admin Sulson
                 </span>
-                <span className="text-xs text-text-secondary-text block capitalize">
-                  {userRole}
+                <span className="text-[10px] text-emerald-700 font-semibold block flex items-center gap-1">
+                  <ShieldCheck className="size-3 text-emerald-600 inline" />
+                  Boutique
                 </span>
               </span>
               <ChevronDown
-                className={`size-5 text-text-primary-text transition-transform duration-200 ${
+                className={`size-4 text-gray-500 transition-transform duration-200 ${
                   open ? "rotate-180" : ""
                 }`}
                 aria-hidden="true"
@@ -57,72 +35,48 @@ export default function UserDropdown() {
 
             <MenuItems
               transition
-              className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-500/20 rounded-lg bg-white ring-1 ring-gray-500/20 focus:outline-none z-50 transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
+              className="absolute right-0 mt-2 w-52 origin-top-right rounded-2xl bg-white shadow-xl ring-1 ring-black/5 focus:outline-none z-50 p-1.5 transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
             >
-              <div className="px-1 py-1">
-                <MenuItem>
-                  {({ focus }) => (
-                    <Link
-                      href="/settings/general"
-                      className={`${
-                        focus
-                          ? "hover:bg-gray-200 bg-transparent text-light-secondary-text"
-                          : "text-light-secondary-text"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2`}
-                    >
-                      <UserIcon className="h-4 w-4" />
-                      Profile
-                    </Link>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {({ focus }) => (
-                    <Link
-                      href="/"
-                      className={`${
-                        focus
-                          ? "hover:bg-gray-200 bg-transparent text-light-secondary-text"
-                          : "text-light-secondary-text"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2`}
-                    >
-                      <DashboardGridIcon className="h-4 w-4" />
-                      Dashboard
-                    </Link>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {({ focus }) => (
-                    <Link
-                      href="/settings/general"
-                      className={`${
-                        focus
-                          ? "hover:bg-gray-200 bg-transparent text-light-secondary-text"
-                          : "text-light-secondary-text"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2`}
-                    >
-                      <SettingsIcon className="h-4 w-4" />
-                      Settings
-                    </Link>
-                  )}
-                </MenuItem>
-              </div>
-              <div className="px-1 py-1">
-                <MenuItem>
-                  {({ focus }) => (
-                    <Link
-                      href="/signin"
-                      className={`${
-                        focus
-                          ? "hover:bg-gray-200 bg-transparent text-light-secondary-text"
-                          : "text-light-secondary-text"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm gap-2 border-t border-gray-100`}
-                    >
-                      <LogoutIcon className="h-4 w-4" />
-                      Logout
-                    </Link>
-                  )}
-                </MenuItem>
-              </div>
+              <MenuItem>
+                {({ focus }) => (
+                  <Link
+                    href="/settings/general"
+                    className={`${
+                      focus ? "bg-gray-50 text-gray-900" : "text-gray-700"
+                    } group flex w-full items-center rounded-xl px-3 py-2 text-xs font-semibold gap-2.5 transition-colors`}
+                  >
+                    <SettingsIcon className="size-4 text-gray-500" />
+                    <span>Paramètres Boutique</span>
+                  </Link>
+                )}
+              </MenuItem>
+              <MenuItem>
+                {({ focus }) => (
+                  <Link
+                    href="/settings/payment-api"
+                    className={`${
+                      focus ? "bg-gray-50 text-gray-900" : "text-gray-700"
+                    } group flex w-full items-center rounded-xl px-3 py-2 text-xs font-semibold gap-2.5 transition-colors`}
+                  >
+                    <ShieldCheck className="size-4 text-emerald-600" />
+                    <span>Passerelles Stripe & PayPal</span>
+                  </Link>
+                )}
+              </MenuItem>
+              <div className="my-1 border-t border-gray-100" />
+              <MenuItem>
+                {({ focus }) => (
+                  <Link
+                    href="/signin"
+                    className={`${
+                      focus ? "bg-red-50 text-red-700" : "text-gray-600"
+                    } group flex w-full items-center rounded-xl px-3 py-2 text-xs font-semibold gap-2.5 transition-colors`}
+                  >
+                    <LogoutIcon className="size-4 text-gray-400 group-hover:text-red-600" />
+                    <span>Se déconnecter</span>
+                  </Link>
+                )}
+              </MenuItem>
             </MenuItems>
           </>
         )}

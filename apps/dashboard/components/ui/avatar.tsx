@@ -42,14 +42,9 @@ export function Avatar({
   width,
   height,
 }: AvatarProps) {
-  const [hasError, setHasError] = useState(false);
-
-  const [prevSrc, setPrevSrc] = useState(src);
-
-  if (src !== prevSrc) {
-    setPrevSrc(src);
+  useEffect(() => {
     setHasError(false);
-  }
+  }, [src]);
 
   // Use inline style for width/height if explicitly provided, overriding size classes
   const style = width || height ? { width, height } : undefined;
