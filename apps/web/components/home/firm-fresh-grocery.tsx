@@ -175,6 +175,8 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             <span className="text-sm text-gray-400 line-through font-medium">
               {oldPriceNum} €
             </span>
+          </div>
+
           {/* Poids format mention */}
           <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
             <span className="text-xs sm:text-sm text-gray-700 font-bold">Poids :</span>
