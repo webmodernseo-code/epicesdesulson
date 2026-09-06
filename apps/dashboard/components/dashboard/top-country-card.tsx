@@ -1,11 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { ApexOptions } from "apexcharts";
+import React from "react";
 import { DashboardCard } from "@/components/ui/dashboard-card";
-
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const destinations = [
   {
@@ -42,62 +38,47 @@ const destinations = [
   },
 ];
 
-export default function TopCountryCard() {
-  const [mounted, setMounted] = useState(false);
+function Sparkline({ data, color }: { data: number[]; color: string }) {
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const width = 70;
+  const height = 24;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const getChartOptions = (color: string): ApexOptions => ({
-    chart: {
-      type: "area",
-      sparkline: {
-        enabled: true,
-      },
-    },
-    stroke: {
-      curve: "smooth",
-      width: 1.5,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.35,
-        opacityTo: 0.05,
-        stops: [0, 90, 100],
-      },
-    },
-    colors: [color],
-    tooltip: {
-      fixed: {
-        enabled: false,
-      },
-      x: {
-        show: false,
-      },
-      y: {
-        title: {
-          formatter: function () {
-            return "";
-          },
-        },
-      },
-      marker: {
-        show: false,
-      },
-    },
+  const points = data.map((val, idx) => {
+    const x = (idx / (data.length - 1)) * width;
+    const y = height - ((val - min) / range) * (height - 6) - 3;
+    return `${x},${y}`;
   });
 
+  const pathD = `M ${points.join(" L ")}`;
+
+  return (
+    <svg width={width} height={height} className="overflow-visible">
+      <path
+        d={pathD}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export default function TopCountryCard() {
   return (
     <DashboardCard
       title="Destinations de Livraison"
       subtitle="Répartition des commandes expédiées"
     >
-      <div className="space-y-6 pt-4">
+      <div className="space-y-4 pt-2">
         {destinations.map((dest, index) => (
-          <div key={index} className="flex items-center justify-between gap-4">
+          <div
+            key={index}
+            className="flex items-center justify-between gap-4 p-2 rounded-xl hover:bg-gray-50/50 transition-colors"
+          >
             <div className="flex items-center gap-3">
               <div className="size-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-xs text-gray-700 shrink-0">
                 {dest.code}
@@ -112,18 +93,8 @@ export default function TopCountryCard() {
               </div>
             </div>
 
-            <div className="flex-1 h-7 max-w-[70px]">
-              {mounted ? (
-                <Chart
-                  options={getChartOptions(dest.color)}
-                  series={[{ data: dest.data }]}
-                  type="area"
-                  height={28}
-                  width="100%"
-                />
-              ) : (
-                <div className="h-6 bg-gray-100 rounded animate-pulse" />
-              )}
+            <div className="flex-1 h-6 max-w-[70px] flex items-center justify-center">
+              <Sparkline data={dest.data} color={dest.color} />
             </div>
 
             <div className="text-right">

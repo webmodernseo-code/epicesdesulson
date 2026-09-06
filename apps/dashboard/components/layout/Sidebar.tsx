@@ -32,12 +32,16 @@ export default function Sidebar({
   );
 
   useEffect(() => {
-    Promise.resolve().then(() => {
-      const storedRole = localStorage.getItem("userRole");
-      if (storedRole === "seller" || storedRole === "master") {
-        setUserRole(storedRole as "master" | "seller");
+    if (typeof window !== "undefined") {
+      try {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole === "seller" || storedRole === "master") {
+          setUserRole(storedRole as "master" | "seller");
+        }
+      } catch {
+        // Safe fallback
       }
-    });
+    }
   }, []);
 
   // Navigation items for the boutique dashboard
