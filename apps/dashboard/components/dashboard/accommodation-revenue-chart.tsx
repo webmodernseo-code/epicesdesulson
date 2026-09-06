@@ -50,27 +50,33 @@ export default function AccommodationRevenueChart() {
     loadMonthlyData();
   }, []);
 
+  // Échelle graduée par paliers précis de 100 € (500 €, 400 €, 300 €, 200 €, 100 €, 0 €)
   const maxValue = useMemo(() => {
     const highest = Math.max(...monthlyData.map((d) => d.value), 0);
-    if (highest === 0) return 500; // 500 € default top scale
-    return Math.ceil((highest * 1.25) / 100) * 100;
+    if (highest <= 500) return 500; // Échelle de référence à 500 € (5 paliers de 100 €)
+    return Math.ceil(highest / 100) * 100;
   }, [monthlyData]);
 
   const yAxisSteps = useMemo(() => {
-    const step = maxValue / 4;
-    return [
-      maxValue,
-      Math.round(step * 3),
-      Math.round(step * 2),
-      Math.round(step),
-      0,
-    ];
+    // Si maxValue <= 500, générer les paliers de 100 € : 500, 400, 300, 200, 100, 0
+    if (maxValue <= 500) {
+      return [500, 400, 300, 200, 100, 0];
+    }
+    // Si maxValue > 500, générer 5 ou 6 paliers équidistants arrondis aux 100 €
+    const step = Math.ceil(maxValue / 5 / 100) * 100;
+    const steps: number[] = [];
+    for (let val = step * 5; val >= 0; val -= step) {
+      steps.push(val);
+    }
+    return steps;
   }, [maxValue]);
+
+  const topScale = yAxisSteps[0] || 500;
 
   return (
     <DashboardCard
       title="Chiffre d'Affaires Mensuel Réel"
-      subtitle="Total des encaissements validés (Stripe & PayPal) sur l'année en cours"
+      subtitle="Encaissements Stripe & PayPal par mois (échelle par paliers de 100 €)"
     >
       <div className="pt-3">
         {loading ? (
@@ -85,8 +91,8 @@ export default function AccommodationRevenueChart() {
               <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-6">
                 {yAxisSteps.map((val) => (
                   <div key={val} className="flex items-center w-full">
-                    <span className="text-[10px] font-semibold text-gray-500 w-12 shrink-0 text-right pr-2">
-                      {val >= 1000 ? `${(val / 1000).toFixed(1)}k€` : `${val}€`}
+                    <span className="text-[10px] font-semibold text-gray-500 w-14 shrink-0 text-right pr-2.5">
+                      {val} €
                     </span>
                     <div className="h-px w-full bg-gray-100" />
                   </div>
@@ -94,9 +100,9 @@ export default function AccommodationRevenueChart() {
               </div>
 
               {/* Bars container */}
-              <div className="relative w-full h-[calc(100%-24px)] flex items-end justify-between pl-13 pr-2 pb-1 gap-1 sm:gap-2">
+              <div className="relative w-full h-[calc(100%-24px)] flex items-end justify-between pl-16 pr-2 pb-1 gap-1 sm:gap-2">
                 {monthlyData.map((item, index) => {
-                  const heightPercent = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
+                  const heightPercent = topScale > 0 ? (item.value / topScale) * 100 : 0;
                   const isHovered = hoveredMonth === index;
 
                   return (
@@ -118,7 +124,7 @@ export default function AccommodationRevenueChart() {
                       <div
                         className={`w-full max-w-[28px] rounded-t-md transition-all duration-300 ${
                           item.value === 0
-                            ? "bg-gray-200/70 h-[3px] min-h-[3px]"
+                            ? "bg-gray-200/60 h-[3px] min-h-[3px]"
                             : item.isCurrent
                               ? isHovered
                                 ? "bg-emerald-400 scale-y-[1.03]"
@@ -139,7 +145,7 @@ export default function AccommodationRevenueChart() {
             </div>
 
             {/* X Axis Labels */}
-            <div className="flex justify-between pl-13 pr-2 pt-1 border-t border-gray-100">
+            <div className="flex justify-between pl-16 pr-2 pt-1 border-t border-gray-100">
               {monthlyData.map((item, index) => (
                 <div
                   key={item.month}

@@ -50,21 +50,22 @@ export default function ProfitMarginChart() {
     loadData();
   }, []);
 
-  // Net margin estimated dynamically from real sales (typically ~60% on artisanal spices)
+  // Marge nette estimée (~60% sur mélanges et épices fines Sulson)
   const profits = useMemo(() => {
     return monthlyEarnings.map((v) => Math.round(v * 0.6 * 100) / 100);
   }, [monthlyEarnings]);
 
+  // Échelle par paliers de 100 €
   const maxVal = useMemo(() => {
     const maxEarnings = Math.max(...monthlyEarnings, 0);
-    if (maxEarnings === 0) return 500;
-    return Math.ceil((maxEarnings * 1.2) / 100) * 100;
+    if (maxEarnings <= 500) return 500;
+    return Math.ceil(maxEarnings / 100) * 100;
   }, [monthlyEarnings]);
 
   // SVG dimensions
   const width = 600;
   const height = 220;
-  const paddingX = 40;
+  const paddingX = 45;
   const paddingY = 20;
   const innerWidth = width - paddingX * 2;
   const innerHeight = height - paddingY * 2;
@@ -96,7 +97,7 @@ export default function ProfitMarginChart() {
           Évolution des Ventes & Marge Réelle
         </h3>
         <p className="text-xs text-gray-500">
-          Suivi des encaissements mensuels et rentabilité réelle sur l'année en cours
+          Suivi des encaissements mensuels et rentabilité réelle sur l'année en cours (échelle par paliers de 100 €)
         </p>
 
         {/* Legend */}
@@ -130,7 +131,7 @@ export default function ProfitMarginChart() {
             </defs>
 
             {/* Horizontal Grid lines */}
-            {[0, 0.33, 0.66, 1].map((ratio) => {
+            {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
               const y = paddingY + ratio * innerHeight;
               const val = Math.round(maxVal * (1 - ratio));
               return (
@@ -152,7 +153,7 @@ export default function ProfitMarginChart() {
                     fontSize="10"
                     fontWeight="600"
                   >
-                    {val >= 1000 ? `${(val / 1000).toFixed(1)}k€` : `${val}€`}
+                    {val} €
                   </text>
                 </g>
               );
@@ -265,7 +266,7 @@ export default function ProfitMarginChart() {
       </div>
 
       {/* X Axis Labels */}
-      <div className="flex justify-between pl-8 pr-8 pt-2">
+      <div className="flex justify-between pl-10 pr-10 pt-2">
         {categories.map((cat, idx) => (
           <span
             key={cat}
