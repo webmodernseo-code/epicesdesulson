@@ -135,9 +135,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Erreur API Summary:", error);
-    return NextResponse.json(
-      { success: false, error: "Base de données indisponible." },
-      { status: 503 }
-    );
+    return NextResponse.json({ success: true, setupRequired: true, data: { revenue: 0, revenueTrend: null, paidOrders: 0, averageOrder: 0, activeProducts: 0, lowStock: 0, recentOrders: [] } });
   }
 }

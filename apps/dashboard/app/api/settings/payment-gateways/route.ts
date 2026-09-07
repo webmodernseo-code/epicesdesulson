@@ -10,7 +10,14 @@ export async function GET(req: NextRequest) {
   try {
     const configs = await prisma.paymentGatewayConfig.findMany(); const stripe = configs.find((c) => c.gateway === "stripe"); const paypal = configs.find((c) => c.gateway === "paypal");
     return NextResponse.json({ success: true, data: { stripe: { gateway: "stripe", isEnabled: stripe?.isEnabled || false, isLiveMode: stripe?.isLiveMode || false, publishableKey: stripe?.stripePublishableKey || "", secretKey: masked(stripe?.stripeSecretKey), webhookSecret: masked(stripe?.stripeWebhookSecret), hasSecretKey: Boolean(stripe?.stripeSecretKey) }, paypal: { gateway: "paypal", isEnabled: paypal?.isEnabled || false, isLiveMode: paypal?.isLiveMode || false, clientId: paypal?.paypalClientId || "", secretKey: masked(paypal?.paypalSecretKey), hasSecretKey: Boolean(paypal?.paypalSecretKey) } } });
-  } catch { return NextResponse.json({ success: false, error: "Neon est indisponible." }, { status: 503 }); }
+  } catch {
+    const stripeSecret = process.env.STRIPE_SECRET_KEY;
+    const paypalSecret = process.env.PAYPAL_SECRET_KEY || process.env.PAYPAL_CLIENT_SECRET;
+    return NextResponse.json({ success: true, setupRequired: true, data: {
+      stripe: { gateway: "stripe", isEnabled: false, isLiveMode: Boolean(stripeSecret?.startsWith("sk_live_")), publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "", secretKey: masked(stripeSecret), webhookSecret: masked(process.env.STRIPE_WEBHOOK_SECRET), hasSecretKey: Boolean(stripeSecret) },
+      paypal: { gateway: "paypal", isEnabled: false, isLiveMode: false, clientId: process.env.PAYPAL_CLIENT_ID || "", secretKey: masked(paypalSecret), hasSecretKey: Boolean(paypalSecret) },
+    } });
+  }
 }
 
 export async function POST(req: NextRequest) {
