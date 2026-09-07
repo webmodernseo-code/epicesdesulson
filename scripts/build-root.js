@@ -37,19 +37,19 @@ execSync('npx next build', {
 });
 console.log('✓ Next.js build completed in apps/web');
 
-// 3. Ensure .next at root is also synchronized if Vercel checks root .next
+// 3. Ensure .next at root is synchronized for Vercel
 try {
   const rootNext = path.resolve(rootDir, '.next');
   const webNext = path.resolve(webDir, '.next');
-  if (fs.existsSync(webNext) && !fs.existsSync(rootNext)) {
-    if (process.platform === 'win32') {
-      try { fs.symlinkSync(webNext, rootNext, 'junction'); } catch (_) {}
-    } else {
-      try { fs.symlinkSync(webNext, rootNext, 'dir'); } catch (_) {}
+  if (fs.existsSync(webNext)) {
+    if (fs.existsSync(rootNext)) {
+      try { fs.rmSync(rootNext, { recursive: true, force: true }); } catch (_) {}
     }
+    fs.cpSync(webNext, rootNext, { recursive: true });
+    console.log('✓ Synchronized .next build artifacts to root');
   }
 } catch (e) {
-  // Ignore non-fatal symlink
+  console.warn('⚠️ Artifact sync warning:', e.message);
 }
 
 console.log('✅ Build pipeline completed successfully!');
