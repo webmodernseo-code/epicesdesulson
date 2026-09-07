@@ -18,35 +18,35 @@ interface ProductOption {
 const SULSON_PRODUCTS: ProductOption[] = [
   {
     id: "epice-poulet",
-    name: "Épice de Sulson — Spéciale Poulet",
-    category: "Mélange Signature",
+    name: "Épice Spéciale Poulet (100g)",
+    category: "Mélange Volailles",
     image: "/images/products/epice-poulet-recto.jpg",
     shortDesc: "Volailles rôties, marinades & braisés",
   },
   {
     id: "epice-viande",
-    name: "Épice de Sulson — Spéciale Viande",
-    category: "Mélange Signature",
+    name: "Épice Spéciale Viande (100g)",
+    category: "Mélange Viandes",
     image: "/images/products/epice-viande-recto.jpg",
     shortDesc: "Bœuf, agneau, grillades & mijotés",
   },
   {
     id: "epice-poisson",
-    name: "Épice de Sulson — Spéciale Poisson",
-    category: "Mélange Signature",
+    name: "Épice Spéciale Poisson (100g)",
+    category: "Mélange Poissons",
     image: "/images/products/epice-poisson-recto.jpg",
     shortDesc: "Poissons grillés, crevettes & papillotes",
   },
   {
     id: "epice-gourmande",
-    name: "Épice de Sulson — Saveur Gourmande",
+    name: "Épice Saveur Gourmande (100g)",
     category: "Mélange Doux",
     image: "/images/products/epice-gourmande-recto.jpg",
     shortDesc: "Légumes poêlés, sauces & féculents",
   },
   {
     id: "pack-4-saveurs",
-    name: "Le Pack Intégral : 4 Saveurs Sulson",
+    name: "Le Pack Intégral : 4 Saveurs Sulson (4x100g)",
     category: "Coffret Dégustation",
     image: "/images/products/pack-4-saveurs-sulson.jpg",
     shortDesc: "L'assortiment complet 4x100g",
@@ -56,92 +56,77 @@ const SULSON_PRODUCTS: ProductOption[] = [
 interface ReviewItem {
   id: string;
   author: string;
+  productId: string;
   productName: string;
   productImage: string;
   rating: number;
-  title: string;
   comment: string;
   date: string;
   verified: boolean;
-  recommended: boolean;
 }
 
 const DEFAULT_REVIEWS: ReviewItem[] = [
   {
     id: "rev-1",
     author: "Christelle M.",
-    productName: "Épice de Sulson — Spéciale Poulet",
+    productId: "epice-poulet",
+    productName: "Épice Spéciale Poulet (100g)",
     productImage: "/images/products/epice-poulet-recto.jpg",
     rating: 5,
-    title: "Le poulet rôti du dimanche est transformé !",
     comment:
       "J'ai frotté un poulet fermier avec deux cuillères à soupe d'épices et un filet d'huile 1h avant la cuisson au four. La peau était dorée, croustillante et les saveurs délicatement parfumées sans être piquantes. Toute la famille a adoré.",
     date: "Il y a 3 jours",
     verified: true,
-    recommended: true,
   },
   {
     id: "rev-2",
-    author: "Jean-Paul D. (Amateur de grillades)",
-    productName: "Épice de Sulson — Spéciale Viande",
+    author: "Jean-Paul D.",
+    productId: "epice-viande",
+    productName: "Épice Spéciale Viande (100g)",
     productImage: "/images/products/epice-viande-recto.jpg",
     rating: 5,
-    title: "Parfait pour les brochettes et côtes de bœuf",
     comment:
       "Ce mélange apporte une belle profondeur aromatique aux viandes rouges. On sent tout de suite la noblesse des épices et la fraîcheur du séchage. Rien à voir avec les assaisonnements industriels du commerce.",
     date: "Il y a 5 jours",
     verified: true,
-    recommended: true,
   },
   {
     id: "rev-3",
     author: "Nathalie B.",
-    productName: "Épice de Sulson — Spéciale Poisson",
+    productId: "epice-poisson",
+    productName: "Épice Spéciale Poisson (100g)",
     productImage: "/images/products/epice-poisson-recto.jpg",
     rating: 5,
-    title: "Sublime sur un bar grillé et des gambas",
     comment:
       "Une merveille ! L'équilibre entre les herbes et les épices relève le poisson sans jamais masquer sa finesse. Utilisé en marinade rapide avec du citron vert et un peu d'huile d'olive.",
     date: "Il y a 1 semaine",
     verified: true,
-    recommended: true,
   },
   {
     id: "rev-4",
     author: "Franck T.",
-    productName: "Le Pack Intégral : 4 Saveurs Sulson",
+    productId: "pack-4-saveurs",
+    productName: "Le Pack Intégral : 4 Saveurs Sulson (4x100g)",
     productImage: "/images/products/pack-4-saveurs-sulson.jpg",
     rating: 5,
-    title: "Le coffret complet idéal pour cuisiner au quotidien",
     comment:
       "Reçu dans un emballage très soigné en 48h. Les 4 sachets hermétiques conservent parfaitement les arômes. C'est devenu mon indispensable en cuisine pour varier les plaisirs chaque jour.",
     date: "Il y a 2 semaines",
     verified: true,
-    recommended: true,
   },
 ];
 
-const RATING_LABELS: Record<number, string> = {
-  1: "Décevant",
-  2: "Moyen",
-  3: "Conforme & Bon",
-  4: "Très Savoureux",
-  5: "Exceptionnel / Coup de cœur",
-};
-
-const STORAGE_KEY = "sulson_customer_reviews_v2";
+const STORAGE_KEY = "sulson_customer_reviews_v3";
 
 function CustomerReviewsContent() {
   const searchParams = useSearchParams();
-  const { addRating, getRating, ratingsMap } = useProductRatings();
+  const { addRating, ratingsMap } = useProductRatings();
   const [reviews, setReviews] = useState<ReviewItem[]>(DEFAULT_REVIEWS);
   const [selectedProductId, setSelectedProductId] = useState(SULSON_PRODUCTS[0].id);
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [authorName, setAuthorName] = useState("");
-  const [reviewTitle, setReviewTitle] = useState("");
   const [commentText, setCommentText] = useState("");
-  const [recommended, setRecommended] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -156,7 +141,7 @@ function CustomerReviewsContent() {
         }
       }
     } catch {
-      // fallback to default
+      // fallback
     }
 
     const qProduct = searchParams.get("product");
@@ -178,33 +163,32 @@ function CustomerReviewsContent() {
     }
   }, [searchParams]);
 
-  const currentSelectedProduct =
+  const currentProduct =
     SULSON_PRODUCTS.find((p) => p.id === selectedProductId) || SULSON_PRODUCTS[0];
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authorName.trim() || !commentText.trim() || !reviewTitle.trim()) {
-      toast.error("Veuillez renseigner votre nom, le titre et votre commentaire.");
+    if (!authorName.trim() || !commentText.trim()) {
+      toast.error("Veuillez renseigner votre nom et votre avis.");
       return;
     }
 
     setIsSubmitting(true);
 
     setTimeout(() => {
-      // Increment dynamic star rating and count across the site
-      addRating(currentSelectedProduct.id, rating);
+      // Update global rating state
+      addRating(currentProduct.id, rating);
 
       const newReview: ReviewItem = {
         id: `rev-${Date.now()}`,
         author: authorName.trim(),
-        productName: currentSelectedProduct.name,
-        productImage: currentSelectedProduct.image,
+        productId: currentProduct.id,
+        productName: currentProduct.name,
+        productImage: currentProduct.image,
         rating: rating,
-        title: reviewTitle.trim(),
         comment: commentText.trim(),
         date: "Aujourd'hui",
         verified: true,
-        recommended: recommended,
       };
 
       const updated = [newReview, ...reviews];
@@ -217,20 +201,19 @@ function CustomerReviewsContent() {
 
       setIsSubmitting(false);
       setShowSuccessMessage(true);
-      toast.success("Merci ! Votre avis a été publié et pris en compte dans la note du produit.");
+      toast.success("Votre avis a été publié avec succès !");
 
-      // Reset fields
-      setReviewTitle("");
+      // Reset
       setCommentText("");
-    }, 600);
+    }, 400);
   };
 
   const filteredReviews =
     selectedFilter === "all"
       ? reviews
-      : reviews.filter((r) => r.productName === selectedFilter);
+      : reviews.filter((r) => r.productId === selectedFilter);
 
-  // Compute live global stats across all products in catalogue
+  // Live calculation of global average from ratingsMap
   const BASE_PRODUCT_KEYS = ["301", "302", "303", "304", "305"];
   const totalReviewsCount = BASE_PRODUCT_KEYS.reduce(
     (acc, id) => acc + (ratingsMap[id]?.ratingCount || 60),
@@ -243,387 +226,255 @@ function CustomerReviewsContent() {
   const liveAverage = (totalWeightedScore / (totalReviewsCount || 1)).toFixed(1);
 
   return (
-    <div className="py-8 sm:py-12 bg-gray-50/40 min-h-screen">
-      <div className="container">
-        {/* Header Hero Banner (Clean, warm, gastronomy-focused) */}
-        <div className="bg-white border border-gray-200/90 rounded-3xl p-6 sm:p-8 shadow-xs mb-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                <i className="hgi hgi-stroke hgi-sparkles text-sm" />
-                <span>EXPÉRIENCES &amp; AVIS CLIENTS</span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-light-primary-text tracking-tight">
-                Avis &amp; Témoignages Culinaires
-              </h1>
-              <p className="text-xs sm:text-sm text-light-secondary-text leading-relaxed">
-                Partagez vos astuces de cuisson, vos marinades et notez vos mélanges d&apos;épices préférés de la Maison Sulson.
-              </p>
-            </div>
+    <div className="py-10 sm:py-16 bg-white min-h-screen">
+      {/* Single Centered Column */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
+        {/* Header */}
+        <div className="text-center mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+            Avis Clients
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-lg mx-auto">
+            Découvrez les retours d&apos;expérience de nos clients et partagez votre avis sur les créations de la Maison Sulson.
+          </p>
 
-            {/* Live Stats Score */}
-            <div className="flex items-center gap-5 p-4 rounded-2xl bg-gray-50 border border-gray-200/80 shrink-0">
-              <div className="text-center pr-4 border-r border-gray-200">
-                <span className="text-3xl font-extrabold text-light-primary-text leading-none block">
-                  {liveAverage}
-                </span>
-                <span className="text-[11px] text-light-disabled-text font-medium mt-0.5 block">
-                  sur 5
-                </span>
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center text-amber-400 gap-0.5">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <i key={s} className="hgi hgi-stroke hgi-star text-base fill-amber-400" />
-                  ))}
-                </div>
-                <div className="text-xs text-light-secondary-text font-medium">
-                  <strong className="text-light-primary-text">{totalReviewsCount} avis vérifiés</strong> (100% authentiques)
-                </div>
-              </div>
+          {/* Simple Rating Summary Bar */}
+          <div className="mt-5 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gray-50 border border-gray-200">
+            <div className="flex items-center text-amber-400 gap-0.5">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <i key={s} className="hgi hgi-stroke hgi-star text-sm fill-amber-400" />
+              ))}
             </div>
+            <span className="text-xs font-bold text-gray-900">
+              {liveAverage} / 5
+            </span>
+            <span className="text-xs text-gray-400">•</span>
+            <span className="text-xs font-medium text-gray-600">
+              {totalReviewsCount} avis vérifiés
+            </span>
           </div>
         </div>
 
-        {/* Main 2-Column Grid */}
-        <div className="grid grid-cols-12 gap-8 items-start">
-          {/* Left Column: Simple & Visual Review Form */}
-          <div className="col-span-12 lg:col-span-6">
-            <div className="bg-white border border-gray-200 rounded-3xl p-6 sm:p-7 shadow-xs sticky top-6 space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-                <div className="flex items-center gap-2.5">
-                  <span className="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
-                    <i className="hgi hgi-stroke hgi-edit-02 text-base" />
-                  </span>
-                  <h3 className="font-bold text-base sm:text-lg text-light-primary-text">
-                    Déposer mon avis
-                  </h3>
-                </div>
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                  <i className="hgi hgi-stroke hgi-checkmark-badge-01 text-xs text-emerald-600" />
-                  Avis Vérifié
-                </span>
-              </div>
-
-              {showSuccessMessage && (
-                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-start gap-3">
-                  <i className="hgi hgi-stroke hgi-checkmark-circle-02 text-lg text-emerald-600 shrink-0 mt-0.5" />
-                  <div className="text-xs space-y-1">
-                    <p className="font-bold text-emerald-900">Merci pour votre retour gourmand !</p>
-                    <p className="text-emerald-800">
-                      Votre avis est maintenant publié dans la liste des témoignages ci-contre.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmitReview} className="space-y-5">
-                {/* 1. Select Product via Visual Cards */}
-                <div>
-                  <label className="block text-xs font-bold text-light-primary-text uppercase tracking-wider mb-2.5">
-                    1. Choisissez l&apos;épice à évaluer *
-                  </label>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {SULSON_PRODUCTS.map((prod) => {
-                      const isSelected = prod.id === selectedProductId;
-                      const stat = getRating(prod.id);
-                      return (
-                        <button
-                          key={prod.id}
-                          type="button"
-                          onClick={() => setSelectedProductId(prod.id)}
-                          className={`p-2.5 rounded-2xl border text-left transition-all flex items-center gap-3 cursor-pointer ${
-                            isSelected
-                              ? "border-primary bg-primary/5 shadow-2xs"
-                              : "border-gray-200 bg-white hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="size-11 rounded-xl bg-white border border-gray-100 p-1 shrink-0 flex items-center justify-center overflow-hidden">
-                            <Image
-                              src={prod.image}
-                              alt={prod.name}
-                              width={40}
-                              height={40}
-                              className="object-contain max-h-full max-w-full"
-                            />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-1">
-                              <span className="text-xs font-bold text-light-primary-text block truncate leading-tight">
-                                {prod.name.replace("Épice de Sulson — ", "")}
-                              </span>
-                              <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200/60 px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5">
-                                <i className="hgi hgi-stroke hgi-star text-[10px] fill-amber-500 text-amber-500" />
-                                {stat.ratingScore.toFixed(1)}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-light-disabled-text block truncate mt-0.5">
-                              {prod.shortDesc} • {stat.ratingCount} avis
-                            </span>
-                          </div>
-                          {isSelected && (
-                            <i className="hgi hgi-stroke hgi-checkmark-circle-02 text-primary text-base shrink-0" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 2. Star Rating (Ideal icon sizing) */}
-                <div>
-                  <label className="block text-xs font-bold text-light-primary-text uppercase tracking-wider mb-2">
-                    2. Votre note globale *
-                  </label>
-                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 border border-gray-200/80">
-                    <div className="flex items-center gap-1 text-amber-400">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => setRating(star)}
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          className="p-1 transition-transform hover:scale-115 cursor-pointer focus:outline-none"
-                          aria-label={`Attribuer ${star} étoiles`}
-                        >
-                          <i
-                            className={`hgi hgi-stroke hgi-star text-lg ${
-                              (hoverRating || rating) >= star
-                                ? "fill-amber-400 text-amber-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        </button>
-                      ))}
-                    </div>
-                    <span className="text-xs font-bold text-light-primary-text border-l border-gray-200 pl-3">
-                      {RATING_LABELS[hoverRating || rating]}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 3. Name & Review Title */}
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-bold text-light-primary-text uppercase tracking-wider mb-1">
-                      Votre prénom / nom *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Ex: Sophie L."
-                      value={authorName}
-                      onChange={(e) => setAuthorName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-light-primary-text focus:outline-none focus:border-primary shadow-2xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-light-primary-text uppercase tracking-wider mb-1">
-                      Titre de votre commentaire *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Ex: Parfait pour mes marinades et viandes grillées"
-                      value={reviewTitle}
-                      onChange={(e) => setReviewTitle(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-light-primary-text focus:outline-none focus:border-primary shadow-2xs"
-                    />
-                  </div>
-                </div>
-
-                {/* 4. Detailed Comment */}
-                <div>
-                  <label className="block text-xs font-bold text-light-primary-text uppercase tracking-wider mb-1">
-                    Votre avis détaillé *
-                  </label>
-                  <textarea
-                    rows={3}
-                    required
-                    placeholder="Racontez votre expérience : arômes, recettes testées, accord avec vos plats..."
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-light-primary-text focus:outline-none focus:border-primary shadow-2xs leading-relaxed"
-                  />
-                </div>
-
-                {/* 5. Recommendation */}
-                <div className="p-3 bg-gray-50 border border-gray-200/80 rounded-xl flex items-center justify-between">
-                  <span className="text-xs font-semibold text-light-primary-text flex items-center gap-1.5">
-                    <i className="hgi hgi-stroke hgi-thumbs-up text-primary text-sm" />
-                    Recommandez-vous cette épice ?
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setRecommended(true)}
-                      className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        recommended
-                          ? "bg-primary text-white shadow-2xs"
-                          : "bg-white text-light-secondary-text border border-gray-200"
-                      }`}
-                    >
-                      Oui
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setRecommended(false)}
-                      className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        !recommended
-                          ? "bg-gray-800 text-white shadow-2xs"
-                          : "bg-white text-light-secondary-text border border-gray-200"
-                      }`}
-                    >
-                      Non
-                    </button>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn bg-primary hover:bg-primary-dark text-white w-full py-3 rounded-full font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  <i className="hgi hgi-stroke hgi-sent text-base" />
-                  <span>{isSubmitting ? "Publication en cours..." : "Publier mon avis"}</span>
-                </button>
-              </form>
-            </div>
+        {/* Clean, Centered Review Form Card */}
+        <div className="bg-gray-50/70 border border-gray-200/90 rounded-2xl p-5 sm:p-7 shadow-2xs mb-10">
+          <div className="flex items-center justify-between mb-5 pb-3 border-b border-gray-200/60">
+            <h2 className="text-sm sm:text-base font-bold text-gray-900 flex items-center gap-2">
+              <i className="hgi hgi-stroke hgi-edit-02 text-primary text-base" />
+              <span>Laisser un avis</span>
+            </h2>
+            <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+              <i className="hgi hgi-stroke hgi-checkmark-badge-01 text-xs text-emerald-600" />
+              Avis vérifié
+            </span>
           </div>
 
-          {/* Right Column: Verified Customer Reviews List */}
-          <div className="col-span-12 lg:col-span-6 space-y-4">
-            {/* Filter Buttons */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-2xs">
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="font-bold text-xs uppercase tracking-wider text-light-primary-text flex items-center gap-1.5">
-                  <i className="hgi hgi-stroke hgi-filter text-primary text-sm" />
-                  Filtrer par création
-                </span>
-                <span className="text-xs text-light-disabled-text font-medium">
-                  {filteredReviews.length} avis affichés
+          {showSuccessMessage && (
+            <div className="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-center gap-2.5 text-xs">
+              <i className="hgi hgi-stroke hgi-checkmark-circle-02 text-base text-emerald-600 shrink-0" />
+              <span>Merci ! Votre avis a été pris en compte et publié ci-dessous.</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmitReview} className="space-y-4">
+            {/* 1. Nom & Prénom */}
+            <div>
+              <label className="block text-xs font-bold text-gray-800 mb-1.5">
+                Nom et prénom *
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Ex : Marie Dupont"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                className="w-full h-10 px-3.5 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-primary shadow-2xs transition-colors"
+              />
+            </div>
+
+            {/* 2. Sélection du produit */}
+            <div>
+              <label className="block text-xs font-bold text-gray-800 mb-1.5">
+                Produit sélectionné *
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedProductId}
+                  onChange={(e) => setSelectedProductId(e.target.value)}
+                  className="w-full h-10 pl-3.5 pr-10 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-primary shadow-2xs appearance-none transition-colors cursor-pointer"
+                >
+                  {SULSON_PRODUCTS.map((prod) => (
+                    <option key={prod.id} value={prod.id}>
+                      {prod.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <i className="hgi hgi-stroke hgi-arrow-down-01 text-sm" />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Note étoilée */}
+            <div>
+              <label className="block text-xs font-bold text-gray-800 mb-1.5">
+                Votre note *
+              </label>
+              <div className="flex items-center gap-1.5 p-2.5 rounded-xl bg-white border border-gray-300 shadow-2xs">
+                <div className="flex items-center gap-1 text-amber-400">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="p-1 transition-transform hover:scale-110 cursor-pointer focus:outline-none"
+                      aria-label={`${star} étoiles sur 5`}
+                    >
+                      <i
+                        className={`hgi hgi-stroke hgi-star text-lg ${
+                          (hoverRating || rating) >= star
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <span className="text-xs font-semibold text-gray-600 ml-2">
+                  {hoverRating || rating} / 5
                 </span>
               </div>
+            </div>
 
-              <div className="flex flex-wrap gap-1.5">
+            {/* 4. Commentaire */}
+            <div>
+              <label className="block text-xs font-bold text-gray-800 mb-1.5">
+                Votre avis *
+              </label>
+              <textarea
+                rows={4}
+                required
+                placeholder="Racontez votre expérience : recettes testées, arômes, conseils d'utilisation..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                className="w-full p-3.5 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-primary shadow-2xs leading-relaxed transition-colors"
+              />
+            </div>
+
+            {/* 5. Bouton Publier */}
+            <div className="pt-1">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-11 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                <i className="hgi hgi-stroke hgi-sent text-sm sm:text-base" />
+                <span>{isSubmitting ? "Publication..." : "Publier mon avis"}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Reviews Section Header & Filter */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <h2 className="text-base font-bold text-gray-900">
+              Témoignages récents
+            </h2>
+            <span className="text-xs text-gray-500 font-medium">
+              {filteredReviews.length} avis affichés
+            </span>
+          </div>
+
+          {/* Simple Filter Pills */}
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              onClick={() => setSelectedFilter("all")}
+              className={`px-3 py-1 rounded-full text-xs transition-colors cursor-pointer ${
+                selectedFilter === "all"
+                  ? "bg-gray-900 text-white font-bold"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Tous ({reviews.length})
+            </button>
+            {SULSON_PRODUCTS.map((prod) => {
+              const count = reviews.filter((r) => r.productId === prod.id).length;
+              return (
                 <button
+                  key={prod.id}
                   type="button"
-                  onClick={() => setSelectedFilter("all")}
-                  className={`px-3 py-1 rounded-full text-xs transition-all cursor-pointer ${
-                    selectedFilter === "all"
-                      ? "bg-primary text-white font-bold shadow-2xs"
-                      : "bg-gray-50 text-light-secondary-text border border-gray-200 hover:border-gray-300"
+                  onClick={() => setSelectedFilter(prod.id)}
+                  className={`px-3 py-1 rounded-full text-xs transition-colors cursor-pointer ${
+                    selectedFilter === prod.id
+                      ? "bg-gray-900 text-white font-bold"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
-                  Tous ({reviews.length})
+                  {prod.name.replace("Épice Spéciale ", "").replace(" (100g)", "").replace(" (4x100g)", "")} ({count})
                 </button>
-
-                {SULSON_PRODUCTS.map((prod) => {
-                  const count = reviews.filter((r) => r.productName === prod.name).length;
-                  return (
-                    <button
-                      key={prod.id}
-                      type="button"
-                      onClick={() => setSelectedFilter(prod.name)}
-                      className={`px-3 py-1 rounded-full text-xs transition-all cursor-pointer ${
-                        selectedFilter === prod.name
-                          ? "bg-primary text-white font-bold shadow-2xs"
-                          : "bg-gray-50 text-light-secondary-text border border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      {prod.name.replace("Épice de Sulson — ", "")} ({count})
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Reviews Cards */}
-            <div className="space-y-3.5">
-              <AnimatePresence>
-                {filteredReviews.map((rev) => (
-                  <motion.div
-                    key={rev.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    className="bg-white border border-gray-200 rounded-2xl p-5 shadow-2xs hover:border-primary/40 transition-colors space-y-3"
-                  >
-                    {/* Review Header */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-light-primary-text">
-                            {rev.author}
-                          </span>
-                          {rev.verified && (
-                            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                              <i className="hgi hgi-stroke hgi-checkmark-badge-01 text-xs text-emerald-600" />
-                              Achat Vérifié
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-[11px] text-light-disabled-text block mt-0.5">
-                          {rev.date}
-                        </span>
-                      </div>
-
-                      {/* Stars */}
-                      <div className="flex items-center text-amber-400 gap-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <i
-                            key={s}
-                            className={`hgi hgi-stroke hgi-star text-sm ${
-                              rev.rating >= s ? "fill-amber-400 text-amber-400" : "text-gray-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Product Pill */}
-                    <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200/80 px-2.5 py-1 rounded-xl">
-                      <div className="size-6 rounded-lg bg-white overflow-hidden shrink-0 flex items-center justify-center border border-gray-100 p-0.5">
-                        <Image
-                          src={rev.productImage}
-                          alt={rev.productName}
-                          width={24}
-                          height={24}
-                          className="object-contain"
-                        />
-                      </div>
-                      <span className="text-xs font-bold text-light-primary-text">
-                        {rev.productName}
-                      </span>
-                    </div>
-
-                    {/* Title & Comment */}
-                    <div>
-                      <h4 className="font-bold text-sm text-light-primary-text mb-1">
-                        « {rev.title} »
-                      </h4>
-                      <p className="text-xs sm:text-sm text-light-secondary-text leading-relaxed">
-                        {rev.comment}
-                      </p>
-                    </div>
-
-                    {/* Recommendation Footer */}
-                    {rev.recommended && (
-                      <div className="pt-2 border-t border-gray-100 flex items-center gap-1.5 text-xs text-emerald-700 font-semibold">
-                        <i className="hgi hgi-stroke hgi-thumbs-up text-sm" />
-                        <span>Recommande ce mélange</span>
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Reviews List */}
+        <div className="space-y-3.5">
+          <AnimatePresence>
+            {filteredReviews.map((rev) => (
+              <motion.div
+                key={rev.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-2xs hover:border-gray-300 transition-colors"
+              >
+                {/* Header: Author, Verified, Rating & Date */}
+                <div className="flex items-start justify-between gap-3 mb-2.5">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-gray-900">
+                        {rev.author}
+                      </span>
+                      {rev.verified && (
+                        <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          Achat vérifié
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[11px] text-gray-400 block mt-0.5">
+                      {rev.date}
+                    </span>
+                  </div>
+
+                  {/* Stars */}
+                  <div className="flex items-center text-amber-400 gap-0.5">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <i
+                        key={s}
+                        className={`hgi hgi-stroke hgi-star text-xs ${
+                          rev.rating >= s ? "fill-amber-400 text-amber-400" : "text-gray-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Product Tag */}
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 text-[11px] font-medium mb-2.5">
+                  <i className="hgi hgi-stroke hgi-package text-xs text-gray-500" />
+                  <span>{rev.productName}</span>
+                </div>
+
+                {/* Comment */}
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                  {rev.comment}
+                </p>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>
@@ -632,7 +483,13 @@ function CustomerReviewsContent() {
 
 export default function CustomerReviewsPage() {
   return (
-    <Suspense fallback={<div className="py-12 text-center text-sm text-gray-500">Chargement des avis...</div>}>
+    <Suspense
+      fallback={
+        <div className="py-16 text-center text-sm text-gray-500">
+          Chargement des avis...
+        </div>
+      }
+    >
       <CustomerReviewsContent />
     </Suspense>
   );
