@@ -12,150 +12,110 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SearchIcon } from "@/icons";
 import CustomSelect, { Option } from "@/components/ui/custom-select";
 import SearchInput from "../common/search-input";
+import { ShoppingCart } from "lucide-react";
 
-// Dummy Data
-const abandonedCartData = [
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-  {
-    id: "#73423",
-    date: "12 Sept, 2027",
-    placedBy: "example@gmail.com",
-    amount: "$400",
-  },
-];
+interface AbandonOrder {
+  id: string;
+  date: string;
+  placedBy: string;
+  amount: string;
+}
+
+const abandonedCartData: AbandonOrder[] = [];
 
 const statusOptions = [
-  { label: "Active", value: "active" },
-  { label: "Recovered", value: "recovered" },
-  { label: "Expired", value: "expired" },
+  { label: "Tous les statuts", value: "" },
+  { label: "Actif", value: "active" },
+  { label: "Récupéré", value: "recovered" },
+  { label: "Expiré", value: "expired" },
 ];
 
 const dateOptions = [
-  { label: "Today", value: "today" },
-  { label: "This Week", value: "week" },
-  { label: "This Month", value: "month" },
+  { label: "Toutes les dates", value: "" },
+  { label: "Aujourd'hui", value: "today" },
+  { label: "Cette semaine", value: "week" },
+  { label: "Ce mois-ci", value: "month" },
 ];
 
 export default function AbandonOrderTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState<Option | null>(null);
   const [date, setDate] = useState<Option | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
+  const filteredCarts = abandonedCartData.filter((cart) => {
+    const matchesSearch =
+      !searchTerm ||
+      cart.placedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cart.id.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
 
   const toggleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRows(abandonedCartData.map((_, i) => String(i)));
+      setSelectedRows(filteredCarts.map((c) => c.id));
     } else {
       setSelectedRows([]);
     }
   };
 
-  const toggleSelectRow = (index: string, checked: boolean) => {
+  const toggleSelectRow = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedRows((prev) => [...prev, index]);
+      setSelectedRows((prev) => [...prev, id]);
     } else {
-      setSelectedRows((prev) => prev.filter((rowId) => rowId !== index));
+      setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
     }
   };
 
   const isAllSelected =
-    abandonedCartData.length > 0 &&
-    selectedRows.length === abandonedCartData.length;
+    filteredCarts.length > 0 &&
+    selectedRows.length === filteredCarts.length;
 
   return (
-    <div className="bg-white rounded-2xl w-full">
+    <div className="bg-white rounded-2xl w-full border border-gray-200/90 shadow-2xs overflow-hidden">
       {/* Header */}
       <div className="p-4 sm:p-6 pb-4">
-        <div className="flex  justify-between gap-4 mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-bold text-light-primary-text">
-            Abandoned cart
-          </h2>
-          <Button variant="primary" size="xs">
-            Export
+        <div className="flex justify-between items-center gap-4 mb-4 sm:mb-6">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+              Commandes & Paniers Non Finalisés
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Historique des tunnels de commande abandonnés avant paiement
+            </p>
+          </div>
+          <Button variant="primary" className="text-xs font-bold px-4 py-2 rounded-xl">
+            Exporter
           </Button>
         </div>
 
         <div className="w-full flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
           {/* Search */}
-          <SearchInput />
+          <div className="w-full sm:w-72">
+            <SearchInput
+              placeholder="Rechercher par email, réf..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="min-w-[100px]">
+            <div className="min-w-[130px]">
               <CustomSelect
                 options={statusOptions}
                 value={status}
                 onChange={setStatus}
-                placeholder="Status"
+                placeholder="Statut"
               />
             </div>
-            <div className="min-w-[100px]">
+            <div className="min-w-[130px]">
               <CustomSelect
                 options={dateOptions}
                 value={date}
                 onChange={setDate}
-                placeholder="Date"
+                placeholder="Période"
               />
             </div>
           </div>
@@ -164,57 +124,78 @@ export default function AbandonOrderTable() {
 
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-100 hover:bg-gray-100 border-y border-gray-500/20">
+          <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-y border-gray-200">
             <TableHead className="w-[50px] pl-6">
               <Checkbox
                 checked={isAllSelected}
                 onCheckedChange={toggleSelectAll}
+                disabled={filteredCarts.length === 0}
               />
             </TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Placed By</TableHead>
-            <TableHead className="pr-6">Amount</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Réf.</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Date Session</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Client / Email</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600 pr-6 text-right">Montant</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {abandonedCartData.slice((currentPage - 1) * 10, currentPage * 10).map((cart, index) => (
-            <TableRow
-              key={index}
-              className="border-b last:border-0 border-gray-500/20 hover:bg-gray-50/50"
-            >
-              <TableCell className="pl-6 whitespace-nowrap">
-                <Checkbox
-                  checked={selectedRows.includes(String(index))}
-                  onCheckedChange={(checked) =>
-                    toggleSelectRow(String(index), checked)
-                  }
-                />
-              </TableCell>
-              <TableCell className="font-normal text-sm text-light-secondary-text">
-                {cart.id}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text whitespace-nowrap">
-                {cart.date}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text">
-                {cart.placedBy}
-              </TableCell>
-              <TableCell className="text-sm font-medium text-light-primary-text pr-6 whitespace-nowrap">
-                {cart.amount}
+          {filteredCarts.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="py-16 text-center">
+                <div className="flex flex-col items-center justify-center max-w-sm mx-auto text-center space-y-3">
+                  <div className="size-12 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
+                    <ShoppingCart className="size-6" />
+                  </div>
+                  <h4 className="text-sm font-bold text-gray-900">
+                    Aucune commande abandonnée
+                  </h4>
+                  <p className="text-xs text-gray-500">
+                    Les sessions paniers de la boutique sont surveillées en temps réel.
+                  </p>
+                </div>
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            filteredCarts.slice((currentPage - 1) * 10, currentPage * 10).map((cart) => (
+              <TableRow
+                key={cart.id}
+                className="border-b last:border-0 border-gray-100 hover:bg-gray-50/50"
+              >
+                <TableCell className="pl-6 whitespace-nowrap">
+                  <Checkbox
+                    checked={selectedRows.includes(cart.id)}
+                    onCheckedChange={(checked) =>
+                      toggleSelectRow(cart.id, checked as boolean)
+                    }
+                  />
+                </TableCell>
+                <TableCell className="font-mono text-xs text-gray-500 whitespace-nowrap">
+                  {cart.id}
+                </TableCell>
+                <TableCell className="text-xs text-gray-600 whitespace-nowrap">
+                  {cart.date}
+                </TableCell>
+                <TableCell className="text-xs text-gray-700 font-medium">
+                  {cart.placedBy}
+                </TableCell>
+                <TableCell className="text-xs font-bold text-primary pr-6 text-right whitespace-nowrap">
+                  {cart.amount}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
-      <div className="py-4 sm:py-6 border-t border-gray-500/20 flex justify-end">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(abandonedCartData.length / 10)}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {filteredCarts.length > 0 && (
+        <div className="py-4 sm:py-6 border-t border-gray-100 flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredCarts.length / 10)}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

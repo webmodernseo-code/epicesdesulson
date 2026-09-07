@@ -5,21 +5,19 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { name: "Général", href: "/settings/general" },
-  { name: "Boutique", href: "/settings/shop" },
-  { name: "SEO & Référencement", href: "/settings/seo" },
+  { name: "Général & Boutique", href: "/settings/general" },
   { name: "Passerelles API & Paiements", href: "/settings/payment-api" },
-  { name: "Maintenance", href: "/settings/maintenance" },
+  { name: "SEO & Référencement", href: "/settings/seo" },
 ];
 
 export default function SettingTabs() {
   const pathname = usePathname();
 
   return (
-    <div className="border-b border-gray-500/20 px-4 sm:px-6 overflow-x-auto scrollbar-hide">
+    <div className="border-b border-gray-200 px-4 sm:px-6 overflow-x-auto scrollbar-hide bg-white rounded-t-2xl">
       <nav
-        className="-mb-px flex space-x-6 sm:space-x-10 min-w-max"
-        aria-label="Tabs"
+        className="-mb-px flex space-x-6 sm:space-x-8 min-w-max"
+        aria-label="Onglets de configuration"
       >
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
@@ -28,10 +26,10 @@ export default function SettingTabs() {
               key={tab.name}
               href={tab.href}
               className={cn(
-                "whitespace-nowrap py-3 border-b-3 font-semibold text-sm transition-colors",
+                "whitespace-nowrap py-3.5 border-b-2 font-bold text-xs sm:text-sm transition-colors",
                 isActive
-                  ? "border-primary text-light-primary-text"
-                  : "border-transparent text-light-secondary-text hover:text-light-primary-text hover:border-gray-300",
+                  ? "border-primary text-gray-950"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
               )}
               aria-current={isActive ? "page" : undefined}
             >

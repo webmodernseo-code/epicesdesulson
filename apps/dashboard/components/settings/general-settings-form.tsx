@@ -1,23 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { FloatingInput } from "@/components/ui/floating-input";
-import CustomFloatingSelect from "@/components/ui/custom-floating-select";
-
-import FileUploader from "@/components/ui/file-uploader";
+import { Store, Mail, Phone, MapPin, Truck, Euro } from "lucide-react";
 
 export default function GeneralSettingsForm() {
   const [formData, setFormData] = useState({
-    fullName: "Carlota",
-    email: "hello@riveup.com",
-    phone: "+8801721666763",
-    country: "BD",
-    state: "USA",
-    city: "Mississippi",
-    address: "Mankato",
-    zip: "96522",
-    company: "Mankato",
-    role: "96522",
+    storeName: "Les Épices de Sulson",
+    contactEmail: "contact@epicesdesulson.com",
+    phone: "+33 6 12 34 56 78",
+    country: "France",
+    city: "Paris",
+    address: "Atelier Artisanal Sulson",
+    zip: "75000",
+    freeShippingThreshold: "45.00",
+    standardShippingFee: "4.90",
+    currency: "EUR (€)",
   });
 
   const handleChange = (
@@ -28,98 +25,136 @@ export default function GeneralSettingsForm() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-500/20 p-6">
-      <h2 className="text-lg leading-7 font-bold text-light-primary-text mb-6">
-        Personal Information
-      </h2>
+    <div className="bg-white rounded-2xl border border-gray-200/90 p-5 sm:p-6 shadow-2xs space-y-6">
+      <div className="flex items-center gap-2.5 pb-4 border-b border-gray-100">
+        <Store className="size-5 text-emerald-600" />
+        <div>
+          <h2 className="text-base font-bold text-gray-900">
+            Identité de la Boutique & Expédition
+          </h2>
+          <p className="text-xs text-gray-500">
+            Coordonnées générales et règles d'expédition de la boutique Les Épices de Sulson
+          </p>
+        </div>
+      </div>
 
-      <div className="flex flex-col xl:flex-row gap-6">
-        {/* Left Column - User Photo Upload */}
-        <div className="w-full xl:w-[376px] xl:aspect-square shrink-0">
-          <FileUploader
-            title="User Photo"
-            description="Allowed *.jpeg, *.jpg, *.png, *.gif"
-            maxSizeText="Max size of 3.1 MB"
-            className="h-full" // Make it taller to match screenshot aspect ratio if needed
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Nom de la boutique
+          </label>
+          <input
+            id="storeName"
+            type="text"
+            value={formData.storeName}
+            onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
 
-        {/* Right Column - Form Fields */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4 w-full">
-          <FloatingInput
-            id="fullName"
-            label="Full name"
-            value={formData.fullName}
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Email de contact public
+          </label>
+          <input
+            id="contactEmail"
+            type="email"
+            value={formData.contactEmail}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
+        </div>
 
-          <FloatingInput
-            id="email"
-            label="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-          />
-
-          <FloatingInput
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Téléphone de contact
+          </label>
+          <input
             id="phone"
-            label="Phone number"
+            type="text"
             value={formData.phone}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
+        </div>
 
-          <CustomFloatingSelect
-            label="Country"
-            options={[
-              { label: "BD", value: "BD" },
-              { label: "USA", value: "USA" },
-              { label: "UK", value: "UK" },
-            ]}
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Pays du siège
+          </label>
+          <input
+            id="country"
+            type="text"
             value={formData.country}
-            onChange={(val) =>
-              setFormData((prev) => ({ ...prev, country: val }))
-            }
-          />
-
-          <FloatingInput
-            id="state"
-            label="State/Region"
-            value={formData.state}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
+        </div>
 
-          <FloatingInput
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Ville / Commune
+          </label>
+          <input
             id="city"
-            label="City"
+            type="text"
             value={formData.city}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
+        </div>
 
-          <FloatingInput
-            id="address"
-            label="Address"
-            value={formData.address}
-            onChange={handleChange}
-          />
-
-          <FloatingInput
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Code postal
+          </label>
+          <input
             id="zip"
-            label="Zip code"
+            type="text"
             value={formData.zip}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
+        </div>
 
-          <FloatingInput
-            id="company"
-            label="Company"
-            value={formData.company}
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Frais de livraison standard (€)
+          </label>
+          <input
+            id="standardShippingFee"
+            type="number"
+            step="0.01"
+            value={formData.standardShippingFee}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
+        </div>
 
-          <FloatingInput
-            id="role"
-            label="Role"
-            value={formData.role}
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Livraison offerte à partir de (€)
+          </label>
+          <input
+            id="freeShippingThreshold"
+            type="number"
+            step="0.01"
+            value={formData.freeShippingThreshold}
             onChange={handleChange}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-bold text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-700 mb-1">
+            Devise boutique
+          </label>
+          <input
+            id="currency"
+            type="text"
+            value={formData.currency}
+            disabled
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-200 bg-gray-50 text-sm font-bold text-gray-500 cursor-not-allowed"
           />
         </div>
       </div>

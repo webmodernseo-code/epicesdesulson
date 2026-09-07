@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ImageIcon } from "lucide-react";
-import { SearchIcon, Eye, Trash, MessageAdd, StarIcon } from "@/icons";
-import { cn } from "@/lib/utils";
+import { Eye, Trash, MessageAdd } from "@/icons";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -19,150 +18,188 @@ import { Pagination } from "@/components/ui/pagination";
 import CustomSelect, { Option } from "@/components/ui/custom-select";
 import SearchInput from "../common/search-input";
 import DeleteModal from "../ui/delete-modal";
+import { Star, CheckCircle, MessageSquareQuote } from "lucide-react";
 
-// Mock Data
 interface ProductReview {
-  id: string; // e.g. #73423
+  id: string;
   productName: string;
-  productImage?: string; // URL or null for placeholder
+  productImage: string;
   user: string;
   review: string;
-  rating: number; // 0-5
+  rating: number; // 4 or 5
+  status: "Publié" | "En attente";
   date: string;
 }
 
-const productNames = [
-  "Lumberjack Jacket",
-  "Denim Jeans",
-  "Running Shoes",
-  "Leather Belt",
-  "Cotton T-Shirt",
-  "Summer Hat",
+const initialReviews: ProductReview[] = [
+  {
+    id: "REV-101",
+    productName: "Épice de Sulson - Spéciale Poulet",
+    productImage: "/images/products/epice-poulet-recto.jpg",
+    user: "Marc Dupont (Lyon)",
+    review: "Un parfum exceptionnel ! Le poulet rôti du dimanche avait une croûte dorée et une saveur digne d'un grand chef.",
+    rating: 5,
+    status: "Publié",
+    date: "06 Sept, 2026",
+  },
+  {
+    id: "REV-102",
+    productName: "Épice de Sulson - Spéciale Viande",
+    productImage: "/images/products/epice-viande-recto.jpg",
+    user: "Sophie Laurent (Bordeaux)",
+    review: "Parfait pour mes marinades de bœuf au barbecue. Les épices sont fraîches et très aromatiques sans être trop piquantes.",
+    rating: 5,
+    status: "Publié",
+    date: "05 Sept, 2026",
+  },
+  {
+    id: "REV-103",
+    productName: "Épice de Sulson - Spéciale Poisson",
+    productImage: "/images/products/epice-poisson-recto.jpg",
+    user: "Alain Mercier (Nantes)",
+    review: "Sublime les papillotes de daurade et le dos de cabillaud. Une touche subtile de poivre rare très agréable.",
+    rating: 4,
+    status: "Publié",
+    date: "04 Sept, 2026",
+  },
+  {
+    id: "REV-104",
+    productName: "Épice de Sulson - Saveur Gourmande",
+    productImage: "/images/products/epice-gourmande-recto.jpg",
+    user: "Mireille Kouam (Paris)",
+    review: "La signature secrète de Sulson est incroyable. Je l'utilise sur mes légumes rôtis et mijotés, toute la famille adore.",
+    rating: 5,
+    status: "Publié",
+    date: "03 Sept, 2026",
+  },
+  {
+    id: "REV-105",
+    productName: "Le Pack Intégral : 4 Saveurs Authentiques",
+    productImage: "/images/products/pack-4-saveurs-sulson.jpg",
+    user: "Thomas Bernard (Toulouse)",
+    review: "Coffret très soigné et emballage qualitatif. C'est le cadeau gourmand idéal pour les amateurs de bonne cuisine.",
+    rating: 5,
+    status: "Publié",
+    date: "02 Sept, 2026",
+  },
+  {
+    id: "REV-106",
+    productName: "Épice de Sulson - Spéciale Poulet",
+    productImage: "/images/products/epice-poulet-recto.jpg",
+    user: "Émilie V. (Strasbourg)",
+    review: "Livraison rapide en 48h et sachet hermétique qui préserve bien la fraîcheur. Très satisfaite de mon achat.",
+    rating: 5,
+    status: "Publié",
+    date: "01 Sept, 2026",
+  },
 ];
-const users = ["Jackob", "Alice", "Michael", "Sarah", "David", "Emily"];
-const reviews = [
-  "Good Fresh quality Product.",
-  "Highly recommended!",
-  "Average, could be better.",
-  "Loved the material.",
-  "Not exactly what I expected.",
-  "Perfect fit, fast shipping.",
-];
-
-const reviewsData: ProductReview[] = Array(8)
-  .fill(null)
-  .map((_, i) => {
-    const imageNum = (i % 24) + 1;
-
-    return {
-      id: `#${73423 + i}`,
-      productName: productNames[i % productNames.length],
-      productImage: `/images/products/${String(imageNum).padStart(2, "0")}.png`,
-      user: users[i % users.length],
-      review: reviews[i % reviews.length],
-      rating: ((i * 1.5) % 5) + 1, // varied ratings
-      date: `1${i + 1} Sept, 2027`,
-    };
-  });
 
 const ratingOptions: Option[] = [
-  { label: "Rating", value: "" },
-  { label: "5 Stars", value: "5" },
-  { label: "4 Stars", value: "4" },
-  { label: "3 Stars", value: "3" },
-  { label: "2 Stars", value: "2" },
-  { label: "1 Star", value: "1" },
+  { label: "Toutes les notes", value: "" },
+  { label: "5 Étoiles (Exceptionnel)", value: "5" },
+  { label: "4 Étoiles (Très bon)", value: "4" },
 ];
 
 const dateOptions: Option[] = [
-  { label: "Date", value: "" },
-  { label: "Newest", value: "newest" },
-  { label: "Oldest", value: "oldest" },
+  { label: "Toutes les dates", value: "" },
+  { label: "Plus récents", value: "newest" },
+  { label: "Plus anciens", value: "oldest" },
 ];
 
 export default function ProductReviewTable() {
+  const [reviews, setReviews] = useState<ProductReview[]>(initialReviews);
   const [selectedReviews, setSelectedReviews] = useState<string[]>([]);
   const [ratingFilter, setRatingFilter] = useState<Option | null>(null);
-  const [dateFilter, setDateFilter] = useState<Option | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
-  // Toggle select all
+  const filteredReviews = reviews.filter((r) => {
+    const matchesRating =
+      !ratingFilter?.value || r.rating === parseInt(ratingFilter.value);
+    const matchesSearch =
+      !searchTerm ||
+      r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.review.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesRating && matchesSearch;
+  });
+
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedReviews(reviewsData.map((_, i) => `${i}`)); // Using index as key for demo
+      setSelectedReviews(filteredReviews.map((r) => r.id));
     } else {
       setSelectedReviews([]);
     }
   };
 
-  // Toggle single selection
-  const handleSelectRow = (index: string, checked: boolean) => {
+  const handleSelectRow = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedReviews((prev) => [...prev, index]);
+      setSelectedReviews((prev) => [...prev, id]);
     } else {
-      setSelectedReviews((prev) => prev.filter((id) => id !== index));
+      setSelectedReviews((prev) => prev.filter((item) => item !== id));
     }
   };
 
   const isAllSelected =
-    reviewsData.length > 0 && selectedReviews.length === reviewsData.length;
+    filteredReviews.length > 0 && selectedReviews.length === filteredReviews.length;
 
-  // Render Stars Helper
-  const renderStars = (rating: number) => {
+  // Solid Gold Vector Stars
+  const renderSolidStars = (rating: number) => {
     return (
-      <div className="flex items-center ">
-        {[1, 2, 3, 4, 5].map((star) => {
-          const isFull = star <= Math.floor(rating);
-          const isHalf = !isFull && star === Math.ceil(rating);
-
-          return (
-            <StarIcon
-              key={star}
-              className={cn(
-                "w-5 h-5",
-                isFull
-                  ? "text-warning"
-                  : isHalf
-                    ? "text-gray-500 opacity-50"
-                    : "text-gray-500",
-              )}
-            />
-          );
-        })}
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <svg
+            key={star}
+            viewBox="0 0 20 20"
+            fill={star <= rating ? "#F59E0B" : "#E5E7EB"}
+            className="size-4 shrink-0"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
       </div>
     );
   };
 
   return (
-    <div className="bg-white rounded-2xl w-full">
+    <div className="bg-white rounded-2xl w-full border border-gray-200/90 shadow-2xs overflow-hidden">
       <div className="p-4 sm:p-6 pb-4">
         <div>
-          <h3 className="text-lg sm:text-xl mb-4 sm:mb-6 font-bold text-light-primary-text leading-7.5">
-            Product Review
-          </h3>
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-7 flex items-center gap-2">
+                <MessageSquareQuote className="size-5 text-amber-500" />
+                <span>Avis Clients & Modération</span>
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Retours vérifiés des clients sur les Épices de Sulson
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200/60 px-3 py-1.5 rounded-full text-xs font-bold text-amber-800">
+              <Star className="size-3.5 fill-amber-500 text-amber-500" />
+              <span>Note moyenne boutique : 4,9 / 5</span>
+            </div>
+          </div>
 
-          {/* Top Search & Filter Section Layout based on Products List */}
           <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
             {/* Search */}
-            <SearchInput />
+            <div className="w-full sm:w-72">
+              <SearchInput
+                placeholder="Rechercher par épice, client, avis..."
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
 
             {/* Filters */}
-            <div className="flex items-center gap-3 ">
-              <div className="min-w-[140px]">
+            <div className="flex items-center gap-3">
+              <div className="min-w-[160px]">
                 <CustomSelect
                   value={ratingFilter}
                   onChange={setRatingFilter}
                   options={ratingOptions}
-                  placeholder="Rating"
-                />
-              </div>
-              <div className="min-w-[140px]">
-                <CustomSelect
-                  value={dateFilter}
-                  onChange={setDateFilter}
-                  options={dateOptions}
-                  placeholder="Date"
+                  placeholder="Filtrer par note"
                 />
               </div>
             </div>
@@ -170,87 +207,103 @@ export default function ProductReviewTable() {
         </div>
       </div>
 
-      {/* Table */}
-
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-100 hover:bg-gray-100 border-y border-gray-500/20">
+          <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-y border-gray-200">
             <TableHead className="w-[50px] pl-6">
               <Checkbox
                 checked={isAllSelected}
                 onCheckedChange={handleSelectAll}
+                disabled={filteredReviews.length === 0}
               />
             </TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>User</TableHead>
-            <TableHead>Review</TableHead>
-            <TableHead>Rating</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-left pr-6">Action</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Réf.</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Épice Évaluée</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Client</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Commentaire</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Note</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Date</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Statut</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600 text-right pr-6">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {reviewsData
-            .slice((currentPage - 1) * 8, currentPage * 8)
-            .map((item, index) => (
+          {filteredReviews
+            .slice((currentPage - 1) * 6, currentPage * 6)
+            .map((item) => (
               <TableRow
-                key={index}
-                className="border-b last:border-0 border-gray-500/20 hover:bg-gray-50/50"
+                key={item.id}
+                className="border-b last:border-0 border-gray-100 hover:bg-gray-50/50"
               >
                 <TableCell className="pl-6 whitespace-nowrap">
                   <Checkbox
-                    checked={selectedReviews.includes(`${index}`)}
+                    checked={selectedReviews.includes(item.id)}
                     onCheckedChange={(checked) =>
-                      handleSelectRow(`${index}`, checked as boolean)
+                      handleSelectRow(item.id, checked as boolean)
                     }
                   />
                 </TableCell>
-                <TableCell className="font-normal text-sm text-light-secondary-text whitespace-nowrap">
+                <TableCell className="font-mono text-xs text-gray-500 whitespace-nowrap">
                   {item.id}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-3">
-                    <div className="size-8 rounded-lg overflow-hidden">
-                      {item.productImage ? (
-                        <Image
-                          src={item.productImage}
-                          alt={item.productName}
-                          width={32}
-                          height={32}
-                          className="object-cover"
-                        />
-                      ) : (
-                        <ImageIcon className="w-5 h-5" />
-                      )}
+                    <div className="relative size-9 rounded-lg overflow-hidden border border-gray-200 shrink-0">
+                      <Image
+                        src={item.productImage}
+                        alt={item.productName}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
-                    <span className="text-sm text-light-secondary-text">
+                    <span className="text-xs font-bold text-gray-900">
                       {item.productName}
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="text-light-secondary-text whitespace-nowrap">
+                <TableCell className="text-xs text-gray-700 whitespace-nowrap font-medium">
                   {item.user}
                 </TableCell>
-                <TableCell className="max-w-[200px] truncate text-light-secondary-text">
-                  {item.review}
+                <TableCell className="max-w-[280px] text-xs text-gray-600">
+                  <p className="line-clamp-2" title={item.review}>
+                    "{item.review}"
+                  </p>
                 </TableCell>
-                <TableCell>{renderStars(item.rating)}</TableCell>
-                <TableCell className="text-light-secondary-text whitespace-nowrap">
+                <TableCell className="whitespace-nowrap">
+                  {renderSolidStars(item.rating)}
+                </TableCell>
+                <TableCell className="text-xs text-gray-500 whitespace-nowrap">
                   {item.date}
                 </TableCell>
-                <TableCell className="pr-6 whitespace-nowrap">
-                  <div className="flex items-center  gap-1">
-                    <Button variant="icon" className="hover:text-primary">
-                      <Eye className="size-4" />
-                    </Button>
-                    <Button variant="icon" className="hover:text-primary">
-                      <MessageAdd className="size-4" />
+                <TableCell className="whitespace-nowrap">
+                  <Badge variant={item.status === "Publié" ? "success" : "warning"}>
+                    {item.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="pr-6 whitespace-nowrap text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <Button
+                      variant="icon"
+                      className="hover:text-emerald-600 p-1.5"
+                      title="Approuver l'avis"
+                      onClick={() => {
+                        setReviews((prev) =>
+                          prev.map((r) =>
+                            r.id === item.id ? { ...r, status: "Publié" } : r
+                          )
+                        );
+                      }}
+                    >
+                      <CheckCircle className="size-4 text-emerald-600" />
                     </Button>
                     <Button
                       variant="icon"
-                      className="hover:text-error"
-                      onClick={() => setIsDeleteModalOpen(true)}
+                      className="hover:text-red-500 p-1.5 text-gray-400"
+                      title="Supprimer"
+                      onClick={() => {
+                        setItemToDelete(item.id);
+                        setIsDeleteModalOpen(true);
+                      }}
                     >
                       <Trash className="size-4" />
                     </Button>
@@ -261,11 +314,13 @@ export default function ProductReviewTable() {
         </TableBody>
       </Table>
 
-      {/* Pagination */}
-      <div className="p-4 sm:p-6 border-t border-gray-500/20 flex justify-end">
+      <div className="p-4 sm:p-6 border-t border-gray-100 flex items-center justify-between">
+        <p className="text-xs text-gray-500">
+          Affichage de {filteredReviews.length} avis clients
+        </p>
         <Pagination
           currentPage={currentPage}
-          totalPages={Math.ceil(reviewsData.length / 6)}
+          totalPages={Math.max(1, Math.ceil(filteredReviews.length / 6))}
           onPageChange={setCurrentPage}
         />
       </div>
@@ -274,6 +329,9 @@ export default function ProductReviewTable() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => {
+          if (itemToDelete) {
+            setReviews((prev) => prev.filter((r) => r.id !== itemToDelete));
+          }
           setIsDeleteModalOpen(false);
         }}
       />

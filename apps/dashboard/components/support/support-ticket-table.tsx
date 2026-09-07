@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -14,85 +13,106 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SearchIcon, Eye, Message01Icon, BannedIcon } from "@/icons"; // Using MessageIcon for the chat bubble
+import { Eye, Message01Icon } from "@/icons";
 import CustomSelect, { Option } from "../ui/custom-select";
 import SearchInput from "../common/search-input";
+import { Headphones } from "lucide-react";
 
-// Dummy Data matching the screenshot
-const supportData = Array.from({ length: 15 }).map((_, i) => ({
-  id: "#73423",
-  userId: "#42732",
-  type: "Payment",
-  subject:
-    "Delivery usually takes 2-5 business days, depending on your location and the selected...",
-  status: "Open", // Screenshot shows "Open" in green badge
-  date: "12 Sept, 2027",
-}));
+interface SupportTicket {
+  id: string;
+  userId: string;
+  type: string;
+  subject: string;
+  status: "Ouvert" | "Fermé" | "En attente";
+  date: string;
+}
+
+const supportData: SupportTicket[] = [];
 
 const statusOptions = [
-  { label: "Open", value: "open" },
-  { label: "Closed", value: "closed" },
-  { label: "Pending", value: "pending" },
+  { label: "Tous les statuts", value: "" },
+  { label: "Ouvert", value: "Ouvert" },
+  { label: "En attente", value: "En attente" },
+  { label: "Fermé", value: "Fermé" },
 ];
 
 const dateOptions = [
-  { label: "Newest", value: "newest" },
-  { label: "Oldest", value: "oldest" },
+  { label: "Toutes les dates", value: "" },
+  { label: "Plus récents", value: "newest" },
+  { label: "Plus anciens", value: "oldest" },
 ];
 
 export default function SupportTicketTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState<Option | null>(null);
   const [dateSort, setDateSort] = useState<Option | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
+  const filteredTickets = supportData.filter((item) => {
+    const matchesStatus = !status?.value || item.status === status.value;
+    const matchesSearch =
+      !searchTerm ||
+      item.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   const toggleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRows(supportData.map((_, i) => String(i)));
+      setSelectedRows(filteredTickets.map((t) => t.id));
     } else {
       setSelectedRows([]);
     }
   };
 
-  const toggleSelectRow = (index: string, checked: boolean) => {
+  const toggleSelectRow = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedRows((prev) => [...prev, index]);
+      setSelectedRows((prev) => [...prev, id]);
     } else {
-      setSelectedRows((prev) => prev.filter((rowId) => rowId !== index));
+      setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
     }
   };
 
   const isAllSelected =
-    supportData.length > 0 && selectedRows.length === supportData.length;
+    filteredTickets.length > 0 && selectedRows.length === filteredTickets.length;
 
   return (
-    <div className="bg-white rounded-2xl w-full">
+    <div className="bg-white rounded-2xl w-full border border-gray-200/90 shadow-2xs overflow-hidden">
       <div className="p-4 sm:p-6 pb-4">
         <div className="mb-4 sm:mb-6">
-          <h3 className="text-xl font-bold text-light-primary-text leading-7">
-            Support & Ticket
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-7">
+            Support Client & Tickets
           </h3>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Centre de traitement des messages, questions et demandes d'assistance clients
+          </p>
         </div>
 
         <div className="w-full md:w-auto flex justify-between gap-4 items-center flex-wrap">
           {/* Search */}
-          <SearchInput />
+          <div className="w-full md:w-72">
+            <SearchInput
+              placeholder="Rechercher un ticket, sujet..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           {/* Filters */}
           <div className="flex items-center gap-3 w-full md:w-auto overflow-visible flex-wrap pb-2 md:pb-0">
-            <div className="min-w-[100px]">
+            <div className="min-w-[130px]">
               <CustomSelect
                 options={statusOptions}
                 value={status}
                 onChange={setStatus}
-                placeholder="Status"
+                placeholder="Statut"
               />
             </div>
-            <div className="min-w-[120px]">
+            <div className="min-w-[130px]">
               <CustomSelect
                 options={dateOptions}
                 value={dateSort}
                 onChange={setDateSort}
-                placeholder="Date"
+                placeholder="Période"
               />
             </div>
           </div>
@@ -101,94 +121,111 @@ export default function SupportTicketTable() {
 
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-100 hover:bg-gray-100 border-y border-gray-500/20">
-            <TableHead className="whitespace-nowrap pl-6">
+          <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-y border-gray-200">
+            <TableHead className="whitespace-nowrap pl-6 w-[50px]">
               <Checkbox
                 checked={isAllSelected}
                 onCheckedChange={toggleSelectAll}
+                disabled={filteredTickets.length === 0}
               />
             </TableHead>
-            <TableHead className="whitespace-nowrap">ID</TableHead>
-            <TableHead className="whitespace-nowrap">User ID</TableHead>
-            <TableHead className="whitespace-nowrap">Type</TableHead>
-            <TableHead className="whitespace-nowrap">Subject</TableHead>
-            <TableHead className="whitespace-nowrap">Status</TableHead>
-            <TableHead className="whitespace-nowrap">Date</TableHead>
-            <TableHead className="pr-6 whitespace-nowrap">Action</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Réf.</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Client ID</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Type de Demande</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Sujet / Message</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Statut</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600">Date</TableHead>
+            <TableHead className="text-xs font-semibold text-gray-600 pr-6 text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {supportData.slice((currentPage - 1) * 10, currentPage * 10).map((item, index) => (
-            <TableRow
-              key={index}
-              className="border-b last:border-0 border-gray-500/20 hover:bg-gray-50/50"
-            >
-              <TableCell className="pl-6 whitespace-nowrap ">
-                <Checkbox
-                  checked={selectedRows.includes(String(index))}
-                  onCheckedChange={(checked) =>
-                    toggleSelectRow(String(index), checked)
-                  }
-                />
-              </TableCell>
-              <TableCell className="font-normal text-sm text-light-secondary-text whitespace-nowrap">
-                {item.id}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text whitespace-nowrap">
-                {item.userId}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text whitespace-nowrap">
-                {item.type}
-              </TableCell>
-              <TableCell
-                className="text-sm text-light-secondary-text max-w-[300px] truncate whitespace-nowrap"
-                title={item.subject}
-              >
-                {item.subject}
-              </TableCell>
-              <TableCell>
-                <Badge variant="success">{item.status}</Badge>
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text whitespace-nowrap">
-                {item.date}
-              </TableCell>
-
-              <TableCell className="pr-6 whitespace-nowrap">
-                <div className="flex items-center gap-1">
-                  <Link href={`/support/${item.id.replace("#", "")}`}>
-                    <Button
-                      variant="icon"
-                      className="hover:text-primary transition-colors"
-                    >
-                      <Eye className="size-4" />
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="icon"
-                    className="hover:text-primary transition-colors"
-                  >
-                    <Message01Icon className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="icon"
-                    className="hover:text-red-500 transition-colors"
-                  >
-                    <BannedIcon className="w-4 h-4" />
-                  </Button>
+          {filteredTickets.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={8} className="py-16 text-center">
+                <div className="flex flex-col items-center justify-center max-w-sm mx-auto text-center space-y-3">
+                  <div className="size-12 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
+                    <Headphones className="size-6" />
+                  </div>
+                  <h4 className="text-sm font-bold text-gray-900">
+                    Aucun ticket ouvert
+                  </h4>
+                  <p className="text-xs text-gray-500">
+                    Tous les messages de contact et questions clients ont été traités avec succès.
+                  </p>
                 </div>
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            filteredTickets.slice((currentPage - 1) * 10, currentPage * 10).map((item) => (
+              <TableRow
+                key={item.id}
+                className="border-b last:border-0 border-gray-100 hover:bg-gray-50/50"
+              >
+                <TableCell className="pl-6 whitespace-nowrap">
+                  <Checkbox
+                    checked={selectedRows.includes(item.id)}
+                    onCheckedChange={(checked) =>
+                      toggleSelectRow(item.id, checked as boolean)
+                    }
+                  />
+                </TableCell>
+                <TableCell className="font-mono text-xs text-gray-500 whitespace-nowrap">
+                  {item.id}
+                </TableCell>
+                <TableCell className="text-xs text-gray-600 whitespace-nowrap">
+                  {item.userId}
+                </TableCell>
+                <TableCell className="text-xs text-gray-700 font-medium whitespace-nowrap">
+                  {item.type}
+                </TableCell>
+                <TableCell
+                  className="text-xs text-gray-600 max-w-[300px] truncate"
+                  title={item.subject}
+                >
+                  {item.subject}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={item.status === "Ouvert" ? "success" : "warning"}>
+                    {item.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-xs text-gray-600 whitespace-nowrap">
+                  {item.date}
+                </TableCell>
+                <TableCell className="pr-6 text-right whitespace-nowrap">
+                  <div className="flex items-center justify-end gap-1">
+                    <Button
+                      variant="icon"
+                      href={`/support/${item.id.replace("#", "")}`}
+                      className="hover:text-primary transition-colors"
+                      title="Voir le ticket"
+                    >
+                      <Eye className="size-4" />
+                    </Button>
+                    <Button
+                      variant="icon"
+                      className="hover:text-primary transition-colors"
+                      title="Répondre"
+                    >
+                      <Message01Icon className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
-      <div className="p-6 border-t border-gray-500/20 flex justify-end">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(supportData.length / 10)}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {filteredTickets.length > 0 && (
+        <div className="p-6 border-t border-gray-100 flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredTickets.length / 10)}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

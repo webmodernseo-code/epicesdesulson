@@ -2,20 +2,42 @@
 
 import { useState } from "react";
 import Switch from "@/components/ui/switch";
-import { BellIcon } from "@/icons";
+import { Bell, ShoppingBag, AlertTriangle, Star, BarChart3 } from "lucide-react";
 
-const notificationData = [
-  { id: 1, title: "Notification Title", color: "bg-accent-1/60" },
-  { id: 2, title: "Notification Title", color: "bg-accent-2/60" },
-  { id: 3, title: "Notification Title", color: "bg-accent-3/60" },
-  { id: 4, title: "Notification Title", color: "bg-accent-4/60" },
-  { id: 5, title: "Notification Title", color: "bg-accent-5/60" },
-  { id: 6, title: "Notification Title", color: "bg-accent-7/60" },
+const notificationChannels = [
+  {
+    id: 1,
+    title: "Nouvelle Commande Payée",
+    description: "Recevoir une alerte immédiate lors d'un nouveau paiement Stripe ou PayPal validé.",
+    icon: ShoppingBag,
+    iconColor: "text-emerald-600 bg-emerald-50",
+  },
+  {
+    id: 2,
+    title: "Alerte de Stock Bas",
+    description: "Notification automatique dès qu'un sachet d'épices atteint son seuil de réapprovisionnement.",
+    icon: AlertTriangle,
+    iconColor: "text-amber-600 bg-amber-50",
+  },
+  {
+    id: 3,
+    title: "Nouvel Avis Client à Modérer",
+    description: "Alerte pour relire et approuver un nouvel avis étoilé publié par un acheteur.",
+    icon: Star,
+    iconColor: "text-amber-500 bg-amber-50",
+  },
+  {
+    id: 4,
+    title: "Rapport Hebdomadaire des Ventes",
+    description: "Synthèse détaillée du chiffre d'affaires et des épices les plus vendues chaque lundi.",
+    icon: BarChart3,
+    iconColor: "text-blue-600 bg-blue-50",
+  },
 ];
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState(
-    notificationData.map((n) => ({ ...n, active: true })),
+    notificationChannels.map((n) => ({ ...n, active: true })),
   );
 
   const toggle = (id: number) => {
@@ -25,40 +47,48 @@ export default function Notifications() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-500/20">
-      <h3 className="text-lg font-bold text-light-primary-text mb-4 sm:mb-6">
-        Notification
-      </h3>
-      <div className="grid grid-cols-1 lg:grid-cols-2  2xl:grid-cols-3 gap-4 sm:gap-6">
-        {notifications.map((item) => (
-          <div
-            key={item.id}
-            className={`rounded-2xl relative p-4 ${item.color}`}
-          >
-            <div className="flex justify-between items-start gap-5 sm:gap-10">
-              <div className="flex flex-col sm:flex-row gap-4 sm:pr-20">
-                <div className="size-12 rounded-full bg-white flex items-center justify-center shrink-0">
-                  <BellIcon className="size-6 text-light-primary-text" />
+    <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200/90 shadow-2xs space-y-4">
+      <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+        <Bell className="size-5 text-emerald-600" />
+        <div>
+          <h3 className="text-base font-bold text-gray-900">
+            Alertes & Notifications Automatiques
+          </h3>
+          <p className="text-xs text-gray-500">
+            Choisissez les événements boutique pour lesquels vous souhaitez recevoir une alerte email
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {notifications.map((item) => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={item.id}
+              className="rounded-2xl border border-gray-200/80 p-4 bg-gray-50/50 hover:bg-gray-50 transition-colors flex items-start justify-between gap-4"
+            >
+              <div className="flex items-start gap-3">
+                <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 ${item.iconColor}`}>
+                  <Icon className="size-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-base mb-2 text-light-primary-text">
+                  <h4 className="font-bold text-xs sm:text-sm text-gray-900 mb-0.5">
                     {item.title}
                   </h4>
-                  <p className="text-sm text-light-secondary-text leading-5.5">
-                    Delivery usually takes 2–5 business days, depending on your
-                    location and the selected shipping method.
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    {item.description}
                   </p>
                 </div>
               </div>
-              <div className="absolute right-4 top-4">
+              <div className="pt-0.5">
                 <Switch
                   checked={item.active}
                   onChange={() => toggle(item.id)}
                 />
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

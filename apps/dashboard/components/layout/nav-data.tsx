@@ -8,7 +8,6 @@ import {
   CartRemoveIcon,
   UserSettings,
   CreditCardPosIcon,
-  CustomerSupportIcon,
 } from "../../icons";
 
 export type NavItem = {
@@ -76,29 +75,19 @@ export const navItems: NavItem[] = [
     category: "PARAMÈTRES & CONFIGURATION",
     items: [
       {
-        label: "Passerelles API (Stripe & PayPal)",
-        href: "/settings/payment-api",
-        icon: <CreditCardPosIcon className="size-5.5" />,
-      },
-      {
         label: "Paramètres Boutique",
         href: "/settings/general",
         icon: <SettingsIcon className="size-5.5" />,
       },
       {
-        label: "Images produits",
-        href: "/settings/media",
-        icon: <DeliveryBoxIcon className="size-5.5" />,
+        label: "Passerelles API (Stripe & PayPal)",
+        href: "/settings/payment-api",
+        icon: <CreditCardPosIcon className="size-5.5" />,
       },
       {
         label: "Administrateurs",
         href: "/admin-users",
         icon: <UserSettings className="size-5.5" />,
-      },
-      {
-        label: "Support Client & Chatbot",
-        href: "/settings/chatbot",
-        icon: <CustomerSupportIcon className="size-5.5" />,
       },
     ],
   },
