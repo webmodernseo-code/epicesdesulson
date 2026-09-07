@@ -16,8 +16,13 @@ export default function LoginDrawer({
 }: LoginDrawerProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect to dashboard or admin session
-    window.location.href = process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3001";
+    // Redirect to the real dashboard administration URL
+    const targetUrl =
+      process.env.NEXT_PUBLIC_DASHBOARD_URL ||
+      (typeof window !== "undefined" && window.location.hostname.includes("localhost")
+        ? "http://localhost:3001"
+        : "https://admin.epicesdesulson.com");
+    window.location.href = targetUrl;
   };
 
   return (
@@ -116,7 +121,7 @@ export default function LoginDrawer({
                     onClose();
                     onOpenForgotPassword();
                   }}
-                  className="text-xs font-medium text-primary hover:underline"
+                  className="text-xs font-medium text-primary hover:underline cursor-pointer"
                 >
                   Mot de passe oublié ?
                 </button>
@@ -125,7 +130,7 @@ export default function LoginDrawer({
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="btn btn-primary w-full py-3 rounded-full font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2"
+                  className="btn btn-primary w-full py-3 rounded-full font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <i className="hgi hgi-stroke hgi-login-03 text-lg text-white" />
                   <span>Accéder à l'administration</span>
