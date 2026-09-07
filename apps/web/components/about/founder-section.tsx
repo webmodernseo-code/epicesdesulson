@@ -2,89 +2,50 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { Quote, Utensils, Award, MessageCircle, Heart, CheckCircle2 } from "lucide-react";
-
-/**
- * Placeholder Tag Component
- * Displays customizable fields in a clean, highlighted badge format
- * so the user can easily identify and replace them with their real personal info.
- */
-function SlotTag({ text, helper }: { text: string; helper?: string }) {
-  return (
-    <span
-      className="inline-flex items-baseline px-2.5 py-0.5 mx-1 rounded-md bg-amber-100/90 text-amber-950 font-bold text-xs sm:text-sm border border-amber-300 shadow-2xs font-mono"
-      title={helper || "Champ à personnaliser"}
-    >
-      [{text}]
-    </span>
-  );
-}
 
 export default function FounderSection() {
   const commitments = [
     {
-      icon: <Award className="size-5 text-emerald-700" />,
-      title: "Mon Exigence sur la Fraîcheur",
-      text: (
-        <>
-          « Je teste et affine moi-même chaque formule d'assemblage dans notre atelier.{" "}
-          <SlotTag text="Détail sur votre méthode de sélection / mouture" /> afin de garantir une intensité aromatique constante et intacte dès l'ouverture du sachet. »
-        </>
-      ),
+      iconClass: "hgi-award-01",
+      title: "L'Exigence de la Fraîcheur",
+      text: "Chaque formule d'assemblage est testée et affinée dans notre atelier afin de garantir une intensité aromatique intacte dès l'ouverture du sachet.",
     },
     {
-      icon: <Utensils className="size-5 text-amber-600" />,
-      title: "Mon Secret d'Assaisonnement",
-      text: (
-        <>
-          « Pour sublimer vos volailles ou viandes rouges :{" "}
-          <SlotTag text="Votre astuce signature / ex: massez la chair 30 min avant avec une cuillère d'huile d'olive et le mélange Sulson" />. Le secret réside dans le temps de pénétration des épices. »
-        </>
-      ),
+      iconClass: "hgi-chef-hat",
+      title: "L'Équilibre Culinaire",
+      text: "Nos mélanges sont élaborés pour assaisonner viandes, poissons et légumes avec justesse : une cuillère suffit pour révéler toute la saveur de vos recettes.",
     },
     {
-      icon: <Heart className="size-5 text-rose-600" />,
-      title: "Le Lien Direct avec Vous",
-      text: (
-        <>
-          « Ce projet est avant tout une aventure humaine et de partage.{" "}
-          <SlotTag text="Votre message aux clients / ex: Vos retours et photos de plats mijotés sont ma plus belle fierté et mon inspiration quotidienne" />. »
-        </>
-      ),
+      iconClass: "hgi-heart-rounded",
+      title: "La Passion du Partage",
+      text: "Une aventure humaine guidée par l'envie de transmettre la richesse des terroirs africains et de faire de chaque repas un moment chaleureux et mémorable.",
     },
   ];
 
   return (
-    <section className="py-14 sm:py-20 bg-gray-50/60 border-t border-gray-200/80">
+    <section className="py-14 sm:py-20 bg-gray-50/70 border-t border-gray-200/80">
       <div className="container">
         {/* Section Header */}
         <div className="max-w-2xl mx-auto text-center space-y-3 mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
-            <Quote className="size-3.5 text-amber-600" />
-            <span>LA VOIX DERRIÈRE LA MAISON</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-warning-lighter text-warning-darker text-xs font-bold">
+            <i className="hgi hgi-stroke hgi-quote-up text-sm" />
+            <span>L&apos;ÂME DE L&apos;ATELIER</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
-            La Créatrice & l'Auteure des Recettes
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-light-primary-text tracking-tight">
+            La Passion Culinaire &amp; le Savoir-Faire Artisanal
           </h2>
 
-          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-            Derrière chaque flacon et chaque sachet d'épices, il y a une histoire de passion, d'héritage familial et d'amour du bon goût.
+          <p className="text-sm sm:text-base text-light-secondary-text leading-relaxed">
+            Derrière chaque flacon et chaque sachet d&apos;épices Sulson, découvrez l&apos;amour du terroir et le plaisir d&apos;une cuisine généreuse.
           </p>
         </div>
 
         {/* Main Founder Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Left Column: Portrait / Atelier Visual + Quote */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="lg:col-span-5 space-y-5"
-          >
+          {/* Left Column: Portrait */}
+          <div className="lg:col-span-5 space-y-5">
             <div className="relative rounded-3xl overflow-hidden shadow-lg border border-gray-200 bg-white">
               <Image
                 src="/images/about/founder-atelier.jpg"
@@ -95,66 +56,57 @@ export default function FounderSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 text-white">
                 <div className="space-y-1">
-                  <span className="text-xs uppercase font-bold tracking-widest text-emerald-400">
-                    Fondatrice & Assemblages Signatures
+                  <span className="text-xs uppercase font-bold tracking-widest text-primary-light">
+                    Maison Artisanale
                   </span>
                   <h3 className="text-xl sm:text-2xl font-bold">
-                    <SlotTag text="Prénom Nom de la Créatrice" />
+                    Les Épices de Sulson
                   </h3>
                   <p className="text-xs text-gray-300">
-                    Maison Les Épices de Sulson
+                    Créations d&apos;épices &amp; recettes signatures
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Highlight Quote Box */}
+            {/* Quote Box */}
             <div className="p-6 rounded-2xl bg-white border border-gray-200/90 shadow-2xs relative">
-              <Quote className="size-8 text-emerald-100 absolute top-4 right-4 -scale-x-100" />
-              <p className="text-sm sm:text-base font-serif italic text-gray-800 leading-relaxed relative z-10">
-                « Cuisiner avec des épices d'exception, ce n'est pas seulement nourrir ceux qu'on aime : c'est leur offrir un voyage sensoriel, de la chaleur et des souvenirs partagés. »
+              <i className="hgi hgi-stroke hgi-quote-up text-3xl text-primary/15 absolute top-4 right-4" />
+              <p className="text-sm sm:text-base italic text-light-primary-text leading-relaxed relative z-10">
+                « Cuisiner avec des épices d&apos;exception, ce n&apos;est pas seulement nourrir ceux qu&apos;on aime : c&apos;est leur offrir un voyage sensoriel, de la chaleur et des souvenirs partagés autour de la table. »
               </p>
               <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-emerald-800">
-                  — <SlotTag text="Prénom" />
+                <span className="font-bold text-primary">
+                  — Maison Les Épices de Sulson
                 </span>
-                <span className="text-gray-400 font-medium">Créatrice culinaire</span>
+                <span className="text-light-disabled-text font-medium">Artisan créateur</span>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Right Column: Narrative & Fillable Bio */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-2xs space-y-6"
-          >
-            {/* Biography Paragraphs with Slots */}
+          {/* Right Column: Bio and Commitments */}
+          <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-2xs space-y-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-                <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
-                <h3 className="text-base sm:text-lg font-bold text-gray-900">
-                  Le Parcours & la Vision de la Fondatrice
+                <i className="hgi hgi-stroke hgi-checkmark-circle-02 text-primary text-xl" />
+                <h3 className="text-base sm:text-lg font-bold text-light-primary-text">
+                  L&apos;Histoire d&apos;une Passion Gastronomique
                 </h3>
               </div>
 
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                Originaire de <SlotTag text="Votre Ville / Région d'origine ou d'adoption" />, j'ai grandi entourée des parfums enivrants de la cuisine traditionnelle. Depuis toujours, j'ai été fascinée par la capacité d'une simple pincée d'épices à transformer un plat ordinaire en festin mémorable.
+              <p className="text-sm sm:text-base text-light-secondary-text leading-relaxed">
+                Bercée depuis l&apos;enfance par les parfums enivrants des marchés africains et les marmites familiales qui mijotaient de longues heures, j&apos;ai toujours été fascinée par la magie d&apos;une pincée d&apos;épices bien choisie.
               </p>
 
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                C'est en <SlotTag text="Année de lancement / ex: 2023" /> que j'ai donné naissance aux{" "}
-                <strong className="text-gray-900 font-bold">Épices de Sulson</strong> avec une ambition claire :{" "}
-                <SlotTag text="Votre ambition / ex: rendre hommage au patrimoine gastronomique du Cameroun et permettre à chacun de cuisiner comme un chef au quotidien" />.
+              <p className="text-sm sm:text-base text-light-secondary-text leading-relaxed">
+                La maison <strong className="text-light-primary-text font-bold">Les Épices de Sulson</strong> est née de la volonté de rendre accessible à tous ce patrimoine d&apos;une richesse inouïe. Nous sélectionnons des épices pures de terroirs volcaniques pour créer des assemblages harmonieux qui subliment chaque plat en toute simplicité.
               </p>
             </div>
 
-            {/* Commitments Accordion / List */}
+            {/* Commitments */}
             <div className="space-y-3 pt-2">
-              <h4 className="text-xs uppercase font-bold tracking-wider text-gray-500">
-                Les 3 Engagements Personnels
+              <h4 className="text-xs uppercase font-bold tracking-wider text-light-disabled-text">
+                Nos 3 Engagements Qualité
               </h4>
               <div className="space-y-3">
                 {commitments.map((item, idx) => (
@@ -162,15 +114,15 @@ export default function FounderSection() {
                     key={idx}
                     className="p-4 rounded-xl bg-gray-50/70 border border-gray-200/80 space-y-1.5"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="size-7 rounded-lg bg-white shadow-2xs flex items-center justify-center border border-gray-100 shrink-0">
-                        {item.icon}
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-8 rounded-lg bg-white shadow-2xs flex items-center justify-center border border-gray-100 shrink-0 text-primary">
+                        <i className={`hgi hgi-stroke ${item.iconClass} text-lg`} />
                       </div>
-                      <h5 className="text-xs sm:text-sm font-bold text-gray-900">
+                      <h5 className="text-xs sm:text-sm font-bold text-light-primary-text">
                         {item.title}
                       </h5>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed pl-9">
+                    <p className="text-xs sm:text-sm text-light-secondary-text leading-relaxed pl-10">
                       {item.text}
                     </p>
                   </div>
@@ -178,30 +130,30 @@ export default function FounderSection() {
               </div>
             </div>
 
-            {/* Bottom Contact / Exchange Box */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/80">
+            {/* Bottom Contact Banner */}
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/20">
               <div className="flex items-center gap-3 text-left">
-                <span className="size-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                  <MessageCircle className="size-5" />
+                <span className="size-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-2xs">
+                  <i className="hgi hgi-stroke hgi-bubble-chat text-xl" />
                 </span>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-bold text-gray-900">
+                  <h4 className="text-xs sm:text-sm font-bold text-light-primary-text">
                     Une question sur nos mélanges ou une recette ?
                   </h4>
-                  <p className="text-[11px] text-gray-600 mt-0.5">
-                    Échangez directement avec notre équipe via notre support client.
+                  <p className="text-[11px] text-light-secondary-text mt-0.5">
+                    Notre équipe est à votre écoute pour vous conseiller.
                   </p>
                 </div>
               </div>
 
               <Link
                 href="/contact"
-                className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors text-center shrink-0 cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-primary hover:bg-primary-dark text-white text-xs font-bold transition-colors text-center shrink-0"
               >
                 Nous Contacter
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
