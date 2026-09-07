@@ -7,6 +7,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/lib/toast";
 import { useProductRatings } from "@/context/ratings-context";
 
+// Pure vector solid filled star
+const StarFilledIcon = ({ className = "size-4 text-amber-400" }: { className?: string }) => (
+  <svg
+    className={`${className} shrink-0`}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+  </svg>
+);
+
+// Pure vector empty star
+const StarEmptyIcon = ({ className = "size-4 text-gray-200" }: { className?: string }) => (
+  <svg
+    className={`${className} shrink-0`}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+  </svg>
+);
+
 interface ProductOption {
   id: string;
   name: string;
@@ -240,9 +264,9 @@ function CustomerReviewsContent() {
 
           {/* Simple Rating Summary Bar */}
           <div className="mt-5 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gray-50 border border-gray-200">
-            <div className="flex items-center text-amber-400 gap-0.5">
+            <div className="flex items-center gap-0.5">
               {[1, 2, 3, 4, 5].map((s) => (
-                <i key={s} className="hgi hgi-stroke hgi-star text-sm fill-amber-400" />
+                <StarFilledIcon key={s} className="size-4 text-amber-400" />
               ))}
             </div>
             <span className="text-xs font-bold text-gray-900">
@@ -314,34 +338,35 @@ function CustomerReviewsContent() {
               </div>
             </div>
 
-            {/* 3. Note étoilée */}
+            {/* 3. Note étoilée avec étoiles pleines */}
             <div>
               <label className="block text-xs font-bold text-gray-800 mb-1.5">
                 Votre note *
               </label>
-              <div className="flex items-center gap-1.5 p-2.5 rounded-xl bg-white border border-gray-300 shadow-2xs">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setRating(star)}
-                      onMouseEnter={() => setHoverRating(star)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className="p-1 transition-transform hover:scale-110 cursor-pointer focus:outline-none"
-                      aria-label={`${star} étoiles sur 5`}
-                    >
-                      <i
-                        className={`hgi hgi-stroke hgi-star text-lg ${
-                          (hoverRating || rating) >= star
-                            ? "fill-amber-400 text-amber-400"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    </button>
-                  ))}
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-gray-300 shadow-2xs">
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const isFilled = (hoverRating || rating) >= star;
+                    return (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        className="p-1 transition-transform hover:scale-115 cursor-pointer focus:outline-none"
+                        aria-label={`${star} étoiles sur 5`}
+                      >
+                        {isFilled ? (
+                          <StarFilledIcon className="size-5 sm:size-6 text-amber-400" />
+                        ) : (
+                          <StarEmptyIcon className="size-5 sm:size-6 text-gray-200" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
-                <span className="text-xs font-semibold text-gray-600 ml-2">
+                <span className="text-xs font-bold text-gray-700 ml-1">
                   {hoverRating || rating} / 5
                 </span>
               </div>
@@ -420,7 +445,7 @@ function CustomerReviewsContent() {
           </div>
         </div>
 
-        {/* Reviews List */}
+        {/* Reviews List with filled stars */}
         <div className="space-y-3.5">
           <AnimatePresence>
             {filteredReviews.map((rev) => (
@@ -449,15 +474,14 @@ function CustomerReviewsContent() {
                     </span>
                   </div>
 
-                  {/* Stars */}
-                  <div className="flex items-center text-amber-400 gap-0.5">
+                  {/* Filled Stars */}
+                  <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <i
-                        key={s}
-                        className={`hgi hgi-stroke hgi-star text-xs ${
-                          rev.rating >= s ? "fill-amber-400 text-amber-400" : "text-gray-200"
-                        }`}
-                      />
+                      s <= rev.rating ? (
+                        <StarFilledIcon key={s} className="size-3.5 text-amber-400" />
+                      ) : (
+                        <StarEmptyIcon key={s} className="size-3.5 text-gray-200" />
+                      )
                     ))}
                   </div>
                 </div>
