@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Breadcrumb from "@/components/common/breadcrumb";
 import StorySection from "@/components/about/story-section";
 import FounderSection from "@/components/about/founder-section";
+import CommitmentsGrid from "@/components/about/commitments-grid";
 
 export const metadata: Metadata = {
   title: "L'Histoire & la Maison | Les Épices de Sulson",
@@ -40,6 +41,9 @@ export default function AboutPage() {
 
       {/* SECTION 2 : L'Auteure & la Créatrice des Recettes */}
       <FounderSection />
+
+      {/* SECTION 3 : Les Engagements & Garanties Maison */}
+      <CommitmentsGrid />
     </main>
   );
 }
