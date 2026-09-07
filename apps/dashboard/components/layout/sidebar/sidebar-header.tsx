@@ -13,26 +13,23 @@ export function SidebarHeader({
   isCollapsed,
   toggleCollapse,
   onClose,
-  userRole,
 }: SidebarHeaderProps) {
   return (
-    <div className="p-4 flex items-center relative gap-2 shrink-0 h-[70px]">
+    <div className="p-4 flex items-center relative gap-2 shrink-0 h-[76px] border-b border-gray-100 bg-white">
+      {/* Full Logo when expanded */}
       <Link
         href="/"
-        className={`transition-opacity duration-300 ${
+        className={`transition-opacity duration-300 flex items-center ${
           isCollapsed ? "opacity-0 invisible w-0" : "opacity-100 visible"
         }`}
       >
         <Image
-          src={
-            userRole === "seller"
-              ? "/images/logo/logo-green.svg"
-              : "/images/logo/logo-white.svg"
-          }
-          alt="Logo"
-          width={userRole === "seller" ? 114 : 114}
-          height={userRole === "seller" ? 37 : 37}
-          className="max-w-none"
+          src="/images/logo/logo.png"
+          alt="Les Épices de Sulson"
+          width={180}
+          height={60}
+          priority
+          className="h-12 w-auto object-contain max-w-none"
         />
       </Link>
 
@@ -44,39 +41,30 @@ export function SidebarHeader({
         }`}
       >
         <Image
-          src={
-            userRole === "seller"
-              ? "/images/logo/logo-green-icon.svg"
-              : "/images/logo/logo-white-icon.svg"
-          }
-          alt="Logo"
-          width={32}
-          height={32}
-          className={`max-w-none`}
+          src="/images/logo/logo-green-icon.png"
+          alt="Les Épices de Sulson"
+          width={40}
+          height={40}
+          className="size-9 object-contain max-w-none"
         />
       </Link>
 
+      {/* Toggle collapse button */}
       <button
         onClick={toggleCollapse}
-        className={`hidden xl:inline-flex size-10 absolute -right-5 top-1/2 -translate-y-1/2 rounded-full justify-center items-center shadow-md z-50 transition-transform duration-300 ${
+        className={`hidden xl:inline-flex size-9 absolute -right-4.5 top-1/2 -translate-y-1/2 rounded-full justify-center items-center shadow-md z-50 transition-transform duration-300 bg-white text-gray-800 hover:text-emerald-700 border border-gray-200 cursor-pointer ${
           isCollapsed ? "rotate-180" : ""
-        } ${
-          userRole === "seller"
-            ? "bg-white text-light-secondary-text hover:text-light-primary-text "
-            : "bg-white text-light-primary-text"
         }`}
+        aria-label="Réduire / Déplier le menu"
       >
-        <ChevronLeftCircle className="size-6" />
+        <ChevronLeftCircle className="size-5" />
       </button>
 
       {/* Mobile Close Button */}
       <button
         onClick={onClose}
-        className={`xl:hidden absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-md ${
-          userRole === "seller"
-            ? "text-gray-600 hover:bg-gray-100"
-            : "text-white hover:bg-white/10"
-        }`}
+        className="xl:hidden absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+        aria-label="Fermer le menu"
       >
         <CloseIcon className="size-6" />
       </button>

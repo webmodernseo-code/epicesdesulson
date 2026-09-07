@@ -54,10 +54,11 @@ export default function Footer() {
               <div>
                 <Link href="/">
                   <Image
-                    src="/images/footer-logo.svg"
+                    src="/images/logo.png"
                     alt="Les Épices de Sulson"
-                    width={155}
-                    height={42}
+                    width={170}
+                    height={55}
+                    className="h-12 w-auto object-contain brightness-110"
                   />
                 </Link>
               </div>

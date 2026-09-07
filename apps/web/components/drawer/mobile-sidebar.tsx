@@ -239,11 +239,11 @@ export default function MobileSidebar({
           <div className="flex items-center justify-between pb-4 border-b border-gray-200">
             <Link href="/" onClick={onClose}>
               <Image
-                src="/images/logo.svg"
+                src="/images/logo.png"
                 alt="Les Épices de Sulson"
-                width={150}
-                height={40}
-                className="w-[145px] h-auto"
+                width={160}
+                height={52}
+                className="w-[145px] h-auto object-contain"
               />
             </Link>
             <button

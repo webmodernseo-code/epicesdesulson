@@ -32,12 +32,12 @@ export default function HeaderSearch({
           <div className="shrink-0">
             <Link href="/" className="inline-block">
               <Image
-                src="/images/logo.svg"
+                src="/images/logo.png"
                 alt="Les Épices de Sulson"
                 width={190}
-                height={45}
+                height={60}
                 priority
-                className="h-10 w-auto"
+                className="h-12 w-auto object-contain"
               />
             </Link>
           </div>
