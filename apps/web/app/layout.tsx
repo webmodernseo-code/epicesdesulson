@@ -79,6 +79,15 @@ export const metadata: Metadata = {
     description:
       "Boutique officielle Les Épices de Sulson : mélanges gourmets 100g et coffrets authentiques.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
 };
 
 import ChatbotBubble from "@/components/common/chatbot-bubble";

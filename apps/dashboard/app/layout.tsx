@@ -28,6 +28,15 @@ export const metadata: Metadata = {
   },
   description:
     "Tableau de bord de gestion et administration pour la boutique e-commerce Les Épices de Sulson.",
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
