@@ -262,18 +262,23 @@ export default function MobileSidebar({
 
           {/* Auth / Admin */}
           <div className="border border-gray-200 p-4 rounded-2xl bg-amber-50/40">
-            <button
-              onClick={() => {
-                onClose();
-                onOpenLogin?.();
-              }}
+            <a
+              href={
+                process.env.NEXT_PUBLIC_DASHBOARD_URL ||
+                (typeof window !== "undefined" && window.location.hostname.includes("localhost")
+                  ? "http://localhost:3001"
+                  : "https://admin.epicesdesulson.com")
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onClose}
               className="flex items-center gap-x-3 text-left w-full text-sm font-bold text-gray-900 hover:text-primary transition-colors"
             >
               <span className="inline-flex items-center justify-center bg-primary text-white size-9 rounded-full shrink-0 shadow-xs">
                 <i className="hgi hgi-stroke hgi-lock-sync-01 text-lg" />
               </span>
               <span>Espace Gestion / Vendeuse</span>
-            </button>
+            </a>
           </div>
 
           {/* Social */}

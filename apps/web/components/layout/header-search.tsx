@@ -8,21 +8,24 @@ import { useCart } from "@/context/cart-context";
 
 interface HeaderSearchProps {
   onOpenCart: () => void;
-  onOpenLogin: () => void;
-  onOpenRegister: () => void;
-  onOpenForgotPassword: () => void;
-  onOpenSetPassword: () => void;
-  onOpenOtp: () => void;
+  onOpenLogin?: () => void;
+  onOpenRegister?: () => void;
+  onOpenForgotPassword?: () => void;
+  onOpenSetPassword?: () => void;
+  onOpenOtp?: () => void;
 }
 
 export default function HeaderSearch({
   onOpenCart,
-  onOpenLogin,
-  onOpenRegister,
-  onOpenForgotPassword,
 }: HeaderSearchProps) {
   const pathname = usePathname();
   const { totalCount } = useCart();
+
+  const dashboardUrl =
+    process.env.NEXT_PUBLIC_DASHBOARD_URL ||
+    (typeof window !== "undefined" && window.location.hostname.includes("localhost")
+      ? "http://localhost:3001"
+      : "https://admin.epicesdesulson.com");
 
   return (
     <div className="py-4 border-b border-gray-200 hidden xl:block header-middle bg-white shadow-xs">
@@ -76,13 +79,14 @@ export default function HeaderSearch({
           {/* Account & Cart on Right */}
           <div className="flex items-center gap-x-6 shrink-0">
             <ul className="flex items-center gap-x-6">
-              {/* Account / Admin Login Button */}
+              {/* Account / Direct Admin Login Link */}
               <li className="flex items-center">
-                <button
-                  type="button"
-                  onClick={onOpenLogin}
+                <a
+                  href={dashboardUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-x-3 cursor-pointer py-2 group text-left"
-                  aria-label="Espace Vendeuse"
+                  aria-label="Espace Gestion Administrateur"
                 >
                   <span className="inline-flex items-center justify-center bg-gray-100 group-hover:bg-primary/10 size-10 rounded-full shadow-xs transition-colors">
                     <i className="hgi hgi-stroke hgi-user-circle text-xl text-gray-800 group-hover:text-primary transition-colors" />
@@ -93,7 +97,7 @@ export default function HeaderSearch({
                       Connexion
                     </span>
                   </span>
-                </button>
+                </a>
               </li>
 
               {/* Cart Button */}
@@ -126,5 +130,3 @@ export default function HeaderSearch({
     </div>
   );
 }
-
-
