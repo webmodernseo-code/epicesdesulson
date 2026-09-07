@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 
 export function NewPasswordForm() {
   const router = useRouter();
@@ -36,28 +36,19 @@ export function NewPasswordForm() {
 
   return (
     <div>
-      {/* Logos & Illustration */}
+      {/* Brand Logo & Header */}
       <div className="flex flex-col items-start mb-8">
-        <Link href="/" className="mb-6">
+        <Link href="/" className="mb-6 inline-block transition-transform hover:scale-102">
           <Image
             src="/images/logo/logo.png"
             alt="Les Épices de Sulson"
-            width={180}
-            height={55}
+            width={210}
+            height={65}
             priority
-            className="h-11 w-auto object-contain"
+            className="h-14 w-auto object-contain"
           />
         </Link>
-        <div className="relative mb-4">
-          <Image
-            src="/images/auth/set-pass-illustration.png"
-            alt="Set Password Illustration"
-            width={120}
-            height={120}
-            className="w-24 h-24 object-contain"
-          />
-        </div>
-        <h1 className="text-2xl font-public-sans font-bold text-light-primary-text mb-1">
+        <h1 className="text-2xl font-public-sans font-bold text-light-primary-text mb-1.5">
           Nouveau Mot de Passe
         </h1>
         <p className="text-gray-600 font-public-sans text-sm">
@@ -91,7 +82,7 @@ export function NewPasswordForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 mt-4"
+          className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 mt-4 cursor-pointer"
         >
           {loading ? (
             <>
@@ -105,12 +96,12 @@ export function NewPasswordForm() {
       </form>
 
       <p className="mt-8 text-sm text-light-secondary-text">
-        Retour à la{" "}
         <Link
           href="/signin"
-          className="ml-1 font-bold text-primary hover:text-primary-dark transition-colors"
+          className="inline-flex items-center gap-1.5 font-bold text-primary hover:text-primary-dark transition-colors"
         >
-          Connexion
+          <ArrowLeft className="size-4" />
+          <span>Retour à la page de connexion</span>
         </Link>
       </p>
     </div>

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 
 export function SigninForm() {
   const router = useRouter();
@@ -51,7 +51,7 @@ export function SigninForm() {
         localStorage.setItem("userRole", "master");
       }
 
-      toast.success("Connexion réussie. Bienvenue sur le cockpit !");
+      toast.success("Connexion réussie. Bienvenue sur le tableau de bord !");
       router.push(callbackUrl);
       router.refresh();
     } catch {
@@ -60,64 +60,26 @@ export function SigninForm() {
     }
   };
 
-  const loginQuick = async (role: "master" | "seller") => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: "admin@epicesdesulson.com",
-          password: "sulson",
-          keepSignedIn: true,
-        }),
-      });
-
-      if (res.ok) {
-        if (typeof window !== "undefined") {
-          localStorage.setItem("userRole", role);
-        }
-        toast.success(`Connecté en tant que ${role === "master" ? "Administrateur Principal" : "Gestionnaire"}`);
-        router.push(callbackUrl);
-        router.refresh();
-      } else {
-        toast.error("Échec de connexion rapide.");
-      }
-    } catch {
-      toast.error("Erreur de connexion.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div>
-      {/* Logos & Illustration */}
+      {/* Brand Logo & Header */}
       <div className="flex flex-col items-start mb-8">
-        <Link href="/" className="mb-6">
+        <Link href="/" className="mb-6 inline-block transition-transform hover:scale-102">
           <Image
             src="/images/logo/logo.png"
             alt="Les Épices de Sulson"
-            width={180}
-            height={55}
+            width={210}
+            height={65}
             priority
-            className="h-11 w-auto object-contain"
+            className="h-14 w-auto object-contain"
           />
         </Link>
-        <div className="relative mb-4">
-          <Image
-            src="/images/auth/sigin-illustration.png"
-            alt="Illustration Connexion"
-            width={120}
-            height={120}
-            className="w-24 h-24 object-contain"
-          />
-        </div>
-        <h1 className="text-2xl font-public-sans font-bold text-light-primary-text mb-1">
+
+        <h1 className="text-2xl font-public-sans font-bold text-light-primary-text mb-1.5">
           Espace Administrateur
         </h1>
         <p className="text-gray-600 font-public-sans text-sm">
-          Connectez-vous avec votre email et mot de passe pour accéder au tableau de bord.
+          Connectez-vous avec vos identifiants pour piloter les commandes, stocks et clients.
         </p>
       </div>
 
@@ -130,6 +92,7 @@ export function SigninForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          autoComplete="email"
           disabled={loading}
           className="h-12"
         />
@@ -140,13 +103,13 @@ export function SigninForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="admin123 ou sulson"
           required
+          autoComplete="current-password"
           disabled={loading}
           className="h-12"
         />
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2">
             <Checkbox
               id="keep-signed-in"
@@ -172,49 +135,20 @@ export function SigninForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2"
+          className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 mt-4 cursor-pointer"
         >
           {loading ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              <span>Vérification...</span>
+              <span>Vérification en cours...</span>
             </>
           ) : (
-            <span>Se connecter</span>
+            <>
+              <span>Se connecter au tableau de bord</span>
+              <ArrowRight className="size-4" />
+            </>
           )}
         </Button>
-
-        <div className="relative my-7">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-500/20"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-light-secondary-text text-xs">
-              Accès rapide
-            </span>
-          </div>
-        </div>
-
-        <div className="flex gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={loading}
-            className="w-full h-12 text-xs sm:text-sm font-semibold"
-            onClick={() => loginQuick("master")}
-          >
-            Accès Admin Direct
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={loading}
-            className="w-full h-12 text-xs sm:text-sm font-semibold"
-            onClick={() => loginQuick("seller")}
-          >
-            Accès Vendeuse
-          </Button>
-        </div>
       </form>
     </div>
   );
