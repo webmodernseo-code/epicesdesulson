@@ -13,8 +13,9 @@
     "start": "npm run start -w apps/web",
     "lint": "npm run lint --workspaces --if-present"
   },
-  "devDependencies": {
+  "dependencies": {
     "@prisma/client": "^6.19.3",
-    "prisma": "^6.19.3"
+    "prisma": "^6.19.3",
+    "next": "16.1.6"
   }
 }
