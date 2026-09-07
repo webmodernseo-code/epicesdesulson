@@ -28,17 +28,25 @@ export default function HeaderSearch({
     <div className="py-4 border-b border-gray-200 hidden xl:block header-middle bg-white shadow-xs">
       <div className="container">
         <div className="flex items-center justify-between">
-          {/* Logo on Left */}
+          {/* Logo & Brand Identity on Left */}
           <div className="shrink-0">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-flex items-center gap-3.5 group">
               <Image
                 src="/images/logo.png"
                 alt="Les Épices de Sulson"
                 width={190}
                 height={60}
                 priority
-                className="h-12 w-auto object-contain"
+                className="h-11 w-auto object-contain transition-transform duration-200 group-hover:scale-102"
               />
+              <div className="flex flex-col justify-center">
+                <span className="font-extrabold text-[19px] tracking-tight text-gray-900 leading-tight group-hover:text-primary transition-colors">
+                  Les Épices de Sulson
+                </span>
+                <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-emerald-800/80 leading-none mt-1">
+                  Maison d&apos;Assemblages & Terroirs
+                </span>
+              </div>
             </Link>
           </div>
 
