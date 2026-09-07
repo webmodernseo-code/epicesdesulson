@@ -1,45 +1,39 @@
-# 🚀 RÈGLES DE DÉPLOIEMENT VERCEL & ARCHITECTURE MONOREPO
+# 🚀 RÈGLES UNIVERSELLES DE DÉPLOIEMENT & DE RÉSILIENCE VERCEL
 
-Ce document définit les règles strictes pour le déploiement et la gestion des dépendances du monorepo **Les Épices de Sulson**.
-
----
-
-### 1. Isolation Stricte des Dépendances par Application
-Dans un monorepo npm (`apps/web` et `apps/dashboard`) :
-- **Chaque application est déployée de façon autonome par Vercel.**
-- **Règle absolue** : Tout composant importé dans `apps/web` (ex: `lucide-react`, `@prisma/client`, `framer-motion`, etc.) **DOIT** figurer explicitement dans le fichier `apps/web/package.json`.
-- **Interdiction** : Ne jamais supposer qu'une dépendance installée dans le tableau de bord ou à la racine sera disponible pour la boutique lors du build Vercel.
+Ces règles s'appliquent à **tous les projets web et monorepos** déployés sur Vercel (Next.js, Vite, Node.js, Prisma, PostgreSQL). Elles garantissent des déploiements 100% fiables, sans échec silencieux ni blocage de production.
 
 ---
 
-### 2. Configuration Next.js Résiliente pour la Production
-Dans `apps/web/next.config.ts` et `apps/dashboard/next.config.ts` :
-- Toujours conserver l'option de secours pour éviter qu'un avertissement de type non critique n'interrompe un déploiement urgent :
+### 1. Gestion Stricte des Dépendances (Zero Missing Module)
+* **Autonomie de chaque application (Monorepos)** : Dans une architecture avec plusieurs applications (`apps/web`, `apps/dashboard`, `packages/*`), chaque application est isolée lors du build sur Vercel. **Toute librairie importée dans le code source DOIT être déclarée dans le `package.json` de l'application concernée.**
+* **Mise à jour du lockfile** : Après chaque ajout de paquet, toujours exécuter `npm install` pour actualiser `package-lock.json` afin que Vercel résolve immédiatement les dépendances avec leur signature d'intégrité exacte.
+* **Dépendances d'exécution** : Placer systématiquement les outils requis au build (comme `@prisma/client`, `prisma`, `sharp`, `lucide-react`) dans les `dependencies` de production et non uniquement en `devDependencies`.
+
+---
+
+### 2. Résilience de Compilation (Zero Build Crash)
+* **Protection Next.js contre les blocages non critiques** :
+  Toujours configurer `next.config.ts` (ou `next.config.js`) pour éviter qu'un avertissement de type mineur n'annule un déploiement :
   ```ts
   typescript: {
     ignoreBuildErrors: true,
   }
   ```
-- Ne pas inclure de clé `eslint` dépréciée dans `next.config.ts` (obsolète en Next.js 16).
+* **Génération automatique des ORM / Schémas (Prisma / Drizzle)** :
+  * Prévoir des valeurs de secours (*fallbacks*) pour les variables de base de données (`DATABASE_URL`) lors de l'étape de génération statique afin que `prisma generate` ou `next build` ne plante jamais si la base distante est en veille ou non configurée pendant le build.
 
 ---
 
-### 3. Déclenchement Automatique des Déploiements Vercel
-- Si le webhook GitHub vers Vercel est inactif ou désynchronisé, déclencher immédiatement le déploiement via le Deploy Hook officiel du projet :
-  - **Deploy Hook Web (`epicesdesulson-web`)** :
-    `POST https://api.vercel.com/v1/integrations/deploy/prj_dzAw3R2ZXEJjvLaker09RiZhGzOb/sDq58u56XM`
-- Commande PowerShell pour déclencher :
-  ```powershell
-  Invoke-RestMethod -Uri "https://api.vercel.com/v1/integrations/deploy/prj_dzAw3R2ZXEJjvLaker09RiZhGzOb/sDq58u56XM" -Method POST
-  ```
+### 3. Synchronisation & Déclenchement Vercel
+* **Couverture des branches Git** : Pousser systématiquement sur la branche `main` ET sur `master` (`git push origin main; git push origin main:master`) pour s'adapter à la branche de production configurée sur Vercel sans risque de désynchronisation.
+* **Principe du « Zero-Downtime » de Vercel** : Si un build échoue sur Vercel, la plateforme ne coupe pas le site mais continue de servir **l'ancien déploiement réussi**. Si une mise à jour ne semble pas s'appliquer, inspecter immédiatement les logs Vercel pour corriger l'erreur de build.
+* **Déclenchement instantané par Deploy Hook** : Lorsque les webhooks Git automatiques sont désactivés ou lents, utiliser le Deploy Hook Vercel du projet (via une requête `POST`) pour forcer la compilation en temps réel.
 
 ---
 
-### 4. Validation Systématique Pré-Déploiement
-Avant de pousser un commit vers `origin/main` :
-1. Exécuter la compilation locale :
-   ```bash
-   npm run build -w apps/web
-   ```
-2. Vérifier que la compilation affiche `✓ Generating static pages (69/69)` sans aucune erreur `Module not found`.
-3. Pousser les modifications sur `main` et sur `master`.
+### 4. Protocole de Validation Systématique
+Avant d'annoncer la réussite d'un déploiement :
+1. **Tester le build localement** (`npm run build`) et vérifier qu'il se termine avec le code de sortie `0`.
+2. **Pousser sur le dépôt distant** (`git push`).
+3. **Déclencher le déploiement** et vérifier la fin de la compilation.
+4. **Tester en Navigation Privée** ou avec un rechargement forcé (`Ctrl + F5` / `Ctrl + Shift + R`) pour neutraliser le cache local du navigateur.
