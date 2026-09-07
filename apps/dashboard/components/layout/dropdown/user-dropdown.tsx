@@ -1,12 +1,34 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Link from "next/link";
-import { ChevronDown, DashboardGridIcon, LogoutIcon, SettingsIcon, UserIcon } from "@/icons";
-import { ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, LogoutIcon, SettingsIcon } from "@/icons";
+import { ShieldCheck, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function UserDropdown() {
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setLoggingOut(true);
+      await fetch("/api/auth/logout", { method: "POST" });
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("userRole");
+      }
+      toast.success("Vous avez été déconnecté avec succès.");
+      router.push("/signin");
+      router.refresh();
+    } catch {
+      router.push("/signin");
+    } finally {
+      setLoggingOut(false);
+    }
+  };
+
   return (
     <div className="text-right">
       <Menu as="div" className="relative inline-block text-left">
@@ -66,15 +88,21 @@ export default function UserDropdown() {
               <div className="my-1 border-t border-gray-100" />
               <MenuItem>
                 {({ focus }) => (
-                  <Link
-                    href="/signin"
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    disabled={loggingOut}
                     className={`${
                       focus ? "bg-red-50 text-red-700" : "text-gray-600"
-                    } group flex w-full items-center rounded-xl px-3 py-2 text-xs font-semibold gap-2.5 transition-colors`}
+                    } group flex w-full items-center rounded-xl px-3 py-2 text-xs font-semibold gap-2.5 transition-colors cursor-pointer text-left disabled:opacity-50`}
                   >
-                    <LogoutIcon className="size-4 text-gray-400 group-hover:text-red-600" />
-                    <span>Se déconnecter</span>
-                  </Link>
+                    {loggingOut ? (
+                      <Loader2 className="size-4 animate-spin text-red-600" />
+                    ) : (
+                      <LogoutIcon className="size-4 text-gray-400 group-hover:text-red-600" />
+                    )}
+                    <span>{loggingOut ? "Déconnexion..." : "Se déconnecter"}</span>
+                  </button>
                 )}
               </MenuItem>
             </MenuItems>
