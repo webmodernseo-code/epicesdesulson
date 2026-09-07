@@ -4,14 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
+    "build": "node scripts/build.js",
+    "postinstall": "node scripts/build.js --generate-only",
     "db:validate": "prisma validate",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
     "payments:check": "node scripts/check-payments.js",
     "admin:bootstrap": "node scripts/bootstrap-admin.js",
-    "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {

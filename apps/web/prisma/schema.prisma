@@ -1,10 +1,10 @@
+
 // Prisma Schema for Les Épices de Sulson
 // Ready for Neon PostgreSQL (Serverless & Connection Pooling)
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
