@@ -71,13 +71,14 @@ export default function MobileMenu({
             </button>
 
             {/* Logo */}
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-flex items-center justify-center">
               <Image
                 src="/images/logo.png"
                 alt="Les Épices de Sulson"
-                width={160}
-                height={50}
-                className="w-[140px] h-auto object-contain"
+                width={120}
+                height={40}
+                priority
+                className="h-9 sm:h-10 w-auto max-w-[130px] object-contain"
               />
             </Link>
 

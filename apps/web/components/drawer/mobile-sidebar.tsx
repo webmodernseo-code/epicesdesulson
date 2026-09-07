@@ -237,13 +237,13 @@ export default function MobileSidebar({
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-            <Link href="/" onClick={onClose}>
+            <Link href="/" onClick={onClose} className="inline-flex items-center">
               <Image
                 src="/images/logo.png"
                 alt="Les Épices de Sulson"
-                width={160}
-                height={52}
-                className="w-[145px] h-auto object-contain"
+                width={130}
+                height={42}
+                className="h-10 w-auto max-w-[130px] object-contain"
               />
             </Link>
             <button
