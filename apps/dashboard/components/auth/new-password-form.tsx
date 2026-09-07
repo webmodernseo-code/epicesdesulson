@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle2, Lock, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export function NewPasswordForm() {
   const router = useRouter();
@@ -17,8 +17,8 @@ export function NewPasswordForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      toast.error("Le mot de passe doit comporter au moins 8 caractères.");
+    if (password.length < 6) {
+      toast.error("Le mot de passe doit comporter au moins 6 caractères.");
       return;
     }
     if (password !== confirmPassword) {
@@ -53,7 +53,7 @@ export function NewPasswordForm() {
             Nouveau Mot de Passe
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Définissez un mot de passe robuste pour protéger votre accès administrateur
+            Définissez un mot de passe pour protéger votre accès administrateur
           </p>
         </div>
       </div>
@@ -70,9 +70,10 @@ export function NewPasswordForm() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimum 8 caractères"
+              placeholder="Minimum 6 caractères"
               required
-              className="w-full h-11 pl-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+              disabled={loading}
+              className="w-full h-11 pl-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white disabled:opacity-50"
             />
             <button
               type="button"
@@ -95,17 +96,27 @@ export function NewPasswordForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Répétez le nouveau mot de passe"
             required
-            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+            disabled={loading}
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white disabled:opacity-50"
           />
         </div>
 
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm cursor-pointer shadow-xs transition-all flex items-center justify-center gap-2 mt-2"
+          className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm cursor-pointer shadow-xs transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
         >
-          <CheckCircle2 className="size-4" />
-          <span>{loading ? "Enregistrement..." : "Valider le nouveau mot de passe"}</span>
+          {loading ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              <span>Enregistrement...</span>
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="size-4" />
+              <span>Valider le nouveau mot de passe</span>
+            </>
+          )}
         </Button>
 
         <div className="text-center pt-2">

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle2, Mail, Send } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Mail, Send, Loader2 } from "lucide-react";
 
 export function ResetPasswordForm() {
   const [email, setEmail] = useState("");
@@ -86,7 +86,8 @@ export function ResetPasswordForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@epicesdesulson.com"
                 required
-                className="w-full h-11 pl-10 pr-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                disabled={loading}
+                className="w-full h-11 pl-10 pr-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white disabled:opacity-50"
               />
               <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
             </div>
@@ -95,10 +96,19 @@ export function ResetPasswordForm() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm cursor-pointer shadow-xs transition-all flex items-center justify-center gap-2"
+            className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm cursor-pointer shadow-xs transition-all flex items-center justify-center gap-2 disabled:opacity-70"
           >
-            <Send className="size-4" />
-            <span>{loading ? "Envoi en cours..." : "Envoyer le lien de réinitialisation"}</span>
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                <span>Envoi en cours...</span>
+              </>
+            ) : (
+              <>
+                <Send className="size-4" />
+                <span>Envoyer le lien de réinitialisation</span>
+              </>
+            )}
           </Button>
 
           <div className="text-center pt-2">
