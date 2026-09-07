@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useCart } from "@/context/cart-context";
+import { useProductRatings } from "@/context/ratings-context";
 import StarRating from "@/components/common/star-rating";
 
 interface FormatOption {
@@ -98,6 +99,8 @@ const FIFTH_PRODUCT = {
 
 function ProductCard({ product }: { product: SpiceProduct }) {
   const { addItem } = useCart();
+  const { getRating } = useProductRatings();
+  const ratingStat = getRating(product.id);
   const [selectedFormat] = useState<FormatOption>(FORMAT_OPTIONS[0]);
   const [isAdded, setIsAdded] = useState(false);
 
@@ -156,11 +159,11 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             )}
           </div>
 
-          {/* Product Details */}
+          {/* Dynamic Rating Section */}
           <div className="rating-section flex items-center mb-1 scale-90 sm:scale-100 origin-left">
-            <StarRating ratingPercentage={`${product.ratingPercentage}%`} />
-            <span className="text-[10px] sm:text-xs text-gray-500 ml-1 font-semibold">
-              ({product.ratingCount})
+            <StarRating rating={ratingStat.ratingScore} />
+            <span className="text-[10px] sm:text-xs text-gray-600 ml-1.5 font-semibold">
+              {ratingStat.ratingScore.toFixed(1)} ({ratingStat.ratingCount} avis)
             </span>
           </div>
 
@@ -216,8 +219,10 @@ function ProductCard({ product }: { product: SpiceProduct }) {
 
 export default function FirmFreshGrocery() {
   const { addItem } = useCart();
+  const { getRating } = useProductRatings();
   const [selectedFifthFormat] = useState(FIFTH_FORMATS[0]);
   const [isFifthAdded, setIsFifthAdded] = useState(false);
+  const fifthRating = getRating(FIFTH_PRODUCT.id);
 
   const handleAddFifth = () => {
     addItem({
@@ -289,9 +294,9 @@ export default function FirmFreshGrocery() {
               </h3>
 
               <div className="flex items-center gap-x-1.5">
-                <StarRating ratingPercentage={`${FIFTH_PRODUCT.ratingPercentage}%`} />
-                <span className="text-[10px] sm:text-xs text-gray-500 font-medium">
-                  ({FIFTH_PRODUCT.ratingCount})
+                <StarRating rating={fifthRating.ratingScore} />
+                <span className="text-[10px] sm:text-xs text-gray-600 font-semibold">
+                  {fifthRating.ratingScore.toFixed(1)} ({fifthRating.ratingCount} avis vérifiés)
                 </span>
               </div>
 

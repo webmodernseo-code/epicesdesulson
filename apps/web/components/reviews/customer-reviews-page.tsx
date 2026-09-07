@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/lib/toast";
+import { useProductRatings } from "@/context/ratings-context";
 
 interface ProductOption {
   id: string;
@@ -132,6 +133,7 @@ const STORAGE_KEY = "sulson_customer_reviews_v2";
 
 function CustomerReviewsContent() {
   const searchParams = useSearchParams();
+  const { addRating, getRating, ratingsMap } = useProductRatings();
   const [reviews, setReviews] = useState<ReviewItem[]>(DEFAULT_REVIEWS);
   const [selectedProductId, setSelectedProductId] = useState(SULSON_PRODUCTS[0].id);
   const [rating, setRating] = useState(5);
@@ -189,6 +191,9 @@ function CustomerReviewsContent() {
     setIsSubmitting(true);
 
     setTimeout(() => {
+      // Increment dynamic star rating and count across the site
+      addRating(currentSelectedProduct.id, rating);
+
       const newReview: ReviewItem = {
         id: `rev-${Date.now()}`,
         author: authorName.trim(),
@@ -212,7 +217,7 @@ function CustomerReviewsContent() {
 
       setIsSubmitting(false);
       setShowSuccessMessage(true);
-      toast.success("Merci ! Votre avis a été publié avec succès.");
+      toast.success("Merci ! Votre avis a été publié et pris en compte dans la note du produit.");
 
       // Reset fields
       setReviewTitle("");
@@ -225,8 +230,17 @@ function CustomerReviewsContent() {
       ? reviews
       : reviews.filter((r) => r.productName === selectedFilter);
 
-  const totalRatingPoints = reviews.reduce((acc, r) => acc + r.rating, 0);
-  const liveAverage = (totalRatingPoints / reviews.length).toFixed(1);
+  // Compute live global stats across all products in catalogue
+  const BASE_PRODUCT_KEYS = ["301", "302", "303", "304", "305"];
+  const totalReviewsCount = BASE_PRODUCT_KEYS.reduce(
+    (acc, id) => acc + (ratingsMap[id]?.ratingCount || 60),
+    0
+  );
+  const totalWeightedScore = BASE_PRODUCT_KEYS.reduce(
+    (acc, id) => acc + ((ratingsMap[id]?.ratingScore || 4.4) * (ratingsMap[id]?.ratingCount || 60)),
+    0
+  );
+  const liveAverage = (totalWeightedScore / (totalReviewsCount || 1)).toFixed(1);
 
   return (
     <div className="py-8 sm:py-12 bg-gray-50/40 min-h-screen">
@@ -265,7 +279,7 @@ function CustomerReviewsContent() {
                   ))}
                 </div>
                 <div className="text-xs text-light-secondary-text font-medium">
-                  <strong className="text-light-primary-text">{reviews.length} avis vérifiés</strong> (100% authentiques)
+                  <strong className="text-light-primary-text">{totalReviewsCount} avis vérifiés</strong> (100% authentiques)
                 </div>
               </div>
             </div>
@@ -314,6 +328,7 @@ function CustomerReviewsContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {SULSON_PRODUCTS.map((prod) => {
                       const isSelected = prod.id === selectedProductId;
+                      const stat = getRating(prod.id);
                       return (
                         <button
                           key={prod.id}
@@ -335,11 +350,17 @@ function CustomerReviewsContent() {
                             />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <span className="text-xs font-bold text-light-primary-text block truncate leading-tight">
-                              {prod.name.replace("Épice de Sulson — ", "")}
-                            </span>
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-xs font-bold text-light-primary-text block truncate leading-tight">
+                                {prod.name.replace("Épice de Sulson — ", "")}
+                              </span>
+                              <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200/60 px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5">
+                                <i className="hgi hgi-stroke hgi-star text-[10px] fill-amber-500 text-amber-500" />
+                                {stat.ratingScore.toFixed(1)}
+                              </span>
+                            </div>
                             <span className="text-[11px] text-light-disabled-text block truncate mt-0.5">
-                              {prod.shortDesc}
+                              {prod.shortDesc} • {stat.ratingCount} avis
                             </span>
                           </div>
                           {isSelected && (

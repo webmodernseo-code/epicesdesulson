@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import StarRating from "@/components/common/star-rating";
 import { useCart } from "@/context/cart-context";
+import { useProductRatings } from "@/context/ratings-context";
 import { toast } from "@/lib/toast";
 
 const SPICE_FORMATS = [
@@ -31,6 +32,7 @@ interface QuickViewDrawerProps {
 export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClose }: QuickViewDrawerProps) {
   const { isOpen: contextIsOpen, selectedProduct, closeQuickView } = useQuickView();
   const { addItem } = useCart();
+  const { getRating } = useProductRatings();
   const isOpen = propIsOpen !== undefined ? propIsOpen : contextIsOpen;
   const handleClose = propOnClose || closeQuickView;
   const [quantity, setQuantity] = useState(1);
@@ -38,6 +40,8 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
   const [selectedGrind, setSelectedGrind] = useState(GRIND_OPTIONS[0].id);
   const [isAdded, setIsAdded] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  const prodRating = getRating(selectedProduct?.id || 301);
 
   // Reset state when drawer opens with a new product
   useEffect(() => {
@@ -166,9 +170,9 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
                   </h4>
 
                   <div className="flex items-center gap-2 mb-4">
-                    <StarRating ratingPercentage={"95%"} />
+                    <StarRating rating={prodRating.ratingScore} />
                     <span className="text-xs text-gray-600 font-medium">
-                      4.9/5 (Avis vérifiés)
+                      {prodRating.ratingScore.toFixed(1)}/5 ({prodRating.ratingCount} avis vérifiés)
                     </span>
                   </div>
 

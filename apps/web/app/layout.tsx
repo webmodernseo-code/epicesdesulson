@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/navbar";
 import ScrollToTop from "@/components/common/scroll-to-top";
 import { QuickViewProvider } from "@/context/quick-view-context";
 import { CartProvider } from "@/context/cart-context";
+import { RatingsProvider } from "@/context/ratings-context";
 import NextTopLoader from "nextjs-toploader";
 
 const publicSans = Public_Sans({
@@ -109,10 +110,12 @@ export default function RootLayout({
         <OrganizationAndWebsiteJsonLd />
         <NextTopLoader color="#ffc107" showSpinner={false} />
         <CartProvider>
-          <QuickViewProvider>
-            <Navbar />
-            {children}
-          </QuickViewProvider>
+          <RatingsProvider>
+            <QuickViewProvider>
+              <Navbar />
+              {children}
+            </QuickViewProvider>
+          </RatingsProvider>
         </CartProvider>
         <NewsLetter />
         <Footer />
