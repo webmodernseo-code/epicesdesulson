@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { MapPin, Check, Loader2 } from "lucide-react";
+import { MapPin, Loader2, Check } from "lucide-react";
 
 export interface ShippingAddressData {
   firstName: string;
@@ -93,18 +93,20 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
 
   return (
     <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden">
-      {/* Header Apple / Stripe Style */}
-      <div className="py-4 px-5 sm:px-6 bg-white border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div className="flex items-center gap-3">
-          <span className="size-7 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-bold text-xs flex items-center justify-center shrink-0">
+      {/* ─── Header Apple / Stripe Style ─── */}
+      <div className="py-4 sm:py-5 px-5 sm:px-7 bg-white border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3.5">
+          <span className="size-8 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs">
             1
           </span>
-          <h2 className="font-bold text-sm sm:text-base text-gray-900 tracking-tight">
-            Informations client & Livraison
-          </h2>
+          <div>
+            <h2 className="font-bold text-base sm:text-lg text-gray-950 tracking-tight">
+              Informations client & Livraison
+            </h2>
+          </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50/80 px-2.5 py-1 rounded-full border border-emerald-200/60 font-medium self-start sm:self-auto">
-          <svg className="size-3.5 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-emerald-800 bg-emerald-50/90 px-3 py-1.5 rounded-full border border-emerald-200/70 font-semibold self-start sm:self-auto">
+          <svg className="size-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11" />
             <path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2" />
             <circle cx="7" cy="18" r="2" />
@@ -114,12 +116,12 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
         </span>
       </div>
 
-      <div className="p-4 sm:p-6">
-        <div className="space-y-4">
+      <div className="p-5 sm:p-7">
+        <div className="space-y-5">
           {/* Prénom & Nom */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                 Prénom <span className="text-red-500">*</span>
               </label>
               <input
@@ -128,17 +130,17 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
                 placeholder="Jean"
                 value={data.firstName}
                 onChange={(e) => onChange("firstName", e.target.value)}
-                className={`w-full h-11 px-3.5 rounded-xl border ${
+                className={`w-full h-12 px-4 rounded-xl border ${
                   errors.firstName ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition`}
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
               />
               {errors.firstName && (
-                <p className="text-[11px] text-red-600 mt-1">{errors.firstName}</p>
+                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.firstName}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                 Nom <span className="text-red-500">*</span>
               </label>
               <input
@@ -147,19 +149,19 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
                 placeholder="Dupont"
                 value={data.lastName}
                 onChange={(e) => onChange("lastName", e.target.value)}
-                className={`w-full h-11 px-3.5 rounded-xl border ${
+                className={`w-full h-12 px-4 rounded-xl border ${
                   errors.lastName ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition`}
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
               />
               {errors.lastName && (
-                <p className="text-[11px] text-red-600 mt-1">{errors.lastName}</p>
+                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.lastName}</p>
               )}
             </div>
           </div>
 
           {/* Email de confirmation (Sans le champ téléphone comme demandé) */}
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
               Adresse e-mail <span className="text-red-500">*</span>
             </label>
             <input
@@ -168,25 +170,25 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
               placeholder="jean.dupont@example.fr"
               value={data.email}
               onChange={(e) => onChange("email", e.target.value)}
-              className={`w-full h-11 px-3.5 rounded-xl border ${
+              className={`w-full h-12 px-4 rounded-xl border ${
                 errors.email ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-              } bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition`}
+              } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
             />
             {errors.email && (
-              <p className="text-[11px] text-red-600 mt-1">{errors.email}</p>
+              <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.email}</p>
             )}
           </div>
 
           {/* Adresse avec auto-complétion prédictive */}
           <div className="relative" ref={suggestionsRef}>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold text-gray-700">
-                Adresse <span className="text-red-500">*</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-sm font-semibold text-gray-800">
+                Adresse de livraison <span className="text-red-500">*</span>
               </label>
               {isLoadingSuggestions && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600">
-                  <Loader2 className="size-3 animate-spin" />
-                  <span>Recherche d'adresse...</span>
+                <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
+                  <Loader2 className="size-3.5 animate-spin" />
+                  <span>Recherche d'adresse officielle...</span>
                 </span>
               )}
             </div>
@@ -204,31 +206,31 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
                   onChange("street", e.target.value);
                   setShowSuggestions(true);
                 }}
-                className={`w-full h-11 px-3.5 pr-9 rounded-xl border ${
+                className={`w-full h-12 px-4 pr-11 rounded-xl border ${
                   errors.street ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition`}
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
               />
-              <MapPin className="size-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <MapPin className="size-5 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
 
             {/* Menu Déroulant des Suggestions Prédictives */}
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute z-50 left-0 right-0 mt-1 bg-white rounded-xl border border-gray-200 shadow-xl overflow-hidden divide-y divide-gray-100 max-h-60 overflow-y-auto custom-scrollbar">
+              <div className="absolute z-50 left-0 right-0 mt-1.5 bg-white rounded-xl border border-gray-200 shadow-xl overflow-hidden divide-y divide-gray-100 max-h-64 overflow-y-auto custom-scrollbar">
                 {suggestions.map((item, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleSelectSuggestion(item)}
-                    className="w-full text-left px-4 py-2.5 hover:bg-emerald-50/70 transition-colors flex items-center gap-2.5 group cursor-pointer"
+                    className="w-full text-left px-4 py-3 hover:bg-emerald-50/70 transition-colors flex items-center gap-3 group cursor-pointer"
                   >
-                    <div className="size-6 rounded-lg bg-gray-100 group-hover:bg-emerald-100 flex items-center justify-center shrink-0 transition-colors">
-                      <MapPin className="size-3.5 text-gray-600 group-hover:text-emerald-700" />
+                    <div className="size-7 rounded-lg bg-gray-100 group-hover:bg-emerald-100 flex items-center justify-center shrink-0 transition-colors">
+                      <MapPin className="size-4 text-gray-600 group-hover:text-emerald-700" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-bold text-gray-900 group-hover:text-emerald-950 truncate">
+                      <p className="text-sm font-bold text-gray-900 group-hover:text-emerald-950 truncate">
                         {item.label}
                       </p>
-                      <p className="text-[11px] text-gray-500">
+                      <p className="text-xs text-gray-500 mt-0.5">
                         {item.postcode} {item.city}
                       </p>
                     </div>
@@ -238,13 +240,13 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             )}
 
             {errors.street && (
-              <p className="text-[11px] text-red-600 mt-1">{errors.street}</p>
+              <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.street}</p>
             )}
           </div>
 
           {/* Complément d'adresse (optionnel) */}
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
               Complément d'adresse <span className="text-gray-400 font-normal">(optionnel)</span>
             </label>
             <input
@@ -252,14 +254,14 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
               placeholder="Appartement, bâtiment, escalier, étage..."
               value={data.address2 || ""}
               onChange={(e) => onChange("address2", e.target.value)}
-              className="w-full h-11 px-3.5 rounded-xl border border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition"
+              className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400"
             />
           </div>
 
           {/* Code postal, Ville & Pays */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                 Code postal <span className="text-red-500">*</span>
               </label>
               <input
@@ -268,17 +270,17 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
                 placeholder="75001"
                 value={data.postalCode}
                 onChange={(e) => onChange("postalCode", e.target.value)}
-                className={`w-full h-11 px-3.5 rounded-xl border ${
+                className={`w-full h-12 px-4 rounded-xl border ${
                   errors.postalCode ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition`}
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
               />
               {errors.postalCode && (
-                <p className="text-[11px] text-red-600 mt-1">{errors.postalCode}</p>
+                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.postalCode}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                 Ville <span className="text-red-500">*</span>
               </label>
               <input
@@ -287,23 +289,23 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
                 placeholder="Paris"
                 value={data.city}
                 onChange={(e) => onChange("city", e.target.value)}
-                className={`w-full h-11 px-3.5 rounded-xl border ${
+                className={`w-full h-12 px-4 rounded-xl border ${
                   errors.city ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition`}
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
               />
               {errors.city && (
-                <p className="text-[11px] text-red-600 mt-1">{errors.city}</p>
+                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.city}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                 Pays <span className="text-red-500">*</span>
               </label>
               <select
                 value={data.country}
                 onChange={(e) => onChange("country", e.target.value)}
-                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                className="w-full h-12 px-4 rounded-xl border border-gray-300 bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
               >
                 <option value="France">France</option>
                 <option value="Belgique">Belgique</option>

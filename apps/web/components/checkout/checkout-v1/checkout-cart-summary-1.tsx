@@ -5,9 +5,10 @@ import Image from "next/image";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
 import { OfficialPaypalLogo } from "./payment-method-v1";
+import { ShieldCheck, Lock, Trash2 } from "lucide-react";
 
 interface CheckoutCartSummaryProps {
-  selectedMethod?: "stripe" | "paypal";
+  selectedMethod?: "stripe" | "paypal" | "apple_pay" | "card";
   isProcessing?: boolean;
   onPlaceOrder?: (coupon?: string) => void;
 }
@@ -40,46 +41,46 @@ export default function CheckoutCartSummary1({
   };
 
   return (
-    <div className="border border-gray-200/90 rounded-2xl bg-white p-5 sm:p-6 shadow-2xs sticky top-6 flex flex-col gap-y-5">
+    <div className="border border-gray-200/90 rounded-2xl bg-white p-5 sm:p-7 shadow-2xs sticky top-6 flex flex-col gap-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-gray-100">
-        <h3 className="font-bold text-gray-900 text-base">Récapitulatif de commande</h3>
-        <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+      <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+        <h3 className="font-bold text-gray-950 text-lg">Récapitulatif de commande</h3>
+        <span className="text-xs sm:text-sm font-semibold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100/90">
           {items.length} {items.length > 1 ? "articles" : "article"}
         </span>
       </div>
 
       {/* Cart Items List */}
-      <div className="max-h-64 overflow-y-auto space-y-2.5 pr-1 custom-scrollbar">
+      <div className="max-h-72 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
         {items.length === 0 ? (
-          <div className="text-center py-6 text-gray-400 text-xs">
+          <div className="text-center py-6 text-gray-400 text-sm">
             Votre panier est actuellement vide.
           </div>
         ) : (
           items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/70 border border-gray-100 relative group"
+              className="flex items-center gap-3.5 p-3 rounded-xl bg-gray-50/80 border border-gray-100/90 relative group"
             >
-              <div className="size-13 rounded-lg bg-white border border-gray-200/80 p-1 flex items-center justify-center shrink-0">
+              <div className="size-14 rounded-xl bg-white border border-gray-200/80 p-1 flex items-center justify-center shrink-0">
                 <Image
                   src={item.image || "/images/products/pack-4-saveurs-sulson.jpg"}
                   alt={item.title}
-                  width={44}
-                  height={44}
+                  width={48}
+                  height={48}
                   unoptimized
                   className="object-contain max-h-full max-w-full"
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-xs font-bold text-gray-900 line-clamp-1 block">
+                <span className="text-sm font-bold text-gray-950 line-clamp-1 block">
                   {item.title}
                 </span>
-                <div className="flex items-center justify-between mt-0.5">
-                  <span className="text-[11px] text-gray-500">
-                    Quantité : <strong>{item.quantity}</strong>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-xs text-gray-600">
+                    Quantité : <strong className="text-gray-900">{item.quantity}</strong>
                   </span>
-                  <span className="text-xs font-extrabold text-gray-900">
+                  <span className="text-sm font-extrabold text-gray-950">
                     {item.currentPrice}
                   </span>
                 </div>
@@ -88,13 +89,9 @@ export default function CheckoutCartSummary1({
                 type="button"
                 onClick={() => removeItem(item.id)}
                 aria-label="Supprimer"
-                className="text-gray-400 hover:text-red-500 p-1 transition cursor-pointer"
+                className="text-gray-400 hover:text-red-500 p-1.5 transition cursor-pointer"
               >
-                <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 6h18" />
-                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                </svg>
+                <Trash2 className="size-4" />
               </button>
             </div>
           ))
@@ -102,31 +99,31 @@ export default function CheckoutCartSummary1({
       </div>
 
       {/* Coupon Code Input */}
-      <form onSubmit={handleApplyCoupon} className="flex gap-2">
+      <form onSubmit={handleApplyCoupon} className="flex gap-2.5">
         <input
           type="text"
           placeholder="Code promo (ex: SULSON10)"
           value={couponCode}
           onChange={(e) => setCouponCode(e.target.value)}
-          className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-gray-300 uppercase font-mono focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+          className="flex-1 h-12 px-4 text-sm rounded-xl border border-gray-300 uppercase font-mono focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition placeholder:normal-case placeholder:font-sans"
         />
         <button
           type="submit"
-          className="bg-gray-900 hover:bg-gray-800 text-white py-2 px-3.5 rounded-xl text-xs font-bold transition cursor-pointer"
+          className="bg-gray-950 hover:bg-gray-800 text-white h-12 px-5 rounded-xl text-sm font-bold transition cursor-pointer shrink-0"
         >
           Appliquer
         </button>
       </form>
 
       {/* Totals Breakdown */}
-      <div className="space-y-2 pt-3 border-t border-gray-100 text-xs">
+      <div className="space-y-2.5 pt-4 border-t border-gray-100 text-sm">
         <div className="flex justify-between text-gray-600">
           <span>Sous-total articles</span>
-          <span className="font-semibold text-gray-900">{subtotal.toFixed(2)} €</span>
+          <span className="font-bold text-gray-950">{subtotal.toFixed(2)} €</span>
         </div>
 
         {discountApplied && (
-          <div className="flex justify-between text-emerald-700 font-medium">
+          <div className="flex justify-between text-emerald-700 font-semibold">
             <span>Remise fidélité (SULSON10 -10%)</span>
             <span>-{discountAmount.toFixed(2)} €</span>
           </div>
@@ -136,18 +133,18 @@ export default function CheckoutCartSummary1({
           <span>Frais de livraison</span>
           <span>
             {shipping === 0 ? (
-              <span className="text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full text-[11px] border border-emerald-100">
+              <span className="text-emerald-800 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full text-xs border border-emerald-100">
                 Offerte
               </span>
             ) : (
-              <span className="font-semibold text-gray-900">{shipping.toFixed(2)} €</span>
+              <span className="font-bold text-gray-950">{shipping.toFixed(2)} €</span>
             )}
           </span>
         </div>
 
-        <div className="flex justify-between text-sm sm:text-base font-extrabold text-gray-950 pt-2.5 border-t border-gray-200">
+        <div className="flex justify-between text-base sm:text-lg font-extrabold text-gray-950 pt-3 border-t border-gray-200">
           <span>Total à régler</span>
-          <span className="text-emerald-800 font-black">{total.toFixed(2)} €</span>
+          <span className="text-emerald-800 text-xl sm:text-2xl font-black">{total.toFixed(2)} €</span>
         </div>
       </div>
 
@@ -156,44 +153,42 @@ export default function CheckoutCartSummary1({
         type="button"
         disabled={isProcessing}
         onClick={handleTriggerCheckout}
-        className={`${selectedMethod === "paypal" ? "w-56 sm:w-64 mx-auto h-11 px-5 rounded-full" : "w-full py-3.5 px-4 rounded-xl"} font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 ${
+        className={`w-full h-13 rounded-xl font-bold text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 ${
           selectedMethod === "paypal"
-            ? "bg-[#FFC439] hover:bg-[#F4BB38] active:bg-[#E9B131] text-gray-950 border border-[#E5A800]/40"
-            : "bg-emerald-800 hover:bg-emerald-900 text-white"
+            ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 border border-[#E5A800]/40"
+            : "bg-emerald-800 hover:bg-emerald-900 active:scale-[0.99] text-white"
         }`}
       >
         {isProcessing ? (
           <>
-            <svg className="animate-spin size-4 text-current" viewBox="0 0 24 24" fill="none">
+            <svg className="animate-spin size-5 text-current" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
-            <span>Traitement en cours...</span>
+            <span>Validation en cours...</span>
           </>
         ) : selectedMethod === "paypal" ? (
-          <div className="flex items-center justify-center gap-2">
-            <OfficialPaypalLogo className="h-5 w-auto" />
-            <span className="text-xs sm:text-sm font-bold text-gray-900">
-              — Payer {total.toFixed(2)} € (1 fois)
+          <div className="flex items-center justify-center gap-2.5">
+            <img
+              src="/images/payments/paypal-official.png"
+              alt="PayPal"
+              className="h-6 sm:h-7 w-auto object-contain"
+            />
+            <span className="text-sm sm:text-base font-bold text-gray-950">
+              — Payer {total.toFixed(2)} €
             </span>
           </div>
         ) : (
           <>
-            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            <span>Payer par carte • {total.toFixed(2)} €</span>
+            <Lock className="size-5" />
+            <span>Payer ma commande • {total.toFixed(2)} €</span>
           </>
         )}
       </button>
 
       {/* Discreet Security Assurances */}
-      <div className="pt-2 text-center text-xs text-gray-500 flex items-center justify-center gap-1.5 border-t border-gray-100">
-        <svg className="size-3.5 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
+      <div className="pt-2 text-center text-xs sm:text-sm text-gray-600 flex items-center justify-center gap-2 border-t border-gray-100">
+        <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
         <span>Transaction chiffrée SSL 256-bit certifiée PCI-DSS</span>
       </div>
     </div>

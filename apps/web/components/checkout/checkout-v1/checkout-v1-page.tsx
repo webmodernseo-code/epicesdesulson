@@ -228,21 +228,21 @@ export default function CheckoutV1Page() {
   }
 
   return (
-    <div className="py-6 sm:py-10 bg-gray-50/50 min-h-[75vh]">
+    <div className="py-8 sm:py-12 bg-gray-50/50 min-h-[75vh]">
       <div className="container max-w-7xl">
         {/* En-tête Page Checkout */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8 pb-4 border-b border-gray-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10 pb-5 border-b border-gray-200/90">
           <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-gray-950 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-950 tracking-tight">
               Finaliser ma commande
             </h1>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Paiement direct 100% sécurisé et expédition express sous 24h
+            <p className="text-sm text-gray-500 mt-1">
+              Paiement direct 100% sécurisé et expédition express soignée sous 24h
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-gray-600 self-start sm:self-auto">
-            <ShieldCheck className="size-4 text-emerald-600" />
-            <span>Chiffrement bancaire SSL 256-bit</span>
+          <div className="flex items-center gap-2.5 text-sm font-medium text-gray-700 bg-white px-3.5 py-2 rounded-xl border border-gray-200/80 shadow-2xs self-start sm:self-auto">
+            <ShieldCheck className="size-5 text-emerald-600 shrink-0" />
+            <span>Chiffrement SSL 256-bit certifié</span>
           </div>
         </div>
 
