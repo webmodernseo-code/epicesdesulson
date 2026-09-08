@@ -1,137 +1,349 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import CustomFloatingSelect from "@/components/ui/custom-floating-select";
-import { FloatingInput } from "@/components/ui/floating-input";
 import { toast } from "sonner";
+import {
+  ClipboardList,
+  Send,
+  AlertCircle,
+  Clock,
+  Factory,
+  CheckCircle2,
+} from "lucide-react";
 
-const productOptions = [{ label: "Product", value: "product" }];
-const categoryOptions = [{ label: "Category", value: "category" }];
-const brandOptions = [{ label: "Brand", value: "brand" }];
-const variantOptions = [{ label: "Variant", value: "variant" }];
-const orderTypeOptions = [{ label: "Order Type", value: "type" }];
-const priorityOptions = [{ label: "Priority", value: "priority" }];
-const supplierOptions = [{ label: "Supplier", value: "supplier" }];
-const warehouseOptions = [{ label: "Location/Warehouse", value: "warehouse" }];
+interface ProductOption {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  stock: number;
+  image: string;
+  format: string;
+}
+
+const DEFAULT_PRODUCTS: ProductOption[] = [
+  {
+    id: "SUL-301",
+    code: "SUL-301",
+    name: "Épice de Sulson - Spéciale Poulet",
+    category: "Épices Volailles & Rôtis",
+    stock: 145,
+    image: "/images/products/epice-poulet-recto.jpg",
+    format: "Sachet 100g",
+  },
+  {
+    id: "SUL-302",
+    code: "SUL-302",
+    name: "Épice de Sulson - Spéciale Viande",
+    category: "Épices Viandes & Grillades",
+    stock: 120,
+    image: "/images/products/epice-viande-recto.jpg",
+    format: "Sachet 100g",
+  },
+  {
+    id: "SUL-303",
+    code: "SUL-303",
+    name: "Épice de Sulson - Spéciale Poisson",
+    category: "Épices Poissons & Marinades",
+    stock: 98,
+    image: "/images/products/epice-poisson-recto.jpg",
+    format: "Sachet 100g",
+  },
+  {
+    id: "SUL-304",
+    code: "SUL-304",
+    name: "Épice de Sulson - Saveur Gourmande",
+    category: "Assaisonnements Signatures",
+    stock: 210,
+    image: "/images/products/epice-gourmande-recto.jpg",
+    format: "Sachet 100g",
+  },
+  {
+    id: "SUL-305",
+    code: "SUL-305",
+    name: "Le Pack Intégral : 4 Saveurs Authentiques",
+    category: "Packs & Coffrets Gourmets",
+    stock: 65,
+    image: "/images/products/pack-4-saveurs-sulson.jpg",
+    format: "Pack 4x100g",
+  },
+];
 
 export default function NewOrderRequestForm() {
-  const [product, setProduct] = useState("");
-  const [category, setCategory] = useState("");
-  const [brand, setBrand] = useState("");
-  const [variant, setVariant] = useState("");
-  const [orderType, setOrderType] = useState("");
-  const [priority, setPriority] = useState("");
-  const [supplier, setSupplier] = useState("");
-  const [warehouse, setWarehouse] = useState("");
+  const router = useRouter();
+  const [products, setProducts] = useState<ProductOption[]>(DEFAULT_PRODUCTS);
+  const [selectedProductCode, setSelectedProductCode] = useState<string>("SUL-301");
+  const [quantity, setQuantity] = useState<number>(200);
+  const [priority, setPriority] = useState<string>("Normale");
+  const [orderType, setOrderType] = useState<string>("Réassort Régulier");
+  const [atelier, setAtelier] = useState<string>("Atelier Sulson - Douala / Yaoundé");
+  const [targetDate, setTargetDate] = useState<string>("");
+  const [instructions, setInstructions] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const res = await fetch("/api/admin/products", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            const dbProducts: ProductOption[] = json.data.map((p: any) => ({
+              id: p.code || p.id,
+              code: p.code || p.id,
+              name: p.title || p.name,
+              category: p.category?.name || p.category || "Épices Authentiques",
+              stock: Number(p.stockQuantity) ?? 100,
+              image: p.imageRecto || p.image || "/images/products/epice-poulet-recto.jpg",
+              format: p.formats?.[0]?.label || "Sachet 100g",
+            }));
+
+            const dbCodes = new Set(dbProducts.map((p) => p.code.toUpperCase()));
+            const remaining = DEFAULT_PRODUCTS.filter(
+              (dp) => !dbCodes.has(dp.code.toUpperCase())
+            );
+            const merged = [...dbProducts, ...remaining];
+            setProducts(merged);
+          }
+        }
+      } catch {
+        // fallback
+      }
+    }
+    loadProducts();
+  }, []);
+
+  const currentProduct =
+    products.find((p) => p.code === selectedProductCode) || products[0];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast.success(
+        `Ordre de fabrication envoyé avec succès pour ${quantity} unités de "${currentProduct?.name}" !`
+      );
+      router.push("/products/stocks");
+    }, 400);
+  };
 
   return (
-    <div className="w-full bg-white rounded-2xl p-4 sm:p-6">
+    <div className="w-full bg-white rounded-3xl p-5 sm:p-8 border border-gray-200 shadow-2xs max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="mb-4  sm:mb-6">
-        <PageHeader title="New Order Request" backHref="/products/stocks" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-gray-100 gap-4">
+        <PageHeader
+          title="Demande de Réapprovisionnement & Production"
+          backHref="/products/stocks"
+        />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">
+          <Factory className="size-3.5" />
+          <span>Ateliers de Transformation Sulson</span>
+        </span>
       </div>
 
-      <div className="space-y-4">
-        {/* Product Section */}
-        <div className="border border-gray-500/20 p-4 sm:p-6 rounded-2xl">
-          <h2 className="text-lg font-bold text-light-primary-text mb-4 sm:mb-6">
-            Product
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Section 1: Produit concerné */}
+        <div className="border border-gray-200/90 rounded-2xl p-5 sm:p-6 bg-gray-50/40 space-y-5">
+          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <ClipboardList className="size-4 text-emerald-600" />
+            1. Sélection de l'Épice & État Actuel
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            {/* Product */}
-            <CustomFloatingSelect
-              label="Product"
-              options={productOptions}
-              value={product}
-              onChange={setProduct}
-            />
 
-            {/* Category */}
-            <CustomFloatingSelect
-              label="Category"
-              options={categoryOptions}
-              value={category}
-              onChange={setCategory}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Référence Sulson à commander *
+              </label>
+              <select
+                value={selectedProductCode}
+                onChange={(e) => setSelectedProductCode(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              >
+                {products.map((prod) => (
+                  <option key={prod.code} value={prod.code}>
+                    {prod.code} - {prod.name} ({prod.format})
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            {/* Brand */}
-            <CustomFloatingSelect
-              label="Brand"
-              options={brandOptions}
-              value={brand}
-              onChange={setBrand}
-            />
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Conditionnement standard
+              </label>
+              <input
+                type="text"
+                disabled
+                value={`${currentProduct?.category} • ${currentProduct?.format}`}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-200 text-xs sm:text-sm bg-gray-100/80 text-gray-600 font-medium"
+              />
+            </div>
+          </div>
 
-            {/* Variant */}
-            <CustomFloatingSelect
-              label="Variant"
-              options={variantOptions}
-              value={variant}
-              onChange={setVariant}
-            />
+          {/* Preview info */}
+          {currentProduct && (
+            <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-2xl bg-white border border-gray-200/80 gap-4 shadow-2xs">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="relative size-12 rounded-xl bg-gray-50 border border-gray-200 overflow-hidden shrink-0 p-1">
+                  <Image
+                    src={currentProduct.image}
+                    alt={currentProduct.name}
+                    fill
+                    unoptimized
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-gray-900">
+                    {currentProduct.name}
+                  </h4>
+                  <p className="text-xs text-gray-500 font-mono">
+                    SKU: {currentProduct.code}
+                  </p>
+                </div>
+              </div>
 
-            {/* Current Stock Level */}
-            <FloatingInput label="Current Stock Level" defaultValue="400" />
+              <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100">
+                <div className="text-right">
+                  <span className="text-xs text-gray-500 block">Stock actuel</span>
+                  <span className="text-base font-extrabold text-gray-900">
+                    {currentProduct.stock} sachets
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-emerald-700 font-bold block">Volume demandé</span>
+                  <span className="text-base font-extrabold text-emerald-700">
+                    +{quantity} sachets
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
-            {/* Seller */}
-            <FloatingInput label="Seller" defaultValue="Samim store" />
+        {/* Section 2: Détails de l'ordre de réapprovisionnement */}
+        <div className="border border-gray-200/90 rounded-2xl p-5 sm:p-6 bg-white space-y-5">
+          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <Factory className="size-4 text-emerald-600" />
+            2. Paramètres de Production & Livraison
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            {/* Quantité demandée */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Quantité d'unités à produire *
+              </label>
+              <input
+                type="number"
+                min="1"
+                required
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-bold text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
+
+            {/* Priorité */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Niveau d'Urgence / Priorité
+              </label>
+              <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              >
+                <option value="Normale">Priorité Normale (délai standard 7-10j)</option>
+                <option value="Haute">Priorité Haute (délai 3-5j)</option>
+                <option value="Urgente">Urgente / Rupture imminente (48-72h)</option>
+              </select>
+            </div>
+
+            {/* Type de commande */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Type d'Ordre
+              </label>
+              <select
+                value={orderType}
+                onChange={(e) => setOrderType(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              >
+                <option value="Réassort Régulier">Réassort Régulier</option>
+                <option value="Préparation Pic Saisonnier">Préparation Pic Saisonnier / Fêtes</option>
+                <option value="Lancement Nouveau Lot">Lancement Nouveau Lot de Récolte</option>
+              </select>
+            </div>
+
+            {/* Atelier / Site de production */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Atelier Référent
+              </label>
+              <select
+                value={atelier}
+                onChange={(e) => setAtelier(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              >
+                <option value="Atelier Sulson - Douala / Yaoundé">
+                  Atelier Sulson - Douala / Yaoundé (Cameroun)
+                </option>
+                <option value="Conditionnement & Emballage France">
+                  Conditionnement & Emballage France (IDF)
+                </option>
+              </select>
+            </div>
+
+            {/* Instructions */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Instructions particulières pour l'atelier
+              </label>
+              <textarea
+                rows={3}
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                placeholder="Ex: Contrôler scellage thermique des sachets 100g, étiquetage DLUO +24 mois..."
+                className="w-full p-3 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Add Stock Section */}
-        <div className="border border-gray-500/20 p-4 sm:p-6 rounded-2xl">
-          <h2 className="text-lg font-bold text-light-primary-text mb-4 sm:mb-6">
-            Add Stock
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <FloatingInput label="Quantity" />
-            <FloatingInput label="Unit" />
+        {/* Footer Actions */}
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-gray-100">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/products/stocks")}
+            className="w-full sm:w-auto rounded-full text-xs font-bold border-gray-300 hover:bg-gray-50 text-gray-700 cursor-pointer"
+          >
+            Annuler
+          </Button>
 
-            <CustomFloatingSelect
-              label="Order Type"
-              options={orderTypeOptions}
-              value={orderType}
-              onChange={setOrderType}
-            />
-
-            <CustomFloatingSelect
-              label="Priority"
-              options={priorityOptions}
-              value={priority}
-              onChange={setPriority}
-            />
-
-            <CustomFloatingSelect
-              label="Supplier"
-              options={supplierOptions}
-              value={supplier}
-              onChange={setSupplier}
-            />
-
-            <CustomFloatingSelect
-              label="Location/Warehouse"
-              options={warehouseOptions}
-              value={warehouse}
-              onChange={setWarehouse}
-            />
-          </div>
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 rounded-full text-xs cursor-pointer shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5"
+          >
+            <Send className="size-3.5" />
+            <span>
+              {isSubmitting
+                ? "Transmission..."
+                : `Transmettre l'ordre de réapprovisionnement`}
+            </span>
+          </Button>
         </div>
-      </div>
-
-      {/* Footer Actions */}
-      <div className="flex justify-end gap-4 pt-4">
-        <Button variant="outline" size="sm">
-          Cancel
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => toast.success("Order request saved successfully!")}
-        >
-          Save
-        </Button>
-      </div>
+      </form>
     </div>
   );
 }

@@ -1,12 +1,14 @@
-import StockOverview from "@/components/products/stock-products/stock-overview";
 import StockProductTable from "@/components/products/stock-products/stock-product-table";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Gestion des Stocks Épices | Les Épices de Sulson",
+  description: "Inventaire et niveaux de stock des épices et coffrets Sulson.",
+};
 
 export default function StockProductsPage() {
   return (
-    <div className="bg-white rounded-2xl pt-4 sm:pt-6">
-      <div className="px-4 sm:px-6">
-        <StockOverview />
-      </div>
+    <div className="space-y-6">
       <StockProductTable />
     </div>
   );

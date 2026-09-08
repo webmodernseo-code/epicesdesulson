@@ -1,9 +1,16 @@
 import StockProductDetail from "@/components/products/stock-products/stock-product-detail";
+import type { Metadata } from "next";
 
-export default function StockDetailPage({
+export const metadata: Metadata = {
+  title: "Détail du Stock Épices | Sulson Dashboard",
+  description: "Consultation et réapprovisionnement de la référence d'épice.",
+};
+
+export default async function StockDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }> | { id: string };
 }) {
-  return <StockProductDetail id={params.id} />;
+  const resolvedParams = await params;
+  return <StockProductDetail id={resolvedParams.id} />;
 }
