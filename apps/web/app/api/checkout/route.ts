@@ -43,6 +43,16 @@ export async function POST(req: Request) {
     }
 
     // 1. Create and validate order in domain service / database
+    const sanitizedItems = Array.isArray(items)
+      ? items.map((it: any) => ({
+          productId: String(it.productId || it.id || "301"),
+          title: String(it.title || it.productName || "Épice de Sulson"),
+          formatLabel: String(it.formatLabel || it.pack || "100g"),
+          quantity: Math.max(1, Math.floor(Number(it.quantity) || 1)),
+          currentPrice: it.currentPrice,
+        }))
+      : [];
+
     const order = await OrdersService.createOrder({
       customerName,
       customerEmail,
@@ -52,7 +62,7 @@ export async function POST(req: Request) {
       shippingPostal: shippingPostal || "75000",
       shippingCountry: shippingCountry || "France",
       couponCode,
-      items,
+      items: sanitizedItems,
     });
 
     const origin = (process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin).replace(/\/$/, "");

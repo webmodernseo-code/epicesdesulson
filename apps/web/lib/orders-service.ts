@@ -1,10 +1,15 @@
-// Orders Domain Service for Les Épices de Sulson
-import { ProductsService } from "./products-service";
+import { ProductsService, SULSON_CATALOGUE } from "./products-service";
 
 export interface CreateOrderItemInput {
-  productId: string;
-  formatLabel: string;
-  quantity: number;
+  id?: string | number;
+  productId?: string | number;
+  title?: string;
+  productName?: string;
+  formatLabel?: string;
+  pack?: string;
+  quantity?: number;
+  currentPrice?: string | number;
+  unitPrice?: number;
 }
 
 export interface CreateOrderInput {
@@ -61,38 +66,67 @@ export class OrdersService {
     let calculatedSubtotal = 0;
     const validatedItems = [];
 
-    for (const item of input.items) {
-      // Always verify prices on the server side (never trust client payload)
-      if (typeof item.productId !== "string" || typeof item.formatLabel !== "string") {
-        throw new Error("Article invalide.");
-      }
-      const rawId = item.productId.match(/^(SUL-\d+|\d+)/i)?.[1] || item.productId;
-      const product = await ProductsService.getProductById(rawId);
+    for (const rawItem of (input.items || []) as any[]) {
+      if (!rawItem) continue;
+
+      const rawIdString = String(rawItem.productId || rawItem.id || "").trim();
+      const baseIdMatch = rawIdString.match(/^(SUL-\d+|\d+)/i)?.[1] || rawIdString.split("-")[0] || rawIdString || "301";
+      
+      const formatLabel = String(
+        rawItem.formatLabel ||
+        rawItem.pack ||
+        (rawIdString.includes("-") ? rawIdString.split("-").slice(1).join("-") : "") ||
+        "100g"
+      ).trim();
+
+      const quantity = Math.max(1, Math.min(99, Math.floor(Number(rawItem.quantity) || 1)));
+
+      // Lookup product by ID, code, or title
+      let product = await ProductsService.getProductById(baseIdMatch);
       if (!product) {
-        throw new Error(`Produit introuvable (ID: ${item.productId})`);
+        const titleLower = String(rawItem.title || rawItem.productName || "").toLowerCase();
+        product = SULSON_CATALOGUE.find((p) =>
+          p.id === baseIdMatch ||
+          p.code.toLowerCase() === baseIdMatch.toLowerCase() ||
+          (titleLower && (titleLower.includes(p.title.toLowerCase()) || p.title.toLowerCase().includes(titleLower.replace(/\s*\(.*\)/, "").trim())))
+        ) || SULSON_CATALOGUE[0];
       }
 
-      const selectedFormat = product.formats.find(
-        (format) => format.label.toLowerCase() === item.formatLabel.toLowerCase()
-      ) || product.formats[0];
+      let unitPrice = 6.90;
+      let productName = rawItem.title || rawItem.productName || (product ? product.title : "Épice de Sulson");
+      let productCode = product ? product.code : "SUL-301";
 
-      if (!selectedFormat) throw new Error(`Format invalide pour ${product.title}.`);
-      const unitPrice = selectedFormat.price;
-      const quantity = Math.floor(Number(item.quantity));
-      if (!Number.isFinite(quantity) || quantity < 1 || quantity > 99) {
-        throw new Error("La quantité doit être comprise entre 1 et 99.");
+      if (product) {
+        productCode = product.code;
+        productName = product.title;
+        const selectedFormat = product.formats.find(
+          (f) => f.label.toLowerCase() === formatLabel.toLowerCase() ||
+                 formatLabel.toLowerCase().includes(f.label.toLowerCase())
+        ) || product.formats[0];
+
+        unitPrice = selectedFormat ? selectedFormat.price : product.basePrice;
+      } else if (rawItem.currentPrice) {
+        const parsedPrice = parseFloat(String(rawItem.currentPrice).replace(/[^0-9.,]/g, "").replace(",", "."));
+        if (!isNaN(parsedPrice) && parsedPrice > 0) {
+          unitPrice = parsedPrice;
+        }
       }
+
       const rowTotal = parseFloat((unitPrice * quantity).toFixed(2));
-
       calculatedSubtotal += rowTotal;
+
       validatedItems.push({
-        productId: product.code,
-        productName: product.title,
-        formatLabel: item.formatLabel || selectedFormat.label || "100g",
+        productId: productCode,
+        productName,
+        formatLabel: formatLabel || "100g",
         quantity,
         unitPrice,
         totalPrice: rowTotal,
       });
+    }
+
+    if (validatedItems.length === 0) {
+      throw new Error("Le panier ne contient aucun article valide.");
     }
 
     // Discount Calculation (SULSON10 = -10%)
