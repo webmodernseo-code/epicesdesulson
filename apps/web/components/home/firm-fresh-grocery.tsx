@@ -23,6 +23,8 @@ interface SpiceProduct {
   hoverImage?: string;
   alt: string;
   title: string;
+  category: string;
+  origin: string;
   basePrice: number;
   baseOldPrice: number;
   ratingCount: string;
@@ -37,6 +39,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     hoverImage: "/images/products/epice-poulet-verso.jpg",
     alt: "Épice de Sulson - Poulet (Recette Authentique Cameroun)",
     title: "Épice Spéciale Poulet",
+    category: "Épices Volailles & Rôtis",
+    origin: "Cameroun (Recette Traditionnelle)",
     basePrice: 6.9,
     baseOldPrice: 8.5,
     ratingCount: "196",
@@ -49,6 +53,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     hoverImage: "/images/products/epice-viande-verso.jpg",
     alt: "Épice de Sulson - Viande (Recette Authentique Cameroun)",
     title: "Épice Spéciale Viande",
+    category: "Épices Viandes & Grillades",
+    origin: "Cameroun (Recette Traditionnelle)",
     basePrice: 6.9,
     baseOldPrice: 8.5,
     ratingCount: "228",
@@ -61,6 +67,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     hoverImage: "/images/products/epice-poisson-verso.jpg",
     alt: "Épice de Sulson - Poisson (Recette Authentique Cameroun)",
     title: "Épice Spéciale Poisson",
+    category: "Épices Poissons & Marinades",
+    origin: "Cameroun (Poivre de Guinée)",
     basePrice: 6.9,
     baseOldPrice: 8.5,
     ratingCount: "184",
@@ -73,6 +81,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     hoverImage: "/images/products/epice-gourmande-verso.jpg",
     alt: "Épice de Sulson - Saveur Gourmande (Le Secret de Sulson)",
     title: "Épice Saveur Gourmande",
+    category: "Assaisonnements Signatures",
+    origin: "Cameroun (Le Secret de Sulson)",
     basePrice: 6.9,
     baseOldPrice: 8.5,
     ratingCount: "215",
@@ -90,6 +100,8 @@ const FIFTH_PRODUCT = {
   image: "/images/products/pack-4-saveurs-sulson.jpg",
   alt: "Pack Intégral 4 Saveurs Les Épices de Sulson",
   title: "Le Pack Intégral : Les 4 Saveurs Authentiques de Sulson",
+  category: "Packs & Coffrets Gourmets",
+  origin: "Atelier Sulson (Pack Lot 4)",
   description:
     "L'assortiment complet réunissant nos 4 créations artisanales : Poulet (Jaune), Viande (Rouge), Poisson (Bleu) et Saveur Gourmande (Orange). 100% Naturel, sans additif ni conservateur. Tout le terroir culinaire camerounais réuni dans votre cuisine !",
   discount: "-15%",
@@ -159,6 +171,13 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             )}
           </div>
 
+          {/* Catégorie Badge */}
+          <div className="mb-1.5 flex items-center">
+            <span className="text-[9px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-50/90 border border-emerald-200/60 px-2 py-0.5 rounded-md truncate">
+              {product.category}
+            </span>
+          </div>
+
           {/* Dynamic Rating Section */}
           <div className="rating-section flex items-center mb-1 scale-90 sm:scale-100 origin-left">
             <StarRating rating={ratingStat.ratingScore} />
@@ -167,10 +186,12 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             </span>
           </div>
 
-          <h4 className="text-xs sm:text-base font-bold text-gray-900 line-clamp-1 mb-1">
+          {/* Product Title */}
+          <h4 className="text-xs sm:text-base font-bold text-gray-900 line-clamp-1 mb-1" title={product.title}>
             {product.title}
           </h4>
 
+          {/* Price Section */}
           <div className="flex items-baseline gap-x-1.5 sm:gap-x-2">
             <span className="text-sm sm:text-xl font-extrabold text-gray-950">
               {currentPriceNum} €
@@ -180,10 +201,29 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             </span>
           </div>
 
-          {/* Poids format mention */}
-          <div className="mt-1.5 sm:mt-2.5 pt-1.5 sm:pt-2 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-[10px] sm:text-xs text-gray-600 font-bold">Poids :</span>
-            <span className="text-[10px] sm:text-xs font-bold text-primary">100g</span>
+          {/* Terroir d'origine & Poids */}
+          <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col gap-y-1">
+            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-600">
+              <svg
+                className="size-3 text-emerald-600 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span className="truncate font-medium text-gray-700">
+                <strong className="font-semibold text-gray-900">Terroir :</strong> {product.origin}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-500 font-medium">
+              <span>Poids net :</span>
+              <span className="font-bold text-primary">100g</span>
+            </div>
           </div>
         </div>
 
@@ -284,8 +324,11 @@ export default function FirmFreshGrocery() {
                 <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-primary text-white py-0.5 px-2.5 rounded-full shadow-2xs">
                   Sélection Prestige
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-bold bg-emerald-100 text-emerald-800 py-0.5 px-2 rounded-full">
-                  Économisez 20%
+                <span className="text-[10px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-100/90 border border-emerald-200/80 py-0.5 px-2.5 rounded-full">
+                  {FIFTH_PRODUCT.category}
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-bold bg-amber-100 text-amber-900 py-0.5 px-2 rounded-full">
+                  Économisez 15%
                 </span>
               </div>
 
@@ -300,7 +343,26 @@ export default function FirmFreshGrocery() {
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed max-w-3xl">
+              {/* Terroir Badge for 5th Product */}
+              <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-gray-700 bg-white/90 border border-gray-200 rounded-xl px-3 py-1.5 w-fit shadow-2xs">
+                <svg
+                  className="size-3.5 sm:size-4 text-emerald-600 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>
+                  <strong className="font-semibold text-gray-900">Terroir d'origine :</strong> {FIFTH_PRODUCT.origin}
+                </span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed max-w-3xl pt-1">
                 {FIFTH_PRODUCT.description}
               </p>
             </div>
