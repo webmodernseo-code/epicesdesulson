@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const tabs = [
   { name: "Général & Boutique", href: "/settings/general" },
   { name: "Passerelles API & Paiements", href: "/settings/payment-api" },
+  { name: "Serveur SMTP & E-mails", href: "/settings/smtp" },
   { name: "SEO & Référencement", href: "/settings/seo" },
 ];
 

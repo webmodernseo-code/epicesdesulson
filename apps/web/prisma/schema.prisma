@@ -227,3 +227,19 @@ model MediaStorageConfig {
   @@map("media_storage_configs")
 }
 
+model SmtpEmailConfig {
+  id          String   @id @default(cuid())
+  host        String   @default("smtp.gmail.com")
+  port        Int      @default(465)
+  secure      Boolean  @default(true)
+  user        String
+  password    String
+  fromName    String   @default("Les Épices de Sulson")
+  fromEmail   String   @default("contact@epicesdesulson.com")
+  isEnabled   Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@map("smtp_email_configs")
+}
+

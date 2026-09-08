@@ -8,6 +8,7 @@ import {
   CartRemoveIcon,
   UserSettings,
   CreditCardPosIcon,
+  Mail01Icon,
 } from "../../icons";
 
 export type NavItem = {
@@ -83,6 +84,11 @@ export const navItems: NavItem[] = [
         label: "Passerelles API (Stripe & PayPal)",
         href: "/settings/payment-api",
         icon: <CreditCardPosIcon className="size-5.5" />,
+      },
+      {
+        label: "Serveur SMTP & E-mails",
+        href: "/settings/smtp",
+        icon: <Mail01Icon className="size-5.5" />,
       },
       {
         label: "Administrateurs",

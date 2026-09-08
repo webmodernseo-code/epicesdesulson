@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { prisma } from "@/lib/prisma";
 
 interface SendOrderConfirmationParams {
   to: string;
@@ -17,18 +18,41 @@ interface SendOrderConfirmationParams {
   invoiceUrl?: string;
 }
 
-export function getSmtpTransporter() {
-  const host = process.env.SMTP_HOST || "mail.epicesdesulson.com";
-  const port = parseInt(process.env.SMTP_PORT || "465", 10);
-  const secure = port === 465;
-  const user = process.env.SMTP_USER || process.env.SMTP_EMAIL;
-  const pass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
+export async function getSmtpTransporter() {
+  let host = process.env.SMTP_HOST || "smtp.gmail.com";
+  let port = parseInt(process.env.SMTP_PORT || "465", 10);
+  let secure = port === 465;
+  let user = process.env.SMTP_USER || process.env.SMTP_EMAIL;
+  let pass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
+  let fromName = process.env.SMTP_FROM_NAME || "Les Épices de Sulson";
+  let fromEmail = process.env.SMTP_FROM_EMAIL || user || "contact@epicesdesulson.com";
+
+  try {
+    const config = await prisma.smtpEmailConfig
+      .findFirst({
+        where: { isEnabled: true },
+        orderBy: { updatedAt: "desc" },
+      })
+      .catch(() => null);
+
+    if (config && config.host && config.user && config.password) {
+      host = config.host;
+      port = config.port;
+      secure = config.secure;
+      user = config.user;
+      pass = config.password;
+      fromName = config.fromName || fromName;
+      fromEmail = config.fromEmail || fromEmail;
+    }
+  } catch {
+    // Database fallback to env
+  }
 
   if (!user || !pass) {
     return null;
   }
 
-  return nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host,
     port,
     secure,
@@ -40,6 +64,11 @@ export function getSmtpTransporter() {
       rejectUnauthorized: false,
     },
   });
+
+  return {
+    transporter,
+    fromAddress: `"${fromName}" <${fromEmail}>`,
+  };
 }
 
 /**
@@ -57,11 +86,7 @@ export async function sendOrderConfirmationEmail({
   invoiceUrl,
 }: SendOrderConfirmationParams): Promise<{ success: boolean; error?: string }> {
   try {
-    const transporter = getSmtpTransporter();
-    const fromAddress =
-      process.env.SMTP_FROM ||
-      `"Les Épices de Sulson" <${process.env.SMTP_USER || "contact@epicesdesulson.com"}>`;
-
+    const smtp = await getSmtpTransporter();
     const finalInvoiceUrl =
       invoiceUrl || `https://epicesdesulson.com/api/orders/${orderNumber}/invoice`;
 
@@ -152,13 +177,13 @@ export async function sendOrderConfirmationEmail({
 </html>
     `;
 
-    if (!transporter) {
-      console.log(`✉️ [Confirmation Commande avec Facture PDF] Commande ${orderNumber} adressée à ${to} (Lien facture: ${finalInvoiceUrl})`);
+    if (!smtp) {
+      console.log(`✉️ [Confirmation Commande avec Facture PDF (Simulation)] Commande ${orderNumber} adressée à ${to} (Lien facture: ${finalInvoiceUrl})`);
       return { success: true };
     }
 
-    await transporter.sendMail({
-      from: fromAddress,
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
       to,
       subject: `✓ Facture & Confirmation de commande ${orderNumber} - Les Épices de Sulson`,
       html: htmlContent,

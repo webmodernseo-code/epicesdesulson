@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { prisma } from "@/lib/prisma";
 
 interface SendPasswordResetParams {
   to: string;
@@ -28,6 +29,7 @@ interface SendOrderConfirmationParams {
     quantity: number;
     totalPrice: number;
   }[];
+  invoiceUrl?: string;
 }
 
 interface SendAbandonedCartReminderParams {
@@ -37,18 +39,41 @@ interface SendAbandonedCartReminderParams {
   discountCode?: string;
 }
 
-export function getSmtpTransporter() {
-  const host = process.env.SMTP_HOST || "mail.epicesdesulson.com";
-  const port = parseInt(process.env.SMTP_PORT || "465", 10);
-  const secure = port === 465;
-  const user = process.env.SMTP_USER || process.env.SMTP_EMAIL;
-  const pass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
+export async function getSmtpTransporter() {
+  let host = process.env.SMTP_HOST || "smtp.gmail.com";
+  let port = parseInt(process.env.SMTP_PORT || "465", 10);
+  let secure = port === 465;
+  let user = process.env.SMTP_USER || process.env.SMTP_EMAIL;
+  let pass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD;
+  let fromName = process.env.SMTP_FROM_NAME || "Les Épices de Sulson";
+  let fromEmail = process.env.SMTP_FROM_EMAIL || user || "contact@epicesdesulson.com";
+
+  try {
+    const config = await prisma.smtpEmailConfig
+      .findFirst({
+        where: { isEnabled: true },
+        orderBy: { updatedAt: "desc" },
+      })
+      .catch(() => null);
+
+    if (config && config.host && config.user && config.password) {
+      host = config.host;
+      port = config.port;
+      secure = config.secure;
+      user = config.user;
+      pass = config.password;
+      fromName = config.fromName || fromName;
+      fromEmail = config.fromEmail || fromEmail;
+    }
+  } catch {
+    // Fallback to env
+  }
 
   if (!user || !pass) {
     return null;
   }
 
-  return nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host,
     port,
     secure,
@@ -60,6 +85,11 @@ export function getSmtpTransporter() {
       rejectUnauthorized: false,
     },
   });
+
+  return {
+    transporter,
+    fromAddress: `"${fromName}" <${fromEmail}>`,
+  };
 }
 
 // 1. Password Reset Email
@@ -68,10 +98,7 @@ export async function sendPasswordResetEmail({
   resetUrl,
 }: SendPasswordResetParams): Promise<{ success: boolean; error?: string }> {
   try {
-    const transporter = getSmtpTransporter();
-    const fromAddress =
-      process.env.SMTP_FROM ||
-      `"Les Épices de Sulson" <${process.env.SMTP_USER || "contact@epicesdesulson.com"}>`;
+    const smtp = await getSmtpTransporter();
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -87,7 +114,7 @@ export async function sendPasswordResetEmail({
         <table role="presentation" width="100%" style="max-width: 560px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
           <tr>
             <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 1px solid #f1f5f9;">
-              <h2 style="margin: 0; color: #047857; font-size: 22px; font-weight: 800;">Les Épices de Sulson</h2>
+              <h2 style="margin: 0; color: #047857; font-size: 22px; font-weight: 800;">🌿 Les Épices de Sulson</h2>
               <p style="margin: 4px 0 0 0; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">Cockpit Administrateur</p>
             </td>
           </tr>
@@ -101,11 +128,11 @@ export async function sendPasswordResetEmail({
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin: 28px 0; width: 100%;">
                 <tr>
                   <td align="center">
-                    <a href="${resetUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px;">Définir un nouveau mot de passe</a>
+                    <a href="${resetUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Définir un nouveau mot de passe</a>
                   </td>
                 </tr>
               </table>
-              <p style="margin: 0; font-size: 12px; color: #64748b;">Ce lien est valable 1 heure.</p>
+              <p style="margin: 0; font-size: 12px; color: #64748b;">Ce lien sécurisé est valable pendant 1 heure.</p>
             </td>
           </tr>
         </table>
@@ -116,13 +143,13 @@ export async function sendPasswordResetEmail({
 </html>
     `;
 
-    if (!transporter) {
-      console.log(`🔗 [Lien de réinitialisation généré] : ${resetUrl}`);
+    if (!smtp) {
+      console.log(`🔗 [Lien de réinitialisation généré (Simulation SMTP)] : ${resetUrl}`);
       return { success: true };
     }
 
-    await transporter.sendMail({
-      from: fromAddress,
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
       to,
       subject: "Réinitialisation de votre mot de passe — Les Épices de Sulson",
       html: htmlContent,
@@ -134,7 +161,7 @@ export async function sendPasswordResetEmail({
   }
 }
 
-// 2. Order Shipped Notification Email
+// 2. Order Shipped Notification Email (Colissimo tracking)
 export async function sendOrderShippedEmail({
   to,
   customerName,
@@ -144,10 +171,7 @@ export async function sendOrderShippedEmail({
   trackingUrl,
 }: SendOrderShippedParams): Promise<{ success: boolean; error?: string }> {
   try {
-    const transporter = getSmtpTransporter();
-    const fromAddress =
-      process.env.SMTP_FROM ||
-      `"Les Épices de Sulson" <${process.env.SMTP_USER || "contact@epicesdesulson.com"}>`;
+    const smtp = await getSmtpTransporter();
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -160,10 +184,10 @@ export async function sendOrderShippedEmail({
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
           <tr>
             <td style="padding: 32px; background-color: #047857; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">Les Épices de Sulson</h1>
+              <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">🌿 Les Épices de Sulson</h1>
               <p style="margin: 4px 0 0 0; color: #a7f3d0; font-size: 12px; font-weight: 600;">Expédition de votre commande</p>
             </td>
           </tr>
@@ -177,13 +201,13 @@ export async function sendOrderShippedEmail({
               <div style="background-color: #f1f5f9; padding: 20px; border-radius: 14px; margin-bottom: 24px;">
                 <p style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">Numéro de commande : <strong style="color: #0f172a;">${orderNumber}</strong></p>
                 <p style="margin: 0 0 8px 0; font-size: 13px; color: #64748b;">Transporteur : <strong style="color: #0f172a;">${carrier}</strong></p>
-                <p style="margin: 0; font-size: 13px; color: #64748b;">Numéro de suivi : <strong style="color: #047857;">${trackingNumber}</strong></p>
+                <p style="margin: 0; font-size: 13px; color: #64748b;">Numéro de suivi : <strong style="color: #047857; font-family: monospace; font-size: 14px;">${trackingNumber}</strong></p>
               </div>
 
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin: 28px 0; width: 100%;">
                 <tr>
                   <td align="center">
-                    <a href="${trackingUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px;">Suivre mon colis en temps réel</a>
+                    <a href="${trackingUrl}" target="_blank" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">📦 Suivre mon colis Colissimo en temps réel</a>
                   </td>
                 </tr>
               </table>
@@ -206,15 +230,15 @@ export async function sendOrderShippedEmail({
 </html>
     `;
 
-    if (!transporter) {
-      console.log(`📦 [Email Expédition simulé] Commande ${orderNumber} envoyée à ${to} avec suivi ${trackingNumber}`);
+    if (!smtp) {
+      console.log(`📦 [Email Expédition simulé] Commande ${orderNumber} adressée à ${to} avec suivi ${trackingNumber}`);
       return { success: true };
     }
 
-    await transporter.sendMail({
-      from: fromAddress,
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
       to,
-      subject: `Votre commande ${orderNumber} a été expédiée ! — Les Épices de Sulson`,
+      subject: `🚚 Votre commande ${orderNumber} a été expédiée ! (${carrier}) — Les Épices de Sulson`,
       html: htmlContent,
     });
 
@@ -224,7 +248,7 @@ export async function sendOrderShippedEmail({
   }
 }
 
-// 3. Order Confirmation Email
+// 3. Order Confirmation Email with PDF Invoice
 export async function sendOrderConfirmationEmail({
   to,
   customerName,
@@ -234,12 +258,12 @@ export async function sendOrderConfirmationEmail({
   shippingCity,
   shippingPostal,
   items,
+  invoiceUrl,
 }: SendOrderConfirmationParams): Promise<{ success: boolean; error?: string }> {
   try {
-    const transporter = getSmtpTransporter();
-    const fromAddress =
-      process.env.SMTP_FROM ||
-      `"Les Épices de Sulson" <${process.env.SMTP_USER || "contact@epicesdesulson.com"}>`;
+    const smtp = await getSmtpTransporter();
+    const finalInvoiceUrl =
+      invoiceUrl || `https://epicesdesulson.com/api/orders/${orderNumber}/invoice`;
 
     const itemsRows = items
       .map(
@@ -267,18 +291,18 @@ export async function sendOrderConfirmationEmail({
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
           <tr>
             <td style="padding: 32px; background-color: #047857; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">Les Épices de Sulson</h1>
-              <p style="margin: 4px 0 0 0; color: #a7f3d0; font-size: 12px; font-weight: 600;">Confirmation de votre commande</p>
+              <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">🌿 Les Épices de Sulson</h1>
+              <p style="margin: 4px 0 0 0; color: #a7f3d0; font-size: 12px; font-weight: 600;">Confirmation de votre commande & Facture</p>
             </td>
           </tr>
           <tr>
             <td style="padding: 32px;">
               <h2 style="margin: 0 0 12px 0; font-size: 18px; color: #0f172a;">Merci pour votre confiance, ${customerName} !</h2>
               <p style="margin: 0 0 20px 0; font-size: 14px; line-height: 22px; color: #475569;">
-                Nous avons bien enregistré votre commande <strong>${orderNumber}</strong>. Nos équipes la préparent avec soin.
+                Nous avons bien enregistré votre paiement pour la commande <strong>${orderNumber}</strong>. Nos équipes la préparent avec soin.
               </p>
 
               <table role="presentation" width="100%" style="margin: 20px 0; border-collapse: collapse;">
@@ -289,10 +313,17 @@ export async function sendOrderConfirmationEmail({
                 </tr>
               </table>
 
-              <div style="background-color: #f8fafc; padding: 16px; border-radius: 12px; margin-top: 20px;">
-                <p style="margin: 0; font-size: 12px; color: #64748b;">
-                  <strong>Adresse de livraison :</strong><br>
-                  ${shippingStreet}, ${shippingPostal} ${shippingCity} (France)
+              <div style="text-align: center; margin: 26px 0;">
+                <a href="${finalInvoiceUrl}" target="_blank" style="display: inline-block; background-color: #047857; color: #ffffff; padding: 13px 26px; border-radius: 12px; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                  📄 Télécharger ma Facture (PDF)
+                </a>
+              </div>
+
+              <div style="background-color: #f8fafc; padding: 16px; border-radius: 12px; margin-top: 20px; border: 1px solid #f1f5f9;">
+                <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 18px;">
+                  <strong style="color: #0f172a;">Adresse de livraison :</strong><br>
+                  ${shippingStreet}, ${shippingPostal} ${shippingCity} (France)<br>
+                  🚚 Expédition en Colissimo Suivi La Poste.
                 </p>
               </div>
             </td>
@@ -310,15 +341,15 @@ export async function sendOrderConfirmationEmail({
 </html>
     `;
 
-    if (!transporter) {
-      console.log(`✉️ [Confirmation Commande simulée] ${orderNumber} envoyée à ${to}`);
+    if (!smtp) {
+      console.log(`✉️ [Confirmation Commande simulée] ${orderNumber} envoyée à ${to} (Facture: ${finalInvoiceUrl})`);
       return { success: true };
     }
 
-    await transporter.sendMail({
-      from: fromAddress,
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
       to,
-      subject: `Confirmation de votre commande ${orderNumber} — Les Épices de Sulson`,
+      subject: `✓ Facture & Confirmation de votre commande ${orderNumber} — Les Épices de Sulson`,
       html: htmlContent,
     });
 
@@ -336,10 +367,7 @@ export async function sendAbandonedCartReminderEmail({
   discountCode = "SULSON10",
 }: SendAbandonedCartReminderParams): Promise<{ success: boolean; error?: string }> {
   try {
-    const transporter = getSmtpTransporter();
-    const fromAddress =
-      process.env.SMTP_FROM ||
-      `"Les Épices de Sulson" <${process.env.SMTP_USER || "contact@epicesdesulson.com"}>`;
+    const smtp = await getSmtpTransporter();
 
     const htmlContent = `
 <!DOCTYPE html>
@@ -352,10 +380,10 @@ export async function sendAbandonedCartReminderEmail({
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
           <tr>
             <td style="padding: 32px; background-color: #047857; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">Les Épices de Sulson</h1>
+              <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">🌿 Les Épices de Sulson</h1>
               <p style="margin: 4px 0 0 0; color: #a7f3d0; font-size: 12px; font-weight: 600;">Votre panier a été réservé</p>
             </td>
           </tr>
@@ -374,7 +402,7 @@ export async function sendAbandonedCartReminderEmail({
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin: 28px 0; width: 100%;">
                 <tr>
                   <td align="center">
-                    <a href="${cartUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px;">Finaliser ma commande</a>
+                    <a href="${cartUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Finaliser ma commande</a>
                   </td>
                 </tr>
               </table>
@@ -393,13 +421,13 @@ export async function sendAbandonedCartReminderEmail({
 </html>
     `;
 
-    if (!transporter) {
+    if (!smtp) {
       console.log(`🛒 [Relance Panier simulée] envoyée à ${to}`);
       return { success: true };
     }
 
-    await transporter.sendMail({
-      from: fromAddress,
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
       to,
       subject: `Vos épices favorites vous attendent (-10% avec ${discountCode}) — Les Épices de Sulson`,
       html: htmlContent,
