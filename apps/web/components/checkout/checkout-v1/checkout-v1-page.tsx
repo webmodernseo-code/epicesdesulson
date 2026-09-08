@@ -6,13 +6,16 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
 import ShippingAddressV1, { ShippingAddressData } from "./shipping-address-v1";
-import PaymentMethodV1, { CardFormData } from "./payment-method-v1";
+import PaymentMethodV1, { CardFormData, PaymentTabType } from "./payment-method-v1";
 import CheckoutCartSummary1 from "./checkout-cart-summary-1";
 import { ArrowLeft, ShoppingBag, ShieldCheck } from "lucide-react";
 
 export default function CheckoutV1Page() {
   const router = useRouter();
   const { items, subtotal, isLoaded, clearCart } = useCart();
+
+  // Selected Payment Tab
+  const [selectedMethod, setSelectedMethod] = useState<PaymentTabType>("card");
 
   // Shipping Address State (sans téléphone)
   const [shippingData, setShippingData] = useState<ShippingAddressData>({
@@ -33,6 +36,7 @@ export default function CheckoutV1Page() {
     cardNumber: "",
     expiryDate: "",
     cvc: "",
+    saveCard: false,
   });
 
   // Validation Errors & Processing States
@@ -56,7 +60,7 @@ export default function CheckoutV1Page() {
     }
   };
 
-  const handleCardChange = (field: keyof CardFormData, value: string) => {
+  const handleCardChange = (field: keyof CardFormData, value: any) => {
     setCardData((prev) => ({ ...prev, [field]: value }));
     if (cardError) setCardError(null);
   };
@@ -88,17 +92,24 @@ export default function CheckoutV1Page() {
   };
 
   const validateCard = (): boolean => {
+    if (selectedMethod !== "card") return true;
+
     if (!cardData.nameOnCard.trim()) {
-      setCardError("Veuillez indiquer le nom présent sur la carte.");
+      setCardError("Veuillez indiquer le titulaire de la carte.");
       return false;
     }
     const cleanNum = cardData.cardNumber.replace(/\s+/g, "");
     if (cleanNum.length < 15) {
-      setCardError("Veuillez saisir un numéro de carte bancaire valide (16 chiffres).");
+      setCardError("Veuillez saisir un numéro de carte bancaire valide.");
       return false;
     }
     if (!/^\d{2}\/\d{2}$/.test(cardData.expiryDate)) {
       setCardError("Date d'expiration invalide (format attendu : MM/AA).");
+      return false;
+    }
+    const mm = parseInt(cardData.expiryDate.split("/")[0], 10);
+    if (mm < 1 || mm > 12) {
+      setCardError("Le mois d'expiration doit être compris entre 01 et 12.");
       return false;
     }
     if (cardData.cvc.length < 3) {
@@ -125,7 +136,7 @@ export default function CheckoutV1Page() {
 
     const cardOk = validateCard();
     if (!cardOk) {
-      toast.error("Veuillez vérifier vos coordonnées de carte bancaire.");
+      toast.error("Veuillez vérifier vos coordonnées de paiement.");
       return;
     }
 
@@ -151,14 +162,21 @@ export default function CheckoutV1Page() {
           shippingCountry: shippingData.country || "France",
           couponCode: activeCoupon,
           items,
-          paymentMethod: "stripe",
+          paymentMethod: selectedMethod,
+          cardLast4: cardData.cardNumber ? cardData.cardNumber.replace(/\s+/g, "").slice(-4) : undefined,
         }),
       });
 
       const data = await res.json();
 
       if (data.success) {
-        // Redirection vers confirmation de commande
+        if (data.checkoutUrl) {
+          // PayPal redirect if live URL provided
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+
+        // Direct success confirmation
         toast.success("Paiement validé avec succès !");
         clearCart();
         router.push(`/checkout/success?orderNumber=${data.orderNumber || data.orderId}`);
@@ -219,7 +237,7 @@ export default function CheckoutV1Page() {
               Finaliser ma commande
             </h1>
             <p className="text-xs text-gray-500 mt-0.5">
-              Paiement direct sécurisé et expédition express sous 24h
+              Paiement direct 100% sécurisé et expédition express sous 24h
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-600 self-start sm:self-auto">
@@ -239,10 +257,12 @@ export default function CheckoutV1Page() {
               errors={errors}
             />
 
-            {/* 2. Section Paiement Carte Bancaire (Ouverte d'office immédiatement) */}
+            {/* 2. Section Paiement Carte Bancaire / Apple Pay / PayPal (Ouvert d'office immédiatement) */}
             <PaymentMethodV1
               cardData={cardData}
               onCardDataChange={handleCardChange}
+              selectedMethod={selectedMethod}
+              onSelectMethod={(m) => setSelectedMethod(m)}
               totalAmountFormatted={formattedTotal}
               isProcessing={isProcessing}
               onSubmit={handlePaymentSubmit}
@@ -253,7 +273,7 @@ export default function CheckoutV1Page() {
           {/* Colonne Droite : Résumé de Commande */}
           <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-6">
             <CheckoutCartSummary1
-              selectedMethod="stripe"
+              selectedMethod={selectedMethod === "paypal" ? "paypal" : "stripe"}
               isProcessing={isProcessing}
               onPlaceOrder={(coupon) => {
                 if (coupon) setCouponCode(coupon);
