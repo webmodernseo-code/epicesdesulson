@@ -102,7 +102,33 @@ export default function ProductListTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  useEffect(() => { fetch("/api/admin/products", { cache: "no-store" }).then((r) => r.json()).then((json) => { if (json.success) setProducts(json.data.map((p: any) => ({ id: p.code, name: p.title, category: p.category?.name || "Sans catégorie", price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`, origin: p.origin, stock: p.stockQuantity, status: p.isAvailable ? "Publié" : "Brouillon", format: p.formats?.[0]?.label || "—", image: p.imageRecto }))); }).catch(() => undefined); }, []);
+  useEffect(() => {
+    fetch("/api/admin/products", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const dbItems = json.data.map((p: any) => ({
+            id: p.code || p.id,
+            name: p.title || p.name,
+            category: p.category?.name || p.category || "Sans catégorie",
+            price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`,
+            origin: p.origin || "Cameroun (Recette Artisanale)",
+            stock: p.stockQuantity ?? 100,
+            status: p.isAvailable !== false ? "Publié" : "Brouillon",
+            format: p.formats?.[0]?.label || "Sachet 100g",
+            image: p.imageRecto || p.image || "/images/products/sachet-poulet-recto.png",
+          }));
+
+          const dbIds = new Set(dbItems.map((item: any) => String(item.id).toUpperCase()));
+          const remainingDefaults = SPICES_DATA.filter(
+            (defItem) => !dbIds.has(defItem.id.toUpperCase())
+          );
+
+          setProducts([...dbItems, ...remainingDefaults]);
+        }
+      })
+      .catch(() => undefined);
+  }, []);
 
   const filteredProducts = products.filter((item) => {
     const matchesCategory =

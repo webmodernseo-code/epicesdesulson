@@ -13,7 +13,6 @@ import {
   CheckCircle2, 
   Package, 
   Euro,
-  Trash2
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -28,7 +27,11 @@ const CATEGORIES = [
 ];
 
 const ORIGINS = [
+  "Cameroun (Recette Traditionnelle)",
+  "Cameroun (Poivre de Guinée)",
+  "Cameroun (Le Secret de Sulson)",
   "Cameroun (Recette Artisanale)",
+  "Atelier Sulson (Pack Lot 4)",
   "Madagascar (Sambava / Terroir Sauvage)",
   "Cambodge (Kampot IGP)",
   "Inde (Madras / Kerala)",
@@ -37,15 +40,149 @@ const ORIGINS = [
   "Autre terroir d'exception",
 ];
 
+const DEFAULT_PRODUCTS_MAP: Record<string, {
+  name: string;
+  sku: string;
+  category: string;
+  origin: string;
+  price: string;
+  comparePrice: string;
+  stock: string;
+  description: string;
+  image: string;
+  isPublished: boolean;
+}> = {
+  "SUL-301": {
+    name: "Épice de Sulson - Spéciale Poulet",
+    sku: "SUL-301",
+    category: "Épices Volailles & Rôtis",
+    origin: "Cameroun (Recette Traditionnelle)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "145",
+    description: "L'alliance parfaite du curcuma frais, paprika doux, gingembre et muscade pour une chair tendre, parfumée et dorée à chaque cuisson.",
+    image: "/images/products/epice-poulet-recto.jpg",
+    isPublished: true,
+  },
+  "SUL-302": {
+    name: "Épice de Sulson - Spéciale Viande",
+    sku: "SUL-302",
+    category: "Épices Viandes & Grillades",
+    origin: "Cameroun (Recette Traditionnelle)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "120",
+    description: "Un mélange noble au paprika, poivre noir sauvage, clou de girofle et laurier conçu pour révéler la richesse de vos viandes au feu ou au four.",
+    image: "/images/products/epice-viande-recto.jpg",
+    isPublished: true,
+  },
+  "SUL-303": {
+    name: "Épice de Sulson - Spéciale Poisson",
+    sku: "SUL-303",
+    category: "Épices Poissons & Marinades",
+    origin: "Cameroun (Poivre de Guinée)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "98",
+    description: "L'arôme authentique du poivre de Guinée, céleri, graines de moutarde et thym pour des poissons marinés et grillés à la perfection.",
+    image: "/images/products/epice-poisson-recto.jpg",
+    isPublished: true,
+  },
+  "SUL-304": {
+    name: "Épice de Sulson - Saveur Gourmande",
+    sku: "SUL-304",
+    category: "Assaisonnements Signatures",
+    origin: "Cameroun (Le Secret de Sulson)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "210",
+    description: "Notre composition signature secrète alliant herbes nobles et épices douces pour sublimer féculents, légumes sautés, sauces et créations du chef.",
+    image: "/images/products/epice-gourmande-recto.jpg",
+    isPublished: true,
+  },
+  "SUL-305": {
+    name: "Le Pack Intégral : 4 Saveurs Authentiques",
+    sku: "SUL-305",
+    category: "Packs & Coffrets Gourmets",
+    origin: "Atelier Sulson (Pack Lot 4)",
+    price: "24.90",
+    comparePrice: "27.60",
+    stock: "65",
+    description: "L'assortiment complet réunissant nos 4 créations artisanales : Poulet (Jaune), Viande (Rouge), Poisson (Bleu) et Saveur Gourmande (Orange). 100% Naturel, sans conservateur.",
+    image: "/images/products/pack-4-saveurs-sulson.jpg",
+    isPublished: true,
+  },
+  "PROD-1": {
+    name: "Épice de Sulson - Spéciale Poulet",
+    sku: "SUL-301",
+    category: "Épices Volailles & Rôtis",
+    origin: "Cameroun (Recette Traditionnelle)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "145",
+    description: "L'alliance parfaite du curcuma frais, paprika doux, gingembre et muscade.",
+    image: "/images/products/epice-poulet-recto.jpg",
+    isPublished: true,
+  },
+  "PROD-2": {
+    name: "Épice de Sulson - Spéciale Viande",
+    sku: "SUL-302",
+    category: "Épices Viandes & Grillades",
+    origin: "Cameroun (Recette Traditionnelle)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "120",
+    description: "Un mélange noble au paprika, poivre noir sauvage, clou de girofle et laurier.",
+    image: "/images/products/epice-viande-recto.jpg",
+    isPublished: true,
+  },
+  "PROD-3": {
+    name: "Épice de Sulson - Spéciale Poisson",
+    sku: "SUL-303",
+    category: "Épices Poissons & Marinades",
+    origin: "Cameroun (Poivre de Guinée)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "98",
+    description: "L'arôme authentique du poivre de Guinée, céleri, graines de moutarde et thym.",
+    image: "/images/products/epice-poisson-recto.jpg",
+    isPublished: true,
+  },
+  "PROD-4": {
+    name: "Épice de Sulson - Saveur Gourmande",
+    sku: "SUL-304",
+    category: "Assaisonnements Signatures",
+    origin: "Cameroun (Le Secret de Sulson)",
+    price: "6.90",
+    comparePrice: "8.50",
+    stock: "210",
+    description: "Notre composition signature secrète alliant herbes nobles et épices douces.",
+    image: "/images/products/epice-gourmande-recto.jpg",
+    isPublished: true,
+  },
+  "PROD-5": {
+    name: "Le Pack Intégral : 4 Saveurs Authentiques",
+    sku: "SUL-305",
+    category: "Packs & Coffrets Gourmets",
+    origin: "Atelier Sulson (Pack Lot 4)",
+    price: "24.90",
+    comparePrice: "27.60",
+    stock: "65",
+    description: "L'assortiment complet réunissant nos 4 créations artisanales.",
+    image: "/images/products/pack-4-saveurs-sulson.jpg",
+    isPublished: true,
+  },
+};
+
 export default function EditProductForm() {
   const router = useRouter();
   const params = useParams();
-  const productId = params?.id as string;
+  const productId = (params?.id as string) || "";
 
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Form State (Simplifié & Essentiel)
+  // Form State
   const [name, setName] = useState("");
   const [sku, setSku] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
@@ -61,31 +198,49 @@ export default function EditProductForm() {
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
+    const upperId = productId.toUpperCase();
+    const fallback = DEFAULT_PRODUCTS_MAP[upperId] || DEFAULT_PRODUCTS_MAP[productId];
+
+    if (fallback) {
+      setName(fallback.name);
+      setSku(fallback.sku);
+      setCategory(fallback.category);
+      setOrigin(fallback.origin);
+      setDescription(fallback.description);
+      setPrice(fallback.price);
+      setComparePrice(fallback.comparePrice);
+      setStock(fallback.stock);
+      setIsPublished(fallback.isPublished);
+      setPrimaryImage(fallback.image);
+    }
+
     if (!productId) {
       setLoading(false);
       return;
     }
+
     async function loadProduct() {
       try {
-        const res = await fetch(`/api/admin/products/${productId}`);
+        const res = await fetch(`/api/admin/products/${encodeURIComponent(productId)}`);
         if (res.ok) {
-          const data = await res.json();
-          if (data?.product) {
-            const p = data.product;
-            setName(p.title || "");
-            setSku(p.code || "");
+          const json = await res.json();
+          const p = json?.data || json?.product;
+          if (p) {
+            setName(p.title || p.name || "");
+            setSku(p.code || p.sku || "");
             if (p.category?.name) setCategory(p.category.name);
+            else if (typeof p.category === "string") setCategory(p.category);
             if (p.origin) setOrigin(p.origin);
             setDescription(p.description || "");
-            setPrice(p.basePrice ? String(p.basePrice) : "6.90");
-            setComparePrice(p.baseOldPrice ? String(p.baseOldPrice) : "");
-            setStock(p.stockQuantity ? String(p.stockQuantity) : "100");
+            setPrice(p.basePrice != null ? String(p.basePrice) : "6.90");
+            setComparePrice(p.baseOldPrice != null ? String(p.baseOldPrice) : "");
+            setStock(p.stockQuantity != null ? String(p.stockQuantity) : "100");
             setIsPublished(p.isAvailable !== false);
-            setPrimaryImage(p.imageRecto || null);
+            if (p.imageRecto || p.image) setPrimaryImage(p.imageRecto || p.image);
           }
         }
       } catch (err) {
-        console.error("Erreur chargement produit:", err);
+        console.warn("Information chargée depuis le catalogue local:", err);
       } finally {
         setLoading(false);
       }
@@ -129,29 +284,39 @@ export default function EditProductForm() {
 
     setSaving(true);
     try {
-      const targetUrl = productId ? `/api/admin/products/${productId}` : "/api/admin/products";
-      const method = productId ? "PUT" : "POST";
-      const response = await fetch(targetUrl, {
-        method,
+      const payload = {
+        name: name.trim(),
+        sku: (sku.trim() || productId || `SUL-${Math.floor(100 + Math.random() * 900)}`).toUpperCase(),
+        category,
+        origin,
+        price,
+        comparePrice: comparePrice || null,
+        stock: Number(stock) || 0,
+        description: description.trim() || name.trim(),
+        image: primaryImage || "/images/products/sachet-poulet-recto.png",
+        isPublished,
+      };
+
+      // Try PUT on specific ID first
+      let response = await fetch(`/api/admin/products/${encodeURIComponent(productId)}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          sku: sku.trim(),
-          category,
-          origin,
-          price,
-          comparePrice: comparePrice || null,
-          stock: Number(stock) || 0,
-          description: description.trim() || name.trim(),
-          image: primaryImage,
-          isPublished,
-        }),
+        body: JSON.stringify(payload),
       });
+
+      // If not found (e.g. initial item not yet in Neon DB), create it via POST
+      if (response.status === 404) {
+        response = await fetch("/api/admin/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
 
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Erreur de mise à jour");
 
-      toast.success(`Les modifications pour "${name}" ont été enregistrées !`);
+      toast.success(`Les modifications pour "${name}" ont été enregistrées avec succès !`);
       router.push("/products");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Mise à jour impossible.");
@@ -183,7 +348,7 @@ export default function EditProductForm() {
               Modifier l'Article {name ? `: ${name}` : ""}
             </h1>
             <p className="text-xs text-gray-500">
-              Mise à jour rapide des informations, tarifs et stocks
+              Mise à jour rapide des informations, tarifs, terroirs et stocks
             </p>
           </div>
         </div>
@@ -296,7 +461,7 @@ export default function EditProductForm() {
                       <img
                         src={primaryImage}
                         alt="Aperçu produit"
-                        className="size-36 object-cover rounded-xl mx-auto border border-gray-200 shadow-2xs"
+                        className="size-36 object-contain rounded-xl mx-auto border border-gray-200 shadow-2xs bg-white p-2"
                       />
                       <div className="flex items-center justify-center gap-2">
                         <label className="text-xs text-emerald-600 hover:underline font-bold cursor-pointer">
