@@ -28,7 +28,7 @@ export default function NavbarTop() {
                 <i className="hgi hgi-stroke hgi-discount-01 text-white text-sm sm:text-lg" />
               </span>
               <span className="hidden md:inline">Épices d'exception & Poivres rares —</span>
-              <span className="font-semibold">Livraison offerte dès 50€</span>
+              <span className="font-semibold">Livraison offerte dès 35€</span>
               <span className="bg-warning py-0.5 px-2 text-[10px] sm:text-xs font-bold rounded-full text-gray-950 shrink-0">
                 France & Europe
               </span>

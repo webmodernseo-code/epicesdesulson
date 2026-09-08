@@ -23,7 +23,7 @@ export default function CheckoutCartSummary1({
   const [discountApplied, setDiscountApplied] = useState(false);
 
   const discountAmount = discountApplied ? subtotal * 0.1 : 0;
-  const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 4.9;
+  const shipping = subtotal >= 35 || subtotal === 0 ? 0 : 4.9;
   const total = Math.max(0, subtotal - discountAmount + shipping);
 
   const handleApplyCoupon = (e: React.FormEvent) => {

@@ -101,8 +101,8 @@ export class OrdersService {
       discountAmount = parseFloat((calculatedSubtotal * 0.1).toFixed(2));
     }
 
-    // Free shipping over 50 EUR, otherwise 4.90 EUR
-    const shippingCost = calculatedSubtotal >= 50 ? 0 : 4.90;
+    // Free shipping over 35 EUR, otherwise 4.90 EUR
+    const shippingCost = calculatedSubtotal >= 35 ? 0 : 4.90;
     const totalAmount = parseFloat(Math.max(0, calculatedSubtotal - discountAmount + shippingCost).toFixed(2));
 
     const orderNumber = `SUL-${Math.floor(10000 + Math.random() * 90000)}`;

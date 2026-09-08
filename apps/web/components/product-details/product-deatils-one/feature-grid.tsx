@@ -12,7 +12,7 @@ const FEATURES = [
   {
     icon: "hgi-truck",
     title: "Expédition 24/48h",
-    description: "Livraison offerte dès 50€ d'achat avec numéro de suivi Colissimo",
+    description: "Livraison offerte dès 35€ d'achat avec numéro de suivi Colissimo",
     delay: 0.2,
   },
   {

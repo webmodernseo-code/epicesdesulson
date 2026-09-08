@@ -5,7 +5,7 @@ import { useCart } from "@/context/cart-context";
 
 export default function CartSummary() {
   const { subtotal, totalCount } = useCart();
-  const shippingThreshold = 50.0;
+  const shippingThreshold = 35.0;
   const isFreeShipping = subtotal >= shippingThreshold;
   const remainingForFree = Math.max(0, shippingThreshold - subtotal);
 
