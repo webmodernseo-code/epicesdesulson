@@ -31,6 +31,14 @@ interface ProviderPreset {
 
 const PRESETS: ProviderPreset[] = [
   {
+    id: "o2switch",
+    name: "o2switch (cPanel)",
+    host: "mail.epicesdesulson.com",
+    port: 465,
+    secure: true,
+    tip: "Utilisez votre adresse e-mail complète (ex: contact@epicesdesulson.com) et le mot de passe de boîte mail défini dans votre cPanel o2switch.",
+  },
+  {
     id: "gmail",
     name: "Gmail / Google Workspace",
     host: "smtp.gmail.com",
