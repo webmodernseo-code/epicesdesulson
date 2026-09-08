@@ -1,87 +1,161 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { BellAltIcon, BellIcon } from "@/icons";
+import { ShoppingBag, AlertTriangle, CreditCard } from "lucide-react";
 
-const notifications = [
-  {
-    id: 1,
-    title: "Nouvelle commande reçue",
-    time: "Il y a 4 min",
-    description: "Commande #CMD-84920 (3 articles - 58,50 €) prête pour préparation atelier.",
-  },
-  {
-    id: 2,
-    title: "Paiement direct validé (PayPal)",
-    time: "Il y a 28 min",
-    description: "Paiement de 64,00 € versé sur votre compte PayPal Business.",
-  },
-  {
-    id: 3,
-    title: "Alerte Stock Faible",
-    time: "Il y a 2h",
-    description: "Vanille Bourbon Gourmet : seuil d'alerte atteint (8 tubes restants).",
-  },
-  {
-    id: 4,
-    title: "Nouvel avis client ★★★★★",
-    time: "Hier",
-    description: "Claire D. : « L'épice de Sulson spéciale poulet est exceptionnelle ! »",
-  },
-];
+interface NotificationItem {
+  id: string;
+  title: string;
+  time: string;
+  description: string;
+  type: "order" | "stock" | "payment";
+  href?: string;
+}
 
 export default function NotificationDropdown() {
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isCleared, setIsCleared] = useState(false);
+
+  useEffect(() => {
+    async function fetchNotifications() {
+      try {
+        const res = await fetch("/api/admin/notifications");
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.data?.notifications) {
+            setNotifications(json.data.notifications);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch real notifications:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchNotifications();
+  }, []);
+
+  const displayedNotifications = isCleared ? [] : notifications;
+  const count = displayedNotifications.length;
+
+  const handleClearAll = () => {
+    setIsCleared(true);
+  };
+
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "order":
+        return <ShoppingBag className="size-4 text-emerald-600" />;
+      case "stock":
+        return <AlertTriangle className="size-4 text-amber-600" />;
+      default:
+        return <CreditCard className="size-4 text-blue-600" />;
+    }
+  };
+
+  const getBg = (type: string) => {
+    switch (type) {
+      case "order":
+        return "bg-emerald-50";
+      case "stock":
+        return "bg-amber-50";
+      default:
+        return "bg-blue-50";
+    }
+  };
+
   return (
     <div className="relative">
       <Menu as="div" className="relative inline-block text-left">
-        <MenuButton className="relative size-9 rounded-full hover:bg-gray-100 flex items-center justify-center  transition-colors focus:outline-none">
+        <MenuButton className="relative size-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors focus:outline-none cursor-pointer">
           <BellIcon className="w-5 h-5 text-text-primary-text" />
-          <span className="absolute top-[2px] right-0 h-4.5 w-4.5 flex items-center justify-center rounded-full bg-error text-xs font-bold text-white ">
-            8
-          </span>
+          {count > 0 && (
+            <span className="absolute top-[2px] right-0 min-w-4.5 h-4.5 px-1 flex items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white shadow-2xs">
+              {count > 99 ? "99+" : count}
+            </span>
+          )}
         </MenuButton>
 
         <MenuItems
           transition
-          className="absolute -right-[70px] sm:right-0 mt-2 w-[290px] origin-top-right rounded-lg bg-white ring-1 ring-gray-500/20 focus:outline-none z-50 transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
+          className="absolute -right-[70px] sm:right-0 mt-2 w-[320px] sm:w-[350px] origin-top-right rounded-2xl bg-white ring-1 ring-gray-200/90 shadow-lg focus:outline-none z-50 transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0 p-1"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-gray-500/20">
-            <h3 className="font-semibold text-light-primary-text">
-              Notification
-            </h3>
-            <button className="text-xs text-light-secondary-text hover:text-light-primary-text transition-colors">
-              Clear All
-            </button>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-xs uppercase tracking-wider text-gray-900">
+                Notifications
+              </h3>
+              {count > 0 && (
+                <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {count}
+                </span>
+              )}
+            </div>
+            {count > 0 && (
+              <button
+                onClick={handleClearAll}
+                className="text-xs text-gray-500 hover:text-gray-900 transition-colors font-medium cursor-pointer"
+              >
+                Tout effacer
+              </button>
+            )}
           </div>
 
           {/* List */}
-          <div className="max-h-[400px] p-3 space-y-2 overflow-y-auto custom-scrollbar">
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className="flex gap-3 rounded-lg p-2 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 cursor-pointer"
-              >
-                <div className="shrink-0">
-                  <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-light-primary-text ">
-                    <BellAltIcon className="size-4" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0 md:mt-1">
-                  <div className="flex items-start justify-between gap-4 mb-1">
-                    <p className="text-sm font-semibold text-light-primary-text truncate">
-                      {notification.title}
-                    </p>
-                    <span className="text-xs text-light-disabled-text whitespace-nowrap">
-                      {notification.time}
-                    </span>
-                  </div>
-                  <p className="text-xs text-light-secondary-text line-clamp-2 leading-relaxed">
-                    {notification.description}
-                  </p>
-                </div>
+          <div className="max-h-[380px] p-2 space-y-1.5 overflow-y-auto custom-scrollbar">
+            {loading ? (
+              <div className="py-8 text-center text-xs text-gray-400">
+                Chargement des notifications...
               </div>
-            ))}
+            ) : displayedNotifications.length === 0 ? (
+              <div className="py-8 text-center text-xs text-gray-400 space-y-1">
+                <BellAltIcon className="size-6 text-gray-300 mx-auto" />
+                <p className="font-medium text-gray-600">Aucune nouvelle notification</p>
+                <p className="text-[11px] text-gray-400">Tout est à jour dans l'atelier Sulson.</p>
+              </div>
+            ) : (
+              displayedNotifications.map((notification) => {
+                const content = (
+                  <div className="flex gap-3 rounded-xl p-2.5 hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 cursor-pointer">
+                    <div className="shrink-0">
+                      <div
+                        className={`w-9 h-9 rounded-xl ${getBg(
+                          notification.type
+                        )} flex items-center justify-center`}
+                      >
+                        {getIcon(notification.type)}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-0.5">
+                        <p className="text-xs font-bold text-gray-900 truncate">
+                          {notification.title}
+                        </p>
+                        <span className="text-[10px] text-gray-400 whitespace-nowrap">
+                          {notification.time}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                        {notification.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+
+                return notification.href ? (
+                  <Link key={notification.id} href={notification.href} className="block">
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={notification.id}>{content}</div>
+                );
+              })
+            )}
           </div>
         </MenuItems>
       </Menu>

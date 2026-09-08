@@ -30,11 +30,12 @@ export const metadata: Metadata = {
     "Tableau de bord de gestion et administration pour la boutique e-commerce Les Épices de Sulson.",
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
       { url: "/icon.png", sizes: "512x512", type: "image/png" },
-      { url: "/favicon.ico" },
     ],
+    shortcut: "/favicon.ico",
     apple: [
-      { url: "/apple-icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
 };
@@ -45,9 +46,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+      </head>
       <body
-        className={`${dmSans.variable} ${publicSans.variable} ${urbanist.variable}  antialiased`}
+        className={`${dmSans.variable} ${publicSans.variable} ${urbanist.variable} antialiased`}
       >
         {children}
         <Toaster
@@ -58,8 +64,6 @@ export default function RootLayout({
               description: "text-gray-500 dark:text-gray-400",
               actionButton: "bg-primary text-white",
               cancelButton: "bg-gray-100 text-gray-500",
-              success: "text-green-600 border-green-600",
-              error: "text-red-600 border-red-600",
             },
           }}
         />

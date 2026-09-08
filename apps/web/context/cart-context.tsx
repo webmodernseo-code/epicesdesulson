@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 
 export interface CartItem {
   id: number | string;
@@ -18,6 +18,7 @@ interface CartContextType {
   totalCount: number;
   subtotal: number;
   isCartOpen: boolean;
+  isLoaded: boolean;
   openCart: () => void;
   closeCart: () => void;
   addItem: (product: {
@@ -36,36 +37,55 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const INITIAL_CART_ITEMS: CartItem[] = [
-  {
-    id: 101,
-    image: "/images/products/epice-poulet-recto.jpg",
-    title: "Épice de Sulson - Spéciale Poulet",
-    pack: "100g (Sachet)",
-    currentPrice: "6.90 €",
-    oldPrice: "8.50 €",
-    quantity: 1,
-  },
-  {
-    id: 102,
-    image: "/images/products/epice-viande-recto.jpg",
-    title: "Épice de Sulson - Spéciale Viande",
-    pack: "100g (Sachet)",
-    currentPrice: "6.90 €",
-    oldPrice: "8.50 €",
-    quantity: 1,
-  },
-];
+const CART_STORAGE_KEY = "sulson_cart_v2";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(INITIAL_CART_ITEMS);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const initialLoadRef = useRef(false);
+
+  // Load cart from localStorage upon mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(CART_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            setItems(parsed);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load cart from localStorage:", err);
+      } finally {
+        setIsLoaded(true);
+        initialLoadRef.current = true;
+      }
+    }
+  }, []);
+
+  // Persist cart to localStorage whenever items change
+  useEffect(() => {
+    if (initialLoadRef.current && typeof window !== "undefined") {
+      try {
+        if (items.length === 0) {
+          localStorage.removeItem(CART_STORAGE_KEY);
+        } else {
+          localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+        }
+      } catch (err) {
+        console.warn("Could not save cart to localStorage:", err);
+      }
+    }
+  }, [items]);
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
-  // Parse numeric price from string like "$14.50"
+  // Parse numeric price from string like "6.90 €" or "14.50"
   const parsePrice = (priceStr: string): number => {
+    if (!priceStr) return 0;
     const num = parseFloat(priceStr.replace(/[^0-9.]/g, ""));
     return isNaN(num) ? 0 : num;
   };
@@ -88,7 +108,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }) => {
     const qtyToAdd = product.quantity || 1;
     setItems((prev) => {
-      const existingIndex = prev.findIndex((item) => item.id === product.id);
+      const existingIndex = prev.findIndex(
+        (item) => item.id === product.id && (item.pack || "") === (product.pack || "")
+      );
       if (existingIndex > -1) {
         const updated = [...prev];
         updated[existingIndex] = {
@@ -105,7 +127,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           image: product.image,
           currentPrice: product.currentPrice,
           oldPrice: product.oldPrice,
-          pack: product.pack || "Standard",
+          pack: product.pack || "100g",
           quantity: qtyToAdd,
         },
       ];
@@ -132,6 +154,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch (err) {
+        // ignore
+      }
+    }
   };
 
   return (
@@ -141,6 +170,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         totalCount,
         subtotal,
         isCartOpen,
+        isLoaded,
         openCart,
         closeCart,
         addItem,
@@ -161,4 +191,3 @@ export function useCart() {
   }
   return context;
 }
-

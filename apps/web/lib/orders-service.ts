@@ -28,8 +28,8 @@ export interface OrderResponseModel {
   shippingCost: number;
   discountAmount: number;
   totalAmount: number;
-  status: "PENDING" | "PAID" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-  paymentStatus: "UNPAID" | "PENDING" | "PAID" | "FAILED";
+  status: "PENDING" | "PAID" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED";
+  paymentStatus: "UNPAID" | "PENDING" | "PAID" | "FAILED" | "REFUNDED";
   items: {
     productId: string;
     productName: string;
@@ -72,7 +72,10 @@ export class OrdersService {
         throw new Error(`Produit introuvable (ID: ${item.productId})`);
       }
 
-      const selectedFormat = product.formats.find((format) => format.label.toLowerCase() === item.formatLabel.toLowerCase());
+      const selectedFormat = product.formats.find(
+        (format) => format.label.toLowerCase() === item.formatLabel.toLowerCase()
+      ) || product.formats[0];
+
       if (!selectedFormat) throw new Error(`Format invalide pour ${product.title}.`);
       const unitPrice = selectedFormat.price;
       const quantity = Math.floor(Number(item.quantity));
@@ -85,7 +88,7 @@ export class OrdersService {
       validatedItems.push({
         productId: product.code,
         productName: product.title,
-        formatLabel: item.formatLabel || "50g",
+        formatLabel: item.formatLabel || selectedFormat.label || "100g",
         quantity,
         unitPrice,
         totalPrice: rowTotal,
@@ -98,7 +101,7 @@ export class OrdersService {
       discountAmount = parseFloat((calculatedSubtotal * 0.1).toFixed(2));
     }
 
-    // Free shipping over 50 EUR
+    // Free shipping over 50 EUR, otherwise 4.90 EUR
     const shippingCost = calculatedSubtotal >= 50 ? 0 : 4.90;
     const totalAmount = parseFloat(Math.max(0, calculatedSubtotal - discountAmount + shippingCost).toFixed(2));
 
@@ -142,6 +145,7 @@ export class OrdersService {
             totalAmount: newOrder.totalAmount,
             status: "PENDING",
             paymentStatus: "UNPAID",
+            paymentMethod: "stripe",
             items: {
               create: validatedItems.map((item) => ({
                 productName: item.productName,
@@ -174,6 +178,7 @@ export class OrdersService {
               { id },
               { orderNumber: id },
               { stripeSessionId: id },
+              { stripePaymentId: id },
             ],
           },
           include: {
@@ -221,6 +226,7 @@ export class OrdersService {
               { id: orderIdOrNumber },
               { orderNumber: orderIdOrNumber },
               { stripeSessionId: orderIdOrNumber },
+              { stripePaymentId: orderIdOrNumber },
             ],
           },
           data: {
@@ -243,6 +249,50 @@ export class OrdersService {
     order.paymentStatus = "PAID";
     order.status = "PAID";
     return order;
+  }
+
+  static async markOrderFailed(orderIdOrNumber: string): Promise<void> {
+    try {
+      if (process.env.DATABASE_URL) {
+        const { prisma } = await import("./prisma");
+        await prisma.order.updateMany({
+          where: {
+            OR: [
+              { id: orderIdOrNumber },
+              { orderNumber: orderIdOrNumber },
+              { stripeSessionId: orderIdOrNumber },
+            ],
+          },
+          data: {
+            paymentStatus: "FAILED",
+          },
+        });
+      }
+    } catch (err) {
+      console.warn("Prisma markOrderFailed error:", err);
+    }
+
+    const order = runtimeOrders.get(orderIdOrNumber);
+    if (order) {
+      order.paymentStatus = "FAILED";
+    }
+  }
+
+  static async updatePaymentIntent(orderId: string, paymentIntentId: string): Promise<void> {
+    try {
+      if (process.env.DATABASE_URL) {
+        const { prisma } = await import("./prisma");
+        await prisma.order.updateMany({
+          where: { id: orderId },
+          data: {
+            stripePaymentId: paymentIntentId,
+            stripeSessionId: paymentIntentId,
+          },
+        });
+      }
+    } catch (err) {
+      console.warn("Prisma updatePaymentIntent error:", err);
+    }
   }
 
   static async listOrders(): Promise<OrderResponseModel[]> {

@@ -8,6 +8,7 @@ export interface ShippingAddressData {
   email: string;
   phone: string;
   street: string;
+  address2?: string;
   postalCode: string;
   city: string;
   country: string;
@@ -23,14 +24,14 @@ interface ShippingAddressProps {
 export default function ShippingAddressV1({ data, onChange, errors = {} }: ShippingAddressProps) {
   return (
     <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden">
-      {/* Refined Header (Apple/Stripe Style: Clean white background with delicate 1px border) */}
+      {/* Header Apple / Stripe Style */}
       <div className="py-4 px-5 sm:px-6 bg-white border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-3">
           <span className="size-7 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-bold text-xs flex items-center justify-center shrink-0">
             1
           </span>
           <h2 className="font-bold text-sm sm:text-base text-gray-900 tracking-tight">
-            Adresse de livraison
+            Informations client & Livraison
           </h2>
         </div>
         <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50/80 px-2.5 py-1 rounded-full border border-emerald-200/60 font-medium self-start sm:self-auto">
@@ -40,12 +41,12 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             <circle cx="7" cy="18" r="2" />
             <circle cx="17" cy="18" r="2" />
           </svg>
-          <span>Expédition rapide 24/48h</span>
+          <span>Expédition soignée sous 24h</span>
         </span>
       </div>
 
       <div className="p-4 sm:p-6">
-        <div className="space-y-3.5">
+        <div className="space-y-4">
           {/* Prénom & Nom */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
@@ -55,7 +56,7 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
               <input
                 type="text"
                 required
-                placeholder="Votre prénom"
+                placeholder="Jean"
                 value={data.firstName}
                 onChange={(e) => onChange("firstName", e.target.value)}
                 className={`w-full h-11 px-3.5 rounded-xl border ${
@@ -74,7 +75,7 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
               <input
                 type="text"
                 required
-                placeholder="Votre nom de famille"
+                placeholder="Dupont"
                 value={data.lastName}
                 onChange={(e) => onChange("lastName", e.target.value)}
                 className={`w-full h-11 px-3.5 rounded-xl border ${
@@ -91,12 +92,12 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Email de confirmation <span className="text-red-500">*</span>
+                Adresse e-mail <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
                 required
-                placeholder="exemple@domaine.fr"
+                placeholder="jean.dupont@example.fr"
                 value={data.email}
                 onChange={(e) => onChange("email", e.target.value)}
                 className={`w-full h-11 px-3.5 rounded-xl border ${
@@ -110,7 +111,7 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
 
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Téléphone pour la livraison <span className="text-red-500">*</span>
+                Numéro de téléphone <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -128,15 +129,15 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             </div>
           </div>
 
-          {/* Adresse postale */}
+          {/* Adresse principale */}
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Adresse de livraison <span className="text-red-500">*</span>
+              Adresse <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               required
-              placeholder="Numéro et nom de rue, voie ou lieu-dit"
+              placeholder="Numéro et nom de rue"
               value={data.street}
               onChange={(e) => onChange("street", e.target.value)}
               className={`w-full h-11 px-3.5 rounded-xl border ${
@@ -146,6 +147,20 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             {errors.street && (
               <p className="text-[11px] text-red-600 mt-1">{errors.street}</p>
             )}
+          </div>
+
+          {/* Complément d'adresse (optionnel) */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">
+              Complément d'adresse <span className="text-gray-400 font-normal">(optionnel)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Appartement, bâtiment, escalier, étage..."
+              value={data.address2 || ""}
+              onChange={(e) => onChange("address2", e.target.value)}
+              className="w-full h-11 px-3.5 rounded-xl border border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 bg-white text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition"
+            />
           </div>
 
           {/* Code postal, Ville & Pays */}
@@ -203,20 +218,6 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
                 <option value="Luxembourg">Luxembourg</option>
               </select>
             </div>
-          </div>
-
-          {/* Instructions de livraison */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Instructions particulières pour le livreur (facultatif)
-            </label>
-            <textarea
-              rows={2}
-              placeholder="Digicode, interphone, bâtiment, étage..."
-              value={data.instructions}
-              onChange={(e) => onChange("instructions", e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs resize-none transition"
-            />
           </div>
         </div>
       </div>

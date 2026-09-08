@@ -14,9 +14,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ark-ui/react": "^5.39.1",
     "@hugeicons/core-free-icons": "^3.3.0",
     "@hugeicons/react": "^1.1.5",
     "@prisma/client": "^6.19.3",
+    "@stripe/react-stripe-js": "^6.9.0",
+    "@stripe/stripe-js": "^9.15.0",
     "apexcharts": "^5.10.4",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
@@ -29,7 +32,9 @@
     "react-apexcharts": "^2.1.0",
     "react-dom": "19.2.3",
     "react-range-slider-input": "^3.3.5",
+    "sharp": "^0.34.5",
     "sonner": "^2.0.7",
+    "stripe": "^22.6.1",
     "swiper": "^12.1.2",
     "tailwind-merge": "^3.5.0"
   },
