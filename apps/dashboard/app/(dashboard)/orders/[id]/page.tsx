@@ -2,10 +2,15 @@ import OrderDetails from "@/components/orders/order-details/order-details";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Order Details",
-  description: "View detailed information about an order.",
+  title: "Détails de la Commande | Sulson Dashboard",
+  description: "Fiche complète de commande, préparation et suivi de livraison.",
 };
 
-export default function OrderDetailsPage() {
-  return <OrderDetails />;
+export default async function OrderDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }> | { id: string };
+}) {
+  const resolvedParams = await params;
+  return <OrderDetails id={resolvedParams.id} />;
 }

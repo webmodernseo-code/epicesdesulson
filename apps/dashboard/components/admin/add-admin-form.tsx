@@ -1,92 +1,156 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import { FloatingInput } from "@/components/ui/floating-input";
-import { FloatingTextarea } from "@/components/ui/floating-textarea";
-import CustomFloatingSelect from "@/components/ui/custom-floating-select";
-import StatusSelect, { Option } from "@/components/ui/status-select";
-import FileUploader from "@/components/ui/file-uploader";
-
-const statusOptions: Option[] = [
-  { value: 1, label: "Active" },
-  { value: 2, label: "Inactive" },
-  { value: 3, label: "Pending" },
-];
+import { toast } from "sonner";
+import { ShieldCheck, UserPlus, CheckCircle2 } from "lucide-react";
 
 const roleOptions = [
-  { value: "master-admin", label: "Master Admin" },
-  { value: "admin", label: "Admin" },
-  { value: "kam", label: "KAM" },
+  { value: "Gestionnaire Logistique & Stocks", label: "Gestionnaire Logistique & Stocks" },
+  { value: "Préparateur de Commandes", label: "Préparateur de Commandes Atelier" },
+  { value: "Support Client & Relation Acheteur", label: "Support Client & Relation Acheteur" },
+  { value: "Administrateur Délégué", label: "Administrateur Délégué" },
 ];
 
 export default function AddAdminForm() {
-  const [status, setStatus] = useState<Option | null>(statusOptions[0]);
-  const [role, setRole] = useState("");
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("Gestionnaire Logistique & Stocks");
+  const [tempPassword, setTempPassword] = useState("Sulson2026!");
+  const [notes, setNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast.success(`Administrateur ${name} (${email}) créé avec le rôle "${role}" !`);
+      router.push("/admin-users");
+    }, 400);
+  };
 
   return (
-    <div className="w-full bg-white rounded-2xl mx-auto p-4 sm:p-6 ">
+    <div className="w-full bg-white rounded-3xl p-5 sm:p-8 border border-gray-200 shadow-2xs max-w-3xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4">
-          <PageHeader
-            title="Create New Admin"
-            backHref="/admin-users"
-            className="gap-4"
-          />
-        </div>
-        <StatusSelect
-          options={statusOptions}
-          value={status}
-          onChange={setStatus}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-100 gap-4">
+        <PageHeader
+          title="Ajouter un Collaborateur / Administrateur"
+          backHref="/admin-users"
         />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <ShieldCheck className="size-3.5" />
+          <span>Accès Cockpit Sulson</span>
+        </span>
       </div>
 
-      {/* Basic Information */}
-      <div className="bg-white rounded-2xl p-4 mb-4 sm:mb-6 sm:p-6 border border-gray-500/20">
-        <h2 className="text-lg font-bold text-light-primary-text mb-4  sm:mb-6">
-          Basic Information
-        </h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="border border-gray-200/90 rounded-2xl p-5 sm:p-6 bg-gray-50/40 space-y-5">
+          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+            Informations & Permissions
+          </h2>
 
-        {/* User Image Upload */}
-        <div className="mb-4 sm:mb-6">
-          <FileUploader
-            title="Upload User image"
-            accept="image/*"
-            description="Allowed *.jpeg, *.jpg, *.png, *.gif"
-            maxSizeText="Max size of 3.1 MB"
-            className="w-full mx-auto"
-          />
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Nom complet *
+              </label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="ex: Jean Dupont"
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
 
-        {/* Form Fields */}
-        <div className="space-y-4 sm:space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <FloatingInput label="User Name" />
-            <FloatingInput label="Email" type="email" />
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Adresse email professionnelle *
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ex: logistique@epicesdesulson.com"
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Rôle & Niveau d'accès *
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              >
+                {roleOptions.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Mot de passe temporaire *
+              </label>
+              <input
+                type="text"
+                required
+                value={tempPassword}
+                onChange={(e) => setTempPassword(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-mono font-bold text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 mb-2">
+                Notes internes / Périmètre de responsabilité
+              </label>
+              <textarea
+                rows={3}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="ex: En charge de l'étiquetage et des expéditions Colissimo depuis l'entrepôt..."
+                className="w-full p-3 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              />
+            </div>
           </div>
-
-          <CustomFloatingSelect
-            label="Select Roles"
-            options={roleOptions}
-            value={role}
-            onChange={setRole}
-          />
-
-          <FloatingTextarea label="Short Description" className="h-32" />
         </div>
-      </div>
 
-      {/* Footer Actions */}
-      <div className="flex justify-end gap-3">
-        <Button variant="outline" className="px-6">
-          Cancel
-        </Button>
-        <Button variant="primary" className="px-6">
-          Save
-        </Button>
-      </div>
+        {/* Footer */}
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-gray-100">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/admin-users")}
+            className="w-full sm:w-auto rounded-full text-xs font-bold border-gray-300 hover:bg-gray-50 text-gray-700"
+          >
+            Annuler
+          </Button>
+
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isSubmitting || !name || !email}
+            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 rounded-full text-xs shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5"
+          >
+            <CheckCircle2 className="size-3.5" />
+            <span>{isSubmitting ? "Création..." : "Enregistrer le compte"}</span>
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

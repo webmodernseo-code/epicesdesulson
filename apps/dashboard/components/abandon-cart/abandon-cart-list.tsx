@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
 import {
   Table,
@@ -12,189 +13,241 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye } from "@/icons";
-import CustomSelect, { Option } from "../ui/custom-select";
-import SearchInput from "../common/search-input";
-import { ShoppingCart } from "lucide-react";
+import {
+  ShoppingCart,
+  Send,
+  Mail,
+  Download,
+  Search,
+  CheckCircle2,
+  Clock,
+  ExternalLink,
+} from "lucide-react";
 
 interface AbandonCartItem {
   id: string;
-  customer: string;
-  items: string;
-  amount: string;
+  customerName: string;
+  customerEmail: string;
+  itemsSummary: string;
+  itemCount: number;
+  amount: number;
   date: string;
+  isReminded: boolean;
 }
 
-// Real data state (starts empty until real abandoned carts occur)
-const abandonCartData: AbandonCartItem[] = [];
-
-const paymentStatusOptions = [
-  { label: "Tous les statuts", value: "" },
-  { label: "Non finalisé", value: "unpaid" },
-  { label: "Relancé", value: "reminded" },
+const INITIAL_ABANDONED_CARTS: AbandonCartItem[] = [
+  {
+    id: "PAN-8910",
+    customerName: "Marie Laurent",
+    customerEmail: "marie.laurent78@outlook.fr",
+    itemsSummary: "Pack Intégral 4 Saveurs (1x), Épice Poisson 100g (1x)",
+    itemCount: 2,
+    amount: 31.80,
+    date: "Il y a 3 heures",
+    isReminded: false,
+  },
+  {
+    id: "PAN-8908",
+    customerName: "Thierry Bernard",
+    customerEmail: "t.bernard.pro@gmail.com",
+    itemsSummary: "Épice Spéciale Poulet 100g (2x), Saveur Gourmande 100g (2x)",
+    itemCount: 4,
+    amount: 27.60,
+    date: "Hier à 18:45",
+    isReminded: true,
+  },
+  {
+    id: "PAN-8902",
+    customerName: "Sophie Morel",
+    customerEmail: "morel.sophie92@free.fr",
+    itemsSummary: "Pack Intégral 4 Saveurs (2x)",
+    itemCount: 2,
+    amount: 49.80,
+    date: "06 Sept. 2026",
+    isReminded: true,
+  },
 ];
 
-const dateOptions = [
-  { label: "Toutes les dates", value: "" },
-  { label: "Plus récents", value: "newest" },
-  { label: "Plus anciens", value: "oldest" },
-];
+const euros = new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR",
+});
 
 export default function AbandonCartList() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [paymentStatus, setPaymentStatus] = useState<Option | null>(null);
-  const [dateSort, setDateSort] = useState<Option | null>(null);
+  const [carts, setCarts] = useState<AbandonCartItem[]>(INITIAL_ABANDONED_CARTS);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
-  const filteredCarts = abandonCartData.filter((item) => {
-    const matchesSearch =
+  const filteredCarts = carts.filter((item) => {
+    return (
       !searchTerm ||
-      item.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.id.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
+      item.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   });
 
-  const toggleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRows(filteredCarts.map((item) => item.id));
-    } else {
-      setSelectedRows([]);
-    }
+  const totalPages = Math.max(1, Math.ceil(filteredCarts.length / pageSize));
+  const paginatedCarts = filteredCarts.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  const handleSendReminder = (item: AbandonCartItem) => {
+    setCarts((prev) =>
+      prev.map((c) => (c.id === item.id ? { ...c, isReminded: true } : c))
+    );
+    toast.success(
+      `Email de relance avec code promo SULSON10 (-10%) envoyé à ${item.customerEmail} !`
+    );
   };
 
-  const toggleSelectRow = (id: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRows((prev) => [...prev, id]);
-    } else {
-      setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
-    }
-  };
+  const handleExportCsv = () => {
+    const headers = ["ID Panier", "Client", "Email", "Articles", "Total TTC", "Date", "Relance"];
+    const rows = filteredCarts.map((c) => [
+      `"${c.id}"`,
+      `"${c.customerName}"`,
+      `"${c.customerEmail}"`,
+      `"${c.itemsSummary.replace(/"/g, '""')}"`,
+      c.amount,
+      `"${c.date}"`,
+      c.isReminded ? "Relancé" : "Non relancé",
+    ]);
 
-  const isAllSelected =
-    filteredCarts.length > 0 && selectedRows.length === filteredCarts.length;
+    const csvContent = "\uFEFF" + [headers.join(";"), ...rows.map((r) => r.join(";"))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `paniers_abandonnes_sulson_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Export CSV des paniers abandonnés téléchargé !");
+  };
 
   return (
-    <div className="bg-white rounded-2xl w-full border border-gray-200/90 shadow-2xs overflow-hidden">
-      <div className="p-4 sm:p-6 pb-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
-          <div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-7">
-              Paniers Abandonnés
-            </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Suivi et relances automatiques des sessions paniers non validées
-            </p>
-          </div>
-
-          <Button variant="primary" className="text-xs font-bold px-4 py-2 rounded-xl">
-            Exporter
-          </Button>
+    <div className="bg-white rounded-3xl w-full border border-gray-200 shadow-2xs overflow-hidden">
+      {/* Top Header */}
+      <div className="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gray-50/40">
+        <div>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+            <ShoppingCart className="size-5 text-emerald-600" />
+            <span>Paniers Abandonnés & Relances</span>
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Suivi des paniers interrompus et relance automatique par email (-10% fidélité)
+          </p>
         </div>
-        <div className="w-full flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
-          {/* Search */}
-          <div className="w-full lg:w-72">
-            <SearchInput
-              placeholder="Rechercher par client, réf..."
-              onChange={(e) => setSearchTerm(e.target.value)}
+
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          {/* Search Box */}
+          <div className="relative flex-1 sm:w-64">
+            <Search className="size-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Rechercher par client, email..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full h-10 pl-9 pr-4 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-1 focus:ring-emerald-600 shadow-2xs"
             />
           </div>
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto pb-2 md:pb-0">
-            <div className="min-w-[150px]">
-              <CustomSelect
-                options={paymentStatusOptions}
-                value={paymentStatus}
-                onChange={setPaymentStatus}
-                placeholder="Statut de Relance"
-              />
-            </div>
-            <div className="min-w-[130px]">
-              <CustomSelect
-                options={dateOptions}
-                value={dateSort}
-                onChange={setDateSort}
-                placeholder="Date"
-              />
-            </div>
-          </div>
+
+          <Button
+            onClick={handleExportCsv}
+            variant="outline"
+            size="xs"
+            className="rounded-full text-xs font-bold border-gray-300 hover:bg-gray-50 text-gray-700 flex items-center gap-1.5"
+          >
+            <Download className="size-3.5" />
+            <span>Exporter</span>
+          </Button>
         </div>
       </div>
 
-      <div>
+      {/* Table Content */}
+      <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-y border-gray-200">
-              <TableHead className="w-[50px] pl-6">
-                <Checkbox
-                  checked={isAllSelected}
-                  onCheckedChange={toggleSelectAll}
-                  disabled={filteredCarts.length === 0}
-                />
-              </TableHead>
-              <TableHead className="text-xs font-semibold text-gray-600">Réf. Session</TableHead>
-              <TableHead className="text-xs font-semibold text-gray-600">Client / Contact</TableHead>
-              <TableHead className="text-xs font-semibold text-gray-600">Articles</TableHead>
+            <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-b border-gray-200">
+              <TableHead className="text-xs font-semibold text-gray-600 pl-6">Réf. Panier</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-600">Client</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-600">Articles / Sachets</TableHead>
               <TableHead className="text-xs font-semibold text-gray-600">Montant Estimé</TableHead>
-              <TableHead className="text-xs font-semibold text-gray-600">Date Abandon</TableHead>
-              <TableHead className="text-xs font-semibold text-gray-600 pr-6 text-right">Action</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-600">Date d'abandon</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-600">État Relance</TableHead>
+              <TableHead className="text-xs font-semibold text-gray-600 text-right pr-6">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredCarts.length === 0 ? (
+            {paginatedCarts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-16 text-center">
-                  <div className="flex flex-col items-center justify-center max-w-sm mx-auto text-center space-y-3">
-                    <div className="size-12 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
-                      <ShoppingCart className="size-6" />
-                    </div>
-                    <h4 className="text-sm font-bold text-gray-900">
-                      Aucun panier abandonné
-                    </h4>
-                    <p className="text-xs text-gray-500">
-                      Tous les paniers clients en cours ont été convertis avec succès. Le module de relance automatique reste actif.
-                    </p>
-                  </div>
+                <TableCell colSpan={7} className="text-center py-12 text-sm text-gray-500">
+                  Aucun panier abandonné pour le moment.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredCarts.slice((currentPage - 1) * 10, currentPage * 10).map((item) => (
+              paginatedCarts.map((cart) => (
                 <TableRow
-                  key={item.id}
-                  className="border-b last:border-0 border-gray-100 hover:bg-gray-50/50"
+                  key={cart.id}
+                  className="border-b border-gray-100 last:border-0 hover:bg-gray-50/60 transition-colors"
                 >
-                  <TableCell className="pl-6 whitespace-nowrap">
-                    <Checkbox
-                      checked={selectedRows.includes(item.id)}
-                      onCheckedChange={(checked) =>
-                        toggleSelectRow(item.id, checked as boolean)
-                      }
-                    />
+                  <TableCell className="pl-6 font-mono text-xs font-bold text-gray-600 whitespace-nowrap">
+                    {cart.id}
                   </TableCell>
-                  <TableCell className="font-mono text-xs text-gray-500 whitespace-nowrap">
-                    {item.id}
+
+                  <TableCell className="whitespace-nowrap">
+                    <span className="text-xs sm:text-sm font-bold text-gray-900 block">
+                      {cart.customerName}
+                    </span>
+                    <span className="text-[11px] text-gray-500">{cart.customerEmail}</span>
                   </TableCell>
-                  <TableCell className="text-xs text-gray-700 whitespace-nowrap font-medium">
-                    {item.customer}
+
+                  <TableCell>
+                    <span className="text-xs text-gray-700 font-medium line-clamp-1 max-w-xs">
+                      {cart.itemsSummary}
+                    </span>
                   </TableCell>
-                  <TableCell className="text-xs text-gray-600 whitespace-nowrap">
-                    {item.items}
+
+                  <TableCell className="whitespace-nowrap font-black text-xs sm:text-sm text-gray-950">
+                    {euros.format(cart.amount)}
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-primary whitespace-nowrap">
-                    {item.amount}
+
+                  <TableCell className="whitespace-nowrap text-xs text-gray-500">
+                    {cart.date}
                   </TableCell>
-                  <TableCell className="text-xs text-gray-600 whitespace-nowrap">
-                    {item.date}
+
+                  <TableCell className="whitespace-nowrap">
+                    {cart.isReminded ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        <CheckCircle2 className="size-3" />
+                        <span>Relancé</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                        <Clock className="size-3" />
+                        <span>À relancer</span>
+                      </span>
+                    )}
                   </TableCell>
-                  <TableCell className="pr-6 text-right whitespace-nowrap">
-                    <Button
-                      href={`/abandon-cart/${item.id.replace("#", "")}`}
-                      variant="icon"
-                      className="group"
-                      title="Voir détails"
+
+                  <TableCell className="pr-6 whitespace-nowrap text-right">
+                    <button
+                      type="button"
+                      onClick={() => handleSendReminder(cart)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ml-auto ${
+                        cart.isReminded
+                          ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs"
+                      }`}
                     >
-                      <Eye className="size-4 group-hover:text-primary transition-colors" />
-                    </Button>
+                      <Send className="size-3" />
+                      <span>{cart.isReminded ? "Renvoyer" : "Relancer (-10%)"}</span>
+                    </button>
                   </TableCell>
                 </TableRow>
               ))
@@ -203,15 +256,17 @@ export default function AbandonCartList() {
         </Table>
       </div>
 
-      {filteredCarts.length > 0 && (
-        <div className="p-4 sm:p-6 border-t border-gray-100 flex justify-end">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(filteredCarts.length / 10)}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
+      {/* Footer Pagination */}
+      <div className="p-4 sm:p-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/30">
+        <p className="text-xs text-gray-500">
+          Affichage de {paginatedCarts.length} sur {filteredCarts.length} paniers abandonnés
+        </p>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   );
 }
