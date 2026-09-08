@@ -1,23 +1,24 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useTransition } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
 import ShippingAddressV1, { ShippingAddressData } from "./shipping-address-v1";
-import PaymentMethodV1 from "./payment-method-v1";
+import PaymentMethodV1, { CardFormData } from "./payment-method-v1";
 import CheckoutCartSummary1 from "./checkout-cart-summary-1";
 import { ArrowLeft, ShoppingBag, ShieldCheck } from "lucide-react";
 
 export default function CheckoutV1Page() {
-  const { items, subtotal, isLoaded } = useCart();
+  const router = useRouter();
+  const { items, subtotal, isLoaded, clearCart } = useCart();
 
-  // Shipping Address State
+  // Shipping Address State (sans téléphone)
   const [shippingData, setShippingData] = useState<ShippingAddressData>({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
     street: "",
     address2: "",
     postalCode: "",
@@ -26,26 +27,25 @@ export default function CheckoutV1Page() {
     instructions: "",
   });
 
-  // Cardholder Name
-  const [cardHolderName, setCardHolderName] = useState("");
+  // Card Form State (Ouvert d'office et interactif immédiatement)
+  const [cardData, setCardData] = useState<CardFormData>({
+    nameOnCard: "",
+    cardNumber: "",
+    expiryDate: "",
+    cvc: "",
+  });
 
-  // Validation Errors
+  // Validation Errors & Processing States
   const [errors, setErrors] = useState<Partial<Record<keyof ShippingAddressData, string>>>({});
-
-  // Stripe Intent State
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [publishableKey, setPublishableKey] = useState<string | null>(null);
-  const [orderNumber, setOrderNumber] = useState<string | undefined>(undefined);
-  const [serverTotal, setServerTotal] = useState<number | null>(null);
-  const [isPreparingIntent, setIsPreparingIntent] = useState(false);
-  const [initError, setInitError] = useState<string | null>(null);
+  const [cardError, setCardError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [couponCode, setCouponCode] = useState<string | undefined>(undefined);
 
-  // Sync cardHolderName with firstName + lastName
+  // Auto-sync cardholder name when customer types their name
   useEffect(() => {
     const fullName = `${shippingData.firstName} ${shippingData.lastName}`.trim();
-    if (fullName && !cardHolderName) {
-      setCardHolderName(fullName);
+    if (fullName && !cardData.nameOnCard) {
+      setCardData((prev) => ({ ...prev, nameOnCard: fullName }));
     }
   }, [shippingData.firstName, shippingData.lastName]);
 
@@ -54,6 +54,11 @@ export default function CheckoutV1Page() {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+  };
+
+  const handleCardChange = (field: keyof CardFormData, value: string) => {
+    setCardData((prev) => ({ ...prev, [field]: value }));
+    if (cardError) setCardError(null);
   };
 
   const validateShipping = (): boolean => {
@@ -68,9 +73,6 @@ export default function CheckoutV1Page() {
     if (!shippingData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingData.email.trim())) {
       newErrors.email = "Veuillez renseigner une adresse email valide.";
     }
-    if (!shippingData.phone.trim()) {
-      newErrors.phone = "Veuillez renseigner un numéro de téléphone pour la livraison.";
-    }
     if (!shippingData.street.trim()) {
       newErrors.street = "Veuillez renseigner votre adresse de livraison.";
     }
@@ -82,101 +84,105 @@ export default function CheckoutV1Page() {
     }
 
     setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    if (Object.keys(newErrors).length > 0) {
+  const validateCard = (): boolean => {
+    if (!cardData.nameOnCard.trim()) {
+      setCardError("Veuillez indiquer le nom présent sur la carte.");
       return false;
     }
+    const cleanNum = cardData.cardNumber.replace(/\s+/g, "");
+    if (cleanNum.length < 15) {
+      setCardError("Veuillez saisir un numéro de carte bancaire valide (16 chiffres).");
+      return false;
+    }
+    if (!/^\d{2}\/\d{2}$/.test(cardData.expiryDate)) {
+      setCardError("Date d'expiration invalide (format attendu : MM/AA).");
+      return false;
+    }
+    if (cardData.cvc.length < 3) {
+      setCardError("Code de sécurité CVC invalide (3 ou 4 chiffres).");
+      return false;
+    }
+    setCardError(null);
     return true;
   };
 
-  // Initialize or Refresh Stripe Payment Intent with server verification
-  const handlePreparePaymentIntent = useCallback(
-    async (forceCoupon?: string) => {
-      if (items.length === 0) {
-        return;
-      }
+  const handlePaymentSubmit = async (e?: React.FormEvent, forceCoupon?: string) => {
+    if (e) e.preventDefault();
 
-      const isValid = validateShipping();
-      if (!isValid) {
-        toast.error("Veuillez remplir les informations obligatoires de livraison.");
-        return;
-      }
-
-      setIsPreparingIntent(true);
-      setInitError(null);
-
-      try {
-        const activeCoupon = forceCoupon !== undefined ? forceCoupon : couponCode;
-        const res = await fetch("/api/checkout/create-intent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            customer: shippingData,
-            items,
-            couponCode: activeCoupon,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (data.success && data.clientSecret) {
-          setClientSecret(data.clientSecret);
-          setPublishableKey(data.publishableKey);
-          setOrderNumber(data.orderNumber);
-          setServerTotal(data.totalAmount);
-          if (activeCoupon) setCouponCode(activeCoupon);
-        } else {
-          setInitError(data.error || "Impossible d'initialiser le paiement sécurisé.");
-          toast.error(data.error || "Erreur d'initialisation du paiement.");
-        }
-      } catch (err: any) {
-        console.error("Failed to create Stripe payment intent:", err);
-        setInitError("Erreur de communication avec le serveur.");
-        toast.error("Erreur de communication avec le serveur.");
-      } finally {
-        setIsPreparingIntent(false);
-      }
-    },
-    [items, shippingData, couponCode]
-  );
-
-  // Auto-initialize PaymentIntent if shipping data is already completely filled
-  useEffect(() => {
-    if (
-      !clientSecret &&
-      !isPreparingIntent &&
-      items.length > 0 &&
-      shippingData.firstName.trim() &&
-      shippingData.lastName.trim() &&
-      shippingData.email.trim() &&
-      shippingData.street.trim() &&
-      shippingData.postalCode.trim() &&
-      shippingData.city.trim()
-    ) {
-      handlePreparePaymentIntent();
+    if (items.length === 0) {
+      toast.error("Votre panier est vide.");
+      return;
     }
-  }, [
-    clientSecret,
-    isPreparingIntent,
-    items.length,
-    shippingData.firstName,
-    shippingData.lastName,
-    shippingData.email,
-    shippingData.street,
-    shippingData.postalCode,
-    shippingData.city,
-    handlePreparePaymentIntent,
-  ]);
 
-  // Total formatted string (prioritizes authentic server calculation)
-  const displayTotal = serverTotal !== null ? serverTotal : Math.max(0, subtotal + (subtotal >= 50 ? 0 : 4.9));
+    const shippingOk = validateShipping();
+    if (!shippingOk) {
+      toast.error("Veuillez remplir vos informations de livraison.");
+      return;
+    }
+
+    const cardOk = validateCard();
+    if (!cardOk) {
+      toast.error("Veuillez vérifier vos coordonnées de carte bancaire.");
+      return;
+    }
+
+    setIsProcessing(true);
+    setCardError(null);
+
+    try {
+      const activeCoupon = forceCoupon !== undefined ? forceCoupon : couponCode;
+      const fullName = `${shippingData.firstName.trim()} ${shippingData.lastName.trim()}`;
+      const fullStreet = shippingData.address2?.trim()
+        ? `${shippingData.street.trim()}, ${shippingData.address2.trim()}`
+        : shippingData.street.trim();
+
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: fullName,
+          customerEmail: shippingData.email.trim(),
+          shippingStreet: fullStreet,
+          shippingCity: shippingData.city.trim(),
+          shippingPostal: shippingData.postalCode.trim(),
+          shippingCountry: shippingData.country || "France",
+          couponCode: activeCoupon,
+          items,
+          paymentMethod: "stripe",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // Redirection vers confirmation de commande
+        toast.success("Paiement validé avec succès !");
+        clearCart();
+        router.push(`/checkout/success?orderNumber=${data.orderNumber || data.orderId}`);
+      } else {
+        setCardError(data.error || "Le paiement n'a pas pu être validé. Veuillez vérifier vos informations.");
+        toast.error(data.error || "Paiement refusé.");
+        setIsProcessing(false);
+      }
+    } catch (err) {
+      console.error("Erreur checkout:", err);
+      setCardError("Erreur de communication avec le serveur. Veuillez réessayer.");
+      toast.error("Erreur réseau lors de la transaction.");
+      setIsProcessing(false);
+    }
+  };
+
+  // Calcul du montant affiché
+  const discountAmount = couponCode === "SULSON10" ? subtotal * 0.1 : 0;
+  const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 4.9;
+  const total = Math.max(0, subtotal - discountAmount + shipping);
   const formattedTotal = new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
-  }).format(displayTotal);
-
-  const originUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const successRedirectUrl = `${originUrl}/checkout/success?orderNumber=${orderNumber || ""}`;
+  }).format(total);
 
   if (isLoaded && items.length === 0) {
     return (
@@ -224,36 +230,35 @@ export default function CheckoutV1Page() {
 
         {/* Responsive Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          {/* Colonne Gauche (Desktop) / Partie 1 & 2 (Mobile) : Informations Client + Paiement */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-6 order-1">
-            {/* 1. Informations Client & Livraison */}
+          {/* Colonne Gauche : Informations Client + Paiement ouvert d'office */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+            {/* 1. Informations Client & Livraison (avec autocomplétion prédictive d'adresse) */}
             <ShippingAddressV1
               data={shippingData}
               onChange={handleShippingChange}
               errors={errors}
             />
 
-            {/* 2. Section Paiement Sécurisé Stripe */}
+            {/* 2. Section Paiement Carte Bancaire (Ouverte d'office immédiatement) */}
             <PaymentMethodV1
-              clientSecret={clientSecret}
-              publishableKey={publishableKey}
-              cardHolderName={cardHolderName}
-              onCardHolderNameChange={setCardHolderName}
+              cardData={cardData}
+              onCardDataChange={handleCardChange}
               totalAmountFormatted={formattedTotal}
-              orderNumber={orderNumber}
-              onSuccessRedirectUrl={successRedirectUrl}
-              isPreparing={isPreparingIntent}
-              onInitializeIntent={() => handlePreparePaymentIntent()}
-              initError={initError}
+              isProcessing={isProcessing}
+              onSubmit={handlePaymentSubmit}
+              errorMessage={cardError}
             />
           </div>
 
-          {/* Colonne Droite (Desktop) / Partie Résumé (Mobile) : Résumé de Commande */}
-          <div className="lg:col-span-5 xl:col-span-4 order-2 lg:sticky lg:top-6">
+          {/* Colonne Droite : Résumé de Commande */}
+          <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-6">
             <CheckoutCartSummary1
               selectedMethod="stripe"
-              isProcessing={isPreparingIntent}
-              onPlaceOrder={(coupon) => handlePreparePaymentIntent(coupon)}
+              isProcessing={isProcessing}
+              onPlaceOrder={(coupon) => {
+                if (coupon) setCouponCode(coupon);
+                handlePaymentSubmit(undefined, coupon);
+              }}
             />
           </div>
         </div>

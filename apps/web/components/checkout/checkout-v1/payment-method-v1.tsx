@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Elements } from "@stripe/react-stripe-js";
-import { getStripePromise } from "@/lib/stripe-client";
-import StripePaymentForm from "./stripe-payment-form";
-import { ShieldCheck, Lock, CreditCard, Loader2 } from "lucide-react";
+import { Lock, ShieldCheck, CreditCard, ShoppingBag, Loader2 } from "lucide-react";
 
-export function VisaSvg({ className = "h-5 w-auto" }: { className?: string }) {
+export function VisaSvg({ className = "h-4.5 w-auto" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="48" height="30" rx="4" fill="#1434CB" />
@@ -18,7 +15,7 @@ export function VisaSvg({ className = "h-5 w-auto" }: { className?: string }) {
   );
 }
 
-export function MastercardSvg({ className = "h-5 w-auto" }: { className?: string }) {
+export function MastercardSvg({ className = "h-4.5 w-auto" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="48" height="30" rx="4" fill="#222326" />
@@ -48,36 +45,62 @@ export function OfficialPaypalLogo({ className = "h-4 w-auto" }: { className?: s
   );
 }
 
+export interface CardFormData {
+  nameOnCard: string;
+  cardNumber: string;
+  expiryDate: string;
+  cvc: string;
+}
+
+const defaultCardData: CardFormData = {
+  nameOnCard: "",
+  cardNumber: "",
+  expiryDate: "",
+  cvc: "",
+};
+
 interface PaymentMethodProps {
-  clientSecret: string | null;
-  publishableKey?: string | null;
-  cardHolderName: string;
-  onCardHolderNameChange: (name: string) => void;
-  totalAmountFormatted: string;
-  orderNumber?: string;
-  onSuccessRedirectUrl: string;
-  isPreparing?: boolean;
-  onInitializeIntent?: () => void;
-  initError?: string | null;
+  cardData?: CardFormData;
+  onCardDataChange?: (field: keyof CardFormData, value: string) => void;
+  totalAmountFormatted?: string;
+  isProcessing?: boolean;
+  onSubmit?: (e: React.FormEvent) => void;
+  errorMessage?: string | null;
 }
 
 export default function PaymentMethodV1({
-  clientSecret,
-  publishableKey,
-  cardHolderName,
-  onCardHolderNameChange,
-  totalAmountFormatted,
-  orderNumber,
-  onSuccessRedirectUrl,
-  isPreparing = false,
-  onInitializeIntent,
-  initError,
-}: PaymentMethodProps) {
-  const stripePromise = getStripePromise(publishableKey || undefined);
+  cardData = defaultCardData,
+  onCardDataChange = () => {},
+  totalAmountFormatted = "0,00 €",
+  isProcessing = false,
+  onSubmit = (e) => e.preventDefault(),
+  errorMessage,
+}: PaymentMethodProps = {}) {
+  // Format Card Number (XXXX XXXX XXXX XXXX)
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "").slice(0, 16);
+    let formatted = value.match(/.{1,4}/g)?.join(" ") || value;
+    onCardDataChange("cardNumber", formatted);
+  };
+
+  // Format Expiry (MM/YY)
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    if (value.length >= 2) {
+      value = `${value.slice(0, 2)}/${value.slice(2)}`;
+    }
+    onCardDataChange("expiryDate", value);
+  };
+
+  // Format CVC (3-4 digits)
+  const handleCvcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    onCardDataChange("cvc", value);
+  };
 
   return (
     <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden">
-      {/* Refined Header */}
+      {/* Header */}
       <div className="py-4 px-5 sm:px-6 bg-white border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="size-7 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-bold text-xs flex items-center justify-center shrink-0">
@@ -98,98 +121,131 @@ export default function PaymentMethodV1({
       </div>
 
       <div className="p-4 sm:p-6">
-        {initError ? (
-          <div className="p-4 rounded-xl bg-amber-50 border border-amber-200/90 space-y-3">
-            <div className="flex items-start gap-2.5">
-              <ShieldCheck className="size-5 text-amber-600 shrink-0 mt-0.5" />
+        <form onSubmit={onSubmit} className="space-y-4">
+          {/* Subheader */}
+          <div className="flex items-start space-x-3 pb-1">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 shrink-0 shadow-2xs">
+              <ShoppingBag className="h-5 w-5" />
+            </div>
+            <div className="space-y-0.5">
+              <h3 className="text-base font-bold text-gray-950">
+                Paiement par Carte Bancaire
+              </h3>
+              <p className="text-xs text-gray-500">
+                Saisie immédiate et sécurisée (Visa, Mastercard, CB).
+              </p>
+            </div>
+          </div>
+
+          {/* Nom sur la carte */}
+          <div className="space-y-1">
+            <label className="block text-xs font-semibold text-gray-700">
+              Nom sur la carte <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="Jean Dupont"
+              value={cardData.nameOnCard}
+              onChange={(e) => onCardDataChange("nameOnCard", e.target.value)}
+              className="w-full h-11 px-3.5 text-sm border border-gray-300 rounded-xl bg-white text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+            />
+          </div>
+
+          {/* Coordonnées de carte bancaire */}
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-gray-700">
+              Coordonnées de carte <span className="text-red-500">*</span>
+            </label>
+
+            <div className="relative">
+              <input
+                type="text"
+                required
+                placeholder="4242 4242 4242 4242"
+                value={cardData.cardNumber}
+                onChange={handleCardNumberChange}
+                maxLength={19}
+                className="w-full h-11 px-3.5 pr-10 text-sm font-mono tracking-wider border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+              />
+              <CreditCard className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <h4 className="text-xs font-bold text-amber-900">
-                  Initialisation du paiement
-                </h4>
-                <p className="text-xs text-amber-800 mt-0.5 leading-relaxed">
-                  {initError}
-                </p>
+                <input
+                  type="text"
+                  required
+                  placeholder="MM/AA"
+                  value={cardData.expiryDate}
+                  onChange={handleExpiryChange}
+                  maxLength={5}
+                  className="w-full h-11 px-3.5 text-sm font-mono border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                />
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  required
+                  placeholder="CVC"
+                  value={cardData.cvc}
+                  onChange={handleCvcChange}
+                  maxLength={4}
+                  className="w-full h-11 px-3.5 text-sm font-mono border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                />
               </div>
             </div>
-            {onInitializeIntent && (
-              <button
-                type="button"
-                onClick={onInitializeIntent}
-                className="text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl transition cursor-pointer"
-              >
-                Réessayer l'initialisation
-              </button>
-            )}
           </div>
-        ) : clientSecret ? (
-          <Elements
-            stripe={stripePromise}
-            options={{
-              clientSecret,
-              appearance: {
-                theme: "stripe",
-                variables: {
-                  colorPrimary: "#059669",
-                  colorBackground: "#ffffff",
-                  colorText: "#111827",
-                  colorDanger: "#dc2626",
-                  borderRadius: "12px",
-                  fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                  spacingUnit: "4px",
-                },
-                rules: {
-                  ".Input": {
-                    border: "1px solid #d1d5db",
-                    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    padding: "10px 14px",
-                  },
-                  ".Input:focus": {
-                    border: "1px solid #059669",
-                    boxShadow: "0 0 0 2px rgba(5, 150, 105, 0.2)",
-                  },
-                },
-              },
-            }}
-          >
-            <StripePaymentForm
-              cardHolderName={cardHolderName}
-              onCardHolderNameChange={onCardHolderNameChange}
-              totalAmountFormatted={totalAmountFormatted}
-              orderNumber={orderNumber}
-              onSuccessRedirectUrl={onSuccessRedirectUrl}
-              isPreparing={isPreparing}
-            />
-          </Elements>
-        ) : (
-          <div className="py-8 text-center space-y-3">
-            <div className="size-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-              {isPreparing ? (
-                <Loader2 className="size-5 animate-spin" />
+
+          {/* Message d'erreur clair si applicable */}
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200/80 text-xs text-red-700 font-medium leading-relaxed flex items-start gap-2.5">
+              <svg
+                className="size-4 text-red-500 shrink-0 mt-0.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <div>
+                <p className="font-bold">Paiement non finalisé</p>
+                <p>{errorMessage}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Grand Bouton de Paiement */}
+          <div className="pt-2 space-y-2.5">
+            <button
+              type="submit"
+              disabled={isProcessing}
+              className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm sm:text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="size-5 animate-spin" />
+                  <span>Paiement en cours...</span>
+                </>
               ) : (
-                <CreditCard className="size-5" />
+                <>
+                  <Lock className="size-4.5" />
+                  <span>Payer {totalAmountFormatted}</span>
+                </>
               )}
+            </button>
+
+            {/* Footer Text */}
+            <div className="flex items-center justify-center gap-1.5 text-center text-[11px] text-gray-500">
+              <ShieldCheck className="size-3.5 text-emerald-600 shrink-0" />
+              <span>Transaction chiffrée SSL 256-bit certifiée PCI-DSS • Paiement sécurisé par Stripe</span>
             </div>
-            <div>
-              <p className="text-xs font-bold text-gray-800">
-                {isPreparing
-                  ? "Connexion sécurisée aux serveurs de paiement Stripe..."
-                  : "Complétez votre adresse pour afficher la saisie bancaire sécurisée."}
-              </p>
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                Vos coordonnées bancaires ne transitent jamais sur nos serveurs.
-              </p>
-            </div>
-            {!isPreparing && onInitializeIntent && (
-              <button
-                type="button"
-                onClick={onInitializeIntent}
-                className="text-xs font-bold text-emerald-700 hover:text-emerald-800 underline cursor-pointer"
-              >
-                Activer la section paiement maintenant
-              </button>
-            )}
           </div>
-        )}
+        </form>
       </div>
     </div>
   );
