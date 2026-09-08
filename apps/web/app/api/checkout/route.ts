@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { OrdersService } from "@/lib/orders-service";
 import { prisma } from "@/lib/prisma";
+import { sendOrderConfirmationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -216,6 +217,23 @@ export async function POST(req: Request) {
       console.warn("Could not update order payment metadata:", e);
     }
 
+    // 4. Dispatch Order Confirmation Email with PDF Invoice
+    try {
+      sendOrderConfirmationEmail({
+        to: order.customerEmail,
+        customerName: order.customerName,
+        orderNumber: order.orderNumber,
+        totalAmount: order.totalAmount,
+        shippingStreet: shippingStreet,
+        shippingCity: shippingCity || "France",
+        shippingPostal: shippingPostal || "75000",
+        items: order.items,
+        invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
+      }).catch((emailErr) => console.warn("Email async dispatch notice:", emailErr));
+    } catch (e) {
+      console.warn("Could not trigger confirmation email:", e);
+    }
+
     return NextResponse.json({
       success: true,
       orderId: order.id,
@@ -224,6 +242,7 @@ export async function POST(req: Request) {
       customerEmail: order.customerEmail,
       paymentMethod: paymentMethod,
       transactionId: txId,
+      invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
       status: "PAID",
     });
   } catch (error: any) {

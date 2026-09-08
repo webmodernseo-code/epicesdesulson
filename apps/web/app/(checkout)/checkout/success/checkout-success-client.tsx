@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "@/context/cart-context";
-import { CheckCircle2, Package, ArrowRight, ShoppingBag, Mail } from "lucide-react";
+import { CheckCircle2, Package, ArrowRight, ShoppingBag, Mail, FileText } from "lucide-react";
 
 interface OrderData {
   id: string;
@@ -110,6 +110,15 @@ export default function CheckoutSuccessClient() {
               <span className="block text-lg sm:text-2xl font-black text-gray-950 font-mono mt-1">
                 {displayOrderNumber}
               </span>
+              <a
+                href={`/api/orders/${displayOrderNumber}/invoice`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-900 underline mt-1.5"
+              >
+                <FileText className="size-3.5" />
+                <span>Facture PDF acquittée</span>
+              </a>
             </div>
 
             <div>
@@ -174,7 +183,17 @@ export default function CheckoutSuccessClient() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 flex-wrap">
+            <a
+              href={`/api/orders/${displayOrderNumber}/invoice`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gray-950 hover:bg-black text-white text-base sm:text-lg font-bold shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer hover:shadow-md"
+            >
+              <FileText className="size-5 text-emerald-400" />
+              <span>Télécharger ma Facture (PDF)</span>
+            </a>
+
             <Link
               href="/"
               className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-base sm:text-lg font-bold shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer hover:shadow-md"
