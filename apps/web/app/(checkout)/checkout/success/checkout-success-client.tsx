@@ -77,83 +77,83 @@ export default function CheckoutSuccessClient() {
     : "Confirmé";
 
   return (
-    <div className="py-12 sm:py-20 bg-gray-50/60 min-h-[85vh] flex items-center justify-center">
-      <div className="container max-w-3xl mx-auto px-4">
+    <div className="py-12 sm:py-20 bg-gray-50/70 min-h-[85vh] flex items-center justify-center">
+      <div className="container max-w-4xl mx-auto px-4 sm:px-6">
         {/* Main Confirmation Card */}
-        <div className="bg-white rounded-3xl border border-gray-200/90 shadow-sm p-6 sm:p-12 text-center space-y-9">
+        <div className="bg-white rounded-3xl border border-gray-200/90 shadow-md p-6 sm:p-12 md:p-14 text-center space-y-10">
           {/* Top Success Badge & Heading */}
           <div className="space-y-4">
-            <div className="size-20 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto shadow-2xs">
-              <CheckCircle2 className="size-11" />
+            <div className="size-20 sm:size-24 rounded-full bg-emerald-50 text-emerald-600 border-2 border-emerald-200 flex items-center justify-center mx-auto shadow-2xs">
+              <CheckCircle2 className="size-12 sm:size-14" />
             </div>
 
-            <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-300 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-2xs">
-              <span className="size-2 rounded-full bg-emerald-600 animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-300 px-5 py-2 rounded-full text-sm sm:text-base font-bold shadow-2xs">
+              <span className="size-2.5 rounded-full bg-emerald-600 animate-pulse" />
               <span>Paiement validé avec succès</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3.5xl md:text-4xl font-extrabold text-gray-950 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-950 tracking-tight leading-tight">
               Merci pour votre commande !
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium leading-relaxed">
               Votre transaction a été validée. Nous préparons vos épices artisanales d&apos;exception dans notre atelier avec le plus grand soin.
             </p>
           </div>
 
           {/* Key Order Data Summary Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 sm:p-6 rounded-2xl bg-gray-50/90 border border-gray-200 text-left shadow-2xs">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 p-6 sm:p-7 rounded-2xl bg-gray-50/90 border border-gray-200 text-left shadow-2xs">
             <div>
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+              <span className="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider">
                 N° de commande
               </span>
-              <span className="block text-base sm:text-lg font-extrabold text-gray-950 font-mono mt-1">
+              <span className="block text-lg sm:text-2xl font-black text-gray-950 font-mono mt-1">
                 {displayOrderNumber}
               </span>
             </div>
 
             <div>
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Montant réglé
+              <span className="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider">
+                Montant payé
               </span>
-              <span className="block text-base sm:text-lg font-extrabold text-emerald-700 mt-1">
+              <span className="block text-lg sm:text-2xl font-black text-emerald-700 mt-1">
                 {displayTotal}
               </span>
             </div>
 
             <div>
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+              <span className="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider">
                 Confirmation envoyée à
               </span>
-              <span className="block text-sm sm:text-base font-bold text-gray-900 truncate mt-1">
+              <span className="block text-base sm:text-lg font-bold text-gray-900 truncate mt-1" title={displayEmail}>
                 {displayEmail}
               </span>
             </div>
           </div>
 
-          {/* Products Summary (if items loaded) */}
+          {/* Products Summary */}
           {order?.items && order.items.length > 0 && (
-            <div className="text-left space-y-3 pt-2">
-              <h2 className="text-sm sm:text-base font-bold text-gray-900 tracking-wide">
+            <div className="text-left space-y-4 pt-2">
+              <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 uppercase tracking-wider">
                 Résumé des produits commandés
               </h2>
               <div className="divide-y divide-gray-100 border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-2xs">
                 {order.items.map((item, idx) => (
-                  <div key={idx} className="p-4 sm:p-5 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="size-10 sm:size-11 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
-                        <Package className="size-5 sm:size-6 text-emerald-600" />
+                  <div key={idx} className="p-5 sm:p-6 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="size-12 sm:size-14 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 shadow-2xs">
+                        <Package className="size-6 sm:size-7 text-emerald-600" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm sm:text-base font-bold text-gray-950 leading-snug truncate">
+                        <p className="text-base sm:text-lg md:text-xl font-bold text-gray-950 leading-snug">
                           {item.productName}
                         </p>
-                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                          Format : <span className="font-semibold text-gray-700">{item.formatLabel}</span> • Quantité : <span className="font-semibold text-gray-700">{item.quantity}</span>
+                        <p className="text-sm sm:text-base text-gray-600 mt-1 font-medium">
+                          Format : <span className="font-bold text-gray-800">{item.formatLabel}</span> • Quantité : <span className="font-bold text-gray-800">{item.quantity}</span>
                         </p>
                       </div>
                     </div>
-                    <span className="text-base sm:text-lg font-extrabold text-gray-950 shrink-0">
+                    <span className="text-lg sm:text-2xl font-black text-gray-950 shrink-0">
                       {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(item.totalPrice)}
                     </span>
                   </div>
@@ -163,32 +163,32 @@ export default function CheckoutSuccessClient() {
           )}
 
           {/* Reassurance Box */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-left flex items-start gap-4 shadow-2xs">
-            <Mail className="size-6 text-emerald-700 shrink-0 mt-0.5" />
-            <div className="text-xs sm:text-sm text-emerald-950 leading-relaxed">
-              <p className="font-bold text-sm sm:text-base">E-mail de confirmation &amp; suivi de colis</p>
-              <p className="text-emerald-900 mt-1">
-                Un récapitulatif détaillé vous a été adressé à <strong>{displayEmail}</strong>. Votre numéro de suivi postal (Colissimo / Lettre Suivie) vous sera notifié dès la remise au transporteur.
+          <div className="p-6 sm:p-7 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-left flex items-start gap-4 sm:gap-5 shadow-2xs">
+            <Mail className="size-7 sm:size-8 text-emerald-700 shrink-0 mt-0.5" />
+            <div className="text-sm sm:text-base text-emerald-950 leading-relaxed">
+              <p className="font-bold text-base sm:text-lg text-emerald-950">E-mail de confirmation &amp; suivi de colis</p>
+              <p className="text-emerald-900 mt-1 text-sm sm:text-base">
+                Un récapitulatif détaillé vous a été adressé à <strong>{displayEmail}</strong>. Votre numéro de suivi postal (Colissimo / Lettre Suivie) vous sera communiqué dès la remise au transporteur.
               </p>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
               href="/"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm sm:text-base font-bold shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-base sm:text-lg font-bold shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer hover:shadow-md"
             >
-              <ShoppingBag className="size-4.5" />
+              <ShoppingBag className="size-5" />
               <span>Continuer mes achats</span>
             </Link>
 
             <Link
               href="/my-account"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-gray-300 hover:bg-gray-50 text-gray-800 text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+              className="w-full sm:w-auto px-9 py-4 rounded-2xl border-2 border-gray-300 hover:bg-gray-50 text-gray-800 text-base sm:text-lg font-bold transition-all flex items-center justify-center gap-3 cursor-pointer"
             >
               <span>Voir mes commandes</span>
-              <ArrowRight className="size-4.5" />
+              <ArrowRight className="size-5" />
             </Link>
           </div>
         </div>
