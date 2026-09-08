@@ -57,14 +57,11 @@ export default function RootLayout({
       >
         {children}
         <Toaster
+          richColors
+          position="top-right"
+          closeButton
           toastOptions={{
-            classNames: {
-              toast: "bg-white border-primary border dark:bg-gray-800",
-              title: "text-primary dark:text-white",
-              description: "text-gray-500 dark:text-gray-400",
-              actionButton: "bg-primary text-white",
-              cancelButton: "bg-gray-100 text-gray-500",
-            },
+            duration: 4000,
           }}
         />
       </body>

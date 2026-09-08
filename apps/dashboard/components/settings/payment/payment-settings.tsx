@@ -32,6 +32,7 @@ interface PayPalState {
 
 export default function PaymentApiSettings() {
   const [loading, setLoading] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Stripe state & test
   const [testingStripe, setTestingStripe] = useState(false);
@@ -220,12 +221,20 @@ export default function PaymentApiSettings() {
       }
 
       if (resStripe.ok && resPaypalOk) {
-        toast.success("Vos identifiants de paiement ont été enregistrés avec succès !");
+        setSaveSuccess(true);
+        toast.success("Vos identifiants de paiement ont été enregistrés avec succès !", {
+          description: "Les passerelles Stripe et PayPal sont maintenant actives et enregistrées.",
+          icon: <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />,
+          className: "bg-emerald-50 border-emerald-300 text-emerald-950 font-medium shadow-md",
+          duration: 5000,
+        });
       } else {
+        setSaveSuccess(false);
         const errMsg = dataStripe.error || paypalError || "Une erreur est survenue lors de l'enregistrement.";
         toast.error(errMsg);
       }
     } catch {
+      setSaveSuccess(false);
       toast.error("Erreur de communication avec le serveur.");
     } finally {
       setLoading(false);
@@ -234,6 +243,38 @@ export default function PaymentApiSettings() {
 
   return (
     <div className="space-y-6 max-w-4xl">
+      {/* Success Notification Banner with Green Validation Badge */}
+      {saveSuccess && (
+        <div className="bg-emerald-50/95 border border-emerald-300 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-3.5">
+            <div className="size-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <CheckCircle2 className="size-6 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold text-emerald-950">
+                  Vos identifiants de paiement ont été enregistrés avec succès !
+                </p>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  Validé & Actif
+                </span>
+              </div>
+              <p className="text-xs text-emerald-800/85 mt-0.5">
+                Les clés API et les passerelles sont prêtes pour encaisser les paiements de votre boutique en toute sécurité.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSaveSuccess(false)}
+            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors self-end sm:self-auto cursor-pointer"
+          >
+            Fermer
+          </button>
+        </div>
+      )}
+
       {/* Header Info */}
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -588,11 +629,19 @@ export default function PaymentApiSettings() {
       </div>
 
       {/* Global Save Button */}
-      <div className="flex justify-end pt-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+        <div>
+          {saveSuccess && (
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-semibold shadow-2xs animate-in fade-in duration-200">
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+              <span>Vos identifiants de paiement ont été enregistrés avec succès !</span>
+            </div>
+          )}
+        </div>
         <Button
           onClick={handleSaveAll}
           disabled={loading}
-          className="btn-primary text-white px-8 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer"
+          className="btn-primary text-white px-8 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer self-end"
         >
           {loading ? "Enregistrement en cours..." : "Enregistrer les modifications"}
         </Button>
