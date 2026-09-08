@@ -9,6 +9,7 @@ import {
   StripeLogo,
   PaypalLogo,
   ApplePayLogo,
+  GooglePayLogo,
   VisaLogo,
   MastercardLogo,
 } from "@/components/common/payment-icons";
@@ -302,7 +303,7 @@ export default function PaymentApiSettings() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-gray-900">
-                  Stripe (Cartes Bancaires, Visa, Mastercard, Apple Pay)
+                  Stripe (Cartes Bancaires, Visa, Mastercard, Apple Pay & Google Pay)
                 </h3>
                 {stripe.isEnabled ? (
                   <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
@@ -447,10 +448,11 @@ export default function PaymentApiSettings() {
 
         {/* Stripe Card Footer */}
         <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-gray-400">
-            <VisaLogo className="h-3.5 w-auto grayscale opacity-70" />
-            <MastercardLogo className="h-3.5 w-auto grayscale opacity-70" />
-            <ApplePayLogo className="h-3.5 w-auto grayscale opacity-70" />
+          <div className="flex items-center gap-2.5">
+            <VisaLogo className="h-6 w-auto shadow-2xs hover:scale-105 transition-transform" />
+            <MastercardLogo className="h-6 w-auto shadow-2xs hover:scale-105 transition-transform" />
+            <ApplePayLogo className="h-6 w-auto shadow-2xs hover:scale-105 transition-transform" />
+            <GooglePayLogo className="h-6 w-auto shadow-2xs hover:scale-105 transition-transform" />
           </div>
           <button
             type="button"
