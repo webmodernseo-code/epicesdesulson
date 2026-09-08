@@ -53,7 +53,7 @@ export default function CheckoutV1Page() {
     }
   }, [shippingData.firstName, shippingData.lastName]);
 
-  const handleShippingChange = (field: keyof ShippingAddressData, value: string) => {
+  const handleShippingChange = (field: keyof ShippingAddressData, value: string | boolean) => {
     setShippingData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -78,7 +78,9 @@ export default function CheckoutV1Page() {
       newErrors.email = "Veuillez renseigner une adresse email valide.";
     }
     if (!shippingData.street.trim()) {
-      newErrors.street = "Veuillez renseigner votre adresse complète de livraison.";
+      newErrors.street = "Veuillez renseigner votre adresse de livraison.";
+    } else if (!shippingData.isBanVerified && (!shippingData.postalCode || !shippingData.city)) {
+      newErrors.street = "Veuillez sélectionner votre adresse officielle dans la liste BAN (data.gouv.fr).";
     }
 
     setErrors(newErrors);
