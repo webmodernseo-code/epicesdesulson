@@ -196,22 +196,34 @@ export default function PaymentApiSettings() {
         }),
       });
 
-      const resPaypal = await fetch("/api/settings/payment-gateways", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          gateway: "paypal",
-          isEnabled: paypal.isEnabled,
-          isLiveMode: paypal.isLiveMode,
-          clientId: paypal.clientId,
-          secretKey: paypal.secretKey,
-        }),
-      });
+      const dataStripe = await resStripe.json().catch(() => ({}));
 
-      if (resStripe.ok && resPaypal.ok) {
+      let resPaypalOk = true;
+      let paypalError = "";
+      if (paypal.clientId || paypal.secretKey) {
+        const resPaypal = await fetch("/api/settings/payment-gateways", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            gateway: "paypal",
+            isEnabled: paypal.isEnabled,
+            isLiveMode: paypal.isLiveMode,
+            clientId: paypal.clientId,
+            secretKey: paypal.secretKey,
+          }),
+        });
+        const dataPaypal = await resPaypal.json().catch(() => ({}));
+        resPaypalOk = resPaypal.ok;
+        if (!resPaypal.ok) {
+          paypalError = dataPaypal.error;
+        }
+      }
+
+      if (resStripe.ok && resPaypalOk) {
         toast.success("Vos identifiants de paiement ont été enregistrés avec succès !");
       } else {
-        toast.error("Une erreur est survenue lors de l'enregistrement.");
+        const errMsg = dataStripe.error || paypalError || "Une erreur est survenue lors de l'enregistrement.";
+        toast.error(errMsg);
       }
     } catch {
       toast.error("Erreur de communication avec le serveur.");
