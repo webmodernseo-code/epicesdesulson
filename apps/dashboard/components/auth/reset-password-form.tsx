@@ -13,7 +13,7 @@ export function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
       toast.error("Veuillez renseigner votre adresse email.");
@@ -21,11 +21,28 @@ export function ResetPasswordForm() {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || "Une erreur est survenue.");
+        setLoading(false);
+        return;
+      }
+
       setSent(true);
-      toast.success("Instructions envoyées par email !");
-    }, 500);
+      toast.success("Instructions envoyées avec succès !");
+    } catch {
+      toast.error("Impossible de contacter le serveur d'envoi.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,17 +63,21 @@ export function ResetPasswordForm() {
           Mot de Passe Oublié
         </h1>
         <p className="text-gray-600 font-public-sans text-sm">
-          Saisissez votre adresse email pour recevoir les instructions de réinitialisation.
+          Saisissez votre adresse email pour recevoir votre lien sécurisé de réinitialisation.
         </p>
       </div>
 
       {sent ? (
-        <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-3 mb-6">
-          <div className="size-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="size-5" />
+        <div className="p-6 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-3 mb-6">
+          <div className="size-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+            <CheckCircle2 className="size-6" />
           </div>
-          <p className="text-sm text-emerald-900 font-medium">
-            Un email avec les instructions a été envoyé à <b>{email}</b>.
+          <h3 className="text-sm font-bold text-emerald-950">Email envoyé !</h3>
+          <p className="text-xs sm:text-sm text-emerald-800 leading-relaxed">
+            Si l'adresse <b>{email}</b> est associée à un compte administrateur, un email avec votre lien de réinitialisation vient de vous être envoyé.
+          </p>
+          <p className="text-xs text-emerald-700 pt-1">
+            Vérifiez également votre dossier de courriers indésirables (Spams).
           </p>
         </div>
       ) : (
@@ -68,6 +89,7 @@ export function ResetPasswordForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
             disabled={loading}
             className="h-12"
           />
@@ -75,15 +97,15 @@ export function ResetPasswordForm() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
           >
             {loading ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                <span>Envoi en cours...</span>
+                <span>Envoi des instructions...</span>
               </>
             ) : (
-              <span>Envoyer les instructions</span>
+              <span>Envoyer le lien de réinitialisation</span>
             )}
           </Button>
         </form>

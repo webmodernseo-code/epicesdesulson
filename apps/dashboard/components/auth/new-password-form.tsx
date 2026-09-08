@@ -3,20 +3,27 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export function NewPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token") || "";
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!token) {
+      toast.error("Lien de réinitialisation invalide ou manquant.");
+      return;
+    }
     if (password.length < 6) {
       toast.error("Le mot de passe doit comporter au moins 6 caractères.");
       return;
@@ -27,11 +34,31 @@ export function NewPasswordForm() {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token,
+          newPassword: password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || "Échec de la réinitialisation.");
+        setLoading(false);
+        return;
+      }
+
       toast.success("Mot de passe mis à jour avec succès !");
       router.push("/signin");
-    }, 400);
+      router.refresh();
+    } catch {
+      toast.error("Impossible de contacter le serveur.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,7 +79,7 @@ export function NewPasswordForm() {
           Nouveau Mot de Passe
         </h1>
         <p className="text-gray-600 font-public-sans text-sm">
-          Définissez un nouveau mot de passe pour sécuriser votre compte.
+          Définissez votre nouveau mot de passe pour sécuriser l'accès au tableau de bord.
         </p>
       </div>
 
@@ -65,16 +92,18 @@ export function NewPasswordForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          autoComplete="new-password"
           disabled={loading}
           className="h-12"
         />
         <FloatingInput
-          label="Confirmer le mot de passe"
+          label="Confirmer le nouveau mot de passe"
           id="confirm-new-password"
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
+          autoComplete="new-password"
           disabled={loading}
           className="h-12"
         />
@@ -82,15 +111,18 @@ export function NewPasswordForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 mt-4 cursor-pointer"
+          className="w-full h-12 py-3 text-base font-bold flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-70"
         >
           {loading ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              <span>Enregistrement...</span>
+              <span>Mise à jour en cours...</span>
             </>
           ) : (
-            <span>Valider le mot de passe</span>
+            <>
+              <CheckCircle2 className="size-4" />
+              <span>Valider le nouveau mot de passe</span>
+            </>
           )}
         </Button>
       </form>
