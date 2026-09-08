@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Loader2, CheckCircle2, ShieldCheck, Search, Check } from "lucide-react";
+import { MapPin, Loader2, CheckCircle2, ShieldCheck, Search, Check, Home } from "lucide-react";
 
 export interface ShippingAddressData {
   firstName: string;
@@ -30,6 +30,8 @@ interface AddressSuggestion {
   city: string;
   context: string;
   type: string;
+  housenumber?: string;
+  hasStreetNumber: boolean;
 }
 
 export default function ShippingAddressV1({
@@ -45,6 +47,7 @@ export default function ShippingAddressV1({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Exclusive search on French National Address Database (BAN / data.gouv.fr)
+  // Prioritizing addresses with street numbers at the beginning
   const fetchBanSuggestions = useCallback(async (query: string) => {
     if (!query || query.trim().length < 2) {
       setSuggestions([]);
@@ -55,22 +58,42 @@ export default function ShippingAddressV1({
     setIsLoadingSuggestions(true);
 
     try {
+      const cleanQuery = query.trim();
       const res = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query.trim())}&limit=7`
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(cleanQuery)}&limit=12`
       );
       if (res.ok) {
         const json = await res.json();
         if (json.features && Array.isArray(json.features)) {
-          const list: AddressSuggestion[] = json.features.map((f: any) => ({
-            label: f.properties.label || f.properties.name,
-            streetName: f.properties.name || f.properties.street || f.properties.label,
-            postcode: f.properties.postcode || "",
-            city: f.properties.city || "",
-            context: f.properties.context || "France",
-            type: f.properties.type === "housenumber" ? "Numéro vérifié" : "Rue vérifiée",
-          }));
-          setSuggestions(list);
-          setShowSuggestions(list.length > 0);
+          const rawList: AddressSuggestion[] = json.features.map((f: any) => {
+            const hasNum = Boolean(
+              f.properties.housenumber ||
+              /^\d+/.test(f.properties.name || "") ||
+              /^\d+/.test(f.properties.label || "") ||
+              f.properties.type === "housenumber"
+            );
+            return {
+              label: f.properties.label || f.properties.name,
+              streetName: f.properties.name || f.properties.street || f.properties.label,
+              postcode: f.properties.postcode || "",
+              city: f.properties.city || "",
+              context: f.properties.context || "France",
+              type: f.properties.type === "housenumber" ? "N° avec Rue" : "Voie",
+              housenumber: f.properties.housenumber || "",
+              hasStreetNumber: hasNum,
+            };
+          });
+
+          // Sort: STRICT PRIORITY to addresses starting with a house number
+          const sorted = rawList.sort((a, b) => {
+            if (a.hasStreetNumber && !b.hasStreetNumber) return -1;
+            if (!a.hasStreetNumber && b.hasStreetNumber) return 1;
+            return 0;
+          });
+
+          const finalSuggestions = sorted.slice(0, 7);
+          setSuggestions(finalSuggestions);
+          setShowSuggestions(finalSuggestions.length > 0);
           setSelectedIndex(-1);
         }
       }
@@ -249,11 +272,11 @@ export default function ShippingAddressV1({
             )}
           </div>
 
-          {/* ─── Adresse Certifiée BAN (Base Adresse Nationale) ─── */}
+          {/* ─── Adresse Certifiée BAN (Base Adresse Nationale) avec priorité aux numéros de rue ─── */}
           <div className="relative" ref={suggestionsRef}>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-sm font-semibold text-gray-800">
-                Adresse de livraison certifiée (BAN) <span className="text-red-500">*</span>
+                Adresse de livraison certifiée (avec n° de rue) <span className="text-red-500">*</span>
               </label>
 
               {isLoadingSuggestions && (
@@ -269,7 +292,7 @@ export default function ShippingAddressV1({
                 ref={inputRef}
                 type="text"
                 required
-                placeholder="Commencez à taper (ex: 12 rue de la paix, 361 allée berlioz...)"
+                placeholder="Tapez votre numéro et rue (ex: 12 rue de la Paix, 361 allée Berlioz...)"
                 value={data.street}
                 onKeyDown={handleKeyDown}
                 onFocus={() => {
@@ -306,7 +329,7 @@ export default function ShippingAddressV1({
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
                   <span>
-                    <strong>Adresse certifiée BAN :</strong> {data.postalCode} {data.city} • France
+                    <strong>Adresse certifiée BAN :</strong> {data.street} • {data.postalCode} {data.city} • France
                   </span>
                 </div>
                 <span className="text-[10px] uppercase font-bold tracking-wider bg-emerald-600 text-white px-2 py-0.5 rounded-full">
@@ -316,17 +339,17 @@ export default function ShippingAddressV1({
             ) : (
               <p className="text-[11px] text-gray-500 mt-1 flex items-center gap-1">
                 <MapPin className="size-3 text-emerald-600 shrink-0" />
-                <span>Sélectionnez votre adresse dans la liste officielle de la Base Adresse Nationale.</span>
+                <span>Indiquez votre numéro et sélectionnez l'adresse officielle dans la liste BAN.</span>
               </p>
             )}
 
-            {/* ─── Menu Déroulant des Suggestions Officielles BAN ─── */}
+            {/* ─── Menu Déroulant des Suggestions Officielles BAN (Priorité aux numéros de rue) ─── */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="absolute z-[999] left-0 right-0 mt-2 bg-white rounded-2xl border border-emerald-200/90 shadow-2xl overflow-hidden divide-y divide-gray-100 max-h-72 overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="px-3.5 py-2 bg-gray-50/90 border-b border-gray-100 flex items-center justify-between text-[11px] font-semibold text-gray-600">
                   <span className="flex items-center gap-1.5">
                     <ShieldCheck className="size-3.5 text-emerald-600" />
-                    <span>Adresses officielles certifiées (data.gouv.fr)</span>
+                    <span>Adresses certifiées BAN (Priorité n° de voirie)</span>
                   </span>
                   <span className="text-[10px] text-gray-400">Cliquez pour valider</span>
                 </div>
@@ -347,19 +370,25 @@ export default function ShippingAddressV1({
                         className={`size-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                           isSelected
                             ? "bg-emerald-600 text-white"
-                            : "bg-emerald-50 text-emerald-700 group-hover:bg-emerald-100"
+                            : item.hasStreetNumber
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-gray-100 text-gray-600 group-hover:bg-emerald-50"
                         }`}
                       >
-                        <MapPin className="size-4" />
+                        {item.hasStreetNumber ? (
+                          <Home className="size-4" />
+                        ) : (
+                          <MapPin className="size-4" />
+                        )}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold leading-tight truncate">
-                          {item.label}
+                        <p className="text-sm font-bold leading-tight truncate flex items-center gap-1.5">
+                          <span>{item.label}</span>
                         </p>
                         <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
                           {item.postcode && (
-                            <span className="font-semibold text-gray-700 bg-gray-100 px-1.5 py-0.5 rounded text-[11px]">
+                            <span className="font-semibold text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded text-[11px]">
                               {item.postcode}
                             </span>
                           )}
@@ -373,9 +402,16 @@ export default function ShippingAddressV1({
                       </div>
 
                       <div className="shrink-0 self-center">
-                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-200/70">
-                          Certifiée BAN
-                        </span>
+                        {item.hasStreetNumber ? (
+                          <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-full border border-emerald-200/80 flex items-center gap-1">
+                            <Check className="size-2.5 text-emerald-600" />
+                            N° Précis
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-medium text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
+                            Voie
+                          </span>
+                        )}
                       </div>
                     </button>
                   );
