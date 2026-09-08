@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const configs = await prisma.paymentGatewayConfig.findMany();
+    const configs = await prisma.paymentGatewayConfig.findMany().catch(() => []);
     const stripe = configs.find((c) => c.gateway === "stripe");
     const paypal = configs.find((c) => c.gateway === "paypal");
 
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 
     const existing = await prisma.paymentGatewayConfig.findUnique({
       where: { gateway },
-    });
+    }).catch(() => null);
 
     const keepMasked = (next: unknown, current?: string | null) =>
       typeof next === "string" && !next.includes("••••") ? next.trim() : current || null;
