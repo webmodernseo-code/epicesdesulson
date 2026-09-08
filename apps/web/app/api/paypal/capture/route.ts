@@ -63,7 +63,7 @@ export async function GET(req: Request) {
               const captureId = capture.purchase_units?.[0]?.payments?.captures?.[0]?.id;
               await OrdersService.markOrderPaid(orderNumber, captureId);
               return NextResponse.redirect(
-                `${origin}/order-successful?orderNumber=${encodeURIComponent(orderNumber)}&provider=paypal`
+                `${origin}/checkout/success?orderNumber=${encodeURIComponent(orderNumber)}&provider=paypal`
               );
             }
           }
