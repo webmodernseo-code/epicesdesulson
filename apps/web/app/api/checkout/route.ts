@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!customerName || !customerEmail || !shippingStreet || !shippingCity || !shippingPostal) {
+    if (!customerName || !customerEmail || !shippingStreet) {
       return NextResponse.json(
         { success: false, error: "Les coordonnées de livraison sont requises." },
         { status: 400 }
@@ -48,8 +48,8 @@ export async function POST(req: Request) {
       customerEmail,
       customerPhone: customerPhone || undefined,
       shippingStreet,
-      shippingCity,
-      shippingPostal,
+      shippingCity: shippingCity || "France",
+      shippingPostal: shippingPostal || "75000",
       shippingCountry: shippingCountry || "France",
       couponCode,
       items,

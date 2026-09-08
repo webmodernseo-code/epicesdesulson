@@ -51,7 +51,7 @@ export class OrdersService {
     }
     if (input.items.length > 50) throw new Error("Le panier contient trop d'articles.");
     if (!input.customerName?.trim() || !input.customerEmail?.trim() ||
-        !input.shippingStreet?.trim() || !input.shippingCity?.trim() || !input.shippingPostal?.trim()) {
+        !input.shippingStreet?.trim()) {
       throw new Error("Les coordonnées de livraison sont incomplètes.");
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.customerEmail.trim())) {

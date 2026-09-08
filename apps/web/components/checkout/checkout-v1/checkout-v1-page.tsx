@@ -78,13 +78,7 @@ export default function CheckoutV1Page() {
       newErrors.email = "Veuillez renseigner une adresse email valide.";
     }
     if (!shippingData.street.trim()) {
-      newErrors.street = "Veuillez renseigner votre adresse de livraison.";
-    }
-    if (!shippingData.postalCode.trim()) {
-      newErrors.postalCode = "Veuillez renseigner votre code postal.";
-    }
-    if (!shippingData.city.trim()) {
-      newErrors.city = "Veuillez renseigner votre ville.";
+      newErrors.street = "Veuillez renseigner votre adresse complète de livraison.";
     }
 
     setErrors(newErrors);

@@ -10,8 +10,8 @@ export interface ShippingAddressData {
   phone?: string;
   street: string;
   address2?: string;
-  postalCode: string;
-  city: string;
+  postalCode?: string;
+  city?: string;
   country: string;
   instructions?: string;
 }
@@ -84,9 +84,10 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
   }, []);
 
   const handleSelectSuggestion = (suggestion: AddressSuggestion) => {
-    onChange("street", suggestion.name || suggestion.label);
-    onChange("postalCode", suggestion.postcode);
-    onChange("city", suggestion.city);
+    // Fill the full address label (e.g. 361 Allée Berlioz 38130 Échirolles)
+    onChange("street", suggestion.label || suggestion.name);
+    if (suggestion.postcode) onChange("postalCode", suggestion.postcode);
+    if (suggestion.city) onChange("city", suggestion.city);
     setShowSuggestions(false);
     setSuggestions([]);
   };
@@ -159,7 +160,7 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             </div>
           </div>
 
-          {/* Email de confirmation (Sans le champ téléphone comme demandé) */}
+          {/* Email de confirmation */}
           <div>
             <label className="block text-sm font-semibold text-gray-800 mb-1.5">
               Adresse e-mail <span className="text-red-500">*</span>
@@ -179,11 +180,11 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             )}
           </div>
 
-          {/* Adresse avec auto-complétion prédictive */}
+          {/* Adresse complète avec auto-complétion prédictive */}
           <div className="relative" ref={suggestionsRef}>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-sm font-semibold text-gray-800">
-                Adresse de livraison <span className="text-red-500">*</span>
+                Adresse complète de livraison <span className="text-red-500">*</span>
               </label>
               {isLoadingSuggestions && (
                 <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
@@ -197,7 +198,7 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
               <input
                 type="text"
                 required
-                placeholder="Commencez à saisir votre adresse (ex: 361 allée de berlioz...)"
+                placeholder="Ex: 361 allée de berlioz, 38130 Échirolles..."
                 value={data.street}
                 onFocus={() => {
                   if (suggestions.length > 0) setShowSuggestions(true);
@@ -244,58 +245,19 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
             )}
           </div>
 
-          {/* Complément d'adresse (optionnel) */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
-              Complément d'adresse <span className="text-gray-400 font-normal">(optionnel)</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Appartement, bâtiment, escalier, étage..."
-              value={data.address2 || ""}
-              onChange={(e) => onChange("address2", e.target.value)}
-              className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Code postal, Ville & Pays */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Complément d'adresse (optionnel) & Pays */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-1.5">
-                Code postal <span className="text-red-500">*</span>
+                Complément d'adresse <span className="text-gray-400 font-normal">(optionnel)</span>
               </label>
               <input
                 type="text"
-                required
-                placeholder="75001"
-                value={data.postalCode}
-                onChange={(e) => onChange("postalCode", e.target.value)}
-                className={`w-full h-12 px-4 rounded-xl border ${
-                  errors.postalCode ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
+                placeholder="Appartement, bâtiment, escalier, étage..."
+                value={data.address2 || ""}
+                onChange={(e) => onChange("address2", e.target.value)}
+                className="w-full h-12 px-4 rounded-xl border border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400"
               />
-              {errors.postalCode && (
-                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.postalCode}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
-                Ville <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Paris"
-                value={data.city}
-                onChange={(e) => onChange("city", e.target.value)}
-                className={`w-full h-12 px-4 rounded-xl border ${
-                  errors.city ? "border-red-400 focus:border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
-              />
-              {errors.city && (
-                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.city}</p>
-              )}
             </div>
 
             <div>
@@ -305,7 +267,7 @@ export default function ShippingAddressV1({ data, onChange, errors = {} }: Shipp
               <select
                 value={data.country}
                 onChange={(e) => onChange("country", e.target.value)}
-                className="w-full h-12 px-4 rounded-xl border border-gray-300 bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                className="w-full h-12 px-4 rounded-xl border border-gray-300 bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition font-medium"
               >
                 <option value="France">France</option>
                 <option value="Belgique">Belgique</option>
