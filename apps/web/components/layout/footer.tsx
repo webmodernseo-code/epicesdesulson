@@ -20,6 +20,7 @@ const POLITIQUE_LINKS = [
   { label: "Politique de Retour & Remboursement", href: "/return-policy" },
   { label: "Expéditions & Délais de Livraison", href: "/faq" },
   { label: "Mentions Légales", href: "/terms-and-conditions" },
+  { label: "Gestion des cookies", href: "#cookies", isCookieTrigger: true },
 ];
 
 export default function Footer() {
@@ -180,12 +181,26 @@ export default function Footer() {
                       <span className="inline-flex items-center">
                         <i className="hgi hgi-stroke hgi-arrow-right-01 text-xs text-primary-lighter"></i>
                       </span>
-                      <Link
-                        href={link.href}
-                        className="text-primary-lighter text-xs sm:text-sm font-medium hover:underline hover:text-white transition-colors"
-                      >
-                        {link.label}
-                      </Link>
+                      {link.isCookieTrigger ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (typeof window !== "undefined") {
+                              window.dispatchEvent(new CustomEvent("open-cookie-settings"));
+                            }
+                          }}
+                          className="text-primary-lighter text-xs sm:text-sm font-medium hover:underline hover:text-white transition-colors text-left cursor-pointer"
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="text-primary-lighter text-xs sm:text-sm font-medium hover:underline hover:text-white transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

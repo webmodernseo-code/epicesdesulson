@@ -27,180 +27,249 @@ export interface FAQItem {
   quickPrompts?: string[];
 }
 
-// ── 🌿 BASE DE CONNAISSANCES OFFICIELLE — LES ÉPICES DE SULSON ──
+// ── 🌿 BASE DE CONNAISSANCES OFFICIELLE & EXHAUSTIVE — LES ÉPICES DE SULSON ──
 export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
-  // ── 1. PRODUITS & CATALOGUE ──
+  // ═══════════════════════════════════════════════════════════════
+  // 1. PRODUITS ET ÉPICES
+  // ═══════════════════════════════════════════════════════════════
   {
-    id: "catalogue-produits",
-    category: "Catalogue",
-    keywords: ["quelles epices", "produits", "vendez vous", "gamme", "catalogue", "melanges", "choix", "saveurs"],
+    id: "quelles-epices",
+    category: "Produits et épices",
+    keywords: ["quelles epices", "vendez vous", "gamme", "catalogue", "produits", "saveurs", "melanges"],
     patterns: [/quelles?\s+(sont\s+vos\s+)?epices?/i, /que\s+vendez\s*vous/i, /vos\s+produits/i],
-    question: "Quelles épices proposez-vous ?",
+    question: "Quelles épices vendez-vous ?",
     answer:
       "Les Épices de Sulson vous proposent une gamme de 4 mélanges artisanaux d'exception du terroir camerounais :\n\n" +
-      "1. 🍗 Épice Poulet (100g — 6,90 €) : pour volailles dorées et rôtis croustillants.\n" +
+      "1. 🍗 Épice Poulet (100g — 6,90 €) : pour volailles dorées, rôtis et marinades.\n" +
       "2. 🥩 Épice Viande (100g — 6,90 €) : pour bœuf, agneau, porc et grillades au barbecue.\n" +
-      "3. 🐟 Épice Poisson (50g/100g — 6,90 €) : pour poissons braisés, papillotes et fruits de mer.\n" +
+      "3. 🐟 Épice Poisson (50g/100g — 6,90 €) : pour poissons braisés, papillotes et soupes.\n" +
       "4. ✨ Le Secret de Sulson (100g — 6,90 €) : notre mélange signature universel pour tous vos plats.\n\n" +
-      "🎁 Retrouvez également le Pack Intégral réunissant les 4 saveurs (400g) à 24,90 €.",
+      "🎁 Retrouvez également notre Pack Intégral réunissant les 4 saveurs (400g) à 24,90 €.",
     action: {
       type: "link",
       label: "Découvrir la boutique",
       url: "/products",
     },
-    quickPrompts: ["Pack 4 Saveurs", "Conseil pour le poulet", "Livraison gratuite ?"],
+    quickPrompts: ["Pack Intégral 4 Saveurs", "Conseil pour le poulet", "Livraison gratuite ?"],
   },
   {
-    id: "prix-tarifs",
-    category: "Prix",
-    keywords: ["prix", "combien", "tarif", "coute", "coutent", "cher"],
-    patterns: [/c[' ]est\s+combien/i, /quel\s+est\s+le\s+prix/i, /combien\s+ca\s+coute/i],
-    question: "Quels sont vos prix ?",
+    id: "difference-epices",
+    category: "Produits et épices",
+    keywords: ["difference", "different", "comparer", "distinguer", "profil aromatique"],
+    patterns: [/difference\s+entre/i, /differentes\s+epices/i],
+    question: "Quelle est la différence entre vos différentes épices ?",
     answer:
-      "Voici nos tarifs officiels :\n\n" +
-      "• Sachet individuel (100g) : 6,90 €\n" +
-      "• Pack Intégral 4 Saveurs (400g) : 24,90 € (au lieu de 27,60 €, soit près de 3 € d'économie)\n" +
-      "• Livraison offerte en France métropolitaine dès 50 € d'achat !",
-    action: {
-      type: "link",
-      label: "Voir le Pack 4 Saveurs (24,90 €)",
-      url: "/products/pack-integral-4-saveurs",
-    },
-    quickPrompts: ["Commander le Pack", "Frais de livraison", "Code promo"],
+      "Chaque mélange possède une formule aromatique sur-mesure adaptée à un type d'ingrédient :\n\n" +
+      "• Poulet : dominante douce et dorée (curcuma frais, paprika doux, coriandre, gingembre, muscade).\n" +
+      "• Viande : notes chaudes, poivrées et fumées (paprika, poivre noir de Penja, ail, oignon, girofle, thym, laurier).\n" +
+      "• Poisson : arômes marins et subtils (poivre de Guinée / maniguette, rondelles, ail, herbes locales).\n" +
+      "• Secret de Sulson : assemblage universel et gourmand (12 épices nobles) qui relève sauces, riz, légumes et marinades.",
+    quickPrompts: ["Conseil pour mon plat", "Pack 4 Saveurs", "Sont-elles piquantes ?"],
   },
   {
-    id: "pack-4-saveurs",
-    category: "Catalogue",
-    keywords: ["pack", "coffret", "4 saveurs", "pack 4", "integral", "tout gouter", "toutes les epices"],
-    patterns: [/pack\s+4/i, /coffret/i, /pack\s+integral/i],
-    question: "Que contient le Pack Intégral 4 Saveurs ?",
+    id: "a-quoi-sert-epice",
+    category: "Produits et épices",
+    keywords: ["a quoi sert", "pourquoi utiliser", "utilite", "usage", "a quoi ca sert"],
+    patterns: [/a\s+quoi\s+sert/i],
+    question: "À quoi sert cette épice ?",
     answer:
-      "Le Pack Intégral 4 Saveurs réunit l'ensemble de notre collection dans un coffret de 400g au total :\n\n" +
-      "• 1x Épice Poulet (100g)\n" +
-      "• 1x Épice Viande (100g)\n" +
-      "• 1x Épice Poisson (100g)\n" +
-      "• 1x Secret de Sulson (100g)\n\n" +
-      "Il est proposé au tarif préférentiel de 24,90 € (au lieu de 27,60 €). C'est le choix idéal pour découvrir tout l'univers Sulson !",
-    action: {
-      type: "link",
-      label: "Commander le Pack 4 Saveurs",
-      url: "/products/pack-integral-4-saveurs",
-    },
-    quickPrompts: ["Frais de port", "Mode d'emploi", "Code promo"],
+      "Nos mélanges servent à assaisonner, mariner, parfumer et sublimer vos plats sans aucun ajout d'arômes artificiels ni de glutamate. Dites-moi quel ingrédient vous cuisinez (poulet, bœuf, poisson, riz, légumes) et je vous orienterai vers le mélange idéal !",
+    quickPrompts: ["Pour le poulet", "Pour la viande", "Pour le poisson", "Le Secret de Sulson"],
   },
   {
-    id: "poids-contenance",
-    category: "Produits",
-    keywords: ["poids", "quantite", "grammage", "contenance", "taille sachet", "combien de gramme", "100g", "50g"],
-    question: "Quel est le poids d'un sachet ?",
+    id: "gout-saveur-profil",
+    category: "Produits et épices",
+    keywords: ["gout", "saveur", "quel gout", "aromatique", "profil", "parfum"],
+    patterns: [/quel\s+est\s+le\s+gout/i, /quel\s+gout/i],
+    question: "Quel est le goût de cette épice ?",
     answer:
-      "Nos sachets individuels standards contiennent 100 g d'épices pures. Le Pack Intégral 4 Saveurs contient 4 sachets de 100 g, soit 400 g au total.",
-    quickPrompts: ["Combien de temps ça dure ?", "Comment conserver ?"],
-  },
-  {
-    id: "origine-terroir",
-    category: "Qualité",
-    keywords: ["origine", "d'ou viennent", "provenance", "cameroun", "afrique", "terroir", "fabrication"],
-    question: "D'où proviennent vos épices ?",
-    answer:
-      "Nos épices sont cultivées et sélectionnées directement auprès de coopératives artisanales sur les terres volcaniques fertiles du Cameroun et d'Afrique centrale. Elles sont séchées au soleil et moulues selon des méthodes traditionnelles qui préservent l'intégralité de leurs huiles essentielles.",
-    quickPrompts: ["Sont-elles 100% naturelles ?", "Y a-t-il du sel ?"],
-  },
-  {
-    id: "naturel-msg-additifs",
-    category: "Qualité",
-    keywords: ["naturel", "bio", "additif", "msg", "glutamate", "conservateur", "chimique", "colorant"],
-    patterns: [/sans\s+msg/i, /sans\s+glutamate/i, /est[- ]ce\s+naturel/i],
-    question: "Vos épices sont-elles 100% naturelles et sans additifs ?",
-    answer:
-      "Oui, absolument ! Toutes les Épices de Sulson sont garanties :\n\n" +
-      "✅ 100% naturelles et pures\n" +
-      "✅ Sans glutamate ajouté (zéro MSG)\n" +
-      "✅ Sans conservateurs ni colorants artificiels\n" +
-      "✅ Sans arômes de synthèse\n\n" +
-      "Une composition saine et authentique pour prendre soin de votre santé et de celle de vos proches.",
-    quickPrompts: ["Et le sel ?", "Sont-elles piquantes ?"],
-  },
-  {
-    id: "sel-ajoute",
-    category: "Qualité",
-    keywords: ["sel", "sale", "sel ajoute", "sodium", "sans sel"],
-    question: "Y a-t-il du sel dans vos mélanges ?",
-    answer:
-      "Nos mélanges sont composés exclusivement d'épices et d'aromates nobles sans sel de remplissage. Cela vous laisse une liberté totale pour doser votre propre sel selon vos besoins diététiques.",
-    quickPrompts: ["Conseil pour la viande", "Conseil pour le poisson"],
+      "Nos épices offrent des saveurs riches, chaleureuses et authentiques du terroir africain. Elles développent une grande profondeur aromatique en bouche pour sublimer la saveur naturelle de vos aliments sans jamais masquer leur goût d'origine.",
+    quickPrompts: ["Est-ce piquant ?", "Pack 4 Saveurs", "Conseils cuisine"],
   },
   {
     id: "piquant-niveau",
-    category: "Goût",
-    keywords: ["piquant", "fort", "pique", "epice", "piment", "doux", "enfants"],
-    patterns: [/est[- ]ce\s+que\s+ca\s+pique/i, /est[- ]ce\s+piquant/i, /trop\s+fort/i],
-    question: "Est-ce que vos épices sont piquantes ?",
+    category: "Produits et épices",
+    keywords: ["piquant", "fort", "pique", "epice", "piment", "brule", "doux", "arrache"],
+    patterns: [/est[- ]ce\s+piquant/i, /est[- ]ce\s+que\s+ca\s+pique/i, /trop\s+fort/i],
+    question: "Est-ce que cette épice est piquante ?",
     answer:
-      "Non, nos mélanges privilégient la profondeur aromatique, la chaleur et la gourmandise plutôt que la brûlure. Ils ne sont pas piquants et conviennent parfaitement à toute la famille, y compris aux enfants. Si vous aimez le piquant relevé, vous pouvez facilement ajouter votre propre piment frais !",
-    quickPrompts: ["Adapté aux enfants ?", "Quelle épice choisir ?"],
+      "Non, nos mélanges privilégient la richesse aromatique et la gourmandise plutôt que la brûlure. Ils ne sont pas piquants et conviennent à toute la famille. Si vous préférez un plat relevé, vous pouvez facilement y associer du piment frais selon vos goûts !",
+    quickPrompts: ["Adapté aux enfants ?", "Quelle épice choisir ?", "Pack 4 Saveurs"],
   },
   {
-    id: "enfants-famille",
-    category: "Santé",
-    keywords: ["enfant", "enfants", "bebe", "famille", "adapte enfant"],
-    question: "Les épices conviennent-elles aux enfants ?",
+    id: "adapte-enfants",
+    category: "Produits et épices",
+    keywords: ["enfant", "enfants", "bebe", "famille", "petit", "adapte enfant"],
+    patterns: [/pour\s+les\s+enfants/i, /adapte\s+aux\s+enfants/i],
+    question: "Est-ce adapté aux enfants ?",
     answer:
-      "Oui, tout à fait ! Étant 100% naturelles, sans additifs chimiques et sans piquant agressif, elles sont idéales pour éveiller le palais des enfants aux vraies saveurs et cuisiner de bons petits plats familiaux.",
-    quickPrompts: ["Recette poulet rôti", "Commander"],
+      "Oui, parfaitement ! Nos épices sont 100% naturelles, sans additifs chimiques et sans piquant agressif. Elles permettent d'habituer les enfants aux vraies saveurs et aux herbes saines dès le plus jeune âge.",
+    quickPrompts: ["Ingrédients naturels", "Pack 4 Saveurs", "Commander"],
   },
   {
-    id: "conservation-duree",
-    category: "Conseils",
-    keywords: ["conservation", "conserver", "peremption", "duree", "ddm", "combien de temps"],
-    question: "Combien de temps et comment conserver les épices ?",
+    id: "quantite-sachet-poids",
+    category: "Produits et épices",
+    keywords: ["quantite", "taille sachet", "combien contient", "sachet individuel"],
+    patterns: [/quelle\s+quantite\s+contient/i, /contenance/i],
+    question: "Quelle quantité contient un sachet ?",
     answer:
-      "Nos épices se conservent parfaitement pendant 24 mois (2 ans). Nos sachets sont dotés d'un zip hermétique refermable. Après ouverture, gardez le sachet bien refermé dans un endroit sec, à l'abri de la lumière et de l'humidité.",
-    quickPrompts: ["Voir les produits", "Conseils cuisine"],
+      "Nos sachets individuels standards contiennent 100 g d'épices pures (également disponible en format 50 g pour le poisson ou en découverte).",
+    quickPrompts: ["Poids du Pack 4 Saveurs", "Prix d'un sachet"],
+  },
+  {
+    id: "poids-produit-pack",
+    category: "Produits et épices",
+    keywords: ["poids", "gramme", "combien de gramme", "total poids", "100g", "400g"],
+    patterns: [/quel\s+est\s+le\s+poids/i, /poids\s+du\s+produit/i],
+    question: "Quel est le poids du produit ?",
+    answer:
+      "Un sachet individuel pèse 100 g. Si vous choisissez le Pack Intégral 4 Saveurs, vous recevez les 4 mélanges pour un total de 400 g d'épices nobles.",
+    action: {
+      type: "link",
+      label: "Voir le Pack 4 Saveurs (400g)",
+      url: "/products/pack-integral-4-saveurs",
+    },
+    quickPrompts: ["Prix du Pack", "Durée de conservation"],
+  },
+  {
+    id: "ingredients-composition",
+    category: "Produits et épices",
+    keywords: ["ingredients", "composition", "recette", "composants", "contient quoi", "qu'y a t il dedans"],
+    patterns: [/quels\s+sont\s+les\s+ingredients/i, /composition/i],
+    question: "Quels sont les ingrédients ?",
+    answer:
+      "Toutes nos recettes sont composées à 100% d'épices et d'aromates nobles réduits en poudre (curcuma frais, poivres précieux de Penja et de Guinée, paprika doux, ail, oignon, gingembre, muscade, girofle, laurier, thym, coriandre). La composition exacte figure en toute transparence au dos de chaque sachet.",
+    quickPrompts: ["Y a-t-il du sel ?", "Est-ce 100% naturel ?", "Sans MSG ?"],
+  },
+  {
+    id: "sel-ajoute",
+    category: "Produits et épices",
+    keywords: ["sel", "sale", "sel ajoute", "sodium", "sans sel"],
+    patterns: [/est[- ]ce\s+qu[' ]il\s+y\s+a\s+du\s+sel/i, /avec\s+ou\s+sans\s+sel/i],
+    question: "Est-ce qu'il y a du sel ?",
+    answer:
+      "Non, nos mélanges sont composés d'épices pures, sans sel de remplissage superflu. Vous gardez ainsi la liberté totale de doser votre sel selon vos préférences diététiques et de santé.",
+    quickPrompts: ["Sans additifs ?", "Origine des épices", "Voir les produits"],
+  },
+  {
+    id: "additifs-conservateurs-msg",
+    category: "Produits et épices",
+    keywords: ["additif", "conservateur", "msg", "glutamate", "chimique", "colorant", "arome artificiel"],
+    patterns: [/sans\s+additifs?/i, /sans\s+conservateurs?/i, /sans\s+msg/i, /sans\s+glutamate/i],
+    question: "Est-ce qu'il y a des additifs ou des conservateurs ?",
+    answer:
+      "Absolument aucun ! Nos produits sont garantis :\n\n" +
+      "✅ 100% naturels et purs\n" +
+      "✅ Sans glutamate ajouté (zéro MSG)\n" +
+      "✅ Sans conservateurs ni colorants artificiels\n" +
+      "✅ Sans arômes de synthèse",
+    quickPrompts: ["D'où viennent vos épices ?", "Combien de temps ça se conserve ?"],
+  },
+  {
+    id: "est-ce-naturel",
+    category: "Produits et épices",
+    keywords: ["naturel", "bio", "naturelles", "pur", "purete", "artisanal"],
+    patterns: [/est[- ]ce\s+naturel/i],
+    question: "Est-ce naturel ?",
+    answer:
+      "Oui, 100% naturel ! Nos épices sont récoltées, séchées au soleil selon des méthodes artisanales et moulues traditionnellement pour préserver l'intégralité de leurs huiles essentielles.",
+    quickPrompts: ["D'où viennent-elles ?", "Conseil pour le poulet"],
+  },
+  {
+    id: "origine-terroir",
+    category: "Produits et épices",
+    keywords: ["origine", "d'ou viennent", "provenance", "cameroun", "afrique", "terroir", "pays"],
+    patterns: [/d[' ]ou\s+viennent\s+vos\s+epices/i, /origine/i],
+    question: "D'où viennent vos épices ?",
+    answer:
+      "Nos épices proviennent directement des terroirs agricoles réputés du Cameroun et d'Afrique centrale, sélectionnés pour la fertilité de leurs terres volcaniques et la puissance exceptionnelle de leurs arômes.",
+    quickPrompts: ["Durée de conservation", "Pack 4 Saveurs", "Commander"],
+  },
+  {
+    id: "duree-conservation",
+    category: "Produits et épices",
+    keywords: ["conservation", "conserver", "peremption", "ddm", "duree", "combien de temps"],
+    patterns: [/combien\s+de\s+temps\s+peut[- ]on\s+conserver/i, /date\s+de\s+peremption/i],
+    question: "Combien de temps peut-on conserver les épices ?",
+    answer:
+      "Nos épices se conservent de manière optimale pendant 24 mois (2 ans). La date de durabilité minimale (DDM) et le numéro de lot sont imprimés au dos de chaque sachet.",
+    quickPrompts: ["Comment conserver après ouverture ?", "Voir la boutique"],
+  },
+  {
+    id: "conservation-apres-ouverture",
+    category: "Produits et épices",
+    keywords: ["apres ouverture", "comment conserver", "garder sachet", "refermer", "humidite"],
+    patterns: [/comment\s+conserver\s+les\s+epices\s+apres\s+ouverture/i],
+    question: "Comment conserver les épices après ouverture ?",
+    answer:
+      "Nos sachets sont dotés d'une fermeture zip hermétique refermable. Après ouverture, refermez bien le sachet et conservez-le dans un endroit sec, à l'abri de la lumière directe, de la chaleur et des projections de vapeur.",
+    quickPrompts: ["Voir les recettes", "Commander le Pack"],
   },
 
-  // ── 2. CONSEILS CULINAIRES & PLATS ──
+  // ═══════════════════════════════════════════════════════════════
+  // 2. CONSEILS POUR CHOISIR SON ÉPICE
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "quelle-epice-conseil",
+    category: "Conseils",
+    keywords: ["conseillez vous", "recommander", "laquelle choisir", "quelle epice", "aidez moi a choisir"],
+    patterns: [/quelle\s+epice\s+me\s+conseillez\s*vous/i, /laquelle\s+choisir/i],
+    question: "Quelle épice me conseillez-vous ?",
+    answer:
+      "Tout dépend de votre menu !\n\n" +
+      "• 🍗 Pour du poulet ou de la volaille : Épice Sulson Poulet (6,90 €)\n" +
+      "• 🥩 Pour des viandes rouges ou grillades : Épice Sulson Viande (6,90 €)\n" +
+      "• 🐟 Pour du poisson ou fruits de mer : Épice Sulson Poisson (6,90 €)\n" +
+      "• ✨ Pour tout réussir (sauces, riz, légumes) : Le Secret de Sulson (6,90 €)\n" +
+      "• 🎁 Pour tout avoir sous la main : Le Pack Intégral 4 Saveurs (24,90 €)",
+    action: {
+      type: "link",
+      label: "Voir toute la collection",
+      url: "/products",
+    },
+    quickPrompts: ["Pour le poulet", "Pour la viande", "Pour le poisson", "Pack 4 Saveurs"],
+  },
   {
     id: "conseil-poulet",
-    category: "Cuisine",
-    keywords: ["poulet", "volaille", "dinde", "cuisse poulet", "poulet roti", "poulet braise", "ailes de poulet"],
-    patterns: [/pour\s+le\s+poulet/i, /epice\s+poulet/i],
+    category: "Conseils",
+    keywords: ["poulet", "volaille", "dinde", "cuisse", "poulet roti", "poulet braise", "ailes"],
+    patterns: [/quelle\s+epice\s+utiliser\s+pour\s+le\s+poulet/i, /pour\s+le\s+poulet/i],
     question: "Quelle épice utiliser pour le poulet ?",
     answer:
-      "Pour le poulet, utilisez notre Épice Sulson Spéciale Poulet (100g — 6,90 €) !\n\n" +
-      "👨‍🍳 Astuce du Chef : Mélangez 1 à 2 cuillères d'épices avec un filet d'huile et un peu de jus de citron. Massez votre poulet et laissez mariner 20 à 30 min avant de rôtir à 190°C ou de braiser. Le curcuma et les aromates donneront une chair juteuse et une peau dorée et croustillante !",
+      "L'Épice de Sulson - Poulet (100g — 6,90 €) est la référence absolue !\n\n" +
+      "👨‍🍳 Astuce du Chef : Mélangez 1 à 2 cuillères à soupe d'épices avec un filet d'huile et du jus de citron. Massez votre volaille et laissez reposer 20 à 30 min. Le curcuma frais et les aromates offriront une chair juteuse et une peau dorée et croustillante au four ou à la braise.",
     action: {
       type: "link",
       label: "Voir l'Épice Poulet (6,90 €)",
       url: "/products/epice-poulet-100g",
     },
-    quickPrompts: ["Épice pour la viande", "Épice pour le poisson", "Le Secret de Sulson"],
+    quickPrompts: ["Pour la viande", "Pour le poisson", "Le Secret de Sulson"],
   },
   {
     id: "conseil-viande",
-    category: "Cuisine",
-    keywords: ["viande", "boeuf", "steak", "grillade", "barbecue", "suya", "brochette", "agneau", "porc", "cote de boeuf"],
-    patterns: [/pour\s+la\s+viande/i, /pour\s+les\s+grillades/i, /epice\s+viande/i],
-    question: "Quelle épice utiliser pour la viande et les grillades ?",
+    category: "Conseils",
+    keywords: ["viande", "boeuf", "steak", "grillade", "barbecue", "suya", "brochette", "agneau", "porc"],
+    patterns: [/quelle\s+epice\s+utiliser\s+pour\s+la\s+viande/i, /pour\s+la\s+viande/i],
+    question: "Quelle épice utiliser pour la viande ?",
     answer:
-      "Pour les viandes rouges, steaks, brochettes et rôtis, optez pour l'Épice Sulson Spéciale Viande (100g — 6,90 €) !\n\n" +
-      "🔥 Elle associe paprika noble, poivre noir de Penja, ail, thym et laurier pour former une croûte parfumée et caramélisée irrésistible sur la braise ou à la poêle.",
+      "L'Épice de Sulson - Viande (100g — 6,90 €) est formulée pour les viandes rouges, steaks, brochettes Suya et rôtis.\n\n" +
+      "🔥 Son alliance de paprika, poivre noir de Penja, ail et herbes nobles forme une croûte parfumée et caramélisée irrésistible sur la braise ou à la poêle.",
     action: {
       type: "link",
       label: "Voir l'Épice Viande (6,90 €)",
       url: "/products/epice-viande-100g",
     },
-    quickPrompts: ["Épice pour le poulet", "Épice pour le poisson", "Pack 4 Saveurs"],
+    quickPrompts: ["Pour le poulet", "Pour le poisson", "Pack 4 Saveurs"],
   },
   {
     id: "conseil-poisson",
-    category: "Cuisine",
+    category: "Conseils",
     keywords: ["poisson", "dorade", "bar", "tilapia", "saumon", "crevette", "gambas", "fruits de mer", "poisson braise"],
-    patterns: [/pour\s+le\s+poisson/i, /poisson\s+braise/i, /epice\s+poisson/i],
-    question: "Quelle épice utiliser pour le poisson et les fruits de mer ?",
+    patterns: [/quelle\s+epice\s+utiliser\s+pour\s+le\s+poisson/i, /pour\s+le\s+poisson/i],
+    question: "Quelle épice utiliser pour le poisson ?",
     answer:
-      "L'Épice Sulson Spéciale Poisson (6,90 €) est l'incontournable des poissons braisés et marinades marines !\n\n" +
-      "🐟 Formulée avec le poivre de Guinée (maniguette), des rondelles et des herbes du Cameroun, elle sublime bars, dorades, tilapias et crevettes sans en masquer la finesse.",
+      "L'Épice de Sulson - Poisson (6,90 €) est l'incontournable des poissons braisés, papillotes et soupes !\n\n" +
+      "🐟 Avec le poivre de Guinée (maniguette), des rondelles et des herbes du Cameroun, elle apporte une note fraîche et parfumée sans masquer la délicatesse de la chair.",
     action: {
       type: "link",
       label: "Voir l'Épice Poisson (6,90 €)",
@@ -209,200 +278,863 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     quickPrompts: ["Le Secret de Sulson", "Pack 4 Saveurs", "Commander"],
   },
   {
-    id: "secret-sulson-gourmande",
-    category: "Cuisine",
-    keywords: ["secret", "gourmande", "passe partout", "secret de sulson", "riz", "legumes", "sauce", "mijoté"],
-    patterns: [/secret\s+de\s+sulson/i, /saveur\s+gourmande/i, /pour\s+le\s+riz/i, /pour\s+les\s+legumes/i, /pour\s+la\s+sauce/i],
-    question: "Qu'est-ce que Le Secret de Sulson et comment l'utiliser ?",
+    id: "conseil-riz",
+    category: "Conseils",
+    keywords: ["riz", "parfumer riz", "riz saute", "riz pilaf", "riz rouge"],
+    patterns: [/quelle\s+epice\s+pour\s+le\s+riz/i, /pour\s+le\s+riz/i],
+    question: "Quelle épice pour le riz ?",
     answer:
-      "Le Secret de Sulson (100g — 6,90 €) est notre mélange signature passe-partout conçu à l'africaine !\n\n" +
-      "✨ Polyvalent à l'extrême, il rehausse instantanément les sauces tomate, sauces mijotées, poêlées de légumes, riz parfumé, pâtes et marinades du quotidien.",
+      "Le Secret de Sulson (Saveur Gourmande) ! Ajoutez 1 cuillère à café dans votre eau de cuisson ou faites-la revenir dans un filet d'huile avec vos oignons pour obtenir un riz parfumé irrésistible.",
     action: {
       type: "link",
       label: "Voir Le Secret de Sulson (6,90 €)",
       url: "/products/secret-de-sulson-100g",
     },
-    quickPrompts: ["Voir le Pack 4 Saveurs", "Frais de livraison"],
+    quickPrompts: ["Pour les légumes", "Pour les sauces", "Pack 4 Saveurs"],
   },
   {
-    id: "dosage-quantite",
-    category: "Cuisine",
-    keywords: ["dosage", "combien mettre", "quantite utiliser", "cuillere", "mode d'emploi"],
-    question: "Combien d'épices dois-je mettre dans mon plat ?",
+    id: "conseil-legumes",
+    category: "Conseils",
+    keywords: ["legumes", "poelee", "patates douces", "wok", "legume roti"],
+    patterns: [/quelle\s+epice\s+pour\s+les\s+legumes/i, /pour\s+les\s+legumes/i],
+    question: "Quelle épice pour les légumes ?",
     answer:
-      "Comptez en moyenne 1 cuillère à café rase pour 500g d'aliments (viande, poisson, légumes, riz) ou 1 à 2 cuillères à soupe pour une volaille entière ou un grand plat mijoté. Goûtez et ajustez selon vos préférences !",
-    quickPrompts: ["Peut-on mélanger les épices ?", "Voir les recettes"],
+      "Le Secret de Sulson ou l'Épice Poulet ! Saupoudrez sur vos poêlées de légumes, vos patates douces rôties ou vos woks pour apporter du goût, de la couleur et un délicieux parfum.",
+    quickPrompts: ["Pour le riz", "Le Secret de Sulson"],
+  },
+  {
+    id: "conseil-grillades",
+    category: "Conseils",
+    keywords: ["grillade", "grillades", "barbecue", "bbq", "braise", "brochettes"],
+    patterns: [/quelle\s+epice\s+pour\s+les\s+grillades/i, /pour\s+le\s+barbecue/i],
+    question: "Quelle épice pour les grillades ?",
+    answer:
+      "Pour le bœuf et l'agneau : Épice Viande. Pour les pilons de poulet grillés : Épice Poulet. Pour le poisson braisé : Épice Poisson. Si vous faites un grand barbecue mixte, le Pack 4 Saveurs est parfait !",
+    quickPrompts: ["Pack Intégral 4 Saveurs", "Conseil marinade"],
+  },
+  {
+    id: "conseil-sauce",
+    category: "Conseils",
+    keywords: ["sauce", "sauces", "sauce tomate", "ragout", "sauce mijotee", "sauce arachide"],
+    patterns: [/quelle\s+epice\s+pour\s+une\s+sauce/i, /pour\s+les\s+sauces/i],
+    question: "Quelle épice pour une sauce ?",
+    answer:
+      "Le Secret de Sulson est le maître incontesté des sauces tomate, sauces mijotées, sauces arachide et ragoûts. Il s'incorpore directement dans la sauce en cours de cuisson.",
+    quickPrompts: ["Le Secret de Sulson", "Dosage recommandé"],
+  },
+  {
+    id: "pas-trop-epice",
+    category: "Conseils",
+    keywords: ["pas trop epice", "pas piquant", "doux", "sensible", "leger"],
+    patterns: [/pas\s+trop\s+epice/i, /la\s+plus\s+douce/i],
+    question: "Je veux quelque chose de pas trop épicé. Laquelle choisir ?",
+    answer:
+      "Toutes nos épices privilégient les arômes et ne sont pas piquantes. Pour une douceur totale, Le Secret de Sulson et l'Épice Poulet sont d'un équilibre aromatique parfait.",
+    quickPrompts: ["Le Secret de Sulson", "Pack 4 Saveurs"],
+  },
+  {
+    id: "plus-populaire",
+    category: "Conseils",
+    keywords: ["populaire", "best seller", "preferee", "mieux vendue", "plus vendue", "succes"],
+    patterns: [/quelle\s+est\s+votre\s+epice\s+la\s+plus\s+populaire/i, /le\s+best[- ]seller/i],
+    question: "Quelle est votre épice la plus populaire ?",
+    answer:
+      "Notre best-seller individuel est Le Secret de Sulson pour sa polyvalence universelle, suivi de très près par le Pack Intégral 4 Saveurs choisi par 80% de nos nouveaux clients.",
+    action: {
+      type: "link",
+      label: "Découvrir Le Secret de Sulson",
+      url: "/products/secret-de-sulson-100g",
+    },
+    quickPrompts: ["Pack Intégral 4 Saveurs", "Prix et livraison"],
+  },
+  {
+    id: "par-quoi-commencer",
+    category: "Conseils",
+    keywords: ["premiere commande", "decouverte", "commencer", "par quoi commencer", "decouvrir la marque"],
+    patterns: [/par\s+quoi\s+commencer/i, /premiere\s+commande/i],
+    question: "Je ne connais pas vos produits. Par quoi commencer ?",
+    answer:
+      "Le Pack Intégral 4 Saveurs (24,90 €) est le choix idéal pour une première commande : il vous permet de tester chaque mélange sur tous vos plats et vous fait bénéficier d'un tarif plus avantageux !",
+    action: {
+      type: "link",
+      label: "Commander le Pack Découverte (24,90 €)",
+      url: "/products/pack-integral-4-saveurs",
+    },
+    quickPrompts: ["Que contient le pack ?", "Livraison offerte dès 50 €"],
+  },
+  {
+    id: "tester-la-marque",
+    category: "Conseils",
+    keywords: ["tester", "tester la marque", "essayer", "test"],
+    patterns: [/quel\s+produit\s+pour\s+tester/i],
+    question: "Quel produit me conseillez-vous pour tester la marque ?",
+    answer:
+      "Le Pack 4 Saveurs (400g) pour avoir la collection complète, ou Le Secret de Sulson (100g à 6,90 €) pour un premier test gourmand et universel.",
+    quickPrompts: ["Pack 4 Saveurs", "Le Secret de Sulson"],
+  },
+  {
+    id: "tous-les-jours",
+    category: "Conseils",
+    keywords: ["tous les jours", "quotidien", "chaque jour", "frequence", "regulier"],
+    patterns: [/utiliser\s+ces\s+epices\s+tous\s+les\s+jours/i],
+    question: "Est-ce que je peux utiliser ces épices tous les jours ?",
+    answer:
+      "Oui, absolument ! Elles sont conçues pour être vos assaisonnements sains du quotidien, sans additifs chimiques ni sel superflu, pour remplacer avantageusement les bouillons industriels.",
+    quickPrompts: ["Sans MSG ni additifs", "Commander"],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 3. PACK DE 4 ÉPICES
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "pack-4-saveurs",
+    category: "Pack de 4 épices",
+    keywords: ["pack 4", "pack avec toutes les epices", "coffret 4", "pack integral"],
+    patterns: [/pack\s+avec\s+toutes\s+les\s+epices/i, /pack\s+4/i],
+    question: "Vous avez un pack avec toutes les épices ?",
+    answer:
+      "Oui ! Le Pack Intégral 4 Saveurs Sulson réunit l'ensemble de notre collection dans un seul coffret pratique de 400g.",
+    action: {
+      type: "link",
+      label: "Voir le Pack 4 Saveurs (24,90 €)",
+      url: "/products/pack-integral-4-saveurs",
+    },
+    quickPrompts: ["Que contient le pack ?", "Est-ce moins cher ?"],
+  },
+  {
+    id: "que-contient-pack-4",
+    category: "Pack de 4 épices",
+    keywords: ["que contient le pack", "composition pack", "contenu pack"],
+    patterns: [/que\s+contient\s+le\s+pack/i],
+    question: "Que contient le pack de 4 ?",
+    answer:
+      "Il contient les 4 sachets complets de 100g :\n\n" +
+      "• 1x Épice Poulet (100g)\n" +
+      "• 1x Épice Viande (100g)\n" +
+      "• 1x Épice Poisson (100g)\n" +
+      "• 1x Secret de Sulson (100g)\n\n" +
+      "Soit 400g d'épices nobles au total.",
+    quickPrompts: ["Prix du pack", "Commander le Pack"],
+  },
+  {
+    id: "pack-4-economie",
+    category: "Pack de 4 épices",
+    keywords: ["moins cher", "economie", "avantage pack", "reduction pack"],
+    patterns: [/est[- ]ce\s+moins\s+cher\s+d[' ]acheter\s+le\s+pack/i],
+    question: "Est-ce moins cher d'acheter le pack ?",
+    answer:
+      "Oui ! Le pack est proposé à 24,90 € au lieu de 27,60 € (prix des 4 sachets achetés séparément à 6,90 €), soit près de 3 € d'économie immédiate.",
+    action: {
+      type: "link",
+      label: "Profiter du Pack 4 Saveurs (24,90 €)",
+      url: "/products/pack-integral-4-saveurs",
+    },
+    quickPrompts: ["Frais de port", "Code promo"],
+  },
+  {
+    id: "pack-4-choisir-epices",
+    category: "Pack de 4 épices",
+    keywords: ["choisir les epices", "personnaliser pack", "composer pack"],
+    patterns: [/puis[- ]je\s+choisir\s+les\s+epices\s+de\s+mon\s+pack/i],
+    question: "Puis-je choisir les épices de mon pack ?",
+    answer:
+      "Le Pack Intégral standard contient les 4 saveurs complémentaires (Poulet, Viande, Poisson, Secret). Si vous souhaitez des combinaisons spécifiques, vous pouvez sélectionner individuellement les sachets et quantités de votre choix sur la boutique.",
+    quickPrompts: ["Voir la boutique", "Prendre le Pack 4"],
+  },
+  {
+    id: "pack-plusieurs-meme-epice",
+    category: "Pack de 4 épices",
+    keywords: ["plusieurs fois la meme", "2 poulet", "3 viande", "quantite personnalisee"],
+    patterns: [/plusieurs\s+fois\s+la\s+meme\s+epice/i],
+    question: "Puis-je prendre plusieurs fois la même épice dans le pack ?",
+    answer:
+      "Pour commander plusieurs exemplaires d'une même saveur (par exemple 3 sachets Poulet et 1 Poisson), ajoutez simplement ces références individuellement à votre panier avec les quantités voulues.",
+    quickPrompts: ["Voir la boutique", "Commander"],
+  },
+  {
+    id: "difference-individuel-pack",
+    category: "Pack de 4 épices",
+    keywords: ["difference individuel pack", "unite ou pack", "achat individuel"],
+    question: "Quelle est la différence entre acheter individuellement et prendre le pack ?",
+    answer:
+      "L'achat individuel (6,90 €) est idéal pour renouveler votre saveur préférée. Le Pack 4 Saveurs (24,90 €) vous offre la gamme complète pour toute votre cuisine avec un tarif plus avantageux.",
+    quickPrompts: ["Pack Intégral 4 Saveurs", "Boutique"],
+  },
+  {
+    id: "decouvrir-toutes-saveurs",
+    category: "Pack de 4 épices",
+    keywords: ["decouvrir toutes vos saveurs", "tout gouter", "tout tester"],
+    patterns: [/decouvrir\s+toutes\s+vos\s+saveurs/i],
+    question: "Je veux découvrir toutes vos saveurs. Que dois-je prendre ?",
+    answer:
+      "Choisissez directement notre Pack Intégral 4 Saveurs (24,90 €). Il réunit les 4 mélanges phares pour 400g d'épices nobles au total.",
+    action: {
+      type: "link",
+      label: "Commander le Pack 4 Saveurs",
+      url: "/products/pack-integral-4-saveurs",
+    },
+    quickPrompts: ["Frais de port", "Code promo"],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 4. UTILISATION EN CUISINE
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "comment-utiliser-epices",
+    category: "Utilisation en cuisine",
+    keywords: ["comment utiliser", "mode d'emploi", "utilisation", "cuisiner avec"],
+    patterns: [/comment\s+utiliser\s+vos\s+epices/i],
+    question: "Comment utiliser vos épices ?",
+    answer:
+      "C'est très simple :\n\n" +
+      "1. En marinade : mélangez 1 à 2 cuillères à soupe d'épices avec un filet d'huile et du citron, massez votre ingrédient et laissez reposer 20 à 30 min.\n" +
+      "2. En saupoudrage : parsemez directement sur vos poêlées, grillades ou rôtis avant cuisson.\n" +
+      "3. En sauce : diluez directement dans vos sauces en cours de mijotage pour libérer les arômes.",
+    quickPrompts: ["Quelle quantité mettre ?", "Peut-on faire une marinade ?"],
+  },
+  {
+    id: "quantite-dosage",
+    category: "Utilisation en cuisine",
+    keywords: ["quantite", "dosage", "combien mettre", "cuillere", "dose"],
+    patterns: [/quelle\s+quantite\s+dois[- ]je\s+mettre/i, /combien\s+mettre/i],
+    question: "Quelle quantité dois-je mettre ?",
+    answer:
+      "Comptez environ 1 cuillère à café rase pour 500g d'ingrédients (viande, poisson, légumes, riz) ou 1 à 2 cuillères à soupe pour une volaille entière ou un poisson de 1 kg. Ajustez selon l'intensité désirée !",
+    quickPrompts: ["Conseil marinade", "Voir les produits"],
+  },
+  {
+    id: "faire-marinade",
+    category: "Utilisation en cuisine",
+    keywords: ["marinade", "mariner", "faire une marinade", "temps marinade"],
+    patterns: [/faire\s+une\s+marinade/i, /comment\s+mariner/i],
+    question: "Est-ce que je peux faire une marinade avec ?",
+    answer:
+      "Oui, elles sont spécialement formulées pour s'émulsionner avec l'huile (olive, tournesol) et pénétrer au cœur des chairs. Laissez mariner 20 à 30 min au frais avant cuisson pour un résultat ultra-parfumé.",
+    quickPrompts: ["Marinade poisson", "Marinade poulet"],
+  },
+  {
+    id: "cuisine-africaine-seulement",
+    category: "Utilisation en cuisine",
+    keywords: ["cuisine africaine", "seulement africain", "cuisine francaise", "plats europeens", "international"],
+    patterns: [/uniquement\s+pour\s+la\s+cuisine\s+africaine/i],
+    question: "Est-ce uniquement pour la cuisine africaine ?",
+    answer:
+      "Pas du tout ! Bien qu'issues de traditions nobles camerounaises, nos épices subliment toute la cuisine quotidienne et internationale : poulet rôti dominical, steaks et côtes de bœuf, légumes au four, pâtes, sauces crémeuses et barbecues.",
+    quickPrompts: ["Voir les recettes", "Pack 4 Saveurs"],
   },
   {
     id: "melanger-plusieurs-epices",
-    category: "Cuisine",
-    keywords: ["melanger", "associer", "ensemble", "deux epices", "combiner"],
-    question: "Peut-on mélanger plusieurs épices Sulson ensemble ?",
+    category: "Utilisation en cuisine",
+    keywords: ["melanger", "associer", "ensemble", "combiner deux epices"],
+    patterns: [/melanger\s+plusieurs\s+de\s+vos\s+epices/i],
+    question: "Est-ce que je peux mélanger plusieurs de vos épices ?",
     answer:
-      "Oui, absolument ! L'association la plus plébiscitée par nos clients est de marier l'Épice Poisson ou l'Épice Viande avec une touche de Secret de Sulson pour un résultat encore plus riche en bouche.",
-    quickPrompts: ["Commander le Pack 4 Saveurs", "Astuces de marinade"],
+      "Oui ! Par exemple, marier l'Épice Poisson avec une touche de Secret de Sulson donne un résultat exceptionnel sur des dorades ou des gambas braisées.",
+    quickPrompts: ["Pack Intégral 4 Saveurs", "Boutique"],
   },
 
-  // ── 3. RÉGIMES, ALLERGIES & SANTÉ ──
+  // ═══════════════════════════════════════════════════════════════
+  // 5. ALLERGIES ET ALIMENTATION
+  // ═══════════════════════════════════════════════════════════════
   {
-    id: "gluten-allergene",
-    category: "Santé",
-    keywords: ["gluten", "sans gluten", "allergene", "allergie", "lactose", "arachide", "celeri"],
-    question: "Vos épices contiennent-elles du gluten ou des allergènes ?",
+    id: "allergenes-presence",
+    category: "Allergies et alimentation",
+    keywords: ["allergene", "allergenes", "allergie", "fruits a coque", "arachide", "lactose", "celeri"],
+    patterns: [/est[- ]ce\s+qu[' ]il\s+y\s+a\s+des\s+allergenes/i],
+    question: "Est-ce qu'il y a des allergènes ?",
     answer:
-      "Nos épices sont composées à 100% de plantes et d'aromates purs. Elles sont naturellement SANS GLUTEN, sans lactose et sans produits laitiers. La liste exacte des ingrédients est indiquée sur chaque sachet.",
+      "Nos mélanges sont purs et formulés sans les allergènes majeurs courants (sans lactose, sans fruits à coque, sans céleri). Les compositions exactes figurent au dos de chaque sachet.",
+    quickPrompts: ["Est-ce sans gluten ?", "Est-ce vegan ?", "Est-ce halal ?"],
+  },
+  {
+    id: "sans-gluten",
+    category: "Allergies et alimentation",
+    keywords: ["gluten", "sans gluten", "celiaque", "ble", "farine"],
+    patterns: [/est[- ]ce\s+sans\s+gluten/i],
+    question: "Est-ce sans gluten ?",
+    answer:
+      "Oui ! Nos épices sont 100% pures et ne contiennent aucun ajout de farine, d'amidon ou de gluten.",
     quickPrompts: ["Est-ce vegan ?", "Est-ce halal ?"],
   },
   {
     id: "vegan-vegetarien",
-    category: "Santé",
-    keywords: ["vegan", "vegetarien", "vegetalien", "plantes", "animal"],
-    question: "Les épices conviennent-elles aux régimes végétariens et vegans ?",
+    category: "Allergies et alimentation",
+    keywords: ["vegan", "vegetarien", "vegetalien", "plantes", "sans viande"],
+    patterns: [/est[- ]ce\s+vegan/i, /est[- ]ce\s+vegetarien/i],
+    question: "Est-ce vegan ?",
     answer:
-      "Oui, à 100% ! Tous nos produits sont exclusivement d'origine végétale (épices, herbes aromatiques, graines et racines nobles).",
+      "Oui, 100% vegan ! Tous nos ingrédients sont exclusivement d'origine végétale (épices, herbes, graines et racines nobles).",
     quickPrompts: ["Est-ce halal ?", "Voir la boutique"],
   },
   {
-    id: "halal-certification",
-    category: "Santé",
+    id: "halal-compatibilite",
+    category: "Allergies et alimentation",
     keywords: ["halal", "haram", "musulman", "certification halal"],
-    question: "Vos produits sont-ils halal ?",
+    patterns: [/est[- ]ce\s+halal/i],
+    question: "Est-ce halal ?",
     answer:
-      "Oui, 100% compatibles halal. Nos formulations sont entièrement végétales, pures, sans alcool, sans produits carnés et sans aucun dérivé animal.",
-    quickPrompts: ["Voir le Pack 4 Saveurs", "Commander"],
-  },
-
-  // ── 4. COMMANDE, PAIEMENT & LIVRAISON ──
-  {
-    id: "delais-livraison",
-    category: "Livraison",
-    keywords: ["delai", "combien de temps", "quand arrive", "expedition", "temps livraison", "jours"],
-    patterns: [/combien\s+de\s+temps\s+pour\s+la\s+livraison/i, /quand\s+est[- ]ce\s+que\s+je\s+recois/i, /delais/i],
-    question: "Quels sont les délais de livraison ?",
-    answer:
-      "🚚 Vos commandes sont préparées et expédiées sous 24h à 48h ouvrées.\n\n" +
-      "• France Métropolitaine : 48h à 72h ouvrées via Colissimo suivi.\n" +
-      "• Europe (Belgique, Suisse, etc.) : 3 à 5 jours ouvrés.\n\n" +
-      "Vous recevez un numéro de suivi La Poste dès le départ de votre colis !",
-    quickPrompts: ["Frais de livraison", "Suivre ma commande"],
+      "Oui, 100% compatible halal. Nos mélanges sont entièrement végétaux et naturels, sans alcool, sans produits carnés ni dérivés animaux.",
+    quickPrompts: ["Pack 4 Saveurs", "Commander"],
   },
   {
-    id: "frais-livraison-gratuit",
-    category: "Livraison",
-    keywords: ["frais de port", "frais de livraison", "livraison gratuite", "offerte", "gratuit", "prix livraison"],
-    patterns: [/livraison\s+gratuite/i, /frais\s+de\s+port/i],
-    question: "La livraison est-elle gratuite ?",
+    id: "allergique-ingredient",
+    category: "Allergies et alimentation",
+    keywords: ["je suis allergique", "allergie a", "puis je consommer"],
+    patterns: [/je\s+suis\s+allergique/i],
+    question: "Je suis allergique à un ingrédient. Puis-je consommer votre produit ?",
     answer:
-      "✨ La livraison est 100% GRATUITE dès 50 € d'achat en France métropolitaine !\n\nPour les commandes inférieures à 50 €, la livraison suivie Colissimo est calculée automatiquement à tarif réduit dans votre panier.",
-    quickPrompts: ["Ajouter le Pack 4 Saveurs", "Moyens de paiement"],
-  },
-  {
-    id: "zones-livraison",
-    category: "Livraison",
-    keywords: ["ou livrez vous", "pays", "europe", "belgique", "suisse", "france", "dom tom", "international"],
-    patterns: [/ou\s+livrez\s*vous/i, /livrez\s*vous\s+en\s+belgique/i],
-    question: "Où livrez-vous ?",
-    answer:
-      "Nous livrons partout en France Métropolitaine, en Corse, à Monaco, ainsi que dans toute l'Union Européenne (Belgique, Suisse, Luxembourg, Espagne, etc.).",
-    quickPrompts: ["Délais de livraison", "Passer commande"],
-  },
-  {
-    id: "suivi-commande",
-    category: "Livraison",
-    keywords: ["suivi", "suivre", "ou est mon colis", "numero de suivi", "colissimo", "retard"],
-    patterns: [/ou\s+est\s+ma\s+commande/i, /suivre\s+mon\s+colis/i],
-    question: "Comment suivre ma commande ?",
-    answer:
-      "Dès l'expédition de votre commande, vous recevez un email contenant votre numéro de suivi Colissimo. Il vous suffit de cliquer dessus pour voir l'acheminement de votre colis en temps réel. Si vous ne le trouvez pas, écrivez-nous directement sur WhatsApp au +33 6 95 54 57 23 avec votre nom !",
+      "Consultez attentivement la liste des ingrédients sur la fiche du produit ou contactez-nous directement sur WhatsApp au +33 6 95 54 57 23 pour obtenir un conseil personnalisé avant de commander.",
     action: {
       type: "whatsapp",
-      label: "Contacter le support de suivi",
+      label: "Demander conseil sur WhatsApp",
     },
-    quickPrompts: ["Parler à un conseiller"],
+    quickPrompts: ["Ingrédients complets", "Parler à un conseiller"],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 6. COMMANDE & PANIER
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "comment-passer-commande",
+    category: "Commande",
+    keywords: ["passer commande", "comment commander", "acheter", "processus achat"],
+    patterns: [/comment\s+passer\s+une\s+commande/i, /comment\s+commander/i],
+    question: "Comment passer une commande ?",
+    answer:
+      "C'est très simple :\n\n" +
+      "1. Choisissez votre épice ou votre pack et cliquez sur « Ajouter au panier ».\n" +
+      "2. Ouvrez votre panier en haut à droite et cliquez sur « Passer la commande ».\n" +
+      "3. Renseignez votre adresse de livraison et réglez en toute sécurité par carte, Apple Pay, Google Pay ou PayPal.",
+    action: {
+      type: "link",
+      label: "Voir la boutique",
+      url: "/products",
+    },
+    quickPrompts: ["Où est mon panier ?", "Moyens de paiement"],
   },
   {
-    id: "moyens-paiement",
-    category: "Paiement",
-    keywords: ["paiement", "payer", "carte bancaire", "cb", "visa", "mastercard", "apple pay", "google pay", "paypal"],
-    question: "Quels sont les moyens de paiement acceptés ?",
+    id: "ajouter-au-panier",
+    category: "Commande",
+    keywords: ["ajouter au panier", "mettre au panier", "selectionner produit"],
+    patterns: [/comment\s+ajouter\s+un\s+produit\s+au\s+panier/i],
+    question: "Comment ajouter un produit au panier ?",
     answer:
-      "Vous pouvez régler votre commande en toute sécurité avec :\n\n" +
-      "💳 Carte bancaire (Visa, Mastercard, CB)\n" +
+      "Rendez-vous sur la page d'accueil ou sur la fiche du produit désiré, choisissez la quantité voulue puis cliquez sur le bouton « Ajouter au panier ». Le tiroir de commande s'ouvrira immédiatement.",
+    quickPrompts: ["Où est mon panier ?", "Code promo"],
+  },
+  {
+    id: "ou-est-panier",
+    category: "Commande",
+    keywords: ["ou est mon panier", "trouver panier", "voir panier", "icone panier"],
+    patterns: [/ou\s+est\s+mon\s+panier/i],
+    question: "Où est mon panier ?",
+    answer:
+      "Vous pouvez accéder à votre panier à tout moment grâce à l'icône de Sac/Panier située en haut à droite de l'écran sur mobile comme sur ordinateur.",
+    quickPrompts: ["Passer commande", "Modifier quantité"],
+  },
+  {
+    id: "modifier-quantite",
+    category: "Commande",
+    keywords: ["modifier quantite", "changer quantite", "plusieurs", "augmenter"],
+    patterns: [/puis[- ]je\s+modifier\s+la\s+quantite/i],
+    question: "Puis-je modifier la quantité ?",
+    answer:
+      "Oui ! Directement dans votre panier à l'aide des boutons + et - situés à côté de chaque article.",
+    quickPrompts: ["Supprimer un produit", "Passer commande"],
+  },
+  {
+    id: "supprimer-produit-panier",
+    category: "Commande",
+    keywords: ["supprimer", "enlever", "retirer du panier", "corbeille"],
+    patterns: [/comment\s+supprimer\s+un\s+produit\s+du\s+panier/i],
+    question: "Comment supprimer un produit du panier ?",
+    answer:
+      "Ouvrez votre panier et cliquez sur la petite icône de corbeille / croix à côté du produit. Le montant sera recalculé automatiquement.",
+    quickPrompts: ["Voir la boutique", "Passer commande"],
+  },
+  {
+    id: "commander-plusieurs-sachets",
+    category: "Commande",
+    keywords: ["plusieurs sachets", "commander plusieurs", "lot"],
+    patterns: [/puis[- ]je\s+commander\s+plusieurs\s+sachets/i],
+    question: "Puis-je commander plusieurs sachets ?",
+    answer:
+      "Oui, absolument ! Vous pouvez sélectionner plusieurs exemplaires du même produit ou mixer les saveurs, sous réserve des stocks disponibles.",
+    quickPrompts: ["Pack Intégral 4 Saveurs", "Boutique"],
+  },
+  {
+    id: "minimum-commande",
+    category: "Commande",
+    keywords: ["minimum commande", "montant minimum", "minimum d'achat"],
+    patterns: [/y\s+a[- ]t[- ]il\s+un\s+minimum\s+de\s+commande/i],
+    question: "Y a-t-il un minimum de commande ?",
+    answer:
+      "Aucun minimum de commande n'est imposé ! Vous pouvez commander un seul sachet à 6,90 €.",
+    quickPrompts: ["Livraison gratuite dès 50 €", "Pack 4 Saveurs"],
+  },
+  {
+    id: "grande-quantite",
+    category: "Commande",
+    keywords: ["grande quantite", "gros volume", "commander en gros", "evenement"],
+    patterns: [/commander\s+en\s+grande\s+quantite/i],
+    question: "Puis-je commander en grande quantité ?",
+    answer:
+      "Oui ! Pour les commandes en gros volume, contactez directement notre équipe par WhatsApp au +33 6 95 54 57 23 ou par email à contact@epicesdesulson.com pour bénéficier de tarifs préférentiels.",
+    action: {
+      type: "whatsapp",
+      label: "Contacter pour commande en gros",
+    },
+    quickPrompts: ["Professionnels et restaurants", "Voir la boutique"],
+  },
+  {
+    id: "restaurants-professionnels",
+    category: "Commande",
+    keywords: ["restaurant", "professionnel", "traiteur", "chef", "revendeur", "epicerie fine", "formats kilos"],
+    patterns: [/pour\s+les\s+restaurants/i, /professionnels/i],
+    question: "Faites-vous des commandes pour les restaurants ou professionnels ?",
+    answer:
+      "Oui ! Nous fournissons les restaurants, traiteurs et chefs (formats professionnels et kilos disponibles). Écrivez-nous à contact@epicesdesulson.com ou sur WhatsApp au +33 6 95 54 57 23.",
+    action: {
+      type: "whatsapp",
+      label: "Échanger avec le service Pro",
+    },
+    quickPrompts: ["Contacter sur WhatsApp", "Boutique"],
+  },
+  {
+    id: "utiliser-code-promo",
+    category: "Commande",
+    keywords: ["code promo", "reduction", "remise", "bon d'achat", "promo", "SULSON10"],
+    patterns: [/comment\s+utiliser\s+un\s+code\s+promo/i, /avez[- ]vous\s+un\s+code\s+promo/i],
+    question: "Comment utiliser un code promo ?",
+    answer:
+      "Saisissez votre code dans le champ « Code promo » de votre panier ou sur la page de paiement, puis cliquez sur « Appliquer ».\n\n🎁 Code de bienvenue actuel : SULSON10 pour -10% de réduction immédiate !",
+    quickPrompts: ["Code ne fonctionne pas", "Passer commande"],
+  },
+  {
+    id: "code-promo-bloque",
+    category: "Commande",
+    keywords: ["code promo ne fonctionne pas", "erreur code", "code invalide"],
+    patterns: [/mon\s+code\s+promo\s+ne\s+fonctionne\s+pas/i],
+    question: "Mon code promo ne fonctionne pas.",
+    answer:
+      "Vérifiez l'orthographe exacte (sans espace superflu) et sa validité. Si le souci persiste, contactez notre support par WhatsApp au +33 6 95 54 57 23.",
+    quickPrompts: ["Contacter sur WhatsApp", "Voir le panier"],
+  },
+  {
+    id: "modifier-commande-apres-paiement",
+    category: "Commande",
+    keywords: ["modifier commande", "apres paiement", "changer adresse", "changer article"],
+    patterns: [/modifier\s+ma\s+commande\s+apres\s+(le\s+)?paiement/i],
+    question: "Puis-je modifier ma commande après le paiement ?",
+    answer:
+      "Contactez-nous immédiatement par WhatsApp au +33 6 95 54 57 23 avec votre numéro de commande. Si votre colis n'est pas encore remis au transporteur Colissimo, nous pourrons effectuer la modification.",
+    action: {
+      type: "whatsapp",
+      label: "Modifier ma commande sur WhatsApp",
+    },
+    quickPrompts: ["Annuler ma commande", "Suivi colis"],
+  },
+  {
+    id: "annuler-commande",
+    category: "Commande",
+    keywords: ["annuler commande", "annulation", "annuler achat"],
+    patterns: [/puis[- ]je\s+annuler\s+ma\s+commande/i],
+    question: "Puis-je annuler ma commande ?",
+    answer:
+      "Vous pouvez annuler votre commande sans frais tant qu'elle n'a pas été expédiée. Contactez sans tarder notre service client au +33 6 95 54 57 23.",
+    action: {
+      type: "whatsapp",
+      label: "Demander l'annulation",
+    },
+    quickPrompts: ["Contacter le SAV", "Voir la boutique"],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 7. PAIEMENT & FACTURATION
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: "moyens-paiement-liste",
+    category: "Paiement",
+    keywords: ["moyens de paiement", "modes de paiement", "carte", "cb", "visa", "mastercard", "apple pay", "google pay", "paypal"],
+    patterns: [/quels\s+moyens\s+de\s+paiement\s+acceptez\s*vous/i],
+    question: "Quels moyens de paiement acceptez-vous ?",
+    answer:
+      "Nous acceptons :\n\n" +
+      "💳 Cartes Bancaires (Visa, Mastercard, Carte Bleue)\n" +
       "🍎 Apple Pay (1 clic sur iPhone/Mac)\n" +
       "🤖 Google Pay (1 clic sur Android)\n" +
-      "🅿️ PayPal\n\n" +
-      "Toutes les transactions sont chiffrées en SSL 256-bit certifié PCI-DSS via Stripe.",
-    quickPrompts: ["Le paiement est-il sécurisé ?", "Vais-je recevoir une facture ?"],
+      "🅿️ PayPal",
+    quickPrompts: ["Paiement sécurisé ?", "Vais-je recevoir une facture ?"],
+  },
+  {
+    id: "payer-carte-bancaire",
+    category: "Paiement",
+    keywords: ["payer par carte", "carte bancaire", "regler par carte", "cb"],
+    patterns: [/puis[- ]je\s+payer\s+par\s+carte/i],
+    question: "Puis-je payer par carte bancaire ?",
+    answer:
+      "Oui, directement et en toute simplicité lors de l'étape de paiement avec protection 3D-Secure de votre banque.",
+    quickPrompts: ["Sécurité du paiement", "Moyens de paiement"],
+  },
+  {
+    id: "paiement-securise",
+    category: "Paiement",
+    keywords: ["securise", "securite paiement", "chiffrement", "stripe", "ssl", "piratage"],
+    patterns: [/le\s+paiement\s+est[- ]il\s+securise/i],
+    question: "Le paiement est-il sécurisé ?",
+    answer:
+      "Oui, à 100%. Vos paiements sont chiffrés selon le protocole bancaire SSL 256-bit certifié PCI-DSS via Stripe et PayPal. Nous ne stockons jamais vos numéros de carte bancaire.",
+    quickPrompts: ["Conservez-vous mes données ?", "Moyens de paiement"],
+  },
+  {
+    id: "paiement-refuse",
+    category: "Paiement",
+    keywords: ["paiement refuse", "echec paiement", "carte refusee", "pourquoi refuse"],
+    patterns: [/pourquoi\s+mon\s+paiement\s+a[- ]t[- ]il\s+ete\s+refuse/i],
+    question: "Pourquoi mon paiement a-t-il été refusé ?",
+    answer:
+      "Cela peut arriver si l'authentification 3D-Secure n'a pas été validée sur votre application bancaire, si le plafond est atteint ou en cas de faute de frappe. Vous pouvez réessayez ou opter pour PayPal ou Apple Pay / Google Pay.",
+    quickPrompts: ["Contacter le support", "Moyens de paiement"],
+  },
+  {
+    id: "paiement-sans-confirmation",
+    category: "Paiement",
+    keywords: ["pas recu confirmation", "email confirmation", "paiement passe mais rien"],
+    patterns: [/pas\s+recu\s+de\s+confirmation/i],
+    question: "Mon paiement est passé mais je n'ai pas reçu de confirmation.",
+    answer:
+      "Vérifiez d'abord vos courriers indésirables / spams. Si vous ne trouvez rien après 5 minutes, écrivez-nous sur WhatsApp au +33 6 95 54 57 23 ou à contact@epicesdesulson.com avec votre nom : nous vérifierons votre commande et vous renverrons votre confirmation immédiatement.",
+    action: {
+      type: "whatsapp",
+      label: "Vérifier ma confirmation sur WhatsApp",
+    },
+    quickPrompts: ["Contacter sur WhatsApp", "Où retrouver ma facture ?"],
+  },
+  {
+    id: "conservation-donnees-bancaires",
+    category: "Paiement",
+    keywords: ["gardez vous carte", "conservez vous donnees", "stocker informations bancaires"],
+    patterns: [/est[- ]ce\s+que\s+vous\s+conservez\s+mes\s+informations\s+bancaires/i],
+    question: "Est-ce que vous conservez mes informations bancaires ?",
+    answer:
+      "Non, jamais. Aucune donnée bancaire sensible ne transite ni n'est enregistrée sur nos serveurs. Tout est géré directement par Stripe et PayPal.",
+    quickPrompts: ["Sécurité du paiement", "Moyens de paiement"],
   },
   {
     id: "facture-pdf",
     category: "Paiement",
     keywords: ["facture", "recu", "justificatif", "pdf", "telecharger facture"],
+    patterns: [/vais[- ]je\s+recevoir\s+une\s+facture/i],
     question: "Vais-je recevoir une facture ?",
     answer:
-      "Oui, automatiquement ! Une facture officielle au format PDF vous est envoyée par email dès validation de votre commande et reste téléchargeable à tout moment.",
-    quickPrompts: ["Moyens de paiement", "Délai de livraison"],
+      "Oui, automatiquement ! Une facture officielle au format PDF est générée pour chaque commande, envoyée directement par email avec votre confirmation d'achat et téléchargeable en 1 clic.",
+    quickPrompts: ["Où retrouver ma facture ?", "Livraison"],
   },
   {
-    id: "code-promo",
-    category: "Offres",
-    keywords: ["code promo", "reduction", "remise", "promo", "bon d'achat", "code"],
-    patterns: [/avez[- ]vous\s+un\s+code\s+promo/i, /code\s+promo/i, /reduction/i],
-    question: "Avez-vous un code promo ?",
+    id: "ou-retrouver-facture",
+    category: "Paiement",
+    keywords: ["ou retrouver facture", "recuperer facture", "duplicata facture"],
+    patterns: [/ou\s+puis[- ]je\s+retrouver\s+ma\s+facture/i],
+    question: "Où puis-je retrouver ma facture ?",
     answer:
-      "🎁 Utilisez le code promo de bienvenue : SULSON10 pour bénéficier de -10% de réduction immédiate sur l'ensemble de votre panier !",
-    action: {
-      type: "link",
-      label: "Utiliser le code dans la boutique",
-      url: "/products",
-    },
-    quickPrompts: ["Voir les produits", "Commander le Pack"],
+      "Elle est disponible en pièce jointe de votre e-mail de confirmation de commande et sur votre écran de fin de commande. Vous pouvez aussi nous demander un duplicata par email à contact@epicesdesulson.com.",
+    quickPrompts: ["Suivi de commande", "Boutique"],
   },
 
-  // ── 5. PROFESSIONNELS, CONTACT & SAV ──
+  // ═══════════════════════════════════════════════════════════════
+  // 8. LIVRAISON & SUIVI
+  // ═══════════════════════════════════════════════════════════════
   {
-    id: "restaurants-pros",
-    category: "Professionnels",
-    keywords: ["restaurant", "pro", "professionnel", "traiteur", "chef", "revendeur", "gros volume", "kilo"],
-    patterns: [/pour\s+les\s+restaurants/i, /commande\s+professionnelle/i],
-    question: "Fournissez-vous les restaurants et professionnels ?",
+    id: "zones-livraison",
+    category: "Livraison",
+    keywords: ["ou livrez vous", "destinations", "pays", "zones livraison"],
+    patterns: [/ou\s+livrez\s*vous/i],
+    question: "Où livrez-vous ?",
     answer:
-      "Oui ! Nous accompagnons régulièrement les restaurants, traiteurs et chefs avec des conditionnements professionnels (sacs de 1 kg à plusieurs dizaines de kilos) à tarifs dégressifs.",
+      "Nous livrons en France Métropolitaine, en Corse, à Monaco, ainsi que dans toute l'Union Européenne (Belgique, Luxembourg, Suisse, Espagne, Allemagne, etc.).",
+    quickPrompts: ["Livrez-vous partout en France ?", "Délais de livraison"],
+  },
+  {
+    id: "livraison-france",
+    category: "Livraison",
+    keywords: ["partout en france", "corse", "france metropolitaine", "monaco"],
+    patterns: [/livrez\s*vous\s+partout\s+en\s+france/i],
+    question: "Livrez-vous partout en France ?",
+    answer:
+      "Oui, nous assurons la livraison sur l'intégralité du territoire français métropolitain et en Corse directement à votre domicile ou en point relais.",
+    quickPrompts: ["Délais de livraison", "Frais de port"],
+  },
+  {
+    id: "livraison-europe",
+    category: "Livraison",
+    keywords: ["europe", "belgique", "suisse", "luxembourg", "allemagne", "espagne"],
+    patterns: [/livrez\s*vous\s+en\s+europe/i, /livrez\s*vous\s+en\s+belgique/i],
+    question: "Livrez-vous en Europe ?",
+    answer:
+      "Oui, nous expédions régulièrement vers la Belgique, la Suisse, le Luxembourg et les autres pays européens via le réseau postal international Colissimo.",
+    quickPrompts: ["Délais de livraison", "Frais de livraison"],
+  },
+  {
+    id: "livraison-etranger",
+    category: "Livraison",
+    keywords: ["etranger", "international", "monde", "dom tom", "outre mer"],
+    patterns: [/livrez\s*vous\s+a\s+l[' ]etranger/i],
+    question: "Livrez-vous à l'étranger ?",
+    answer:
+      "Oui, les envois internationaux sont possibles. Renseignez votre pays de destination lors du paiement pour afficher les options d'acheminement correspondantes.",
+    quickPrompts: ["Délais de livraison", "Passer commande"],
+  },
+  {
+    id: "prix-livraison",
+    category: "Livraison",
+    keywords: ["combien coute livraison", "frais de port", "tarif livraison", "prix livraison"],
+    patterns: [/combien\s+coute\s+la\s+livraison/i, /frais\s+de\s+port/i],
+    question: "Combien coûte la livraison ?",
+    answer:
+      "• LIVRAISON GRATUITE dès 50 € d'achat en France métropolitaine !\n• Pour les commandes inférieures à 50 €, la livraison standard suivie Colissimo est calculée automatiquement à tarif réduit dans votre panier.",
+    quickPrompts: ["Délais de livraison", "Pack 4 Saveurs"],
+  },
+  {
+    id: "livraison-gratuite-seuil",
+    category: "Livraison",
+    keywords: ["livraison gratuite", "offerte", "seuil gratuit", "50 euros", "a partir de combien"],
+    patterns: [/la\s+livraison\s+est[- ]elle\s+gratuite/i],
+    question: "La livraison est-elle gratuite à partir d'un certain montant ?",
+    answer:
+      "Oui ! La livraison est 100% offerte dès 50 € d'achat pour toute commande expédiée en France métropolitaine.",
+    action: {
+      type: "link",
+      label: "Ajouter le Pack 4 Saveurs",
+      url: "/products/pack-integral-4-saveurs",
+    },
+    quickPrompts: ["Délais de livraison", "Moyens de paiement"],
+  },
+  {
+    id: "delai-livraison",
+    category: "Livraison",
+    keywords: ["delai de livraison", "combien de jours", "quand arrive", "temps livraison"],
+    patterns: [/quel\s+est\s+le\s+delai\s+de\s+livraison/i, /combien\s+de\s+temps\s+pour\s+recevoir/i],
+    question: "Quel est le délai de livraison ?",
+    answer:
+      "• En France Métropolitaine : 48h à 72h ouvrées (2 à 3 jours ouvrés).\n• En Europe : 3 à 5 jours ouvrés selon le pays.",
+    quickPrompts: ["Quand ma commande sera expédiée ?", "Suivi de colis"],
+  },
+  {
+    id: "expedition-preparation",
+    category: "Livraison",
+    keywords: ["quand expedie", "preparation commande", "depart colis"],
+    patterns: [/quand\s+ma\s+commande\s+sera[- ]t[- ]elle\s+expediee/i],
+    question: "Quand ma commande sera-t-elle expédiée ?",
+    answer:
+      "Vos commandes sont préparées et expédiées sous 24h à 48h ouvrées après réception de votre règlement. Vous recevez un email dès le départ du colis !",
+    quickPrompts: ["Comment suivre ma commande ?", "Frais de livraison"],
+  },
+  {
+    id: "suivre-commande",
+    category: "Livraison",
+    keywords: ["suivre commande", "suivi colis", "lien suivi", "colissimo suivi"],
+    patterns: [/comment\s+suivre\s+ma\s+commande/i],
+    question: "Comment suivre ma commande ?",
+    answer:
+      "Dès l'expédition, vous recevez un email contenant votre numéro de suivi Colissimo / La Poste. Vous pouvez cliquer dessus pour suivre l'acheminement de votre colis jusqu'à votre boîte aux lettres.",
+    quickPrompts: ["Où trouver mon numéro de suivi ?", "Colis en retard"],
+  },
+  {
+    id: "ou-trouver-numero-suivi",
+    category: "Livraison",
+    keywords: ["ou trouver numero de suivi", "numero de suivi manquant", "retrouver suivi"],
+    patterns: [/ou\s+trouver\s+mon\s+numero\s+de\s+suivi/i],
+    question: "Où trouver mon numéro de suivi ?",
+    answer:
+      "Il figure dans l'e-mail intitulé « Votre commande Les Épices de Sulson est en route ». Pensez à vérifier vos courriers indésirables si vous ne l'avez pas reçu sous 48h.",
+    quickPrompts: ["Contacter le support WhatsApp", "Délais de livraison"],
+  },
+  {
+    id: "colis-indique-livre-non-recu",
+    category: "Livraison",
+    keywords: ["indique livre", "pas recu", "colis introuvable", "livre mais rien"],
+    patterns: [/indiquee?\s+comme\s+livree?\s+mais\s+je\s+ne\s+l[' ]ai\s+pas\s+recue?/i],
+    question: "Ma commande est indiquée comme livrée mais je ne l'ai pas reçue.",
+    answer:
+      "Vérifiez d'abord votre boîte aux lettres, auprès de votre gardien ou de vos voisins immédiats. Si le colis est introuvable, contactez-nous au +33 6 95 54 57 23 ou par email à contact@epicesdesulson.com avec votre numéro de commande pour que nous ouvrions une enquête prioritaire avec La Poste.",
     action: {
       type: "whatsapp",
-      label: "Échanger avec le service Pro WhatsApp",
+      label: "Signaler le problème sur WhatsApp",
     },
-    quickPrompts: ["Parler à un conseiller", "Voir le catalogue"],
+    quickPrompts: ["Parler à un conseiller", "SAV"],
   },
+  {
+    id: "colis-en-retard",
+    category: "Livraison",
+    keywords: ["colis en retard", "retard livraison", "pas encore arrive", "bloque"],
+    patterns: [/mon\s+colis\s+est\s+en\s+retard/i, /retard/i],
+    question: "Mon colis est en retard.",
+    answer:
+      "Consultez d'abord le lien de suivi Colissimo. Si l'acheminement est bloqué depuis plus de 72h ouvrées, écrivez-nous sur WhatsApp au +33 6 95 54 57 23 et nous interviendrons immédiatement.",
+    action: {
+      type: "whatsapp",
+      label: "Contacter le support WhatsApp",
+    },
+    quickPrompts: ["Suivre ma commande", "Parler à un conseiller"],
+  },
+  {
+    id: "colis-endommage",
+    category: "Livraison",
+    keywords: ["endommage", "abime", "colis casse", "sachet perce", "carton dechire"],
+    patterns: [/mon\s+colis\s+est\s+arrive\s+endommage/i],
+    question: "Mon colis est arrivé endommagé.",
+    answer:
+      "Prenez des photos nettes du carton et des sachets endommagés, et transmettez-les nous par WhatsApp au +33 6 95 54 57 23 ou à contact@epicesdesulson.com. Nous vous réexpédierons un nouveau colis immédiatement à nos frais !",
+    action: {
+      type: "whatsapp",
+      label: "Envoyer les photos sur WhatsApp",
+    },
+    quickPrompts: ["Contacter le SAV", "Remboursement"],
+  },
+  {
+    id: "mauvais-produit-recu",
+    category: "Livraison",
+    keywords: ["mauvais produit", "erreur produit", "pas le bon sachet", "trompe de produit"],
+    patterns: [/j[' ]ai\s+recu\s+le\s+mauvais\s+produit/i],
+    question: "J'ai reçu le mauvais produit.",
+    answer:
+      "Envoyez-nous simplement une photo du sachet reçu par WhatsApp (+33 6 95 54 57 23). Nous vous enverrons aussitôt le produit correspondant à votre commande initiale sans frais supplémentaires.",
+    action: {
+      type: "whatsapp",
+      label: "Signaler l'erreur sur WhatsApp",
+    },
+    quickPrompts: ["Contacter le support", "SAV"],
+  },
+  {
+    id: "produit-manquant",
+    category: "Livraison",
+    keywords: ["produit manquant", "manque un sachet", "incomplet", "article manquant"],
+    patterns: [/il\s+manque\s+un\s+produit/i],
+    question: "Il manque un produit dans ma commande.",
+    answer:
+      "Contactez-nous à contact@epicesdesulson.com ou au +33 6 95 54 57 23 en indiquant votre numéro de commande. Nous vérifierons le bon de préparation et vous expédierons l'article manquant dans les 24h.",
+    action: {
+      type: "whatsapp",
+      label: "Signaler sur WhatsApp",
+    },
+    quickPrompts: ["Suivre ma commande", "Parler à un conseiller"],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // 9. RETOURS, REMBOURSEMENT ET SAV
+  // ═══════════════════════════════════════════════════════════════
   {
     id: "retours-remboursement",
     category: "SAV",
-    keywords: ["retour", "remboursement", "retractation", "abime", "endommage", "trompe"],
-    question: "Comment effectuer un retour ou demander un remboursement ?",
+    keywords: ["retourner", "retour", "renvoyer", "remboursement", "retractation", "14 jours"],
+    patterns: [/puis[- ]je\s+retourner\s+ma\s+commande/i],
+    question: "Puis-je retourner ma commande ?",
     answer:
-      "Vous disposez de 14 jours après réception pour exercer votre droit de retour. Pour des raisons d'hygiène alimentaire, les sachets doivent être intacts et scellés. Si votre colis arrive abîmé, nous vous renvoyons un colis neuf immédiatement à nos frais !",
-    action: {
-      type: "whatsapp",
-      label: "Contacter le SAV sur WhatsApp",
-    },
-    quickPrompts: ["Contacter le support", "Horaires du service client"],
+      "Conformément à la législation, vous disposez de 14 jours après réception pour nous notifier un retour. Pour des raisons strictes d'hygiène et de sécurité alimentaire, seuls les sachets intacts, scellés et non ouverts peuvent faire l'objet d'un retour et d'un remboursement.",
+    quickPrompts: ["Comment demander un remboursement ?", "Contacter le SAV"],
   },
   {
-    id: "contact-humain-whatsapp",
-    category: "Contact",
-    keywords: ["humain", "parler a quelqu'un", "conseiller", "telephone", "appeler", "whatsapp", "joindre", "contact"],
-    patterns: [/parler\s+a\s+quelqu[' ]un/i, /numero\s+de\s+telephone/i, /service\s+client/i],
-    question: "Comment contacter un conseiller Sulson en direct ?",
+    id: "delai-remboursement-demande",
+    category: "SAV",
+    keywords: ["delai remboursement", "combien de temps remboursement", "delai retour"],
+    patterns: [/quel\s+est\s+le\s+delai\s+pour\s+demander\s+un\s+remboursement/i],
+    question: "Quel est le délai pour demander un remboursement ?",
     answer:
-      "Notre équipe est à votre écoute du lundi au samedi de 9h00 à 19h00 :\n\n" +
-      "📱 WhatsApp officiel : +33 6 95 54 57 23 (réponse en direct)\n" +
-      "✉️ Email : contact@epicesdesulson.com\n\n" +
-      "Cliquez ci-dessous pour discuter directement avec nous !",
+      "Vous avez 14 jours suivant la date de réception de votre commande pour demander un retour ou un remboursement.",
+    quickPrompts: ["Comment demander un remboursement ?", "Contacter le SAV"],
+  },
+  {
+    id: "comment-demander-remboursement",
+    category: "SAV",
+    keywords: ["comment demander remboursement", "procedure remboursement", "se faire rembourser"],
+    patterns: [/comment\s+demander\s+un\s+remboursement/i],
+    question: "Comment demander un remboursement ?",
+    answer:
+      "Contactez notre service client par e-mail à contact@epicesdesulson.com ou par WhatsApp au +33 6 95 54 57 23 en précisant votre numéro de commande et le motif de votre demande. Le remboursement est émis sous 3 à 5 jours ouvrés sur la carte bancaire utilisée lors de l'achat.",
+    action: {
+      type: "whatsapp",
+      label: "Faire une demande sur WhatsApp",
+    },
+    quickPrompts: ["Produit abîmé", "Service client"],
+  },
+  {
+    id: "produit-abime-que-faire",
+    category: "SAV",
+    keywords: ["produit abime", "sachet perce", "endommage", "que faire abime"],
+    patterns: [/j[' ]ai\s+recu\s+un\s+produit\s+abime/i],
+    question: "J'ai reçu un produit abîmé, que faire ?",
+    answer:
+      "Envoyez-nous une photo du produit abîmé par WhatsApp au +33 6 95 54 57 23. Nous procédons au remplacement ou au remboursement intégral selon votre préférence.",
+    action: {
+      type: "whatsapp",
+      label: "Envoyer photo sur WhatsApp",
+    },
+    quickPrompts: ["Contacter le SAV", "Parler à un conseiller"],
+  },
+  {
+    id: "trompe-commande",
+    category: "SAV",
+    keywords: ["trompe", "erreur de ma part", "mauvais choix", "modifier choix"],
+    patterns: [/je\s+me\s+suis\s+trompe\s+dans\s+ma\s+commande/i],
+    question: "Je me suis trompé dans ma commande.",
+    answer:
+      "Si votre commande n'a pas encore été expédiée, prévenez-nous immédiatement par WhatsApp au +33 6 95 54 57 23 pour modifier la référence.",
+    action: {
+      type: "whatsapp",
+      label: "Modifier sur WhatsApp",
+    },
+    quickPrompts: ["Annuler ma commande", "Suivi de colis"],
+  },
+  {
+    id: "contacter-service-client",
+    category: "SAV",
+    keywords: ["contacter", "service client", "sav", "joindre", "support", "numero"],
+    patterns: [/comment\s+contacter\s+le\s+service\s+client/i],
+    question: "Comment contacter le service client ?",
+    answer:
+      "Vous disposez de plusieurs canaux de contact directs :\n\n" +
+      "📱 WhatsApp officiel : +33 6 95 54 57 23 (réponse ultra-rapide)\n" +
+      "✉️ E-mail : contact@epicesdesulson.com\n" +
+      "📝 Formulaire : accessible sur la page Contact du site",
     action: {
       type: "whatsapp",
       label: "Ouvrir WhatsApp (+33 6 95 54 57 23)",
     },
-    quickPrompts: ["Horaires d'ouverture", "Voir les épices"],
+    quickPrompts: ["Parler à une vraie personne", "Horaires du service client"],
+  },
+  {
+    id: "parler-vraie-personne",
+    category: "SAV",
+    keywords: ["vraie personne", "humain", "parler a quelqu'un", "conseiller en direct", "telephone", "appeler"],
+    patterns: [/puis[- ]je\s+parler\s+a\s+une\s+vraie\s+personne/i, /parler\s+a\s+quelqu[' ]un/i],
+    question: "Puis-je parler à une vraie personne ?",
+    answer:
+      "Absolument ! Si vous souhaitez échanger directement avec un membre de l'équipe Sulson, écrivez-nous ou appelez-nous au +33 6 95 54 57 23.",
+    action: {
+      type: "whatsapp",
+      label: "Échanger avec notre équipe",
+    },
+    quickPrompts: ["Horaires d'ouverture", "Délai de réponse"],
+  },
+  {
+    id: "horaires-service-client",
+    category: "SAV",
+    keywords: ["horaires", "heures d'ouverture", "quand joindre", "disponibilite"],
+    patterns: [/quels\s+sont\s+vos\s+horaires/i],
+    question: "Quels sont vos horaires de service client ?",
+    answer:
+      "Notre service client est joignable du lundi au samedi, de 9h00 à 19h00. Vous pouvez nous laisser un message en dehors de ces horaires et nous vous répondrons dès l'ouverture.",
+    quickPrompts: ["Délai de réponse", "Contacter sur WhatsApp"],
+  },
+  {
+    id: "delai-reponse-sav",
+    category: "SAV",
+    keywords: ["delai reponse", "combien de temps reponse", "temps pour repondre"],
+    patterns: [/combien\s+de\s+temps\s+faut[- ]il\s+pour\s+recevoir\s+une\s+reponse/i],
+    question: "Combien de temps faut-il pour recevoir une réponse ?",
+    answer:
+      "• Sur WhatsApp : réponse moyenne en moins de 2 heures pendant les heures d'ouverture.\n• Par email : réponse garantie sous 24h ouvrées maximum.",
+    quickPrompts: ["Ouvrir WhatsApp direct", "Voir la boutique"],
   },
 ];
 
@@ -430,23 +1162,52 @@ export function generateBotReply(userQuery: string): {
     };
   }
 
-  // 2. Salutations naturelles & courtoises
+  // 2. Salutations naturelles & courtoises (« Salut » / « Bonjour » / « Bonsoir » / « Coucou »)
   if (
     lowerQuery.match(/^(bonjour|salut|hello|bonsoir|coucou|hey|hi)\b/i) &&
     lowerQuery.length < 35
   ) {
     return {
-      text: "Bonjour et bienvenue chez Les Épices de Sulson ! 🌿\n\nJe suis votre conseillère culinaire. Je peux vous orienter vers l'épice parfaite pour votre plat, vous donner des conseils de marinade, ou vous renseigner sur la livraison et votre commande.\n\nQue préparez-vous de bon aujourd'hui ?",
+      text: "Bonjour 👋 Bienvenue chez Les Épices de Sulson ! Je suis votre conseillère culinaire. Je peux vous guider pour choisir le meilleur mélange pour votre recette, vous donner des conseils de marinade, ou vous renseigner sur votre commande et la livraison.\n\nQue cuisinez-vous aujourd'hui ? 😊",
       quickPrompts: [
-        "Pack Intégral 4 Saveurs",
-        "Quelle épice pour mon plat ?",
-        "Délais de livraison",
-        "Code promo -10%",
+        "🍗 Pour le poulet",
+        "🥩 Pour la viande",
+        "🐟 Pour le poisson",
+        "🎁 Pack 4 Saveurs",
+        "🚚 Délais de livraison",
+        "🏷️ Code promo -10%",
       ],
     };
   }
 
-  // 3. Questions sur "c'est combien ?" ou prix direct
+  // 3. Expressions spontanées courantes
+  // « Je cherche des épices »
+  if (lowerQuery.match(/^(je cherche des epices|je veux des epices|trouver des epices)/i)) {
+    return {
+      text: "Vous êtes au bon endroit ! Nous proposons 4 mélanges 100% naturels (Poulet, Viande, Poisson, Secret de Sulson) en sachets 100g (6,90 €) ainsi que notre Pack Intégral 4 Saveurs à 24,90 € (400g).\n\nQuel type de plat souhaitez-vous sublimer aujourd'hui ?",
+      action: {
+        type: "link",
+        label: "Voir tous les produits",
+        url: "/products",
+      },
+      quickPrompts: ["Pour le poulet", "Pour la viande", "Pour le poisson", "Pack 4 Saveurs"],
+    };
+  }
+
+  // « Je sais pas quoi prendre » / « Je ne sais pas »
+  if (lowerQuery.match(/^(je (ne )?sais pas quoi prendre|je sais pas|aidez moi a choisir)/i)) {
+    return {
+      text: "Pas d'inquiétude ! Dites-moi ce que vous préparez le plus souvent : volaille, poisson, viandes grillées, riz ou plats mijotés ?\n\nSi vous souhaitez tout tester, notre Pack Intégral 4 Saveurs (24,90 €) est la formule idéale !",
+      action: {
+        type: "link",
+        label: "Voir le Pack 4 Saveurs (24,90 €)",
+        url: "/products/pack-integral-4-saveurs",
+      },
+      quickPrompts: ["Pour le poulet", "Pour la viande", "Pour le poisson", "Le Secret de Sulson"],
+    };
+  }
+
+  // « C'est combien ? » / « Prix »
   if (lowerQuery.match(/^(c[' ]est combien|quel est le prix|les prix|combien ca coute)\??$/i)) {
     return {
       text: "Voici nos tarifs officiels Les Épices de Sulson :\n\n• Sachet individuel (100g) : 6,90 €\n• Pack Intégral 4 Saveurs (400g) : 24,90 € (au lieu de 27,60 €)\n• Livraison GRATUITE dès 50 € d'achat !",
@@ -455,11 +1216,63 @@ export function generateBotReply(userQuery: string): {
         label: "Voir le Pack 4 Saveurs",
         url: "/products/pack-integral-4-saveurs",
       },
-      quickPrompts: ["Conseil pour le poulet", "Conseil pour la viande", "Livraison"],
+      quickPrompts: ["Commander le Pack", "Frais de port", "Code promo"],
     };
   }
 
-  // 4. Recherche par mots-clés pondérés et patterns RegEx
+  // « Vous livrez ? »
+  if (lowerQuery.match(/^(vous livrez|est[- ]ce que vous livrez|livraison possible)\??$/i)) {
+    return {
+      text: "Oui, nous livrons partout en France Métropolitaine, en Corse et dans toute l'Europe via Colissimo avec suivi en temps réel. La livraison est offerte dès 50 € de commande !",
+      quickPrompts: ["Délais de livraison", "Frais de livraison", "Voir les produits"],
+    };
+  }
+
+  // « Ça arrive quand ? »
+  if (lowerQuery.match(/^(ca arrive quand|quand est[- ]ce que ca arrive|delai reception)\??$/i)) {
+    return {
+      text: "Votre colis est préparé sous 24/48h et livré en 48h à 72h ouvrées en France (3 à 5 jours en Europe). Si vous avez déjà passé commande, indiquez-moi votre numéro de commande pour vérifier son état d'avancement !",
+      quickPrompts: ["Suivre ma commande", "Parler à un conseiller"],
+    };
+  }
+
+  // « Ma commande est où ? »
+  if (lowerQuery.match(/^(ma commande est ou|ou est ma commande|ou est mon colis)\??$/i)) {
+    return {
+      text: "Vous pouvez suivre votre commande grâce au lien Colissimo reçu dans votre email d'expédition. Si vous ne le retrouvez pas, écrivez-nous directement sur WhatsApp au +33 6 95 54 57 23 avec votre nom et prénom !",
+      action: {
+        type: "whatsapp",
+        label: "Vérifier le suivi sur WhatsApp",
+      },
+      quickPrompts: ["Parler à un conseiller", "Voir les produits"],
+    };
+  }
+
+  // « Je veux parler à quelqu'un »
+  if (lowerQuery.match(/^(je veux parler a quelqu[' ]un|parler a un humain|conseiller direct)\??$/i)) {
+    return {
+      text: "Très bien ! Vous pouvez joindre directement notre équipe :\n\n📱 Sur WhatsApp au : +33 6 95 54 57 23 (conseiller en direct)\n✉️ Par email à : contact@epicesdesulson.com\n\nNous nous ferons un plaisir de vous répondre !",
+      action: {
+        type: "whatsapp",
+        label: "Ouvrir WhatsApp (+33 6 95 54 57 23)",
+      },
+      quickPrompts: ["Horaires d'ouverture", "Voir les épices"],
+    };
+  }
+
+  // « J'ai un problème »
+  if (lowerQuery.match(/^(j[' ]ai un probleme|probleme de commande|souci)\??$/i)) {
+    return {
+      text: "Nous sommes là pour vous aider immédiatement. Votre demande concerne-t-elle le passage d'une commande, un paiement, le suivi d'un colis ou une question sur une recette ? Vous pouvez également contacter notre SAV direct au +33 6 95 54 57 23.",
+      action: {
+        type: "whatsapp",
+        label: "Contacter le SAV (+33 6 95 54 57 23)",
+      },
+      quickPrompts: ["Suivi de colis", "Paiement refusé", "Produit abîmé"],
+    };
+  }
+
+  // 4. Recherche par mots-clés pondérés et patterns RegEx dans la base de connaissances
   let bestMatch: FAQItem | null = null;
   let maxScore = 0;
 
@@ -475,7 +1288,7 @@ export function generateBotReply(userQuery: string): {
     if (item.patterns) {
       for (const pattern of item.patterns) {
         if (pattern.test(lowerQuery)) {
-          score += 20;
+          score += 25;
         }
       }
     }
@@ -509,16 +1322,16 @@ export function generateBotReply(userQuery: string): {
       showWhatsappButton: bestMatch.suggestWhatsapp,
       whatsappMessage: `Bonjour, j'ai une question complémentaire sur : "${bestMatch.question}"`,
       quickPrompts: bestMatch.quickPrompts || [
-        "Pack 4 Saveurs",
+        "Pack Intégral 4 Saveurs",
         "Livraison & Délais",
         "Parler sur WhatsApp",
       ],
     };
   }
 
-  // 5. Fallback sécurisé & professionnel avec redirection WhatsApp
+  // 5. Réponse de secours du Chatbot (lorsqu'il ne connaît pas la réponse)
   return {
-    text: "Je n'ai pas la réponse exacte à cette question spécifique, mais notre équipe d'experts est disponible en direct pour vous accompagner !\n\nVous pouvez nous joindre instantanément sur notre WhatsApp officiel :",
+    text: "Je n'ai pas suffisamment d'informations pour vous répondre avec certitude, et je préfère ne pas vous induire en erreur.\n\nVous pouvez reformuler votre question ou contacter directement un conseiller de l'équipe Sulson sur WhatsApp au +33 6 95 54 57 23 ou par email à contact@epicesdesulson.com !",
     action: {
       type: "whatsapp",
       label: "Discuter sur WhatsApp (+33 6 95 54 57 23)",
@@ -526,10 +1339,11 @@ export function generateBotReply(userQuery: string): {
     showWhatsappButton: true,
     whatsappMessage: `Bonjour Les Épices de Sulson, j'ai une question sur votre boutique : "${userQuery}"`,
     quickPrompts: [
-      "Quelle épice pour mon plat ?",
-      "Pack Intégral 4 Saveurs",
-      "Délais de livraison",
-      "Code promo",
+      "🍗 Épice pour le poulet",
+      "🥩 Épice pour la viande",
+      "🐟 Épice pour le poisson",
+      "🎁 Pack 4 Saveurs",
+      "🚚 Délais de livraison",
     ],
   };
 }

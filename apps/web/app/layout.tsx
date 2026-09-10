@@ -94,6 +94,7 @@ export const metadata: Metadata = {
 };
 
 import ChatbotBubble from "@/components/common/chatbot-bubble";
+import CookieConsent from "@/components/common/cookie-consent";
 import { OrganizationAndWebsiteJsonLd } from "@/components/seo/json-ld";
 
 export default function RootLayout({
@@ -128,6 +129,7 @@ export default function RootLayout({
         <Footer />
         <ScrollToTop />
         <ChatbotBubble />
+        <CookieConsent />
       </body>
     </html>
   );

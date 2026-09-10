@@ -13,6 +13,9 @@ import {
   CheckCircle2, 
   Package, 
   Euro,
+  Image as ImageIcon,
+  Leaf,
+  ChefHat
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -42,6 +45,7 @@ const ORIGINS = [
 
 const DEFAULT_PRODUCTS_MAP: Record<string, {
   name: string;
+  subtitle?: string;
   sku: string;
   category: string;
   origin: string;
@@ -49,127 +53,90 @@ const DEFAULT_PRODUCTS_MAP: Record<string, {
   comparePrice: string;
   stock: string;
   description: string;
+  ingredients?: string;
+  chefTip?: string;
   image: string;
+  imageVerso?: string;
   isPublished: boolean;
 }> = {
   "SUL-301": {
     name: "Épice de Sulson - Spéciale Poulet",
+    subtitle: "Rôtis, Grillades & Cuisses Dorées",
     sku: "SUL-301",
     category: "Épices Volailles & Rôtis",
     origin: "Cameroun (Recette Traditionnelle)",
     price: "6.90",
     comparePrice: "8.50",
     stock: "145",
-    description: "L'alliance parfaite du curcuma frais, paprika doux, gingembre et muscade pour une chair tendre, parfumée et dorée à chaque cuisson.",
+    description: "L'alliance parfaite du curcuma frais, paprika doux, gingembre et muscade pour une chair tendre, parfumée et dorée.",
+    ingredients: "Curcuma frais, Paprika doux noble, Gingembre artisanal, Ail, Oignon, Muscade, Poivre noir, Coriandre",
+    chefTip: "Mélangez 2 cuillères d'épices avec un filet d'huile d'olive et un jus de citron. Massez généreusement avant cuisson.",
     image: "/images/products/epice-poulet-recto.jpg",
+    imageVerso: "/images/products/epice-poulet-verso.jpg",
     isPublished: true,
   },
   "SUL-302": {
     name: "Épice de Sulson - Spéciale Viande",
+    subtitle: "Pour Bœufs, Agneaux & Grillades",
     sku: "SUL-302",
     category: "Épices Viandes & Grillades",
     origin: "Cameroun (Recette Traditionnelle)",
     price: "6.90",
     comparePrice: "8.50",
     stock: "120",
-    description: "Un mélange noble au paprika, poivre noir sauvage, clou de girofle et laurier conçu pour révéler la richesse de vos viandes au feu ou au four.",
+    description: "Un mélange noble au paprika, poivre noir sauvage, clou de girofle et laurier conçu pour révéler la richesse de vos viandes.",
+    ingredients: "Paprika fumé & doux, Poivre noir de Penja IGP, Ail, Oignon, Gingembre sauvage, Clou de girofle, Laurier, Thym",
+    chefTip: "Frottez la viande à sec 20 minutes avant la cuisson au barbecue pour caraméliser les sucs.",
     image: "/images/products/epice-viande-recto.jpg",
+    imageVerso: "/images/products/epice-viande-verso.jpg",
     isPublished: true,
   },
   "SUL-303": {
     name: "Épice de Sulson - Spéciale Poisson",
+    subtitle: "Poissons Grillés, Braisés & Soupes",
     sku: "SUL-303",
     category: "Épices Poissons & Marinades",
     origin: "Cameroun (Poivre de Guinée)",
     price: "6.90",
     comparePrice: "8.50",
     stock: "98",
-    description: "L'arôme authentique du poivre de Guinée, céleri, graines de moutarde et thym pour des poissons marinés et grillés à la perfection.",
+    description: "L'arôme authentique du poivre de Guinée, céleri, graines de moutarde et thym pour poissons marinés et braisés.",
+    ingredients: "Poivre de Guinée (Maniguette), Rondelles, Pèbè camerounais, Ail, Gingembre, Thym citronné, Céleri",
+    chefTip: "Entaillez le poisson, massez avec la marinade épices + huile + citron vert et saisissez à feu vif.",
     image: "/images/products/epice-poisson-recto.jpg",
+    imageVerso: "/images/products/epice-poisson-verso.jpg",
     isPublished: true,
   },
   "SUL-304": {
-    name: "Épice de Sulson - Saveur Gourmande",
+    name: "Le Secret de Sulson - Saveur Gourmande",
+    subtitle: "Assaisonnement Signature Universel & Passe-Partout",
     sku: "SUL-304",
     category: "Assaisonnements Signatures",
     origin: "Cameroun (Le Secret de Sulson)",
     price: "6.90",
     comparePrice: "8.50",
     stock: "210",
-    description: "Notre composition signature secrète alliant herbes nobles et épices douces pour sublimer féculents, légumes sautés, sauces et créations du chef.",
+    description: "Notre composition signature secrète alliant herbes nobles et épices douces pour féculents, légumes sautés et sauces.",
+    ingredients: "12 Épices précieuses camerounaises, Curcuma doux, Paprika, Ail, Échalote, Gingembre, Poivres rares",
+    chefTip: "Saupoudrez 1 cuillère à café dans votre riz en cours de cuisson ou dans votre sauce mijotée.",
     image: "/images/products/epice-gourmande-recto.jpg",
+    imageVerso: "/images/products/epice-gourmande-verso.jpg",
     isPublished: true,
   },
   "SUL-305": {
     name: "Le Pack Intégral : 4 Saveurs Authentiques",
+    subtitle: "Poulet • Viande • Poisson • Secret de Sulson",
     sku: "SUL-305",
     category: "Packs & Coffrets Gourmets",
     origin: "Atelier Sulson (Pack Lot 4)",
     price: "24.90",
     comparePrice: "27.60",
     stock: "65",
-    description: "L'assortiment complet réunissant nos 4 créations artisanales : Poulet (Jaune), Viande (Rouge), Poisson (Bleu) et Saveur Gourmande (Orange). 100% Naturel, sans conservateur.",
+    description: "L'assortiment complet réunissant nos 4 créations artisanales : Poulet (Jaune), Viande (Rouge), Poisson (Bleu) et Gourmande (Orange).",
+    ingredients: "Lot de 4 sachets de 100g hermétiques zippés (400g au total)",
+    chefTip: "Le cadeau parfait pour transformer toute votre cuisine en festival de saveurs.",
     image: "/images/products/pack-4-saveurs-sulson.jpg",
-    isPublished: true,
-  },
-  "PROD-1": {
-    name: "Épice de Sulson - Spéciale Poulet",
-    sku: "SUL-301",
-    category: "Épices Volailles & Rôtis",
-    origin: "Cameroun (Recette Traditionnelle)",
-    price: "6.90",
-    comparePrice: "8.50",
-    stock: "145",
-    description: "L'alliance parfaite du curcuma frais, paprika doux, gingembre et muscade.",
-    image: "/images/products/epice-poulet-recto.jpg",
-    isPublished: true,
-  },
-  "PROD-2": {
-    name: "Épice de Sulson - Spéciale Viande",
-    sku: "SUL-302",
-    category: "Épices Viandes & Grillades",
-    origin: "Cameroun (Recette Traditionnelle)",
-    price: "6.90",
-    comparePrice: "8.50",
-    stock: "120",
-    description: "Un mélange noble au paprika, poivre noir sauvage, clou de girofle et laurier.",
-    image: "/images/products/epice-viande-recto.jpg",
-    isPublished: true,
-  },
-  "PROD-3": {
-    name: "Épice de Sulson - Spéciale Poisson",
-    sku: "SUL-303",
-    category: "Épices Poissons & Marinades",
-    origin: "Cameroun (Poivre de Guinée)",
-    price: "6.90",
-    comparePrice: "8.50",
-    stock: "98",
-    description: "L'arôme authentique du poivre de Guinée, céleri, graines de moutarde et thym.",
-    image: "/images/products/epice-poisson-recto.jpg",
-    isPublished: true,
-  },
-  "PROD-4": {
-    name: "Épice de Sulson - Saveur Gourmande",
-    sku: "SUL-304",
-    category: "Assaisonnements Signatures",
-    origin: "Cameroun (Le Secret de Sulson)",
-    price: "6.90",
-    comparePrice: "8.50",
-    stock: "210",
-    description: "Notre composition signature secrète alliant herbes nobles et épices douces.",
-    image: "/images/products/epice-gourmande-recto.jpg",
-    isPublished: true,
-  },
-  "PROD-5": {
-    name: "Le Pack Intégral : 4 Saveurs Authentiques",
-    sku: "SUL-305",
-    category: "Packs & Coffrets Gourmets",
-    origin: "Atelier Sulson (Pack Lot 4)",
-    price: "24.90",
-    comparePrice: "27.60",
-    stock: "65",
-    description: "L'assortiment complet réunissant nos 4 créations artisanales.",
-    image: "/images/products/pack-4-saveurs-sulson.jpg",
+    imageVerso: "/images/products/epice-poulet-verso.jpg",
     isPublished: true,
   },
 };
@@ -184,18 +151,22 @@ export default function EditProductForm() {
 
   // Form State
   const [name, setName] = useState("");
+  const [subtitle, setSubtitle] = useState("");
   const [sku, setSku] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [origin, setOrigin] = useState(ORIGINS[0]);
   const [description, setDescription] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [chefTip, setChefTip] = useState("");
   const [price, setPrice] = useState("6.90");
   const [comparePrice, setComparePrice] = useState("");
   const [stock, setStock] = useState("100");
   const [isPublished, setIsPublished] = useState(true);
 
-  // Image Upload
-  const [primaryImage, setPrimaryImage] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  // Cloudinary Images
+  const [rectoImage, setRectoImage] = useState<string | null>(null);
+  const [versoImage, setVersoImage] = useState<string | null>(null);
+  const [uploadingSide, setUploadingSide] = useState<"recto" | "verso" | null>(null);
 
   useEffect(() => {
     const upperId = productId.toUpperCase();
@@ -203,15 +174,19 @@ export default function EditProductForm() {
 
     if (fallback) {
       setName(fallback.name);
+      setSubtitle(fallback.subtitle || "");
       setSku(fallback.sku);
       setCategory(fallback.category);
       setOrigin(fallback.origin);
       setDescription(fallback.description);
+      setIngredients(fallback.ingredients || "");
+      setChefTip(fallback.chefTip || "");
       setPrice(fallback.price);
       setComparePrice(fallback.comparePrice);
       setStock(fallback.stock);
       setIsPublished(fallback.isPublished);
-      setPrimaryImage(fallback.image);
+      setRectoImage(fallback.image);
+      setVersoImage(fallback.imageVerso || null);
     }
 
     if (!productId) {
@@ -227,16 +202,22 @@ export default function EditProductForm() {
           const p = json?.data || json?.product;
           if (p) {
             setName(p.title || p.name || "");
+            setSubtitle(p.subtitle || "");
             setSku(p.code || p.sku || "");
             if (p.category?.name) setCategory(p.category.name);
             else if (typeof p.category === "string") setCategory(p.category);
             if (p.origin) setOrigin(p.origin);
             setDescription(p.description || "");
+            if (p.ingredients) {
+              setIngredients(Array.isArray(p.ingredients) ? p.ingredients.join(", ") : p.ingredients);
+            }
+            if (p.chefTip) setChefTip(p.chefTip);
             setPrice(p.basePrice != null ? String(p.basePrice) : "6.90");
             setComparePrice(p.baseOldPrice != null ? String(p.baseOldPrice) : "");
             setStock(p.stockQuantity != null ? String(p.stockQuantity) : "100");
             setIsPublished(p.isAvailable !== false);
-            if (p.imageRecto || p.image) setPrimaryImage(p.imageRecto || p.image);
+            if (p.imageRecto || p.image) setRectoImage(p.imageRecto || p.image);
+            if (p.imageVerso) setVersoImage(p.imageVerso);
           }
         }
       } catch (err) {
@@ -248,25 +229,31 @@ export default function EditProductForm() {
     loadProduct();
   }, [productId]);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, side: "recto" | "verso") => {
     const file = e.target.files?.[0];
     if (file) {
       const preview = URL.createObjectURL(file);
-      setPrimaryImage(preview);
-      setIsUploading(true);
+      if (side === "recto") setRectoImage(preview);
+      else setVersoImage(preview);
+
+      setUploadingSide(side);
       const form = new FormData();
       form.set("file", file);
+
       try {
         const response = await fetch("/api/admin/uploads", { method: "POST", body: form });
         const json = await response.json();
         if (!response.ok) throw new Error(json.error);
-        setPrimaryImage(json.data.url);
+
+        if (side === "recto") setRectoImage(json.data.url);
+        else setVersoImage(json.data.url);
+
         URL.revokeObjectURL(preview);
-        toast.success("Photo du produit mise à jour.");
+        toast.success(`Photo ${side === "recto" ? "Face (Recto)" : "Dos (Verso)"} mise à jour sur Cloudinary !`);
       } catch (error) {
         toast.error(error instanceof Error ? error.message : "Téléversement impossible.");
       } finally {
-        setIsUploading(false);
+        setUploadingSide(null);
       }
     }
   };
@@ -284,8 +271,17 @@ export default function EditProductForm() {
 
     setSaving(true);
     try {
+      const slug = name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
+
       const payload = {
         name: name.trim(),
+        subtitle: subtitle.trim(),
+        slug: `${slug}-100g`,
         sku: (sku.trim() || productId || `SUL-${Math.floor(100 + Math.random() * 900)}`).toUpperCase(),
         category,
         origin,
@@ -293,7 +289,10 @@ export default function EditProductForm() {
         comparePrice: comparePrice || null,
         stock: Number(stock) || 0,
         description: description.trim() || name.trim(),
-        image: primaryImage || "/images/products/sachet-poulet-recto.png",
+        ingredients: ingredients.trim(),
+        chefTip: chefTip.trim(),
+        image: rectoImage || "/images/products/epice-poulet-recto.jpg",
+        imageVerso: versoImage || null,
         isPublished,
       };
 
@@ -304,7 +303,6 @@ export default function EditProductForm() {
         body: JSON.stringify(payload),
       });
 
-      // If not found (e.g. initial item not yet in Neon DB), create it via POST
       if (response.status === 404) {
         response = await fetch("/api/admin/products", {
           method: "POST",
@@ -348,7 +346,7 @@ export default function EditProductForm() {
               Modifier l'Article {name ? `: ${name}` : ""}
             </h1>
             <p className="text-xs text-gray-500">
-              Mise à jour rapide des informations, tarifs, terroirs et stocks
+              Mise à jour des photos Cloudinary, informations, tarifs et stocks
             </p>
           </div>
         </div>
@@ -362,7 +360,7 @@ export default function EditProductForm() {
           </Link>
           <Button
             type="submit"
-            disabled={saving || isUploading}
+            disabled={saving || uploadingSide !== null}
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-full text-xs cursor-pointer shadow-sm disabled:opacity-50"
           >
             {saving ? "Enregistrement..." : "Mettre à jour"}
@@ -372,7 +370,7 @@ export default function EditProductForm() {
 
       {/* Grid: 2 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne Gauche (2/3) : Fiche Produit & Description & Photo */}
+        {/* Left Column (2/3) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
             <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
@@ -392,22 +390,36 @@ export default function EditProductForm() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="ex: Épice Spéciale Poulet & Rôtis, Poivre Noir de Penja..."
+                  placeholder="ex: Épice Spéciale Poulet & Rôtis"
                   required
                   className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
-              {/* Description & Conseils */}
+              {/* Sous-titre */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Sous-titre / Spécialité
+                </label>
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="ex: Pour Bœufs, Agneaux & Brochettes Suya"
+                  className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              {/* Description */}
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">
                   Description & Conseils d'utilisation *
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Décrivez l'épice, son profil aromatique, ses accords culinaires..."
+                  placeholder="Décrivez l'épice et son profil aromatique..."
                   required
                   className="w-full p-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
                 />
@@ -449,34 +461,52 @@ export default function EditProductForm() {
                   </select>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Photo du Produit */}
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                  Photo du Produit
-                </label>
-                <div className="border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-2xl p-6 text-center transition-all bg-gray-50/50">
-                  {primaryImage ? (
-                    <div className="space-y-3">
-                      <img
-                        src={primaryImage}
-                        alt="Aperçu produit"
-                        className="size-36 object-contain rounded-xl mx-auto border border-gray-200 shadow-2xs bg-white p-2"
-                      />
+          {/* Cloudinary Photos: Face & Dos */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <ImageIcon className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">
+                Photos du Sachet (Cloudinary)
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Photo Face (Recto) */}
+              <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50/50 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-900">Face (Recto) *</span>
+                    <span className="text-[10px] font-bold bg-primary text-white px-2 py-0.5 rounded-full">
+                      Obligatoire
+                    </span>
+                  </div>
+
+                  {rectoImage ? (
+                    <div className="space-y-2 text-center">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                        <img
+                          src={rectoImage}
+                          alt="Face Recto"
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
                       <div className="flex items-center justify-center gap-2">
                         <label className="text-xs text-emerald-600 hover:underline font-bold cursor-pointer">
-                          Changer la photo
+                          Changer
                           <input
                             type="file"
                             accept="image/*"
-                            onChange={handleImageUpload}
+                            onChange={(e) => handleImageUpload(e, "recto")}
                             className="hidden"
                           />
                         </label>
                         <span className="text-gray-300">•</span>
                         <button
                           type="button"
-                          onClick={() => setPrimaryImage(null)}
+                          onClick={() => setRectoImage(null)}
                           className="text-xs text-red-500 hover:underline font-medium"
                         >
                           Supprimer
@@ -484,22 +514,75 @@ export default function EditProductForm() {
                       </div>
                     </div>
                   ) : (
-                    <label className="cursor-pointer block space-y-2.5 py-4">
-                      <div className="size-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-                        <UploadCloud className="size-6" />
+                    <label className="cursor-pointer block border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-xl p-6 text-center transition-all bg-white">
+                      <div className="size-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2">
+                        <UploadCloud className="size-5" />
                       </div>
-                      <div>
-                        <span className="block text-xs font-bold text-gray-800">
-                          Cliquez pour ajouter la photo du produit
-                        </span>
-                        <span className="block text-[11px] text-gray-400 mt-0.5">
-                          Format JPG, PNG ou WEBP (recommandé 800×800)
-                        </span>
-                      </div>
+                      <span className="block text-xs font-bold text-gray-800">
+                        {uploadingSide === "recto" ? "Téléversement..." : "Photo de Face"}
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={handleImageUpload}
+                        onChange={(e) => handleImageUpload(e, "recto")}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              {/* Photo Dos (Verso) */}
+              <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50/50 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-900">Dos (Verso)</span>
+                    <span className="text-[10px] font-semibold text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">
+                      Facultatif
+                    </span>
+                  </div>
+
+                  {versoImage ? (
+                    <div className="space-y-2 text-center">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                        <img
+                          src={versoImage}
+                          alt="Dos Verso"
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <label className="text-xs text-emerald-600 hover:underline font-bold cursor-pointer">
+                          Changer
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e, "verso")}
+                            className="hidden"
+                          />
+                        </label>
+                        <span className="text-gray-300">•</span>
+                        <button
+                          type="button"
+                          onClick={() => setVersoImage(null)}
+                          className="text-xs text-red-500 hover:underline font-medium"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="cursor-pointer block border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-xl p-6 text-center transition-all bg-white">
+                      <div className="size-10 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center mx-auto mb-2">
+                        <UploadCloud className="size-5" />
+                      </div>
+                      <span className="block text-xs font-bold text-gray-800">
+                        {uploadingSide === "verso" ? "Téléversement..." : "Photo de Dos"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, "verso")}
                         className="hidden"
                       />
                     </label>
@@ -508,9 +591,46 @@ export default function EditProductForm() {
               </div>
             </div>
           </div>
+
+          {/* Composition & Tips */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <Leaf className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">
+                Composition & Savoir-faire Culinaire
+              </h2>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                Ingrédients 100% Naturels (séparés par des virgules)
+              </label>
+              <input
+                type="text"
+                value={ingredients}
+                onChange={(e) => setIngredients(e.target.value)}
+                placeholder="ex: Curcuma frais, Paprika doux, Gingembre sauvage, Ail, Muscade"
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5 flex items-center gap-1.5">
+                <ChefHat className="size-4 text-primary" />
+                <span>Conseil & Astuce du Chef Sulson</span>
+              </label>
+              <textarea
+                rows={2}
+                value={chefTip}
+                onChange={(e) => setChefTip(e.target.value)}
+                placeholder="ex: Massez généreusement avec un filet d'huile avant cuisson."
+                className="w-full p-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Colonne Droite (1/3) : Tarifs, Stock & Statut */}
+        {/* Right Column (1/3) */}
         <div className="space-y-6">
           {/* Card: Tarification */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
@@ -521,7 +641,7 @@ export default function EditProductForm() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Prix de Vente Réel TTC (€) *
+                Prix de Vente TTC (€) *
               </label>
               <div className="relative">
                 <input
@@ -541,7 +661,7 @@ export default function EditProductForm() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Prix barré / Référence (€)
+                Prix barré de référence (€)
               </label>
               <div className="relative">
                 <input
@@ -556,13 +676,10 @@ export default function EditProductForm() {
                   €
                 </span>
               </div>
-              <p className="text-[11px] text-gray-400 mt-1">
-                Affiché barré pour mettre en avant une réduction.
-              </p>
             </div>
           </div>
 
-          {/* Card: Stock & Logistique */}
+          {/* Card: Stock & SKU */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
               <Package className="size-5 text-emerald-600" />
@@ -610,7 +727,7 @@ export default function EditProductForm() {
             <div className="pt-2 border-t border-gray-100">
               <Button
                 type="submit"
-                disabled={saving || isUploading}
+                disabled={saving || uploadingSide !== null}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-full text-xs cursor-pointer shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <CheckCircle2 className="size-4" />

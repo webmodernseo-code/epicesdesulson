@@ -126,6 +126,7 @@ async function handleUpdate(
     where: { id: existing.id },
     data: {
       title: body.name?.trim() || body.title?.trim() || undefined,
+      subtitle: body.subtitle?.trim() || undefined,
       code: body.sku?.trim()?.toUpperCase() || undefined,
       description: body.description?.trim() || undefined,
       origin: body.origin?.trim() || undefined,

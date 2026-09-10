@@ -4,24 +4,14 @@ import { useQuickView } from "@/context/quick-view-context";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import StarRating from "@/components/common/star-rating";
 import { useCart } from "@/context/cart-context";
 import { useProductRatings } from "@/context/ratings-context";
-import { toast } from "@/lib/toast";
 
-const SPICE_FORMATS = [
-  { id: "100g", name: "Pot Verre 100g", multiplier: 1 },
-  { id: "250g", name: "Bocal 250g", multiplier: 2.3 },
-  { id: "500g", name: "Format 500g", multiplier: 4.2 },
-  { id: "1kg", name: "Grand Format 1 Kg", multiplier: 7.8 },
-];
-
-const GRIND_OPTIONS = [
-  { id: "whole", name: "Grains Entiers" },
-  { id: "coarse", name: "Concassé" },
-  { id: "fine", name: "Mouture Fine" },
+const SULSON_FORMATS = [
+  { id: "100g", name: "Sachet Kraft Zippé 100g", price: 6.90, oldPrice: 8.50 },
+  { id: "pack-4", name: "Pack Intégral 4 Saveurs 400g", price: 24.90, oldPrice: 27.60 },
 ];
 
 interface QuickViewDrawerProps {
@@ -36,8 +26,8 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
   const isOpen = propIsOpen !== undefined ? propIsOpen : contextIsOpen;
   const handleClose = propOnClose || closeQuickView;
   const [quantity, setQuantity] = useState(1);
-  const [selectedFormat, setSelectedFormat] = useState(SPICE_FORMATS[0].id);
-  const [selectedGrind, setSelectedGrind] = useState(GRIND_OPTIONS[0].id);
+  const [selectedFormat, setSelectedFormat] = useState(SULSON_FORMATS[0].id);
+  const [activeSide, setActiveSide] = useState<"recto" | "verso">("recto");
   const [isAdded, setIsAdded] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -47,8 +37,8 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
   useEffect(() => {
     if (isOpen) {
       setQuantity(1);
-      setSelectedFormat(SPICE_FORMATS[0].id);
-      setSelectedGrind(GRIND_OPTIONS[0].id);
+      setSelectedFormat(SULSON_FORMATS[0].id);
+      setActiveSide("recto");
       setIsAdded(false);
     }
   }, [isOpen, selectedProduct]);
@@ -73,26 +63,52 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
     };
   }, [isOpen, handleClose]);
 
-  const basePriceNum = typeof selectedProduct?.price === "number" 
-    ? selectedProduct.price 
-    : parseFloat(String(selectedProduct?.currentPrice || selectedProduct?.price || "16.5").replace(/[^0-9.]/g, "")) || 16.5;
+  const currentFormatObj = SULSON_FORMATS.find((f) => f.id === selectedFormat) || SULSON_FORMATS[0];
+  const calculatedPrice = currentFormatObj.price.toFixed(2);
+  const calculatedOldPrice = currentFormatObj.oldPrice.toFixed(2);
 
-  const currentMultiplier = SPICE_FORMATS.find(f => f.id === selectedFormat)?.multiplier || 1;
-  const calculatedPrice = (basePriceNum * currentMultiplier).toFixed(2);
+  // Derive product slug
+  const productSlug =
+    selectedProduct?.slug ||
+    (String(selectedProduct?.id) === "301"
+      ? "epice-poulet-100g"
+      : String(selectedProduct?.id) === "302"
+      ? "epice-viande-100g"
+      : String(selectedProduct?.id) === "303"
+      ? "epice-poisson-100g"
+      : String(selectedProduct?.id) === "304"
+      ? "secret-de-sulson-100g"
+      : "pack-integral-4-saveurs");
+
+  // Derive verso image if available
+  const versoImage =
+    selectedProduct?.imageVerso ||
+    (String(selectedProduct?.id) === "301"
+      ? "/images/products/epice-poulet-verso.jpg"
+      : String(selectedProduct?.id) === "302"
+      ? "/images/products/epice-viande-verso.jpg"
+      : String(selectedProduct?.id) === "303"
+      ? "/images/products/epice-poisson-verso.jpg"
+      : String(selectedProduct?.id) === "304"
+      ? "/images/products/epice-gourmande-verso.jpg"
+      : undefined);
+
+  const displayImage =
+    activeSide === "verso" && versoImage
+      ? versoImage
+      : selectedProduct?.image || "/images/products/pack-4-saveurs-sulson.jpg";
 
   const handleAddToCart = () => {
-    const fmt = SPICE_FORMATS.find(f => f.id === selectedFormat)?.name;
-    const grind = GRIND_OPTIONS.find(g => g.id === selectedGrind)?.name;
     addItem({
       id: `${selectedProduct?.id || 301}-${selectedFormat}`,
-      title: `${selectedProduct?.title || "Épice Sulson"} (${fmt})`,
+      title: `${selectedProduct?.title || "Épice Sulson"} (${currentFormatObj.name})`,
       currentPrice: `${calculatedPrice} €`,
+      oldPrice: `${calculatedOldPrice} €`,
       image: selectedProduct?.image || "/images/products/pack-4-saveurs-sulson.jpg",
-      pack: `${fmt} - ${grind}`,
+      pack: currentFormatObj.name,
       quantity: quantity,
     });
     setIsAdded(true);
-    toast.success(`${quantity}x ${selectedProduct?.title || "Épice"} ajouté au panier !`);
     setTimeout(() => {
       setIsAdded(false);
       handleClose();
@@ -108,7 +124,7 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs z-99"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-99"
           />
 
           {/* Drawer */}
@@ -119,53 +135,85 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 200, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.645, 0.045, 0.355, 1] }}
-            className="quick-view-sidebar fixed xl:top-[30px] xl:right-[22px] right-0 top-0 xl:h-[calc(100vh-52px)] h-full z-99 max-w-[850px] w-full bg-white xl:rounded-3xl rounded-none shadow-2xl overflow-hidden flex flex-col"
+            className="quick-view-sidebar fixed xl:top-[30px] xl:right-[22px] right-0 top-0 xl:h-[calc(100vh-52px)] h-full z-99 max-w-[850px] w-full bg-white xl:rounded-3xl rounded-none shadow-2xl overflow-hidden flex flex-col border border-gray-200"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-200 relative flex items-center justify-between bg-amber-50/40">
+            <div className="px-6 py-4 border-b border-gray-200 relative flex items-center justify-between bg-gray-50/70">
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-primary" />
-                <h5 className="font-bold text-gray-900 text-base">Aperçu Rapide de l'Épice</h5>
+                <h5 className="font-bold text-gray-900 text-sm sm:text-base">
+                  Aperçu Rapide • Les Épices de Sulson
+                </h5>
               </div>
               <button
                 onClick={handleClose}
                 aria-label="Fermer"
-                className="size-9 rounded-full bg-white hover:bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 transition"
+                className="size-9 rounded-full bg-white hover:bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 transition shadow-2xs"
               >
-                <i className="hgi hgi-stroke hgi-multiplication-sign text-xl" />
+                <i className="hgi hgi-stroke hgi-multiplication-sign text-lg" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 sm:p-8 flex-1 overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                {/* Product Image */}
+            <div className="p-6 sm:p-8 flex-1 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-start">
+                {/* Product Image Uncropped */}
                 <div className="md:col-span-5 flex flex-col items-center">
-                  <div className="w-full h-[260px] sm:h-[300px] rounded-3xl bg-amber-50/60 border border-amber-200/80 p-6 flex items-center justify-center relative shadow-sm">
-                    <span className="absolute top-3 left-3 bg-primary text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full">
-                      Grand Cru
+                  <div className="relative w-full h-[270px] sm:h-[320px] rounded-3xl bg-linear-to-b from-gray-50 to-amber-50/30 border border-gray-200 p-4 flex items-center justify-center shadow-2xs">
+                    <span className="absolute top-3 left-3 bg-primary text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full z-10">
+                      100% Naturel
                     </span>
+
+                    {versoImage && (
+                      <div className="absolute top-3 right-3 z-10 flex bg-white/90 backdrop-blur-xs rounded-full p-0.5 border border-gray-200 shadow-2xs">
+                        <button
+                          type="button"
+                          onClick={() => setActiveSide("recto")}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded-full transition-all ${
+                            activeSide === "recto"
+                              ? "bg-primary text-white"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          Face
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveSide("verso")}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded-full transition-all ${
+                            activeSide === "verso"
+                              ? "bg-primary text-white"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          Dos
+                        </button>
+                      </div>
+                    )}
+
                     <Image
-                      className="max-h-full max-w-full object-contain drop-shadow-lg"
-                      src={selectedProduct?.image || "/images/home-3/nuts.png"}
+                      className="max-h-full max-w-full object-contain drop-shadow-md"
+                      src={displayImage}
                       alt={selectedProduct?.title || "Épice Sulson"}
                       width={280}
                       height={280}
+                      unoptimized
                     />
                   </div>
-                  <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full w-full">
+
+                  <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full w-full border border-emerald-200/60">
                     <i className="hgi hgi-stroke hgi-leaf-01 text-sm text-emerald-600" />
-                    <span>Récolte 100% Naturelle</span>
+                    <span>Zéro Glutamate (Sans MSG) • 0% Sel de remplissage</span>
                   </div>
                 </div>
 
                 {/* Product Details */}
                 <div className="md:col-span-7 flex flex-col justify-start">
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-                    Les Épices de Sulson
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
+                    Terroir d'Excellence Cameroun
                   </span>
 
-                  <h4 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-2">
+                  <h4 className="text-xl sm:text-2xl font-extrabold text-gray-950 mb-2 leading-snug">
                     {selectedProduct?.title || "Épice Rare & Finesse"}
                   </h4>
 
@@ -178,10 +226,13 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
 
                   {/* Price */}
                   <div className="flex items-baseline gap-3 mb-5 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200">
-                    <span className="text-2xl font-extrabold text-primary">
+                    <span className="text-2xl font-extrabold text-gray-950">
                       {calculatedPrice} €
                     </span>
-                    <span className="text-xs font-bold text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-gray-400 line-through font-medium">
+                      {calculatedOldPrice} €
+                    </span>
+                    <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">
                       TTC
                     </span>
                   </div>
@@ -189,76 +240,67 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
                   {/* Format Selector */}
                   <div className="mb-5">
                     <label className="text-xs font-bold text-gray-900 uppercase tracking-wider block mb-2">
-                      Format / Poids :
+                      Format sélectionné :
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {SPICE_FORMATS.map((fmt) => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {SULSON_FORMATS.map((fmt) => (
                         <button
                           key={fmt.id}
                           type="button"
                           onClick={() => setSelectedFormat(fmt.id)}
-                          className={`p-2 rounded-xl text-xs font-bold border-2 transition-all text-center ${
+                          className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left flex flex-col justify-between ${
                             selectedFormat === fmt.id
-                              ? "border-primary bg-primary text-white shadow-xs"
-                              : "border-gray-200 bg-white text-gray-800 hover:border-amber-300"
+                              ? "border-primary bg-primary text-white shadow-2xs"
+                              : "border-gray-200 bg-white text-gray-800 hover:border-gray-300"
                           }`}
                         >
-                          {fmt.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Grind Selector */}
-                  <div className="mb-6">
-                    <label className="text-xs font-bold text-gray-900 uppercase tracking-wider block mb-2">
-                      Mouture :
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {GRIND_OPTIONS.map((grind) => (
-                        <button
-                          key={grind.id}
-                          type="button"
-                          onClick={() => setSelectedGrind(grind.id)}
-                          className={`p-2 rounded-xl text-xs font-bold border-2 transition-all text-center ${
-                            selectedGrind === grind.id
-                              ? "border-primary bg-primary text-white shadow-xs"
-                              : "border-gray-200 bg-white text-gray-800 hover:border-amber-300"
-                          }`}
-                        >
-                          {grind.name}
+                          <span>{fmt.name}</span>
+                          <span className={selectedFormat === fmt.id ? "text-amber-200 font-extrabold text-xs" : "text-primary font-bold text-xs"}>
+                            {fmt.price.toFixed(2)} €
+                          </span>
                         </button>
                       ))}
                     </div>
                   </div>
 
                   {/* Quantity & CTA */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between border border-gray-300 rounded-full px-3 py-1.5 w-28 shrink-0 bg-gray-50">
+                  <div className="space-y-3 pt-4 border-t border-gray-200">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between border border-gray-300 rounded-full px-3 py-1.5 w-28 shrink-0 bg-gray-50">
+                        <button
+                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                          className="font-bold text-gray-700 hover:text-primary text-base"
+                        >
+                          -
+                        </button>
+                        <span className="font-bold text-sm">{quantity}</span>
+                        <button
+                          onClick={() => setQuantity((q) => q + 1)}
+                          className="font-bold text-gray-700 hover:text-primary text-base"
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        className="font-bold text-gray-700 hover:text-primary text-base"
+                        onClick={handleAddToCart}
+                        className={`btn flex-1 py-3 px-5 rounded-full text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                          isAdded ? "bg-emerald-600 text-white" : "btn-primary text-white"
+                        }`}
                       >
-                        -
-                      </button>
-                      <span className="font-bold text-sm">{quantity}</span>
-                      <button
-                        onClick={() => setQuantity((q) => q + 1)}
-                        className="font-bold text-gray-700 hover:text-primary text-base"
-                      >
-                        +
+                        <i className="hgi hgi-stroke hgi-shopping-cart-01 text-base" />
+                        <span>{isAdded ? "Ajouté !" : "Ajouter au Panier"}</span>
                       </button>
                     </div>
 
-                    <button
-                      onClick={handleAddToCart}
-                      className={`btn flex-1 py-3 px-5 rounded-full text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 ${
-                        isAdded ? "bg-emerald-700 text-white" : "btn-primary text-white"
-                      }`}
+                    <Link
+                      href={`/products/${productSlug}`}
+                      onClick={handleClose}
+                      className="w-full py-2.5 px-4 text-center rounded-full text-xs font-bold text-gray-700 hover:text-primary hover:bg-gray-50 border border-gray-200 transition-all flex items-center justify-center gap-1.5"
                     >
-                      <i className="hgi hgi-stroke hgi-shopping-cart-01 text-base" />
-                      <span>{isAdded ? "Ajouté !" : "Ajouter au Panier"}</span>
-                    </button>
+                      <span>Consulter la fiche détaillée & recette</span>
+                      <i className="hgi hgi-stroke hgi-arrow-right-02 text-sm" />
+                    </Link>
                   </div>
                 </div>
               </div>

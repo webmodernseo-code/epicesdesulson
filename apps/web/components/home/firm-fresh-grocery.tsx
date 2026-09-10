@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/context/cart-context";
 import { useProductRatings } from "@/context/ratings-context";
 import StarRating from "@/components/common/star-rating";
@@ -19,6 +20,7 @@ const FORMAT_OPTIONS: FormatOption[] = [
 
 interface SpiceProduct {
   id: number;
+  slug: string;
   image: string;
   hoverImage?: string;
   alt: string;
@@ -35,6 +37,7 @@ interface SpiceProduct {
 const FOUR_PRODUCTS: SpiceProduct[] = [
   {
     id: 301,
+    slug: "epice-poulet-100g",
     image: "/images/products/epice-poulet-recto.jpg",
     hoverImage: "/images/products/epice-poulet-verso.jpg",
     alt: "Épice de Sulson - Poulet (Recette Authentique Cameroun)",
@@ -49,6 +52,7 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
   },
   {
     id: 302,
+    slug: "epice-viande-100g",
     image: "/images/products/epice-viande-recto.jpg",
     hoverImage: "/images/products/epice-viande-verso.jpg",
     alt: "Épice de Sulson - Viande (Recette Authentique Cameroun)",
@@ -63,6 +67,7 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
   },
   {
     id: 303,
+    slug: "epice-poisson-100g",
     image: "/images/products/epice-poisson-recto.jpg",
     hoverImage: "/images/products/epice-poisson-verso.jpg",
     alt: "Épice de Sulson - Poisson (Recette Authentique Cameroun)",
@@ -77,6 +82,7 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
   },
   {
     id: 304,
+    slug: "secret-de-sulson-100g",
     image: "/images/products/epice-gourmande-recto.jpg",
     hoverImage: "/images/products/epice-gourmande-verso.jpg",
     alt: "Épice de Sulson - Saveur Gourmande (Le Secret de Sulson)",
@@ -97,6 +103,7 @@ const FIFTH_FORMATS = [
 
 const FIFTH_PRODUCT = {
   id: 305,
+  slug: "pack-integral-4-saveurs",
   image: "/images/products/pack-4-saveurs-sulson.jpg",
   alt: "Pack Intégral 4 Saveurs Les Épices de Sulson",
   title: "Le Pack Intégral : Les 4 Saveurs Authentiques de Sulson",
@@ -119,7 +126,8 @@ function ProductCard({ product }: { product: SpiceProduct }) {
   const currentPriceNum = (product.basePrice * selectedFormat.multiplier).toFixed(2);
   const oldPriceNum = (product.baseOldPrice * selectedFormat.multiplier).toFixed(2);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
     addItem({
       id: `${product.id}-${selectedFormat.label}`,
       title: `${product.title} (${selectedFormat.label})`,
@@ -142,8 +150,11 @@ function ProductCard({ product }: { product: SpiceProduct }) {
     >
       <div className="border border-gray-200/90 rounded-2xl p-2.5 sm:p-4 bg-white hover:border-primary hover:shadow-md transition-all duration-300 h-full flex flex-col justify-between group shadow-2xs">
         <div>
-          {/* Image (Zoomed Recto / Verso on hover) */}
-          <div className="relative rounded-xl overflow-hidden mb-2 sm:mb-3 bg-gray-50/80 h-[125px] sm:h-[210px] md:h-[230px] flex items-center justify-center p-1">
+          {/* Clickable Image -> Product Detail Page */}
+          <Link
+            href={`/products/${product.slug}`}
+            className="relative rounded-xl overflow-hidden mb-2 sm:mb-3 bg-gray-50/80 h-[125px] sm:h-[210px] md:h-[230px] flex items-center justify-center p-1 cursor-pointer block"
+          >
             <span className="absolute top-2 left-2 bg-primary text-white text-[9px] sm:text-[11px] font-extrabold tracking-wider py-0.5 px-2 sm:py-1 sm:px-2.5 rounded-full shadow-xs z-10">
               100g
             </span>
@@ -169,7 +180,7 @@ function ProductCard({ product }: { product: SpiceProduct }) {
                 className="w-full h-full object-contain absolute inset-0 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-110 transition-all duration-300"
               />
             )}
-          </div>
+          </Link>
 
           {/* Catégorie Badge */}
           <div className="mb-1.5 flex items-center">
@@ -186,10 +197,15 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             </span>
           </div>
 
-          {/* Product Title */}
-          <h4 className="text-xs sm:text-base font-bold text-gray-900 line-clamp-1 mb-1" title={product.title}>
-            {product.title}
-          </h4>
+          {/* Product Title (Clickable) */}
+          <Link href={`/products/${product.slug}`}>
+            <h4
+              className="text-xs sm:text-base font-bold text-gray-900 line-clamp-1 mb-1 hover:text-primary transition-colors cursor-pointer"
+              title={product.title}
+            >
+              {product.title}
+            </h4>
+          </Link>
 
           {/* Price Section */}
           <div className="flex items-baseline gap-x-1.5 sm:gap-x-2">
@@ -228,7 +244,7 @@ function ProductCard({ product }: { product: SpiceProduct }) {
         </div>
 
         {/* Action button with direct Add to Cart (Compact on mobile) */}
-        <div className="mt-2.5 sm:mt-3 pt-1.5">
+        <div className="mt-2.5 sm:mt-3 pt-1.5 space-y-1.5">
           <motion.button
             whileTap={{ scale: 0.94 }}
             type="button"
@@ -251,6 +267,13 @@ function ProductCard({ product }: { product: SpiceProduct }) {
               </>
             )}
           </motion.button>
+
+          <Link
+            href={`/products/${product.slug}`}
+            className="block text-center text-[10px] sm:text-xs font-semibold text-gray-500 hover:text-primary transition-colors py-0.5"
+          >
+            Voir la fiche détaillée & recette →
+          </Link>
         </div>
       </div>
     </motion.div>
@@ -332,9 +355,11 @@ export default function FirmFreshGrocery() {
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-xl md:text-2xl font-bold text-gray-900 leading-snug">
-                {FIFTH_PRODUCT.title}
-              </h3>
+              <Link href={`/products/${FIFTH_PRODUCT.slug}`}>
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-gray-900 leading-snug hover:text-primary transition-colors cursor-pointer">
+                  {FIFTH_PRODUCT.title}
+                </h3>
+              </Link>
 
               <div className="flex items-center gap-x-1.5">
                 <StarRating rating={fifthRating.ratingScore} />
@@ -367,8 +392,11 @@ export default function FirmFreshGrocery() {
               </p>
             </div>
 
-            {/* Product Image */}
-            <div className="relative w-full h-[180px] sm:h-[300px] md:h-[360px] rounded-xl sm:rounded-2xl overflow-hidden bg-white p-2 border border-gray-200 shadow-2xs mb-4 sm:mb-6 group flex items-center justify-center">
+            {/* Product Image Clickable */}
+            <Link
+              href={`/products/${FIFTH_PRODUCT.slug}`}
+              className="relative w-full h-[180px] sm:h-[300px] md:h-[360px] rounded-xl sm:rounded-2xl overflow-hidden bg-white p-2 border border-gray-200 shadow-2xs mb-4 sm:mb-6 group flex items-center justify-center cursor-pointer block"
+            >
               <span className="absolute top-3 left-3 bg-primary text-white text-[10px] sm:text-xs font-bold tracking-wider py-1 px-3 rounded-full shadow-xs z-10">
                 Lot 4 x 100g
               </span>
@@ -383,9 +411,9 @@ export default function FirmFreshGrocery() {
                 <i className="hgi hgi-stroke hgi-leaf-01 text-[11px] text-emerald-400" />
                 <span>Récolte Artisanale 2026</span>
               </div>
-            </div>
+            </Link>
 
-            {/* Bottom Controls: Price, Direct Add to Cart */}
+            {/* Bottom Controls: Price, Direct Add to Cart & Full Page Link */}
             <div className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
               {/* Left: Price in Euros */}
               <div className="flex items-baseline gap-x-2 sm:gap-x-3">
@@ -400,8 +428,16 @@ export default function FirmFreshGrocery() {
                 </span>
               </div>
 
-              {/* Right: Direct Add to Cart Button */}
-              <div className="flex items-center gap-2.5 shrink-0">
+              {/* Right: Direct Add to Cart Button + Link */}
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                <Link
+                  href={`/products/${FIFTH_PRODUCT.slug}`}
+                  className="py-2 sm:py-3 px-4 rounded-full font-bold text-xs sm:text-sm text-gray-700 hover:text-primary bg-gray-50 border border-gray-200 hover:border-primary transition-all inline-flex items-center gap-1"
+                >
+                  <span>Détails & Recettes</span>
+                  <i className="hgi hgi-stroke hgi-arrow-right-02 text-xs" />
+                </Link>
+
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   type="button"

@@ -13,8 +13,9 @@ import {
   CheckCircle2, 
   Package, 
   Euro,
-  Layers,
-  Image as ImageIcon
+  Image as ImageIcon,
+  ChefHat,
+  Leaf
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -29,7 +30,11 @@ const CATEGORIES = [
 ];
 
 const ORIGINS = [
+  "Cameroun (Recette Traditionnelle)",
+  "Cameroun (Poivre de Guinée)",
+  "Cameroun (Le Secret de Sulson)",
   "Cameroun (Recette Artisanale)",
+  "Atelier Sulson (Pack Lot 4)",
   "Madagascar (Sambava / Terroir Sauvage)",
   "Cambodge (Kampot IGP)",
   "Inde (Madras / Kerala)",
@@ -42,41 +47,50 @@ export default function AddProductForm() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
 
-  // Form State (Simplifié & Essentiel)
+  // Form State
   const [name, setName] = useState("");
+  const [subtitle, setSubtitle] = useState("");
   const [sku, setSku] = useState(`SUL-${Math.floor(100 + Math.random() * 900)}`);
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [origin, setOrigin] = useState(ORIGINS[0]);
   const [description, setDescription] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [chefTip, setChefTip] = useState("");
   const [price, setPrice] = useState("6.90");
   const [comparePrice, setComparePrice] = useState("");
   const [stock, setStock] = useState("100");
-  const [lowStockThreshold, setLowStockThreshold] = useState("15");
   const [isPublished, setIsPublished] = useState(true);
 
-  // Image Upload
-  const [primaryImage, setPrimaryImage] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  // Cloudinary Images
+  const [rectoImage, setRectoImage] = useState<string | null>(null);
+  const [versoImage, setVersoImage] = useState<string | null>(null);
+  const [uploadingSide, setUploadingSide] = useState<"recto" | "verso" | null>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, side: "recto" | "verso") => {
     const file = e.target.files?.[0];
     if (file) {
       const preview = URL.createObjectURL(file);
-      setPrimaryImage(preview);
-      setIsUploading(true);
+      if (side === "recto") setRectoImage(preview);
+      else setVersoImage(preview);
+
+      setUploadingSide(side);
       const form = new FormData();
       form.set("file", file);
+
       try {
         const response = await fetch("/api/admin/uploads", { method: "POST", body: form });
         const json = await response.json();
         if (!response.ok) throw new Error(json.error);
-        setPrimaryImage(json.data.url);
+
+        if (side === "recto") setRectoImage(json.data.url);
+        else setVersoImage(json.data.url);
+
         URL.revokeObjectURL(preview);
-        toast.success("Photo du produit enregistrée.");
+        toast.success(`Photo ${side === "recto" ? "Face (Recto)" : "Dos (Verso)"} enregistrée sur Cloudinary !`);
       } catch (error) {
         toast.error(error instanceof Error ? error.message : "Téléversement impossible.");
       } finally {
-        setIsUploading(false);
+        setUploadingSide(null);
       }
     }
   };
@@ -91,18 +105,28 @@ export default function AddProductForm() {
       toast.error("Veuillez indiquer un prix valide.");
       return;
     }
-    if (!primaryImage || primaryImage.startsWith("blob:")) {
-      toast.error("Veuillez ajouter une photo du produit.");
+    if (!rectoImage || rectoImage.startsWith("blob:")) {
+      toast.error("Veuillez ajouter la photo de Face (Recto) de l'épice.");
       return;
     }
 
     setSaving(true);
     try {
+      // Create slug from name
+      const slug = name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
+
       const response = await fetch("/api/admin/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
+          subtitle: subtitle.trim(),
+          slug: `${slug}-100g`,
           sku: sku.trim(),
           category,
           origin,
@@ -111,7 +135,10 @@ export default function AddProductForm() {
           comparePrice: comparePrice || null,
           stock: Number(stock) || 0,
           description: description.trim() || name.trim(),
-          image: primaryImage,
+          image: rectoImage,
+          imageVerso: versoImage || null,
+          ingredients: ingredients.trim(),
+          chefTip: chefTip.trim(),
           isPublished,
         }),
       });
@@ -119,7 +146,7 @@ export default function AddProductForm() {
       const json = await response.json();
       if (!response.ok) throw new Error(json.error);
 
-      toast.success(`L'article "${name}" a été ajouté avec succès !`);
+      toast.success(`L'article "${name}" a été créé et sa page produit est disponible !`);
       router.push("/products");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Enregistrement impossible.");
@@ -143,7 +170,7 @@ export default function AddProductForm() {
               Ajouter un Nouvel Article
             </h1>
             <p className="text-xs text-gray-500">
-              Formulaire rapide pour ajouter une épice au catalogue
+              Téléversez vos visuels Cloudinary et publiez la nouvelle fiche produit automatiquement
             </p>
           </div>
         </div>
@@ -157,7 +184,7 @@ export default function AddProductForm() {
           </Link>
           <Button
             type="submit"
-            disabled={saving || isUploading}
+            disabled={saving || uploadingSide !== null}
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-full text-xs cursor-pointer shadow-sm disabled:opacity-50"
           >
             {saving ? "Enregistrement..." : "Publier l'article"}
@@ -167,8 +194,9 @@ export default function AddProductForm() {
 
       {/* Grid: 2 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne Gauche (2/3) : Fiche Produit & Description & Photo */}
+        {/* Left Column (2/3): Informations & Cloudinary Photos */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Main Info */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
             <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
               <Sparkles className="size-5 text-emerald-600" />
@@ -187,22 +215,36 @@ export default function AddProductForm() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="ex: Épice Spéciale Poulet & Rôtis, Poivre Noir de Penja..."
+                  placeholder="ex: Épice de Sulson - Spéciale Poulet"
                   required
                   className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
 
-              {/* Description & Conseils */}
+              {/* Sous-titre culinaire */}
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                  Description & Conseils d'utilisation *
+                  Sous-titre / Spécialité (ex: Rôtis, Grillades & Cuisses Dorées)
+                </label>
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="ex: Pour Bœufs, Agneaux & Brochettes Suya"
+                  className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              {/* Description & Histoire */}
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Description & Histoire du mélange *
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Décrivez l'épice, son profil aromatique, ses accords culinaires et la meilleure façon de la savourer..."
+                  placeholder="Décrivez l'épice, son profil aromatique et son secret de fabrication..."
                   required
                   className="w-full p-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
                 />
@@ -244,34 +286,52 @@ export default function AddProductForm() {
                   </select>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Photo du Produit */}
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                  Photo du Produit *
-                </label>
-                <div className="border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-2xl p-6 text-center transition-all bg-gray-50/50">
-                  {primaryImage ? (
-                    <div className="space-y-3">
-                      <img
-                        src={primaryImage}
-                        alt="Aperçu produit"
-                        className="size-36 object-cover rounded-xl mx-auto border border-gray-200 shadow-2xs"
-                      />
+          {/* Cloudinary Photos: Face & Dos */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <ImageIcon className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">
+                Photos du Sachet (Hébergées sur Cloudinary)
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Photo Face (Recto) */}
+              <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50/50 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-900">Face (Recto) *</span>
+                    <span className="text-[10px] font-bold bg-primary text-white px-2 py-0.5 rounded-full">
+                      Obligatoire
+                    </span>
+                  </div>
+
+                  {rectoImage ? (
+                    <div className="space-y-2 text-center">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                        <img
+                          src={rectoImage}
+                          alt="Face Recto"
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
                       <div className="flex items-center justify-center gap-2">
                         <label className="text-xs text-emerald-600 hover:underline font-bold cursor-pointer">
-                          Changer la photo
+                          Changer
                           <input
                             type="file"
                             accept="image/*"
-                            onChange={handleImageUpload}
+                            onChange={(e) => handleImageUpload(e, "recto")}
                             className="hidden"
                           />
                         </label>
                         <span className="text-gray-300">•</span>
                         <button
                           type="button"
-                          onClick={() => setPrimaryImage(null)}
+                          onClick={() => setRectoImage(null)}
                           className="text-xs text-red-500 hover:underline font-medium"
                         >
                           Supprimer
@@ -279,22 +339,81 @@ export default function AddProductForm() {
                       </div>
                     </div>
                   ) : (
-                    <label className="cursor-pointer block space-y-2.5 py-4">
-                      <div className="size-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-                        <UploadCloud className="size-6" />
+                    <label className="cursor-pointer block border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-xl p-6 text-center transition-all bg-white">
+                      <div className="size-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2">
+                        <UploadCloud className="size-5" />
                       </div>
-                      <div>
-                        <span className="block text-xs font-bold text-gray-800">
-                          Cliquez pour ajouter la photo du produit
-                        </span>
-                        <span className="block text-[11px] text-gray-400 mt-0.5">
-                          Format JPG, PNG ou WEBP (recommandé 800×800)
-                        </span>
-                      </div>
+                      <span className="block text-xs font-bold text-gray-800">
+                        {uploadingSide === "recto" ? "Téléversement..." : "Photo de Face"}
+                      </span>
+                      <span className="block text-[10px] text-gray-400 mt-0.5">
+                        JPG, PNG ou WEBP
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={handleImageUpload}
+                        onChange={(e) => handleImageUpload(e, "recto")}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              {/* Photo Dos (Verso) */}
+              <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50/50 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-900">Dos (Verso)</span>
+                    <span className="text-[10px] font-semibold text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">
+                      Facultatif
+                    </span>
+                  </div>
+
+                  {versoImage ? (
+                    <div className="space-y-2 text-center">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                        <img
+                          src={versoImage}
+                          alt="Dos Verso"
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <label className="text-xs text-emerald-600 hover:underline font-bold cursor-pointer">
+                          Changer
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e, "verso")}
+                            className="hidden"
+                          />
+                        </label>
+                        <span className="text-gray-300">•</span>
+                        <button
+                          type="button"
+                          onClick={() => setVersoImage(null)}
+                          className="text-xs text-red-500 hover:underline font-medium"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="cursor-pointer block border-2 border-dashed border-gray-200 hover:border-emerald-500 rounded-xl p-6 text-center transition-all bg-white">
+                      <div className="size-10 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center mx-auto mb-2">
+                        <UploadCloud className="size-5" />
+                      </div>
+                      <span className="block text-xs font-bold text-gray-800">
+                        {uploadingSide === "verso" ? "Téléversement..." : "Photo de Dos"}
+                      </span>
+                      <span className="block text-[10px] text-gray-400 mt-0.5">
+                        Ingrédients & Conseils
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, "verso")}
                         className="hidden"
                       />
                     </label>
@@ -303,9 +422,46 @@ export default function AddProductForm() {
               </div>
             </div>
           </div>
+
+          {/* Culinary Insights: Ingredients & Chef Tips */}
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
+              <Leaf className="size-5 text-emerald-600" />
+              <h2 className="text-sm font-bold text-gray-900">
+                Composition & Savoir-faire Culinaire
+              </h2>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                Ingrédients 100% Naturels (séparés par des virgules)
+              </label>
+              <input
+                type="text"
+                value={ingredients}
+                onChange={(e) => setIngredients(e.target.value)}
+                placeholder="ex: Curcuma frais, Paprika doux, Gingembre sauvage, Ail, Muscade, Poivre noir"
+                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1.5 flex items-center gap-1.5">
+                <ChefHat className="size-4 text-primary" />
+                <span>Conseil & Astuce du Chef Sulson</span>
+              </label>
+              <textarea
+                rows={2}
+                value={chefTip}
+                onChange={(e) => setChefTip(e.target.value)}
+                placeholder="ex: Mélangez avec un filet d'huile et du jus de citron. Massez généreusement avant de laisser reposer 30 minutes."
+                className="w-full p-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Colonne Droite (1/3) : Tarifs, Stock & Statut */}
+        {/* Right Column (1/3): Tarifs, Stock & Statut */}
         <div className="space-y-6">
           {/* Card: Tarification */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
@@ -316,7 +472,7 @@ export default function AddProductForm() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Prix de Vente Réel TTC (€) *
+                Prix de Vente TTC (€) *
               </label>
               <div className="relative">
                 <input
@@ -336,7 +492,7 @@ export default function AddProductForm() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Prix barré / Référence (€)
+                Prix barré de référence (€)
               </label>
               <div className="relative">
                 <input
@@ -351,13 +507,10 @@ export default function AddProductForm() {
                   €
                 </span>
               </div>
-              <p className="text-[11px] text-gray-400 mt-1">
-                Affiché barré pour mettre en avant une réduction.
-              </p>
             </div>
           </div>
 
-          {/* Card: Stock & Disponibilité */}
+          {/* Card: Stock & SKU */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
               <Package className="size-5 text-emerald-600" />
@@ -390,7 +543,7 @@ export default function AddProductForm() {
             </div>
           </div>
 
-          {/* Card: Statut & Mise en ligne */}
+          {/* Card: Mise en ligne */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/90 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -405,7 +558,7 @@ export default function AddProductForm() {
             <div className="pt-2 border-t border-gray-100">
               <Button
                 type="submit"
-                disabled={saving || isUploading}
+                disabled={saving || uploadingSide !== null}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-full text-xs cursor-pointer shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <CheckCircle2 className="size-4" />
