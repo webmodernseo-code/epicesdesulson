@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { OrdersService } from "@/lib/orders-service";
 import { prisma } from "@/lib/prisma";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+import { sendOrderConfirmationEmail, sendAdminNewOrderAlertEmail } from "@/lib/email";
 import { getStripeServer } from "@/lib/stripe";
 
 export async function POST(req: Request) {
@@ -247,7 +247,7 @@ export async function POST(req: Request) {
       console.warn("Could not update order payment metadata:", e);
     }
 
-    // 4. Dispatch Order Confirmation Email with PDF Invoice
+    // 4. Dispatch Order Confirmation Email to Customer with PDF Invoice
     try {
       sendOrderConfirmationEmail({
         to: order.customerEmail,
@@ -259,9 +259,22 @@ export async function POST(req: Request) {
         shippingPostal: shippingPostal || "75000",
         items: order.items,
         invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
-      }).catch((emailErr) => console.warn("Email async dispatch notice:", emailErr));
+      }).catch((emailErr) => console.warn("Email async dispatch notice (customer):", emailErr));
+
+      // Dispatch New Order Alert Email to Merchant / Admin
+      sendAdminNewOrderAlertEmail({
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        customerPhone: customerPhone,
+        totalAmount: order.totalAmount,
+        paymentMethod: paymentMethod,
+        shippingAddress: `${shippingStreet}, ${shippingPostal || ""} ${shippingCity || "France"}`,
+        items: order.items,
+        dashboardUrl: `https://epicesdesulson.com/orders`,
+      }).catch((emailErr) => console.warn("Email async dispatch notice (admin):", emailErr));
     } catch (e) {
-      console.warn("Could not trigger confirmation email:", e);
+      console.warn("Could not trigger confirmation / admin emails:", e);
     }
 
     return NextResponse.json({

@@ -62,6 +62,36 @@ export async function GET(req: Request) {
             if (capture.status === "COMPLETED" && matchingOrder) {
               const captureId = capture.purchase_units?.[0]?.payments?.captures?.[0]?.id;
               await OrdersService.markOrderPaid(orderNumber, captureId);
+
+              // Dispatch Confirmation Email to Customer
+              try {
+                const { sendOrderConfirmationEmail, sendAdminNewOrderAlertEmail } = await import("@/lib/email");
+                sendOrderConfirmationEmail({
+                  to: matchingOrder.customerEmail,
+                  customerName: matchingOrder.customerName,
+                  orderNumber: matchingOrder.orderNumber,
+                  totalAmount: Number(matchingOrder.totalAmount),
+                  shippingStreet: matchingOrder.shippingStreet,
+                  shippingCity: matchingOrder.shippingCity,
+                  shippingPostal: matchingOrder.shippingPostal,
+                  invoiceUrl: `${origin}/api/orders/${matchingOrder.orderNumber}/invoice`,
+                }).catch(() => {});
+
+                // Dispatch Alert Email to Merchant / Admin
+                sendAdminNewOrderAlertEmail({
+                  orderNumber: matchingOrder.orderNumber,
+                  customerName: matchingOrder.customerName,
+                  customerEmail: matchingOrder.customerEmail,
+                  customerPhone: matchingOrder.customerPhone || undefined,
+                  totalAmount: Number(matchingOrder.totalAmount),
+                  paymentMethod: "PayPal",
+                  shippingAddress: `${matchingOrder.shippingStreet}, ${matchingOrder.shippingPostal} ${matchingOrder.shippingCity}`,
+                  dashboardUrl: "https://epicesdesulson.com/orders",
+                }).catch(() => {});
+              } catch (mailErr) {
+                console.warn("PayPal emails dispatch notice:", mailErr);
+              }
+
               return NextResponse.redirect(
                 `${origin}/checkout/success?orderNumber=${encodeURIComponent(orderNumber)}&provider=paypal`
               );

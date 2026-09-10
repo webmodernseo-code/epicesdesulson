@@ -577,3 +577,169 @@ export async function sendOrderStatusUpdateEmail({
       return { success: true };
   }
 }
+
+// ── 7. NOTIFICATION NOUVELLE COMMANDE POUR L'ADMINISTRATEUR / GÉRANTE ──
+export async function sendAdminNewOrderAlertEmail({
+  to,
+  orderNumber,
+  customerName,
+  customerEmail,
+  customerPhone,
+  totalAmount,
+  paymentMethod,
+  shippingAddress,
+  items = [],
+  dashboardUrl = "https://epicesdesulson.com/orders",
+}: {
+  to?: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  totalAmount: number;
+  paymentMethod: string;
+  shippingAddress?: string;
+  items?: OrderItemSummary[];
+  dashboardUrl?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const smtp = await getSmtpTransporter();
+    const recipient = to || process.env.ADMIN_EMAIL || process.env.SMTP_USER || "contact@epicesdesulson.com";
+
+    const itemsHtml = items.length > 0
+      ? `
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin: 16px 0;">
+          <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 700; color: #0f172a;">Articles commandés :</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #334155;">
+            ${items.map(it => `<li style="margin-bottom: 4px;"><strong>${it.quantity}x</strong> ${it.productName} <em>(${it.formatLabel})</em></li>`).join("")}
+          </ul>
+        </div>
+      `
+      : "";
+
+    const bodyHtml = `
+      <div style="border-left: 4px solid #047857; padding-left: 14px; margin-bottom: 20px;">
+        <span style="font-size: 11px; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 1px;">Alerte Boutique En Direct</span>
+        <h1 style="margin: 4px 0 0 0; font-size: 21px; font-weight: 700; color: #0f172a;">Nouvelle commande reçue #${orderNumber}</h1>
+      </div>
+
+      <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 22px; color: #475569;">
+        Un client vient de finaliser un achat sur votre boutique en ligne.
+      </p>
+
+      <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 18px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; color: #334155;">
+          <tr>
+            <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Client :</td>
+            <td style="padding: 4px 0; font-weight: 700; color: #0f172a; text-align: right;">${customerName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 0; font-weight: 600; color: #64748b;">E-mail :</td>
+            <td style="padding: 4px 0; text-align: right;"><a href="mailto:${customerEmail}" style="color: #047857; text-decoration: none;">${customerEmail}</a></td>
+          </tr>
+          ${customerPhone ? `
+          <tr>
+            <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Téléphone :</td>
+            <td style="padding: 4px 0; text-align: right;">${customerPhone}</td>
+          </tr>
+          ` : ""}
+          <tr>
+            <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Montant encaissé :</td>
+            <td style="padding: 4px 0; font-weight: 800; color: #047857; font-size: 15px; text-align: right;">${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalAmount)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Moyen de paiement :</td>
+            <td style="padding: 4px 0; text-align: right; text-transform: uppercase; font-weight: 600;">${paymentMethod}</td>
+          </tr>
+          ${shippingAddress ? `
+          <tr>
+            <td style="padding: 4px 0; font-weight: 600; color: #64748b;">Adresse de livraison :</td>
+            <td style="padding: 4px 0; text-align: right;">${shippingAddress}</td>
+          </tr>
+          ` : ""}
+        </table>
+      </div>
+
+      ${itemsHtml}
+
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${dashboardUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 30px; border-radius: 12px; box-shadow: 0 2px 6px rgba(4,120,87,0.25);">
+          Ouvrir la commande dans le Cockpit
+        </a>
+      </div>
+    `;
+
+    const fullHtml = buildEmailTemplate({
+      title: `Nouvelle commande #${orderNumber}`,
+      preheader: `Montant : ${totalAmount.toFixed(2)} € par ${customerName}`,
+      contentHtml: bodyHtml,
+    });
+
+    if (!smtp) {
+      console.log(`[Alerte Admin simulée] Nouvelle commande #${orderNumber} par ${customerName} (${totalAmount} €)`);
+      return { success: true };
+    }
+
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
+      to: recipient,
+      subject: `[Nouvelle Commande] #${orderNumber} reçue (${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(totalAmount)}) - Les Épices de Sulson`,
+      html: fullHtml,
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.warn("Erreur alerte email admin:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// ── 8. MESSAGE DIRECT AU CLIENT DEPUIS LE DESK SUPPORT ──
+export async function sendCustomerDirectMessageEmail({
+  to,
+  customerName,
+  subject,
+  message,
+}: {
+  to: string;
+  customerName: string;
+  subject: string;
+  message: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const smtp = await getSmtpTransporter();
+
+    const bodyHtml = `
+      <h2 style="margin: 0 0 14px 0; font-size: 19px; color: #0f172a;">Bonjour ${customerName || "Gourmet"},</h2>
+      <div style="font-size: 14px; line-height: 24px; color: #334155; margin-bottom: 24px; white-space: pre-line;">
+        ${message}
+      </div>
+      <div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 24px; font-size: 12px; color: #64748b;">
+        <p style="margin: 0 0 4px 0;"><strong>L'équipe Les Épices de Sulson</strong></p>
+        <p style="margin: 0;">Besoin d'un conseil ? Répondez simplement à cet e-mail ou écrivez-nous sur WhatsApp.</p>
+      </div>
+    `;
+
+    const fullHtml = buildEmailTemplate({
+      title: subject,
+      preheader: "Message du service client Les Épices de Sulson",
+      contentHtml: bodyHtml,
+    });
+
+    if (!smtp) {
+      console.log(`[Message direct simulé envoyé à ${to}] : ${message}`);
+      return { success: true };
+    }
+
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
+      to,
+      subject: `${subject} - Les Épices de Sulson`,
+      html: fullHtml,
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
