@@ -219,6 +219,56 @@ export const SULSON_CATALOGUE: SulsonProductModel[] = [
   },
 ];
 
+// Helper to normalize and resolve valid product images (local or Cloudinary)
+export function resolveValidProductImage(
+  imagePath?: string | null,
+  code?: string,
+  slug?: string,
+  isVerso: boolean = false
+): string {
+  if (imagePath && (imagePath.startsWith("http://") || imagePath.startsWith("https://"))) {
+    return imagePath;
+  }
+
+  // If already a valid known static image
+  const knownImages = [
+    "/images/products/epice-poulet-recto.jpg",
+    "/images/products/epice-poulet-verso.jpg",
+    "/images/products/epice-viande-recto.jpg",
+    "/images/products/epice-viande-verso.jpg",
+    "/images/products/epice-poisson-recto.jpg",
+    "/images/products/epice-poisson-verso.jpg",
+    "/images/products/epice-gourmande-recto.jpg",
+    "/images/products/epice-gourmande-verso.jpg",
+    "/images/products/pack-4-saveurs-sulson.jpg",
+  ];
+
+  if (imagePath && knownImages.includes(imagePath)) {
+    return imagePath;
+  }
+
+  const normalizedCode = (code || "").toUpperCase();
+  const normalizedSlug = (slug || "").toLowerCase();
+
+  if (normalizedCode === "SUL-301" || normalizedSlug.includes("poulet") || normalizedSlug === "301") {
+    return isVerso ? "/images/products/epice-poulet-verso.jpg" : "/images/products/epice-poulet-recto.jpg";
+  }
+  if (normalizedCode === "SUL-302" || normalizedSlug.includes("viande") || normalizedSlug === "302") {
+    return isVerso ? "/images/products/epice-viande-verso.jpg" : "/images/products/epice-viande-recto.jpg";
+  }
+  if (normalizedCode === "SUL-303" || normalizedSlug.includes("poisson") || normalizedSlug === "303") {
+    return isVerso ? "/images/products/epice-poisson-verso.jpg" : "/images/products/epice-poisson-recto.jpg";
+  }
+  if (normalizedCode === "SUL-304" || normalizedSlug.includes("gourmande") || normalizedSlug.includes("secret") || normalizedSlug === "304") {
+    return isVerso ? "/images/products/epice-gourmande-verso.jpg" : "/images/products/epice-gourmande-recto.jpg";
+  }
+  if (normalizedCode === "SUL-305" || normalizedSlug.includes("pack") || normalizedSlug === "305") {
+    return isVerso ? "/images/products/epice-poulet-verso.jpg" : "/images/products/pack-4-saveurs-sulson.jpg";
+  }
+
+  return isVerso ? "/images/products/epice-poulet-verso.jpg" : "/images/products/pack-4-saveurs-sulson.jpg";
+}
+
 export class ProductsService {
   static async getAllProducts(): Promise<SulsonProductModel[]> {
     try {
@@ -234,7 +284,12 @@ export class ProductsService {
 
         if (dbProducts && dbProducts.length > 0) {
           return dbProducts.map((p) => {
-            const fallback = SULSON_CATALOGUE.find((c) => c.code === p.code || c.id === p.id);
+            const fallback = SULSON_CATALOGUE.find(
+              (c) =>
+                c.code.toUpperCase() === p.code?.toUpperCase() ||
+                c.id === p.id ||
+                c.slug === p.slug
+            );
             return {
               id: p.id,
               slug: p.slug || fallback?.slug || p.id,
@@ -244,14 +299,14 @@ export class ProductsService {
               category: p.category?.name || fallback?.category || "Épices Sulson",
               description: p.description,
               longDescription: fallback?.longDescription || p.description,
-              origin: p.origin,
-              basePrice: Number(p.basePrice),
+              origin: p.origin || fallback?.origin || "Cameroun (Recette Traditionnelle)",
+              basePrice: Number(p.basePrice) || fallback?.basePrice || 6.9,
               baseOldPrice: p.baseOldPrice ? Number(p.baseOldPrice) : fallback?.baseOldPrice,
-              ratingScore: Number(p.ratingScore),
-              ratingCount: p.ratingCount,
-              imageRecto: p.imageRecto,
-              imageVerso: p.imageVerso || fallback?.imageVerso,
-              isPack: p.code === "SUL-305",
+              ratingScore: Number(p.ratingScore) || fallback?.ratingScore || 4.9,
+              ratingCount: p.ratingCount || fallback?.ratingCount || 180,
+              imageRecto: resolveValidProductImage(p.imageRecto, p.code, p.slug || fallback?.slug, false),
+              imageVerso: resolveValidProductImage(p.imageVerso, p.code, p.slug || fallback?.slug, true),
+              isPack: p.code === "SUL-305" || p.slug?.includes("pack"),
               ingredients: fallback?.ingredients || ["100% Épices pures du Cameroun", "Sans conservateur", "Sans MSG"],
               healthBenefits: fallback?.healthBenefits || ["100% Naturel", "Sans additif", "Sans MSG"],
               chefTip: fallback?.chefTip || "Assaisonnez 20 minutes avant cuisson pour libérer tous les arômes.",
@@ -264,7 +319,7 @@ export class ProductsService {
                     price: Number(f.price),
                     oldPrice: f.oldPrice ? Number(f.oldPrice) : undefined,
                   }))
-                : (fallback?.formats || [{ label: "100g", weightGrams: 100, multiplier: 1, price: Number(p.basePrice) }]),
+                : (fallback?.formats || [{ label: "100g", weightGrams: 100, multiplier: 1, price: Number(p.basePrice) || 6.9 }]),
             };
           });
         }
@@ -278,13 +333,18 @@ export class ProductsService {
   static async getProductBySlug(slug: string): Promise<SulsonProductModel | null> {
     const cleanSlug = slug.toLowerCase().trim();
     
-    // Check static catalogue first by slug or ID
+    // Check static catalogue first by slug or ID or partial match
     const foundStatic = SULSON_CATALOGUE.find(
       (p) =>
         p.slug.toLowerCase() === cleanSlug ||
         p.id === cleanSlug ||
         p.code.toLowerCase() === cleanSlug ||
-        p.code.toLowerCase() === `sul-${cleanSlug}`
+        p.code.toLowerCase() === `sul-${cleanSlug}` ||
+        (cleanSlug.includes("poulet") && p.slug.includes("poulet")) ||
+        (cleanSlug.includes("viande") && p.slug.includes("viande")) ||
+        (cleanSlug.includes("poisson") && p.slug.includes("poisson")) ||
+        ((cleanSlug.includes("gourmande") || cleanSlug.includes("secret")) && p.slug.includes("secret")) ||
+        (cleanSlug.includes("pack") && p.slug.includes("pack"))
     );
     if (foundStatic) return foundStatic;
 
@@ -318,14 +378,14 @@ export class ProductsService {
             category: dbProduct.category?.name || fallback?.category || "Épices Sulson",
             description: dbProduct.description,
             longDescription: fallback?.longDescription || dbProduct.description,
-            origin: dbProduct.origin,
-            basePrice: Number(dbProduct.basePrice),
+            origin: dbProduct.origin || fallback?.origin || "Cameroun (Recette Traditionnelle)",
+            basePrice: Number(dbProduct.basePrice) || fallback?.basePrice || 6.9,
             baseOldPrice: dbProduct.baseOldPrice ? Number(dbProduct.baseOldPrice) : fallback?.baseOldPrice,
-            ratingScore: Number(dbProduct.ratingScore),
-            ratingCount: dbProduct.ratingCount,
-            imageRecto: dbProduct.imageRecto,
-            imageVerso: dbProduct.imageVerso || fallback?.imageVerso,
-            isPack: dbProduct.code === "SUL-305",
+            ratingScore: Number(dbProduct.ratingScore) || fallback?.ratingScore || 4.9,
+            ratingCount: dbProduct.ratingCount || fallback?.ratingCount || 180,
+            imageRecto: resolveValidProductImage(dbProduct.imageRecto, dbProduct.code, dbProduct.slug || fallback?.slug, false),
+            imageVerso: resolveValidProductImage(dbProduct.imageVerso, dbProduct.code, dbProduct.slug || fallback?.slug, true),
+            isPack: dbProduct.code === "SUL-305" || dbProduct.slug?.includes("pack"),
             ingredients: fallback?.ingredients || ["100% Épices pures du Cameroun", "Sans conservateur", "Sans MSG"],
             healthBenefits: fallback?.healthBenefits || ["100% Naturel", "Sans additif", "Sans MSG"],
             chefTip: fallback?.chefTip || "Assaisonnez 20 minutes avant cuisson pour libérer tous les arômes.",
@@ -338,7 +398,7 @@ export class ProductsService {
                   price: Number(f.price),
                   oldPrice: f.oldPrice ? Number(f.oldPrice) : undefined,
                 }))
-              : (fallback?.formats || [{ label: "100g", weightGrams: 100, multiplier: 1, price: Number(dbProduct.basePrice) }]),
+              : (fallback?.formats || [{ label: "100g", weightGrams: 100, multiplier: 1, price: Number(dbProduct.basePrice) || 6.9 }]),
           };
         }
       }

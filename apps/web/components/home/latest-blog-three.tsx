@@ -277,11 +277,11 @@ export default function LatestBlogThree() {
                 >
                   {/* Text Content Column */}
                   <div className="w-full lg:w-7/12 flex flex-col items-start justify-center">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xs font-bold text-emerald-900 bg-emerald-50 border border-emerald-200/80 px-3.5 py-1 rounded-full shadow-2xs">
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span className="text-xs font-bold text-emerald-900 bg-emerald-50 border border-emerald-200/80 px-3.5 py-1 rounded-full shadow-2xs whitespace-nowrap">
                         {guide.category}
                       </span>
-                      <span className="text-xs font-semibold text-gray-400">
+                      <span className="text-xs font-semibold text-gray-400 whitespace-nowrap">
                         • 100% Naturel
                       </span>
                     </div>
@@ -318,11 +318,11 @@ export default function LatestBlogThree() {
                     )}
 
                     {/* Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3 w-full">
                       <button
                         type="button"
                         onClick={() => setSelectedArticle(guide)}
-                        className="btn btn-primary text-white font-bold text-xs sm:text-sm rounded-full py-3 px-6 inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                        className="btn btn-primary text-white font-bold text-xs sm:text-sm rounded-full py-3 px-6 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap flex-1 sm:flex-none"
                       >
                         <span>Découvrir la recette complète</span>
                         <i className="hgi hgi-stroke hgi-arrow-right-02 text-base" />
@@ -330,7 +330,7 @@ export default function LatestBlogThree() {
 
                       <Link
                         href={`/products/${guide.slug}`}
-                        className="py-3 px-5 text-xs sm:text-sm font-bold text-gray-700 bg-white border border-gray-300 hover:border-primary hover:text-primary rounded-full transition-all inline-flex items-center gap-1.5"
+                        className="py-3 px-5 text-xs sm:text-sm font-bold text-gray-700 bg-white border border-gray-300 hover:border-primary hover:text-primary rounded-full transition-all inline-flex items-center justify-center gap-1.5 whitespace-nowrap flex-1 sm:flex-none"
                       >
                         <i className="hgi hgi-stroke hgi-shopping-bag-01 text-sm" />
                         <span>Fiche Produit (6,90 €)</span>

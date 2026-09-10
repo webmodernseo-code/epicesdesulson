@@ -76,7 +76,7 @@ async function main() {
   const prodPoulet = await prisma.product.create({
     data: {
       code: "SUL-301",
-      slug: "epice-sulson-speciale-poulet",
+      slug: "epice-poulet-100g",
       title: "Épice de Sulson - Spéciale Poulet",
       subtitle: "L'art de sublimer vos volailles",
       description: "Un mélange secret d'épices nobles, herbes aromatiques et écorces rares, spécialement dosé pour révéler la tendreté et les sucs naturels des volailles, poulets braisés, rôtis et marinades traditionnelles.",
@@ -85,8 +85,8 @@ async function main() {
       baseOldPrice: 8.50,
       ratingScore: 4.95,
       ratingCount: 248,
-      imageRecto: "/images/products/sachet-poulet-recto.png",
-      imageVerso: "/images/products/sachet-poulet-verso.png",
+      imageRecto: "/images/products/epice-poulet-recto.jpg",
+      imageVerso: "/images/products/epice-poulet-verso.jpg",
       isFeatured: true,
       categoryId: catPoulet.id,
       formats: {
@@ -101,7 +101,7 @@ async function main() {
   const prodViande = await prisma.product.create({
     data: {
       code: "SUL-302",
-      slug: "epice-sulson-speciale-viande",
+      slug: "epice-viande-100g",
       title: "Épice de Sulson - Spéciale Viande",
       subtitle: "Puissance et caractère pour vos viandes rouges",
       description: "Une sélection rigoureuse d'épices torréfiées et poivres de terroir conférant une note fumée, profonde et chaleureuse à vos viandes rouges, gibiers, grillades au barbecue et ragoûts mijotés.",
@@ -110,8 +110,8 @@ async function main() {
       baseOldPrice: 8.50,
       ratingScore: 4.92,
       ratingCount: 196,
-      imageRecto: "/images/products/sachet-viande-recto.png",
-      imageVerso: "/images/products/sachet-viande-verso.png",
+      imageRecto: "/images/products/epice-viande-recto.jpg",
+      imageVerso: "/images/products/epice-viande-verso.jpg",
       isFeatured: true,
       categoryId: catViande.id,
       formats: {
@@ -126,7 +126,7 @@ async function main() {
   const prodPoisson = await prisma.product.create({
     data: {
       code: "SUL-303",
-      slug: "epice-sulson-speciale-poisson",
+      slug: "epice-poisson-100g",
       title: "Épice de Sulson - Spéciale Poisson",
       subtitle: "L'élégance iodée et zestée",
       description: "Une alchimie fine d'épices douces, d'herbes côtières et de notes d'agrumes, conçue pour magnifier la délicatesse des poissons blancs, saumons, papillotes, crustacés et sauces marinières.",
@@ -135,8 +135,8 @@ async function main() {
       baseOldPrice: 8.50,
       ratingScore: 4.96,
       ratingCount: 178,
-      imageRecto: "/images/products/sachet-poisson-recto.png",
-      imageVerso: "/images/products/sachet-poisson-verso.png",
+      imageRecto: "/images/products/epice-poisson-recto.jpg",
+      imageVerso: "/images/products/epice-poisson-verso.jpg",
       isFeatured: true,
       categoryId: catPoisson.id,
       formats: {
@@ -151,7 +151,7 @@ async function main() {
   const prodGourmande = await prisma.product.create({
     data: {
       code: "SUL-304",
-      slug: "epice-sulson-saveur-gourmande",
+      slug: "secret-de-sulson-100g",
       title: "Épice de Sulson - Saveur Gourmande",
       subtitle: "La signature aromatique universelle",
       description: "La création signature polyvalente de la Maison Sulson. Un équilibre parfait pour rehausser légumes sautés, féculents, soupes, sauces onctueuses et créations culinaires du quotidien.",
@@ -160,8 +160,8 @@ async function main() {
       baseOldPrice: 8.50,
       ratingScore: 4.98,
       ratingCount: 312,
-      imageRecto: "/images/products/sachet-gourmande-recto.png",
-      imageVerso: "/images/products/sachet-gourmande-verso.png",
+      imageRecto: "/images/products/epice-gourmande-recto.jpg",
+      imageVerso: "/images/products/epice-gourmande-verso.jpg",
       isFeatured: true,
       categoryId: catSignature.id,
       formats: {
@@ -176,7 +176,7 @@ async function main() {
   const prodPack = await prisma.product.create({
     data: {
       code: "SUL-305",
-      slug: "le-pack-integral-4-saveurs-sulson",
+      slug: "pack-integral-4-saveurs",
       title: "Le Pack Intégral : 4 Saveurs Authentiques",
       subtitle: "Le coffret prestige regroupant toute la collection Sulson",
       description: "Le coffret indispensable pour tout amateur de haute gastronomie épicée. Réunit les 4 créations emblématiques Sulson (Poulet, Viande, Poisson & Gourmande) pour une palette gustative complète.",
@@ -185,8 +185,8 @@ async function main() {
       baseOldPrice: 27.60,
       ratingScore: 5.00,
       ratingCount: 420,
-      imageRecto: "/images/products/pack-4-saveurs.png",
-      imageVerso: "/images/products/pack-4-saveurs.png",
+      imageRecto: "/images/products/pack-4-saveurs-sulson.jpg",
+      imageVerso: "/images/products/epice-poulet-verso.jpg",
       isFeatured: true,
       categoryId: catPacks.id,
       formats: {

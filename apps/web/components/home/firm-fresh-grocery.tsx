@@ -183,8 +183,8 @@ function ProductCard({ product }: { product: SpiceProduct }) {
           </Link>
 
           {/* Catégorie Badge */}
-          <div className="mb-1.5 flex items-center">
-            <span className="text-[9px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-50/90 border border-emerald-200/60 px-2 py-0.5 rounded-md truncate">
+          <div className="mb-1.5 flex items-center overflow-hidden">
+            <span className="text-[9px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-50/90 border border-emerald-200/60 px-2 py-0.5 rounded-md truncate whitespace-nowrap max-w-full">
               {product.category}
             </span>
           </div>
@@ -192,7 +192,7 @@ function ProductCard({ product }: { product: SpiceProduct }) {
           {/* Dynamic Rating Section */}
           <div className="rating-section flex items-center mb-1 scale-90 sm:scale-100 origin-left">
             <StarRating rating={ratingStat.ratingScore} />
-            <span className="text-[10px] sm:text-xs text-gray-600 ml-1.5 font-semibold">
+            <span className="text-[10px] sm:text-xs text-gray-600 ml-1.5 font-semibold whitespace-nowrap">
               {ratingStat.ratingScore.toFixed(1)} ({ratingStat.ratingCount} avis)
             </span>
           </div>
@@ -209,17 +209,17 @@ function ProductCard({ product }: { product: SpiceProduct }) {
 
           {/* Price Section */}
           <div className="flex items-baseline gap-x-1.5 sm:gap-x-2">
-            <span className="text-sm sm:text-xl font-extrabold text-gray-950">
+            <span className="text-sm sm:text-xl font-extrabold text-gray-950 whitespace-nowrap">
               {currentPriceNum} €
             </span>
-            <span className="text-[11px] sm:text-xs text-gray-400 line-through font-medium">
+            <span className="text-[11px] sm:text-xs text-gray-400 line-through font-medium whitespace-nowrap">
               {oldPriceNum} €
             </span>
           </div>
 
           {/* Terroir d'origine & Poids */}
           <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col gap-y-1">
-            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-600">
+            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-600 overflow-hidden">
               <svg
                 className="size-3 text-emerald-600 shrink-0"
                 viewBox="0 0 24 24"
@@ -232,7 +232,7 @@ function ProductCard({ product }: { product: SpiceProduct }) {
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                 <circle cx="12" cy="10" r="3" />
               </svg>
-              <span className="truncate font-medium text-gray-700">
+              <span className="truncate font-medium text-gray-700 block max-w-full">
                 <strong className="font-semibold text-gray-900">Terroir :</strong> {product.origin}
               </span>
             </div>
@@ -258,12 +258,12 @@ function ProductCard({ product }: { product: SpiceProduct }) {
             {isAdded ? (
               <>
                 <i className="hgi hgi-stroke hgi-tick-double-02 text-xs sm:text-sm text-white animate-bounce" />
-                <span>Ajouté !</span>
+                <span className="whitespace-nowrap">Ajouté !</span>
               </>
             ) : (
               <>
                 <i className="hgi hgi-stroke hgi-shopping-cart-02 text-xs sm:text-sm text-white" />
-                <span>Ajouter au panier</span>
+                <span className="whitespace-nowrap">Ajouter au panier</span>
               </>
             )}
           </motion.button>
@@ -344,13 +344,13 @@ export default function FirmFreshGrocery() {
             {/* Top Header: Badge, Title, Rating, Description */}
             <div className="mb-4 sm:mb-5 flex flex-col gap-y-2">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-primary text-white py-0.5 px-2.5 rounded-full shadow-2xs">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-primary text-white py-0.5 px-2.5 rounded-full shadow-2xs whitespace-nowrap">
                   Sélection Prestige
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-100/90 border border-emerald-200/80 py-0.5 px-2.5 rounded-full">
+                <span className="text-[10px] sm:text-[11px] font-semibold text-emerald-800 bg-emerald-100/90 border border-emerald-200/80 py-0.5 px-2.5 rounded-full whitespace-nowrap">
                   {FIFTH_PRODUCT.category}
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-bold bg-amber-100 text-amber-900 py-0.5 px-2 rounded-full">
+                <span className="text-[10px] sm:text-[11px] font-bold bg-amber-100 text-amber-900 py-0.5 px-2 rounded-full whitespace-nowrap">
                   Économisez 15%
                 </span>
               </div>

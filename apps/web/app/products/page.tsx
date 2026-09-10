@@ -54,7 +54,7 @@ export default async function ProductsCataloguePage() {
                   className="relative w-full aspect-square bg-gray-50/80 p-8 flex items-center justify-center overflow-hidden cursor-pointer"
                 >
                   {isPack && (
-                    <span className="absolute top-4 left-4 z-10 bg-emerald-700 text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs">
+                    <span className="absolute top-4 left-4 z-10 bg-emerald-700 text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs whitespace-nowrap">
                       ⭐ Pack Recommandé (Économisez 3 €)
                     </span>
                   )}
@@ -62,19 +62,20 @@ export default async function ProductsCataloguePage() {
                     src={product.imageRecto}
                     alt={product.title}
                     fill
+                    unoptimized
                     className="object-contain p-6 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </Link>
 
                 {/* Content */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                      <span className="font-bold text-emerald-800 uppercase tracking-wider">
+                    <div className="flex flex-wrap items-center justify-between text-xs text-gray-500 gap-1.5 mb-2">
+                      <span className="font-bold text-emerald-800 uppercase tracking-wider whitespace-nowrap">
                         {product.category}
                       </span>
-                      <span className="font-semibold text-gray-400">
+                      <span className="font-semibold text-gray-400 whitespace-nowrap">
                         {product.origin}
                       </span>
                     </div>
@@ -89,12 +90,12 @@ export default async function ProductsCataloguePage() {
                       {product.description}
                     </p>
 
-                    <div className="flex items-center gap-2 mb-4">
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
                       <StarRating rating={product.ratingScore} />
-                      <span className="text-xs font-bold text-gray-900">
+                      <span className="text-xs font-bold text-gray-900 whitespace-nowrap">
                         {product.ratingScore.toFixed(1)}/5
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-gray-400 whitespace-nowrap">
                         ({product.ratingCount} avis)
                       </span>
                     </div>
@@ -104,23 +105,23 @@ export default async function ProductsCataloguePage() {
                   <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                     <div>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-xl font-black text-gray-950">
+                        <span className="text-xl font-black text-gray-950 whitespace-nowrap">
                           {product.basePrice.toFixed(2)} €
                         </span>
                         {product.baseOldPrice && (
-                          <span className="text-xs text-gray-400 line-through">
+                          <span className="text-xs text-gray-400 line-through whitespace-nowrap">
                             {product.baseOldPrice.toFixed(2)} €
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-gray-500">
+                      <span className="text-[11px] text-gray-500 whitespace-nowrap">
                         {product.formats[0]?.label || "100g"}
                       </span>
                     </div>
 
                     <Link
                       href={`/products/${product.slug}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gray-900 hover:bg-emerald-700 text-white text-xs font-bold transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gray-900 hover:bg-emerald-700 text-white text-xs font-bold transition-colors shadow-2xs whitespace-nowrap"
                     >
                       <ShoppingBag className="w-3.5 h-3.5" />
                       <span>Commander</span>

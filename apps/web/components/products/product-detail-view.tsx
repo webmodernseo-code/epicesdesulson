@@ -41,8 +41,16 @@ export default function ProductDetailView({
   const ratingData = getRating(Number(product.id) || 301);
 
   // Gallery state (switch between Recto / Verso)
-  const [selectedImage, setSelectedImage] = useState<string>(product.imageRecto);
+  const [selectedImage, setSelectedImage] = useState<string>(
+    product.imageRecto || "/images/products/pack-4-saveurs-sulson.jpg"
+  );
   const [activeSide, setActiveSide] = useState<"recto" | "verso">("recto");
+
+  // Keep gallery image synchronized when product prop changes
+  React.useEffect(() => {
+    setSelectedImage(product.imageRecto || "/images/products/pack-4-saveurs-sulson.jpg");
+    setActiveSide("recto");
+  }, [product.imageRecto, product.id]);
 
   // Selected format
   const [selectedFormat, setSelectedFormat] = useState(
@@ -126,21 +134,21 @@ export default function ProductDetailView({
         </div>
       </div>
 
-      <div className="container pt-8 sm:pt-12">
+      <div className="container pt-6 sm:pt-12">
         {/* ── Main Product Presentation Section ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* ── Left Column: Media Gallery (Recto / Verso with ZERO zoom-crop) ── */}
           <div className="lg:col-span-6 flex flex-col gap-4">
             {/* Main Stage Image Container */}
-            <div className="relative w-full aspect-square max-h-[500px] rounded-3xl bg-linear-to-b from-gray-50 to-gray-100/70 border border-gray-200/90 p-8 flex items-center justify-center overflow-hidden shadow-xs">
+            <div className="relative w-full aspect-square max-h-[500px] rounded-3xl bg-linear-to-b from-gray-50 to-gray-100/70 border border-gray-200/90 p-6 sm:p-8 flex items-center justify-center overflow-hidden shadow-xs">
               {/* Quality & Promo Badge */}
               <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-700 text-white text-xs font-bold shadow-xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-700 text-white text-xs font-bold shadow-xs whitespace-nowrap">
                   <Leaf className="w-3 h-3" />
                   100% Naturel
                 </span>
                 {currentOldPrice && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-[11px] font-bold shadow-xs">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-[11px] font-bold shadow-xs whitespace-nowrap">
                     Économie de {(currentOldPrice - currentPrice).toFixed(2)} €
                   </span>
                 )}
@@ -159,6 +167,7 @@ export default function ProductDetailView({
                   alt={product.title}
                   fill
                   priority
+                  unoptimized
                   className="object-contain drop-shadow-md"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
@@ -166,14 +175,14 @@ export default function ProductDetailView({
             </div>
 
             {/* Thumbnail Selectors (Recto Face & Verso Composition) */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button
                 type="button"
                 onClick={() => {
                   setSelectedImage(product.imageRecto);
                   setActiveSide("recto");
                 }}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                className={`flex-1 flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-2xl border-2 transition-all cursor-pointer ${
                   activeSide === "recto"
                     ? "border-emerald-700 bg-emerald-50/50 shadow-xs"
                     : "border-gray-200 hover:border-gray-300 bg-white"
@@ -184,14 +193,15 @@ export default function ProductDetailView({
                     src={product.imageRecto}
                     alt="Face Recto"
                     fill
+                    unoptimized
                     className="object-contain"
                   />
                 </div>
                 <div className="text-left">
-                  <span className="text-xs font-bold text-gray-900 block leading-tight">
+                  <span className="text-xs font-bold text-gray-900 block leading-tight whitespace-nowrap">
                     Face Avant (Recto)
                   </span>
-                  <span className="text-[11px] text-gray-500">Packaging officiel</span>
+                  <span className="text-[11px] text-gray-500 whitespace-nowrap">Packaging officiel</span>
                 </div>
               </button>
 
@@ -202,7 +212,7 @@ export default function ProductDetailView({
                     setSelectedImage(product.imageVerso!);
                     setActiveSide("verso");
                   }}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                  className={`flex-1 flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-2xl border-2 transition-all cursor-pointer ${
                     activeSide === "verso"
                       ? "border-emerald-700 bg-emerald-50/50 shadow-xs"
                       : "border-gray-200 hover:border-gray-300 bg-white"
@@ -213,14 +223,15 @@ export default function ProductDetailView({
                       src={product.imageVerso}
                       alt="Face Verso"
                       fill
+                      unoptimized
                       className="object-contain"
                     />
                   </div>
                   <div className="text-left">
-                    <span className="text-xs font-bold text-gray-900 block leading-tight">
+                    <span className="text-xs font-bold text-gray-900 block leading-tight whitespace-nowrap">
                       Face Arrière (Verso)
                     </span>
-                    <span className="text-[11px] text-gray-500">Ingrédients & Conseils</span>
+                    <span className="text-[11px] text-gray-500 whitespace-nowrap">Ingrédients & Conseils</span>
                   </div>
                 </button>
               )}
@@ -230,11 +241,11 @@ export default function ProductDetailView({
           {/* ── Right Column: Purchase & Gastronomic Details ── */}
           <div className="lg:col-span-6 flex flex-col">
             {/* Category & Origin Pill */}
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-full uppercase tracking-wider">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
                 {product.category}
               </span>
-              <span className="text-xs text-gray-500 font-medium">
+              <span className="text-xs text-gray-500 font-medium whitespace-nowrap">
                 {product.origin}
               </span>
             </div>
@@ -248,23 +259,23 @@ export default function ProductDetailView({
             </p>
 
             {/* Verified Rating & Social Proof */}
-            <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-6 pb-6 border-b border-gray-100">
               <StarRating rating={ratingData.ratingScore} />
-              <span className="text-xs font-bold text-gray-900">
+              <span className="text-xs font-bold text-gray-900 whitespace-nowrap">
                 {ratingData.ratingScore.toFixed(1)}/5
               </span>
-              <span className="text-xs text-gray-500 font-medium">
+              <span className="text-xs text-gray-500 font-medium whitespace-nowrap">
                 ({ratingData.ratingCount} avis vérifiés)
               </span>
-              <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full ml-auto">
+              <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full whitespace-nowrap sm:ml-auto">
                 En Stock • Prêt à expédier
               </span>
             </div>
 
             {/* Price Box */}
-            <div className="p-5 rounded-2xl bg-gray-50/90 border border-gray-200/80 mb-6 flex items-baseline justify-between">
+            <div className="p-4 sm:p-5 rounded-2xl bg-gray-50/90 border border-gray-200/80 mb-6 flex items-baseline justify-between">
               <div>
-                <div className="flex items-baseline gap-3">
+                <div className="flex items-baseline gap-2.5 sm:gap-3">
                   <span className="text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
                     {currentPrice.toFixed(2)} €
                   </span>
@@ -288,7 +299,7 @@ export default function ProductDetailView({
               <label className="text-xs font-bold text-gray-900 uppercase tracking-wider block mb-2.5">
                 Sélectionnez votre Conditionnement :
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {product.formats.map((fmt) => (
                   <button
                     key={fmt.label}
@@ -301,10 +312,10 @@ export default function ProductDetailView({
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-bold text-gray-900">
+                      <span className="text-xs font-bold text-gray-900 whitespace-nowrap">
                         {fmt.label}
                       </span>
-                      <span className="text-xs font-black text-emerald-800">
+                      <span className="text-xs font-black text-emerald-800 whitespace-nowrap">
                         {fmt.price.toFixed(2)} €
                       </span>
                     </div>
@@ -359,22 +370,22 @@ export default function ProductDetailView({
             </div>
 
             {/* Reassurance Checklist */}
-            <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-gray-50 border border-gray-200/80">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 p-4 rounded-2xl bg-gray-50 border border-gray-200/80">
               <div className="flex items-center gap-2 text-xs text-gray-700">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>100% Naturel • Zéro MSG</span>
+                <span className="whitespace-nowrap">100% Naturel • Zéro MSG</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-700">
                 <Truck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Expédition 24/48h Colissimo</span>
+                <span className="whitespace-nowrap">Expédition 24/48h Colissimo</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-700">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Paiement Chiffré SSL 256-bit</span>
+                <span className="whitespace-nowrap">Paiement Chiffré SSL 256-bit</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-700">
                 <RotateCcw className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Garantie Satisfait 14 Jours</span>
+                <span className="whitespace-nowrap">Garantie Satisfait 14 Jours</span>
               </div>
             </div>
           </div>
@@ -651,21 +662,22 @@ export default function ProductDetailView({
                       src={rel.imageRecto}
                       alt={rel.title}
                       fill
+                      unoptimized
                       className="object-contain transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                   </div>
-                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider truncate mb-0.5">
                     {rel.category}
                   </span>
                   <h4 className="text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition-colors line-clamp-1 mb-1">
                     {rel.title}
                   </h4>
                   <div className="mt-auto pt-2 flex items-center justify-between">
-                    <span className="text-sm font-extrabold text-gray-950">
+                    <span className="text-sm font-extrabold text-gray-950 whitespace-nowrap">
                       {rel.basePrice.toFixed(2)} €
                     </span>
-                    <span className="text-xs font-semibold text-emerald-700 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                    <span className="text-xs font-semibold text-emerald-700 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 whitespace-nowrap">
                       Voir la fiche <ChevronRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
