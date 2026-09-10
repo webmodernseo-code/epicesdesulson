@@ -71,163 +71,215 @@ export async function POST(req: Request) {
 
     // ── 2. PAYPAL INTEGRATION ──
     if (paymentMethod === "paypal") {
-      let paypalClientId = process.env.PAYPAL_CLIENT_ID;
-      let paypalSecretKey = process.env.PAYPAL_SECRET_KEY || process.env.PAYPAL_CLIENT_SECRET;
+      let paypalClientId = process.env.PAYPAL_CLIENT_ID || null;
+      let paypalSecretKey = process.env.PAYPAL_SECRET_KEY || process.env.PAYPAL_CLIENT_SECRET || null;
       let isLive = false;
+      let isEnabled = true;
 
       try {
-        const paypalDbConfig = await prisma.paymentGatewayConfig.findUnique({
-          where: { gateway: "paypal" },
-        });
-        if (paypalDbConfig?.isEnabled && paypalDbConfig.paypalClientId && paypalDbConfig.paypalSecretKey) {
-          paypalClientId = paypalDbConfig.paypalClientId;
-          paypalSecretKey = paypalDbConfig.paypalSecretKey;
-          isLive = Boolean(paypalDbConfig.isLiveMode);
+        if (process.env.DATABASE_URL) {
+          const paypalDbConfig = await prisma.paymentGatewayConfig.findUnique({
+            where: { gateway: "paypal" },
+          });
+          if (paypalDbConfig) {
+            if (paypalDbConfig.paypalClientId) paypalClientId = paypalDbConfig.paypalClientId;
+            if (paypalDbConfig.paypalSecretKey) paypalSecretKey = paypalDbConfig.paypalSecretKey;
+            isLive = Boolean(paypalDbConfig.isLiveMode);
+            isEnabled = Boolean(paypalDbConfig.isEnabled);
+          }
         }
       } catch {
         // Fallback to environment variables
       }
 
-      if (
-        paypalClientId &&
-        paypalSecretKey &&
-        !paypalClientId.includes("placeholder") &&
-        !paypalSecretKey.includes("placeholder")
-      ) {
-        try {
-          const baseUrl = isLive
-            ? "https://api-m.paypal.com"
-            : "https://api-m.sandbox.paypal.com";
+      const isCleanPaypalKey =
+        Boolean(paypalClientId) &&
+        Boolean(paypalSecretKey) &&
+        !paypalClientId!.includes("placeholder") &&
+        !paypalClientId!.includes("sample") &&
+        !paypalSecretKey!.includes("placeholder") &&
+        !paypalSecretKey!.includes("sample") &&
+        paypalClientId!.length >= 15 &&
+        paypalSecretKey!.length >= 15;
 
-          const authString = Buffer.from(`${paypalClientId.trim()}:${paypalSecretKey.trim()}`).toString("base64");
-          const tokenRes = await fetch(`${baseUrl}/v1/oauth2/token`, {
-            method: "POST",
-            headers: {
-              Authorization: `Basic ${authString}`,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: "grant_type=client_credentials",
-          });
-
-          if (tokenRes.ok) {
-            const tokenData = await tokenRes.json();
-            const accessToken = tokenData.access_token;
-
-            const paypalOrderPayload = {
-              intent: "CAPTURE",
-              purchase_units: [
-                {
-                  reference_id: order.orderNumber,
-                  description: "Commande Les Épices de Sulson (Paiement en 1 fois)",
-                  custom_id: order.id,
-                  amount: {
-                    currency_code: "EUR",
-                    value: order.totalAmount.toFixed(2),
-                    breakdown: {
-                      item_total: {
-                        currency_code: "EUR",
-                        value: order.subtotal.toFixed(2),
-                      },
-                      shipping: {
-                        currency_code: "EUR",
-                        value: order.shippingCost.toFixed(2),
-                      },
-                      discount: {
-                        currency_code: "EUR",
-                        value: order.discountAmount.toFixed(2),
-                      },
-                    },
-                  },
-                },
-              ],
-              application_context: {
-                brand_name: "Les Épices de Sulson",
-                locale: "fr-FR",
-                landing_page: "LOGIN",
-                shipping_preference: "NO_SHIPPING",
-                user_action: "PAY_NOW",
-                return_url: `${origin}/api/paypal/capture?orderNumber=${order.orderNumber}&orderId=${order.id}`,
-                cancel_url: `${origin}/checkout?canceled=true`,
-              },
-            };
-
-            const createRes = await fetch(`${baseUrl}/v2/checkout/orders`, {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(paypalOrderPayload),
-            });
-
-            if (createRes.ok) {
-              const paypalOrder = await createRes.json();
-              const approveLink = paypalOrder.links?.find((l: any) => l.rel === "approve")?.href;
-
-              if (approveLink) {
-                await prisma.order.updateMany({
-                  where: { id: order.id },
-                  data: { stripeSessionId: paypalOrder.id, paymentMethod: "paypal", paymentStatus: "PENDING" },
-                });
-                return NextResponse.json({
-                  success: true,
-                  orderId: order.id,
-                  orderNumber: order.orderNumber,
-                  checkoutUrl: approveLink,
-                  paypalOrderId: paypalOrder.id,
-                  mode: isLive ? "paypal_live" : "paypal_sandbox",
-                });
-              }
-            }
-          }
-        } catch (paypalErr) {
-          console.error("PayPal API Integration Error:", paypalErr);
-        }
+      if (!isEnabled || !isCleanPaypalKey) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "La passerelle PayPal n'est pas encore connectée. Veuillez renseigner vos identifiants API PayPal (Client ID et Secret Key) dans les paramètres du Cockpit.",
+          },
+          { status: 400 }
+        );
       }
 
-      // Seamless Direct PayPal Order Fallback
-      await OrdersService.markOrderPaid(order.id, `pp_${Date.now()}`);
-      return NextResponse.json({
-        success: true,
-        orderId: order.id,
-        orderNumber: order.orderNumber,
-        paymentStatus: "PAID",
-        method: "paypal",
-      });
+      try {
+        const baseUrl = isLive
+          ? "https://api-m.paypal.com"
+          : "https://api-m.sandbox.paypal.com";
+
+        const authString = Buffer.from(`${paypalClientId!.trim()}:${paypalSecretKey!.trim()}`).toString("base64");
+        const tokenRes = await fetch(`${baseUrl}/v1/oauth2/token`, {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${authString}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: "grant_type=client_credentials",
+        });
+
+        if (!tokenRes.ok) {
+          const tokenErr = await tokenRes.text();
+          console.error("PayPal Auth Error:", tokenErr);
+          return NextResponse.json(
+            {
+              success: false,
+              error: "Identifiants PayPal invalides. Veuillez vérifier votre configuration dans le Cockpit.",
+            },
+            { status: 400 }
+          );
+        }
+
+        const tokenData = await tokenRes.json();
+        const accessToken = tokenData.access_token;
+
+        const paypalOrderPayload = {
+          intent: "CAPTURE",
+          purchase_units: [
+            {
+              reference_id: order.orderNumber,
+              description: `Commande ${order.orderNumber} - Les Épices de Sulson`,
+              custom_id: order.id,
+              amount: {
+                currency_code: "EUR",
+                value: order.totalAmount.toFixed(2),
+                breakdown: {
+                  item_total: {
+                    currency_code: "EUR",
+                    value: order.subtotal.toFixed(2),
+                  },
+                  shipping: {
+                    currency_code: "EUR",
+                    value: order.shippingCost.toFixed(2),
+                  },
+                  discount: {
+                    currency_code: "EUR",
+                    value: order.discountAmount.toFixed(2),
+                  },
+                },
+              },
+            },
+          ],
+          application_context: {
+            brand_name: "Les Épices de Sulson",
+            locale: "fr-FR",
+            landing_page: "LOGIN",
+            shipping_preference: "NO_SHIPPING",
+            user_action: "PAY_NOW",
+            return_url: `${origin}/api/paypal/capture?orderNumber=${order.orderNumber}&orderId=${order.id}`,
+            cancel_url: `${origin}/checkout?canceled=true`,
+          },
+        };
+
+        const createRes = await fetch(`${baseUrl}/v2/checkout/orders`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(paypalOrderPayload),
+        });
+
+        if (!createRes.ok) {
+          const createErr = await createRes.text();
+          console.error("PayPal Order Creation Error:", createErr);
+          return NextResponse.json(
+            {
+              success: false,
+              error: "Erreur lors de l'initialisation du paiement PayPal. Veuillez réessayer.",
+            },
+            { status: 400 }
+          );
+        }
+
+        const paypalOrder = await createRes.json();
+        const approveLink = paypalOrder.links?.find((l: any) => l.rel === "approve")?.href;
+
+        if (approveLink) {
+          await prisma.order.updateMany({
+            where: { id: order.id },
+            data: { stripeSessionId: paypalOrder.id, paymentMethod: "paypal", paymentStatus: "PENDING" },
+          });
+          return NextResponse.json({
+            success: true,
+            orderId: order.id,
+            orderNumber: order.orderNumber,
+            checkoutUrl: approveLink,
+            paypalOrderId: paypalOrder.id,
+            mode: isLive ? "paypal_live" : "paypal_sandbox",
+          });
+        }
+      } catch (paypalErr: any) {
+        console.error("PayPal API Integration Error:", paypalErr);
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Impossible de joindre les serveurs PayPal. Veuillez réessayer ultérieurement.",
+          },
+          { status: 500 }
+        );
+      }
     }
 
-    // ── 3. STRIPE / DIRECT ON-SITE CARD / APPLE PAY ──
+    // ── 3. STRIPE / DIRECT ON-SITE CARD / APPLE & GOOGLE PAY ──
+    const { stripe } = await getStripeServer();
+    if (!stripe) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "La passerelle de paiement (Stripe) n'est pas configurée. Veuillez renseigner au minimum votre clé secrète test (sk_test_...) dans les paramètres du Cockpit.",
+        },
+        { status: 400 }
+      );
+    }
+
     let txId = `tx_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
     try {
-      const { stripe } = await getStripeServer();
-      if (stripe) {
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: Math.round(order.totalAmount * 100),
-          currency: "eur",
-          description: `Commande ${order.orderNumber} - Les Épices de Sulson`,
-          receipt_email: order.customerEmail,
-          payment_method: "pm_card_visa",
-          confirm: true,
-          automatic_payment_methods: {
-            enabled: true,
-            allow_redirects: "never",
-          },
-          metadata: {
-            orderId: order.id,
-            orderNumber: order.orderNumber,
-            customerName: order.customerName,
-            customerEmail: order.customerEmail,
-          },
-        });
-        if (paymentIntent?.id) {
-          txId = paymentIntent.id;
-        }
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(order.totalAmount * 100),
+        currency: "eur",
+        description: `Commande ${order.orderNumber} - Les Épices de Sulson (${paymentMethod === "apple_pay" ? "Apple/Google Pay" : "Carte"})`,
+        receipt_email: order.customerEmail,
+        payment_method: "pm_card_visa",
+        confirm: true,
+        automatic_payment_methods: {
+          enabled: true,
+          allow_redirects: "never",
+        },
+        metadata: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          paymentMethod: paymentMethod,
+        },
+      });
+      if (paymentIntent?.id) {
+        txId = paymentIntent.id;
       }
     } catch (stripeErr: any) {
-      console.warn("Stripe API live notice (fallback to confirmed order):", stripeErr?.message);
+      console.error("Stripe API execution error:", stripeErr?.message);
+      return NextResponse.json(
+        {
+          success: false,
+          error: stripeErr?.message || "Erreur lors de la validation du paiement avec Stripe.",
+        },
+        { status: 400 }
+      );
     }
-    
+
     // Mark order as paid in Database & Domain Cache
     await OrdersService.markOrderPaid(order.id, txId);
 
