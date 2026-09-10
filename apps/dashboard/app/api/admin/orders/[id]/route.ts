@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { OrderStatus } from "@prisma/client";
 import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendOrderShippedEmail } from "@/lib/email";
+import { sendOrderStatusUpdateEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -121,19 +121,21 @@ export async function PATCH(
       },
     });
 
-    // Send shipment notification email if marked as SHIPPED
-    if (status === "SHIPPED" && current.status !== "SHIPPED") {
+    // Send transactional status notification email to customer on any status transition
+    if (status && status !== current.status) {
       try {
-        await sendOrderShippedEmail({
+        await sendOrderStatusUpdateEmail({
           to: updated.customerEmail,
           customerName: updated.customerName,
           orderNumber: updated.orderNumber,
+          newStatus: status,
           carrier: carrier || "Colissimo La Poste",
-          trackingNumber: trackingNumber || "FR-" + Math.floor(10000000 + Math.random() * 90000000),
-          trackingUrl: `https://www.laposte.fr/outils/suivre-vos-envois?code=${trackingNumber || ""}`,
+          trackingNumber: trackingNumber || ("FR-" + Math.floor(10000000 + Math.random() * 90000000)),
+          trackingUrl: trackingNumber ? `https://www.laposte.fr/outils/suivre-vos-envois?code=${trackingNumber}` : undefined,
+          totalAmount: Number(updated.totalAmount),
         });
       } catch (mailErr) {
-        console.warn("Échec de l'envoi d'email d'expédition:", mailErr);
+        console.warn("Échec de l'envoi de l'e-mail de mise à jour de commande:", mailErr);
       }
     }
 

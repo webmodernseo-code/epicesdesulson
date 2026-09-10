@@ -9,6 +9,9 @@ interface BadgeProps {
     | "error"
     | "info"
     | "default"
+    | "primary"
+    | "accent"
+    | "neutral"
     | "success-outline"
     | "warning-outline"
     | "error-outline"
@@ -17,17 +20,20 @@ interface BadgeProps {
   className?: string;
 }
 
-const variantStyles = {
-  success: "bg-primary-alpha-16 text-primary-dark",
-  warning: "bg-warning-alpha-16 text-warning-dark",
-  error: "bg-error-alpha-16 text-error-dark",
-  info: "bg-info-lighter text-info-dark",
-  default: "bg-gray-100 text-gray-700",
-  "success-outline": "bg-transparent border border-primary text-primary",
-  "warning-outline": "bg-transparent border border-warning text-warning",
-  "error-outline": "bg-transparent border border-error text-error",
-  "info-outline": "bg-transparent border border-info text-info",
-  active: "bg-success-alpha-16 text-success-dark",
+const variantStyles: Record<string, string> = {
+  success: "bg-emerald-50 text-emerald-800 border border-emerald-200/80",
+  warning: "bg-amber-50 text-amber-900 border border-amber-200/80",
+  error: "bg-rose-50 text-rose-800 border border-rose-200/80",
+  info: "bg-sky-50 text-sky-800 border border-sky-200/80",
+  primary: "bg-emerald-100 text-emerald-900 border border-emerald-300",
+  accent: "bg-indigo-50 text-indigo-800 border border-indigo-200/80",
+  neutral: "bg-gray-100 text-gray-700 border border-gray-200",
+  default: "bg-gray-100 text-gray-700 border border-gray-200",
+  "success-outline": "bg-transparent border border-emerald-600 text-emerald-700",
+  "warning-outline": "bg-transparent border border-amber-600 text-amber-700",
+  "error-outline": "bg-transparent border border-rose-600 text-rose-700",
+  "info-outline": "bg-transparent border border-sky-600 text-sky-700",
+  active: "bg-emerald-50 text-emerald-800 border border-emerald-200/80",
 };
 
 export const Badge: React.FC<BadgeProps> = ({
@@ -38,8 +44,8 @@ export const Badge: React.FC<BadgeProps> = ({
   return (
     <span
       className={cn(
-        "px-2 py-1 h-5.5 inline-flex items-center justify-center font-public-sans leading-5 rounded-full text-xs font-medium",
-        variantStyles[variant],
+        "px-2.5 py-0.5 min-h-5.5 inline-flex items-center justify-center font-public-sans leading-none rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-colors",
+        variantStyles[variant] || variantStyles.default,
         className,
       )}
     >

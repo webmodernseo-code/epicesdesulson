@@ -247,18 +247,18 @@ export default function PaymentApiSettings() {
       {/* Success Notification Banner with Green Validation Badge */}
       {saveSuccess && (
         <div className="bg-emerald-50/95 border border-emerald-300 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3.5 min-w-0">
             <div className="size-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
               <CheckCircle2 className="size-6 text-white" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <p className="text-sm font-bold text-emerald-950">
                   Vos identifiants de paiement ont été enregistrés avec succès !
                 </p>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                  Validé & Actif
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 whitespace-nowrap shrink-0">
+                  <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                  <span>Validé & Actif</span>
                 </span>
               </div>
               <p className="text-xs text-emerald-800/85 mt-0.5">
@@ -269,7 +269,7 @@ export default function PaymentApiSettings() {
           <button
             type="button"
             onClick={() => setSaveSuccess(false)}
-            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors self-end sm:self-auto cursor-pointer"
+            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors self-end sm:self-auto cursor-pointer whitespace-nowrap shrink-0"
           >
             Fermer
           </button>
@@ -286,8 +286,8 @@ export default function PaymentApiSettings() {
             Les fonds des commandes sont reversés directement sur vos comptes Stripe et PayPal professionnels.
           </p>
         </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 shrink-0">
-          <ShieldCheck className="size-4 text-emerald-600" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 whitespace-nowrap shrink-0">
+          <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
           <span>Sécurité PCI-DSS & Chiffrement SSL 256-bit</span>
         </div>
       </div>
@@ -296,21 +296,21 @@ export default function PaymentApiSettings() {
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200 shadow-2xs space-y-5">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-3">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
             <div className="h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
               <StripeLogo className="h-4.5 w-auto" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-gray-900">
-                  Stripe (Cartes Bancaires, Visa, Mastercard, Apple Pay & Google Pay)
+                  Stripe (Cartes Bancaires, Apple Pay & Google Pay)
                 </h3>
                 {stripe.isEnabled ? (
-                  <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap shrink-0">
                     Actif
                   </span>
                 ) : (
-                  <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
                     Désactivé
                   </span>
                 )}
@@ -321,7 +321,7 @@ export default function PaymentApiSettings() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 whitespace-nowrap shrink-0">
             <span className="text-xs font-semibold text-gray-600">Activer Stripe :</span>
             <Switch
               checked={stripe.isEnabled}
@@ -346,7 +346,7 @@ export default function PaymentApiSettings() {
             <button
               type="button"
               onClick={() => setStripe((prev) => ({ ...prev, isLiveMode: false }))}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 !stripe.isLiveMode
                   ? "bg-amber-100 text-amber-900 shadow-2xs"
                   : "text-gray-500 hover:text-gray-800"
@@ -357,7 +357,7 @@ export default function PaymentApiSettings() {
             <button
               type="button"
               onClick={() => setStripe((prev) => ({ ...prev, isLiveMode: true }))}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 stripe.isLiveMode
                   ? "bg-primary text-white shadow-2xs"
                   : "text-gray-500 hover:text-gray-800"
@@ -479,21 +479,21 @@ export default function PaymentApiSettings() {
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200 shadow-2xs space-y-5">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-3">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
             <div className="h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
               <PaypalLogo className="h-4.5 w-auto" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-gray-900">
                   PayPal (Compte PayPal & Paiement en 4X)
                 </h3>
                 {paypal.isEnabled ? (
-                  <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap shrink-0">
                     Actif
                   </span>
                 ) : (
-                  <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
                     Désactivé
                   </span>
                 )}
@@ -504,7 +504,7 @@ export default function PaymentApiSettings() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 whitespace-nowrap shrink-0">
             <span className="text-xs font-semibold text-gray-600">Activer PayPal :</span>
             <Switch
               checked={paypal.isEnabled}
@@ -529,7 +529,7 @@ export default function PaymentApiSettings() {
             <button
               type="button"
               onClick={() => setPaypal((prev) => ({ ...prev, isLiveMode: false }))}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 !paypal.isLiveMode
                   ? "bg-amber-100 text-amber-900 shadow-2xs"
                   : "text-gray-500 hover:text-gray-800"
@@ -540,7 +540,7 @@ export default function PaymentApiSettings() {
             <button
               type="button"
               onClick={() => setPaypal((prev) => ({ ...prev, isLiveMode: true }))}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 paypal.isLiveMode
                   ? "bg-primary text-white shadow-2xs"
                   : "text-gray-500 hover:text-gray-800"

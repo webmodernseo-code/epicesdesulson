@@ -97,29 +97,30 @@ function PaymentBadge({ method }: { method: string }) {
   const m = (method || "").toLowerCase();
   if (m.includes("stripe") || m.includes("card") || m.includes("cb")) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-100 text-[11px] font-bold text-indigo-900">
-        <StripeLogo className="h-3 w-auto" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-100 text-[11px] font-bold text-indigo-900 whitespace-nowrap shrink-0">
+        <StripeLogo className="h-3 w-auto shrink-0" />
         <span>CB / Stripe</span>
       </span>
     );
   }
   if (m.includes("paypal")) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-100 text-[11px] font-bold text-blue-900">
-        <PaypalLogo className="h-3 w-auto" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-100 text-[11px] font-bold text-blue-900 whitespace-nowrap shrink-0">
+        <PaypalLogo className="h-3 w-auto shrink-0" />
+        <span>PayPal</span>
       </span>
     );
   }
   if (m.includes("apple")) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black text-white text-[11px] font-bold">
-        <ApplePayLogo className="h-3 w-auto" />
+      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black text-white text-[11px] font-bold whitespace-nowrap shrink-0">
+        <ApplePayLogo className="h-3 w-auto shrink-0" />
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gray-100 text-gray-700 text-[11px] font-medium">
-      <CreditCard className="size-3" />
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 text-[11px] font-medium whitespace-nowrap shrink-0">
+      <CreditCard className="size-3 shrink-0" />
       <span>{method || "Carte Bancaire"}</span>
     </span>
   );

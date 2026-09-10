@@ -56,27 +56,28 @@ function PaymentBadge({ method }: { method: string }) {
   const m = method?.toLowerCase() || "";
   if (m.includes("stripe") || m.includes("card") || m.includes("cb")) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-100 text-[11px] font-bold text-indigo-900">
-        <StripeLogo className="h-3 w-auto" />
+      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-100 text-[11px] font-bold text-indigo-900 whitespace-nowrap shrink-0">
+        <StripeLogo className="h-3 w-auto shrink-0" />
         <span>CB</span>
       </span>
     );
   }
   if (m.includes("paypal")) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-[11px] font-bold text-blue-900">
-        <PaypalLogo className="h-3 w-auto" />
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-[11px] font-bold text-blue-900 whitespace-nowrap shrink-0">
+        <PaypalLogo className="h-3 w-auto shrink-0" />
+        <span>PayPal</span>
       </span>
     );
   }
   if (m.includes("apple")) {
     return (
-      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-black text-white text-[10px]">
-        <ApplePayLogo className="h-3 w-auto" />
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black text-white text-[10px] font-bold whitespace-nowrap shrink-0">
+        <ApplePayLogo className="h-3 w-auto shrink-0" />
       </span>
     );
   }
-  return <span className="text-xs text-gray-600 font-medium">{method || "CB"}</span>;
+  return <span className="text-xs text-gray-600 font-medium whitespace-nowrap shrink-0">{method || "CB"}</span>;
 }
 
 export default function RecentOrdersTable() {

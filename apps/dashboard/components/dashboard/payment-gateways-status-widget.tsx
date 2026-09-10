@@ -88,21 +88,21 @@ export default function PaymentGatewaysStatusWidget() {
       {/* Gateways Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
         {/* Stripe Gateway Card */}
-        <div className="p-4 rounded-xl border border-gray-200/80 bg-gray-50/50 flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
+        <div className="p-4 rounded-xl border border-gray-200/80 bg-gray-50/50 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
             <div className="h-10 px-3 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
               <StripeLogo className="h-5.5 w-auto" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-bold text-gray-900">Stripe & Cartes Bancaires</h4>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h4 className="text-sm font-bold text-gray-900 shrink-0">Stripe & Cartes Bancaires</h4>
                 {stripeInfo.isEnabled ? (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">
-                    <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                    {stripeInfo.isLiveMode ? "Mode Réel (Live)" : "Mode Test"}
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-200/90 px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
+                    <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                    <span>{stripeInfo.isLiveMode ? "Mode Réel (Live)" : "Mode Test"}</span>
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold text-gray-600 bg-gray-200 px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold text-gray-600 bg-gray-200 border border-gray-300/80 px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
                     Désactivé
                   </span>
                 )}
@@ -113,7 +113,7 @@ export default function PaymentGatewaysStatusWidget() {
             </div>
           </div>
 
-          <div className="shrink-0 pt-0.5">
+          <div className="shrink-0 pt-0.5 self-end sm:self-start">
             {stripeInfo.hasSecretKey ? (
               <CheckCircle2 className="size-5 text-emerald-600" />
             ) : (
@@ -123,21 +123,21 @@ export default function PaymentGatewaysStatusWidget() {
         </div>
 
         {/* PayPal Gateway Card */}
-        <div className="p-4 rounded-xl border border-gray-200/80 bg-gray-50/50 flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
+        <div className="p-4 rounded-xl border border-gray-200/80 bg-gray-50/50 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
             <div className="h-10 px-3 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
               <PaypalLogo className="h-5.5 w-auto" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-bold text-gray-900">PayPal (Paiement Direct en 1 Clic)</h4>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h4 className="text-sm font-bold text-gray-900 shrink-0">PayPal Direct</h4>
                 {paypalInfo.isEnabled ? (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">
-                    <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                    {paypalInfo.isLiveMode ? "Mode Réel (Live)" : "Mode Test"}
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-200/90 px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
+                    <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                    <span>{paypalInfo.isLiveMode ? "Mode Réel (Live)" : "Mode Test"}</span>
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold text-gray-600 bg-gray-200 px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold text-gray-600 bg-gray-200 border border-gray-300/80 px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
                     Désactivé
                   </span>
                 )}
@@ -148,7 +148,7 @@ export default function PaymentGatewaysStatusWidget() {
             </div>
           </div>
 
-          <div className="shrink-0 pt-0.5">
+          <div className="shrink-0 pt-0.5 self-end sm:self-start">
             <CheckCircle2 className="size-5 text-emerald-600" />
           </div>
         </div>

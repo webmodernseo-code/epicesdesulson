@@ -256,18 +256,18 @@ export default function SmtpSettings() {
       {/* Success Notification Banner */}
       {saveSuccess && (
         <div className="bg-emerald-50/95 border border-emerald-300 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3.5 min-w-0">
             <div className="size-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
               <CheckCircle2 className="size-6 text-white" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <p className="text-sm font-bold text-emerald-950">
                   Configuration SMTP enregistrée avec succès !
                 </p>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                  Prêt pour l'envoi
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 whitespace-nowrap shrink-0">
+                  <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                  <span>Prêt pour l'envoi</span>
                 </span>
               </div>
               <p className="text-xs text-emerald-800/85 mt-0.5">
@@ -278,7 +278,7 @@ export default function SmtpSettings() {
           <button
             type="button"
             onClick={() => setSaveSuccess(false)}
-            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors self-end sm:self-auto cursor-pointer"
+            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors self-end sm:self-auto cursor-pointer whitespace-nowrap shrink-0"
           >
             Fermer
           </button>
@@ -289,15 +289,15 @@ export default function SmtpSettings() {
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
-            <Mail className="size-5 text-emerald-600" />
+            <Mail className="size-5 text-emerald-600 shrink-0" />
             <span>Serveur SMTP & Messagerie Transactionnelle</span>
           </h2>
           <p className="text-xs sm:text-sm text-gray-500 mt-1">
             Configurez votre serveur d'envoi d'e-mails pour distribuer les factures PDF acquittées et les numéros de suivi Colissimo.
           </p>
         </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 shrink-0">
-          <ShieldCheck className="size-4 text-emerald-600" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-700 whitespace-nowrap shrink-0">
+          <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
           <span>Authentification TLS/SSL Chiffrée</span>
         </div>
       </div>
@@ -339,21 +339,21 @@ export default function SmtpSettings() {
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200 shadow-2xs space-y-6">
         {/* Enable / Disable Switch */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100">
-          <div className="flex items-center gap-3">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
             <div className="size-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
               <Server className="size-5 text-gray-700" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-gray-900">
                   Activation de la messagerie SMTP
                 </h3>
                 {isEnabled ? (
-                  <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap shrink-0">
                     Actif
                   </span>
                 ) : (
-                  <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
                     Désactivé
                   </span>
                 )}
