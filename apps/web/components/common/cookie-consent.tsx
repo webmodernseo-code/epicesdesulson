@@ -11,7 +11,7 @@ interface CookiePreferences {
   timestamp: string;
 }
 
-const STORAGE_KEY = "sulson_cookie_consent_v2";
+const STORAGE_KEY = "sulson_cookie_consent_v3";
 
 export default function CookieConsent() {
   const [mounted, setMounted] = useState(false);
@@ -25,10 +25,10 @@ export default function CookieConsent() {
     try {
       const savedConsent = localStorage.getItem(STORAGE_KEY);
       if (!savedConsent) {
-        // Display smoothly after initial mount
+        // Display with a clean entrance
         const timer = setTimeout(() => {
           setIsOpen(true);
-        }, 500);
+        }, 400);
         return () => clearTimeout(timer);
       }
     } catch {
@@ -86,23 +86,23 @@ export default function CookieConsent() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-x-0 bottom-0 z-[99999] p-3 sm:p-5 flex justify-center pointer-events-none">
+        <div className="fixed inset-x-0 bottom-0 z-[99999] p-3 sm:p-6 flex justify-center pointer-events-none">
           <motion.div
-            initial={{ y: 90, opacity: 0, scale: 0.98 }}
+            initial={{ y: 80, opacity: 0, scale: 0.96 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 90, opacity: 0, scale: 0.98 }}
+            exit={{ y: 80, opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-2xl bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-gray-200/90 shadow-2xl p-5 sm:p-6 pointer-events-auto flex flex-col gap-4 text-gray-900"
+            className="w-full max-w-3xl bg-[#0f172a]/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-gray-700/80 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] p-5 sm:p-7 pointer-events-auto flex flex-col gap-5 text-white ring-1 ring-white/10"
             role="dialog"
             aria-modal="true"
             aria-label="Gestion des cookies"
           >
             {/* Header & Main Pitch */}
-            <div className="flex items-start gap-3.5">
-              <div className="size-10 rounded-2xl bg-amber-50 border border-amber-200/80 text-primary flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
-                {/* SVG Cookie / Shield Icon */}
+            <div className="flex items-start gap-4">
+              <div className="size-11 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-amber-400 flex items-center justify-center shrink-0 shadow-inner mt-0.5">
+                {/* SVG Shield / Cookie Icon */}
                 <svg
-                  className="size-5 text-primary"
+                  className="size-6 text-amber-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -120,17 +120,17 @@ export default function CookieConsent() {
               </div>
 
               <div className="flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm sm:text-base font-bold text-gray-950">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight">
                     Respect de votre vie privée & Cookies
                   </h3>
-                  <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-3 py-0.5 rounded-full">
                     Conforme RGPD
                   </span>
                 </div>
 
-                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mt-1.5">
-                  Nous utilisons des cookies indispensables pour assurer le bon fonctionnement de la boutique (panier, sécurité des commandes et paiements chiffrés). Avec votre consentement, nous utilisons également des mesures anonymes pour perfectionner votre expérience culinaire.
+                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mt-2">
+                  Nous utilisons des cookies indispensables pour assurer le bon fonctionnement de la boutique (gestion de votre panier, sécurité des commandes et paiements chiffrés). Avec votre accord, nous utilisons également des mesures anonymes pour perfectionner votre expérience culinaire.
                 </p>
               </div>
             </div>
@@ -143,64 +143,64 @@ export default function CookieConsent() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="overflow-hidden border-t border-gray-100 pt-3 space-y-3"
+                  className="overflow-hidden border-t border-gray-800 pt-4 space-y-3"
                 >
                   {/* Category 1: Strictly Necessary */}
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50/80 border border-gray-100">
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-gray-900/90 border border-gray-800">
                     <div className="pr-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-gray-900">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs sm:text-sm font-bold text-white">
                           Cookies strictement nécessaires
                         </span>
-                        <span className="text-[10px] font-bold text-gray-500 bg-gray-200 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] font-bold text-gray-400 bg-gray-800 px-2 py-0.5 rounded">
                           Toujours actifs
                         </span>
                       </div>
-                      <p className="text-[11px] text-gray-500 mt-0.5">
-                        Gestion du panier, maintien de la session et sécurisation des paiements PCI-DSS.
+                      <p className="text-xs text-gray-400 mt-1">
+                        Gestion du panier, maintien de la session et sécurisation des transactions bancaires chiffrées PCI-DSS.
                       </p>
                     </div>
                     <input
                       type="checkbox"
                       checked={true}
                       disabled
-                      className="size-4.5 rounded text-emerald-600 cursor-not-allowed opacity-80"
+                      className="size-5 rounded text-amber-500 cursor-not-allowed opacity-80"
                     />
                   </div>
 
                   {/* Category 2: Analytics */}
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50/80 border border-gray-100">
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-gray-900/90 border border-gray-800">
                     <div className="pr-3">
-                      <span className="text-xs font-bold text-gray-900">
+                      <span className="text-xs sm:text-sm font-bold text-white">
                         Mesure d'audience & Amélioration continue
                       </span>
-                      <p className="text-[11px] text-gray-500 mt-0.5">
-                        Statistiques anonymisées pour optimiser le temps de chargement et nos recettes.
+                      <p className="text-xs text-gray-400 mt-1">
+                        Statistiques anonymisées pour optimiser la vitesse de chargement et perfectionner nos fiches recettes.
                       </p>
                     </div>
                     <input
                       type="checkbox"
                       checked={analyticsAllowed}
                       onChange={(e) => setAnalyticsAllowed(e.target.checked)}
-                      className="size-4.5 rounded text-primary focus:ring-primary cursor-pointer"
+                      className="size-5 rounded text-amber-500 focus:ring-amber-400 cursor-pointer accent-amber-500"
                     />
                   </div>
 
                   {/* Category 3: Preferences */}
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50/80 border border-gray-100">
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-gray-900/90 border border-gray-800">
                     <div className="pr-3">
-                      <span className="text-xs font-bold text-gray-900">
+                      <span className="text-xs sm:text-sm font-bold text-white">
                         Préférences de navigation
                       </span>
-                      <p className="text-[11px] text-gray-500 mt-0.5">
-                        Mémorisation de vos épices favorites et de vos réglages d'affichage.
+                      <p className="text-xs text-gray-400 mt-1">
+                        Mémorisation de vos épices préférées et de vos réglages d'affichage.
                       </p>
                     </div>
                     <input
                       type="checkbox"
                       checked={preferencesAllowed}
                       onChange={(e) => setPreferencesAllowed(e.target.checked)}
-                      className="size-4.5 rounded text-primary focus:ring-primary cursor-pointer"
+                      className="size-5 rounded text-amber-500 focus:ring-amber-400 cursor-pointer accent-amber-500"
                     />
                   </div>
                 </motion.div>
@@ -208,11 +208,11 @@ export default function CookieConsent() {
             </AnimatePresence>
 
             {/* Actions Footer */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-2 border-t border-gray-100">
-              <div className="flex items-center gap-3 text-xs text-gray-500 w-full sm:w-auto justify-center sm:justify-start">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-gray-800">
+              <div className="flex items-center gap-3 text-xs text-gray-400 w-full sm:w-auto justify-center sm:justify-start">
                 <Link
                   href="/privacy-policy"
-                  className="hover:text-primary transition-colors underline underline-offset-2"
+                  className="hover:text-amber-400 transition-colors underline underline-offset-2"
                 >
                   Politique de confidentialité
                 </Link>
@@ -220,18 +220,18 @@ export default function CookieConsent() {
                 <button
                   type="button"
                   onClick={() => setShowCustomize(!showCustomize)}
-                  className="text-gray-700 hover:text-primary font-medium transition-colors cursor-pointer"
+                  className="text-amber-400 hover:text-amber-300 font-bold transition-colors cursor-pointer"
                 >
-                  {showCustomize ? "Masquer les détails" : "Personnaliser"}
+                  {showCustomize ? "Masquer les détails" : "Personnaliser mes choix"}
                 </button>
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                 {showCustomize ? (
                   <button
                     type="button"
                     onClick={handleSaveCustom}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-full text-xs font-bold bg-primary text-white hover:shadow-xs transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-full text-xs font-bold bg-amber-500 hover:bg-amber-600 text-gray-950 shadow-md transition-all cursor-pointer"
                   >
                     Enregistrer mes choix
                   </button>
@@ -240,14 +240,14 @@ export default function CookieConsent() {
                     <button
                       type="button"
                       onClick={handleRejectNonEssential}
-                      className="flex-1 sm:flex-none px-4 py-2.5 rounded-full text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+                      className="flex-1 sm:flex-none px-4 py-2.5 rounded-full text-xs font-bold text-gray-200 bg-gray-800/90 hover:bg-gray-700 border border-gray-700 transition-colors cursor-pointer"
                     >
                       Refuser non-essentiels
                     </button>
                     <button
                       type="button"
                       onClick={handleAcceptAll}
-                      className="flex-1 sm:flex-none px-5 py-2.5 rounded-full text-xs font-bold bg-primary text-white shadow-xs hover:shadow-md transition-all cursor-pointer"
+                      className="flex-1 sm:flex-none px-6 py-2.5 rounded-full text-xs font-extrabold bg-primary text-white shadow-lg hover:shadow-xl hover:scale-102 transition-all cursor-pointer"
                     >
                       Tout accepter
                     </button>
