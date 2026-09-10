@@ -30,13 +30,13 @@ export const metadata: Metadata = {
     "Tableau de bord de gestion et administration pour la boutique e-commerce Les Épices de Sulson.",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=sulson_2026_v4", sizes: "any" },
-      { url: "/icon.png?v=sulson_2026_v4", sizes: "512x512", type: "image/png" },
-      { url: "/favicon.png?v=sulson_2026_v4", sizes: "192x192", type: "image/png" },
+      { url: "/favicon.ico?v=sulson_official_2026", sizes: "any" },
+      { url: "/icon.png?v=sulson_official_2026", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.png?v=sulson_official_2026", sizes: "192x192", type: "image/png" },
     ],
-    shortcut: "/favicon.ico?v=sulson_2026_v4",
+    shortcut: "/favicon.ico?v=sulson_official_2026",
     apple: [
-      { url: "/apple-icon.png?v=sulson_2026_v4", sizes: "180x180", type: "image/png" },
+      { url: "/apple-icon.png?v=sulson_official_2026", sizes: "180x180", type: "image/png" },
     ],
   },
 };
@@ -49,11 +49,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        <link rel="icon" href="/favicon.ico?v=sulson_2026_v4" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=sulson_2026_v4" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=sulson_2026_v4" />
-        <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png?v=sulson_2026_v4" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png?v=sulson_2026_v4" />
+        <link rel="icon" href="/favicon.ico?v=sulson_official_2026" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=sulson_official_2026" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=sulson_official_2026" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png?v=sulson_official_2026" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png?v=sulson_official_2026" />
       </head>
       <body
         className={`${dmSans.variable} ${publicSans.variable} ${urbanist.variable} antialiased`}
