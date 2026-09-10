@@ -55,7 +55,7 @@ const CULINARY_ITEMS: CulinaryItem[] = [
     category: "all",
     categoryLabel: "Affiche Officielle",
     badge: {
-      label: "🌿 100% Naturel • Sans Additifs",
+      label: "100% Naturel • Sans Additifs",
       variant: "poster",
     },
     imageSrc: "/images/recipes/affiche-sulson-bienfaits.png",

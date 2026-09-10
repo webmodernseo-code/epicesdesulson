@@ -198,8 +198,18 @@ export default function CheckoutV1Page() {
   };
 
   // Calcul du montant affiché
+  const countryNormalized = (shippingData.country || "France").trim().toLowerCase();
+  const isFrance = countryNormalized === "france" || countryNormalized === "fr" || countryNormalized === "";
+  let shipping = 0;
+  if (subtotal > 0) {
+    if (isFrance) {
+      shipping = subtotal >= 45.0 ? 0.0 : 10.0;
+    } else {
+      shipping = subtotal >= 60.0 ? 0.0 : subtotal >= 45.0 ? 4.0 : 14.0;
+    }
+  }
+
   const discountAmount = couponCode === "SULSON10" ? subtotal * 0.1 : 0;
-  const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 4.9;
   const total = Math.max(0, subtotal - discountAmount + shipping);
   const formattedTotal = new Intl.NumberFormat("fr-FR", {
     style: "currency",
@@ -279,6 +289,7 @@ export default function CheckoutV1Page() {
             <CheckoutCartSummary1
               selectedMethod={selectedMethod === "paypal" ? "paypal" : "stripe"}
               isProcessing={isProcessing}
+              shippingCountry={shippingData.country}
               onPlaceOrder={(coupon) => {
                 if (coupon) setCouponCode(coupon);
                 handlePaymentSubmit(undefined, coupon);

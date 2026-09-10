@@ -44,8 +44,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     title: "Épice Spéciale Poulet",
     category: "Épices Volailles & Rôtis",
     origin: "Cameroun (Recette Traditionnelle)",
-    basePrice: 6.9,
-    baseOldPrice: 8.5,
+    basePrice: 5.99,
+    baseOldPrice: 7.50,
     ratingCount: "196",
     ratingPercentage: 99,
     delay: "0.1s",
@@ -59,8 +59,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     title: "Épice Spéciale Viande",
     category: "Épices Viandes & Grillades",
     origin: "Cameroun (Recette Traditionnelle)",
-    basePrice: 6.9,
-    baseOldPrice: 8.5,
+    basePrice: 5.99,
+    baseOldPrice: 7.50,
     ratingCount: "228",
     ratingPercentage: 99,
     delay: "0.2s",
@@ -74,8 +74,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     title: "Épice Spéciale Poisson",
     category: "Épices Poissons & Marinades",
     origin: "Cameroun (Poivre de Guinée)",
-    basePrice: 6.9,
-    baseOldPrice: 8.5,
+    basePrice: 5.99,
+    baseOldPrice: 7.50,
     ratingCount: "184",
     ratingPercentage: 98,
     delay: "0.3s",
@@ -89,8 +89,8 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
     title: "Épice Saveur Gourmande",
     category: "Assaisonnements Signatures",
     origin: "Cameroun (Le Secret de Sulson)",
-    basePrice: 6.9,
-    baseOldPrice: 8.5,
+    basePrice: 5.99,
+    baseOldPrice: 7.50,
     ratingCount: "215",
     ratingPercentage: 99,
     delay: "0.4s",
@@ -98,7 +98,7 @@ const FOUR_PRODUCTS: SpiceProduct[] = [
 ];
 
 const FIFTH_FORMATS = [
-  { label: "Pack 4x100g", price: 24.9, oldPrice: 27.6, text: "Pack Intégral 4x100g (400g)" },
+  { label: "Pack 4x100g", price: 23.96, oldPrice: 29.90, text: "Pack Intégral 4x100g (400g)" },
 ];
 
 const FIFTH_PRODUCT = {

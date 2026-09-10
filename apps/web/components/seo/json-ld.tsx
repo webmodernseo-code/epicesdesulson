@@ -96,7 +96,7 @@ export function OrganizationAndWebsiteJsonLd() {
                 brand: { "@type": "Brand", name: "Les Épices de Sulson" },
                 offers: {
                   "@type": "Offer",
-                  price: "6.90",
+                  price: "5.99",
                   priceCurrency: "EUR",
                   availability: "https://schema.org/InStock",
                 },
@@ -118,7 +118,7 @@ export function OrganizationAndWebsiteJsonLd() {
                 brand: { "@type": "Brand", name: "Les Épices de Sulson" },
                 offers: {
                   "@type": "Offer",
-                  price: "6.90",
+                  price: "5.99",
                   priceCurrency: "EUR",
                   availability: "https://schema.org/InStock",
                 },
@@ -140,7 +140,7 @@ export function OrganizationAndWebsiteJsonLd() {
                 brand: { "@type": "Brand", name: "Les Épices de Sulson" },
                 offers: {
                   "@type": "Offer",
-                  price: "6.90",
+                  price: "5.99",
                   priceCurrency: "EUR",
                   availability: "https://schema.org/InStock",
                 },
@@ -162,7 +162,7 @@ export function OrganizationAndWebsiteJsonLd() {
                 brand: { "@type": "Brand", name: "Les Épices de Sulson" },
                 offers: {
                   "@type": "Offer",
-                  price: "6.90",
+                  price: "5.99",
                   priceCurrency: "EUR",
                   availability: "https://schema.org/InStock",
                 },
@@ -184,7 +184,7 @@ export function OrganizationAndWebsiteJsonLd() {
                 brand: { "@type": "Brand", name: "Les Épices de Sulson" },
                 offers: {
                   "@type": "Offer",
-                  price: "24.90",
+                  price: "23.96",
                   priceCurrency: "EUR",
                   availability: "https://schema.org/InStock",
                 },

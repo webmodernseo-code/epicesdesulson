@@ -317,16 +317,18 @@ export async function GET(
     <!-- Header -->
     <div class="header-row">
       <div>
-        <div class="brand-logo">🌿 Les Épices de Sulson</div>
+        <div style="margin-bottom: 6px;">
+          <img src="/images/logo.png" alt="Les Épices de Sulson" style="height: 48px; width: auto; max-width: 220px; object-fit: contain; display: block;" onerror="this.onerror=null; this.src='https://epicesdesulson.com/images/logo.png';" />
+        </div>
         <div class="brand-sub">Épicerie Fine &amp; Saveurs d'Exception</div>
-        <div class="meta-content" style="margin-top: 8px; font-size: 12px; color: #64748b;">
+        <div class="meta-content" style="margin-top: 8px; font-size: 12px; color: #64748b; line-height: 18px;">
           75001 Paris, France<br>
           contact@epicesdesulson.com • www.epicesdesulson.com
         </div>
       </div>
 
       <div class="invoice-title-block">
-        <div class="invoice-badge">✓ Facture Acquittée</div>
+        <div class="invoice-badge">Facture Acquittée</div>
         <div class="invoice-number">${invoiceNumber}</div>
         <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Date : ${invoiceDate}</div>
         <div style="font-size: 12px; color: #64748b;">Commande N° : <strong>${order.orderNumber}</strong></div>

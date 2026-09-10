@@ -17,7 +17,7 @@ const SPICE_GUIDES: BlogArticle[] = [
     subtitle: "Pour Bœufs, Agneaux, Travers de Porc & Brochettes Suya",
     description:
       "Découvrez comment sublimer vos pièces de viande au barbecue, à la poêle ou au four avec un assemblage chaleureux au paprika doux, poivre noir de Penja et aromates sauvages.",
-    price: 6.90,
+    price: 5.99,
     weight: "100g",
     origin: "Cameroun (Recette Traditionnelle)",
     ingredients: [
@@ -73,7 +73,7 @@ const SPICE_GUIDES: BlogArticle[] = [
     subtitle: "Rôtis au four, Ailes marinées & Braise à l'Africaine",
     description:
       "L'harmonie parfaite du curcuma de terroir frais, paprika noble, ail et gingembre pour une couleur dorée éclatante et une chair tendre, fondante et parfumée à cœur.",
-    price: 6.90,
+    price: 5.99,
     weight: "100g",
     origin: "Cameroun (Recette Traditionnelle)",
     ingredients: [
@@ -129,7 +129,7 @@ const SPICE_GUIDES: BlogArticle[] = [
     subtitle: "Sauces, Légumes Sautés, Riz Parfumé & Féculents",
     description:
       "L'assemblage signature de la maison Sulson : 12 épices nobles torréfiées conçues à l'Africaine pour rehausser instantanément vos repas du quotidien.",
-    price: 6.90,
+    price: 5.99,
     weight: "100g",
     origin: "Cameroun (Le Secret de Sulson)",
     ingredients: [
@@ -183,7 +183,7 @@ const SPICE_GUIDES: BlogArticle[] = [
     subtitle: "Bars, Dorades, Tilapias, Saumons & Gambas Braisées",
     description:
       "Le secret des grands maîtres braiseurs : l'arôme authentique du poivre de Guinée (maniguette), thym citronné, ail et herbes côtières qui magnifient les poissons sans masquer leur finesse.",
-    price: 6.90,
+    price: 5.99,
     weight: "100g",
     origin: "Cameroun (Poivre de Guinée)",
     ingredients: [

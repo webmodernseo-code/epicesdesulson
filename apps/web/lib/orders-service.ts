@@ -92,7 +92,7 @@ export class OrdersService {
         ) || SULSON_CATALOGUE[0];
       }
 
-      let unitPrice = 6.90;
+      let unitPrice = 5.99;
       let productName = rawItem.title || rawItem.productName || (product ? product.title : "Épice de Sulson");
       let productCode = product ? product.code : "SUL-301";
 
@@ -135,8 +135,25 @@ export class OrdersService {
       discountAmount = parseFloat((calculatedSubtotal * 0.1).toFixed(2));
     }
 
-    // Free shipping over 35 EUR, otherwise 4.90 EUR
-    const shippingCost = calculatedSubtotal >= 35 ? 0 : 4.90;
+    // Shipping calculation:
+    // France: 10.00 € (Offert dès 45 € d'achat)
+    // Europe (hors France): 14.00 € (Réduit à 4.00 € dès 45 € et Offert dès 60 €)
+    const countryNormalized = (input.shippingCountry || "France").trim().toLowerCase();
+    const isFrance = countryNormalized === "france" || countryNormalized === "fr" || countryNormalized === "";
+
+    let shippingCost = isFrance ? 10.00 : 14.00;
+    if (isFrance) {
+      if (calculatedSubtotal >= 45.00) {
+        shippingCost = 0.00;
+      }
+    } else {
+      if (calculatedSubtotal >= 60.00) {
+        shippingCost = 0.00;
+      } else if (calculatedSubtotal >= 45.00) {
+        shippingCost = 4.00;
+      }
+    }
+
     const totalAmount = parseFloat(Math.max(0, calculatedSubtotal - discountAmount + shippingCost).toFixed(2));
 
     const orderNumber = `SUL-${Math.floor(10000 + Math.random() * 90000)}`;

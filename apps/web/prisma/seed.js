@@ -84,8 +84,8 @@ async function main() {
       subtitle: "L'art de sublimer vos volailles",
       description: "Un mélange secret d'épices nobles, herbes aromatiques et écorces rares, spécialement dosé pour révéler la tendreté et les sucs naturels des volailles, poulets braisés, rôtis et marinades traditionnelles.",
       origin: "Cameroun (Recette Traditionnelle)",
-      basePrice: 6.90,
-      baseOldPrice: 8.50,
+      basePrice: 5.99,
+      baseOldPrice: 7.50,
       ratingScore: 4.95,
       ratingCount: 248,
       imageRecto: "/images/products/epice-poulet-recto.jpg",
@@ -94,7 +94,7 @@ async function main() {
       categoryId: catPoulet.id,
       formats: {
         create: [
-          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 5.99, oldPrice: 7.50 },
         ],
       },
     },
@@ -108,8 +108,8 @@ async function main() {
       subtitle: "Puissance et caractère pour vos viandes rouges",
       description: "Une sélection rigoureuse d'épices torréfiées et poivres de terroir conférant une note fumée, profonde et chaleureuse à vos viandes rouges, gibiers, grillades au barbecue et ragoûts mijotés.",
       origin: "Cameroun (Recette Traditionnelle)",
-      basePrice: 6.90,
-      baseOldPrice: 8.50,
+      basePrice: 5.99,
+      baseOldPrice: 7.50,
       ratingScore: 4.92,
       ratingCount: 196,
       imageRecto: "/images/products/epice-viande-recto.jpg",
@@ -118,7 +118,7 @@ async function main() {
       categoryId: catViande.id,
       formats: {
         create: [
-          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 5.99, oldPrice: 7.50 },
         ],
       },
     },
@@ -132,8 +132,8 @@ async function main() {
       subtitle: "L'élégance iodée et zestée",
       description: "Une alchimie fine d'épices douces, d'herbes côtières et de notes d'agrumes, conçue pour magnifier la délicatesse des poissons blancs, saumons, papillotes, crustacés et sauces marinières.",
       origin: "Cameroun (Recette Traditionnelle)",
-      basePrice: 6.90,
-      baseOldPrice: 8.50,
+      basePrice: 5.99,
+      baseOldPrice: 7.50,
       ratingScore: 4.96,
       ratingCount: 178,
       imageRecto: "/images/products/epice-poisson-recto.jpg",
@@ -142,7 +142,7 @@ async function main() {
       categoryId: catPoisson.id,
       formats: {
         create: [
-          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 5.99, oldPrice: 7.50 },
         ],
       },
     },
@@ -156,8 +156,8 @@ async function main() {
       subtitle: "La signature aromatique universelle",
       description: "La création signature polyvalente de la Maison Sulson. Un équilibre parfait pour rehausser légumes sautés, féculents, soupes, sauces onctueuses et créations culinaires du quotidien.",
       origin: "Cameroun (Recette Traditionnelle)",
-      basePrice: 6.90,
-      baseOldPrice: 8.50,
+      basePrice: 5.99,
+      baseOldPrice: 7.50,
       ratingScore: 4.98,
       ratingCount: 312,
       imageRecto: "/images/products/epice-gourmande-recto.jpg",
@@ -166,7 +166,7 @@ async function main() {
       categoryId: catSignature.id,
       formats: {
         create: [
-          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 6.90, oldPrice: 8.50 },
+          { label: "100g", weightGrams: 100, multiplier: 1.0, price: 5.99, oldPrice: 7.50 },
         ],
       },
     },
@@ -180,8 +180,8 @@ async function main() {
       subtitle: "Le coffret prestige regroupant toute la collection Sulson",
       description: "Le coffret indispensable pour tout amateur de haute gastronomie épicée. Réunit les 4 créations emblématiques Sulson (Poulet, Viande, Poisson & Gourmande) pour une palette gustative complète.",
       origin: "Cameroun (Recette Traditionnelle)",
-      basePrice: 24.90,
-      baseOldPrice: 27.60,
+      basePrice: 23.96,
+      baseOldPrice: 29.90,
       ratingScore: 5.00,
       ratingCount: 420,
       imageRecto: "/images/products/pack-4-saveurs-sulson.jpg",
@@ -190,7 +190,7 @@ async function main() {
       categoryId: catPacks.id,
       formats: {
         create: [
-          { label: "Pack 4x100g", weightGrams: 400, multiplier: 1.0, price: 24.90, oldPrice: 27.60 },
+          { label: "Pack 4x100g", weightGrams: 400, multiplier: 1.0, price: 23.96, oldPrice: 29.90 },
         ],
       },
     },

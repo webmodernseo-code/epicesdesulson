@@ -105,6 +105,8 @@ export async function sendOrderConfirmationEmail({
       )
       .join("");
 
+    const logoUrl = "https://epicesdesulson.com/images/logo.png";
+
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -112,16 +114,18 @@ export async function sendOrderConfirmationEmail({
   <meta charset="utf-8">
   <title>Confirmation de commande ${orderNumber} - Les Épices de Sulson</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b;">
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 15px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-          <!-- Header -->
+        <table role="presentation" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+          <!-- Header with Official Brand Logo -->
           <tr>
-            <td style="padding: 36px 30px; background-color: #047857; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">🌿 Les Épices de Sulson</h1>
-              <p style="margin: 6px 0 0 0; color: #a7f3d0; font-size: 13px; font-weight: 600;">Confirmation de commande & Facture acquittée</p>
+            <td style="padding: 32px 30px; background-color: #ffffff; text-align: center; border-bottom: 1px solid #f1f5f9;">
+              <a href="https://epicesdesulson.com" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="${logoUrl}" alt="Les Épices de Sulson" width="190" height="auto" style="display: block; margin: 0 auto; max-width: 190px; height: auto; border: 0;" />
+              </a>
+              <p style="margin: 12px 0 0 0; color: #047857; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">Confirmation de commande &amp; Facture acquittée</p>
             </td>
           </tr>
 
@@ -130,7 +134,7 @@ export async function sendOrderConfirmationEmail({
             <td style="padding: 36px 30px;">
               <h2 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 800; color: #0f172a;">Merci pour votre confiance, ${customerName} !</h2>
               <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 24px; color: #475569;">
-                Nous avons bien validé votre paiement pour la commande <strong>${orderNumber}</strong>. Vos épices artisanales d'exception sont en cours de préparation dans notre atelier.
+                Nous avons bien validé votre règlement pour la commande <strong>${orderNumber}</strong>. Vos épices artisanales d'exception sont en cours de préparation avec le plus grand soin dans notre atelier.
               </p>
 
               <!-- Order items -->
@@ -143,18 +147,18 @@ export async function sendOrderConfirmationEmail({
               </table>
 
               <!-- Invoice Download Button -->
-              <div style="text-align: center; margin: 30px 0 25px 0;">
-                <a href="${finalInvoiceUrl}" target="_blank" style="display: inline-block; background-color: #047857; color: #ffffff; padding: 14px 28px; border-radius: 12px; font-size: 14px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                  📄 Télécharger ma Facture (PDF)
+              <div style="text-align: center; margin: 32px 0 28px 0;">
+                <a href="${finalInvoiceUrl}" target="_blank" style="display: inline-block; background-color: #047857; color: #ffffff; padding: 14px 30px; border-radius: 12px; font-size: 14px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(4,120,87,0.25);">
+                  Consulter &amp; Télécharger ma Facture (PDF)
                 </a>
               </div>
 
               <!-- Shipping Info -->
-              <div style="background-color: #f8fafc; padding: 18px; border-radius: 14px; border: 1px solid #f1f5f9; margin-top: 20px;">
+              <div style="background-color: #f8fafc; padding: 20px; border-radius: 14px; border: 1px solid #f1f5f9; margin-top: 20px;">
                 <p style="margin: 0; font-size: 13px; color: #475569; line-height: 20px;">
                   <strong style="color: #0f172a;">Adresse de livraison :</strong><br>
-                  ${shippingStreet}, ${shippingPostal} ${shippingCity} (France)<br>
-                  <span style="color: #64748b; font-size: 12px; display: inline-block; margin-top: 4px;">🚚 Mode : Colissimo / Lettre Suivie avec numéro de tracking dès expédition.</span>
+                  ${shippingStreet}, ${shippingPostal} ${shippingCity}<br>
+                  <span style="color: #64748b; font-size: 12px; display: inline-block; margin-top: 6px;">Expédition Colissimo Suivi / Lettre Suivie avec numéro de suivi transmis par email dès la prise en charge postale.</span>
                 </p>
               </div>
             </td>
@@ -163,9 +167,9 @@ export async function sendOrderConfirmationEmail({
           <!-- Footer -->
           <tr>
             <td style="padding: 24px 30px; background-color: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;">
-              <p style="margin: 0; font-size: 12px; color: #94a3b8;">
-                © ${new Date().getFullYear()} Les Épices de Sulson • Épicerie Fine & Saveurs d'Exception<br>
-                Une question ? Contactez notre atelier à <a href="mailto:contact@epicesdesulson.com" style="color: #047857; text-decoration: none;">contact@epicesdesulson.com</a>
+              <p style="margin: 0; font-size: 12px; color: #94a3b8; line-height: 18px;">
+                © ${new Date().getFullYear()} Les Épices de Sulson • Épicerie Fine &amp; Saveurs d'Exception<br>
+                Une question sur votre commande ? Écrivez-nous à <a href="mailto:contact@epicesdesulson.com" style="color: #047857; text-decoration: none; font-weight: 600;">contact@epicesdesulson.com</a>
               </p>
             </td>
           </tr>
@@ -178,14 +182,14 @@ export async function sendOrderConfirmationEmail({
     `;
 
     if (!smtp) {
-      console.log(`✉️ [Confirmation Commande avec Facture PDF (Simulation)] Commande ${orderNumber} adressée à ${to} (Lien facture: ${finalInvoiceUrl})`);
+      console.log(`[Confirmation Commande avec Facture PDF (Simulation)] Commande ${orderNumber} adressée à ${to} (Lien facture: ${finalInvoiceUrl})`);
       return { success: true };
     }
 
     await smtp.transporter.sendMail({
       from: smtp.fromAddress,
       to,
-      subject: `✓ Facture & Confirmation de commande ${orderNumber} - Les Épices de Sulson`,
+      subject: `Confirmation & Facture de commande ${orderNumber} - Les Épices de Sulson`,
       html: htmlContent,
     });
 

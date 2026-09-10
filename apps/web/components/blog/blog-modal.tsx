@@ -70,7 +70,7 @@ export default function BlogModal({ article, onClose }: BlogModalProps) {
       ? article.imageVerso
       : article?.image || "/images/products/pack-4-saveurs-sulson.jpg";
 
-  const itemPrice = article?.price || 6.9;
+  const itemPrice = article?.price || 5.99;
   const productSlug =
     article?.slug ||
     (article?.id === "epice-poulet-recette"
@@ -90,7 +90,7 @@ export default function BlogModal({ article, onClose }: BlogModalProps) {
       title: `${article.title} (Sachet 100g)`,
       image: article.image,
       currentPrice: `${itemPrice.toFixed(2)} €`,
-      oldPrice: "8.50 €",
+      oldPrice: "7.50 €",
       pack: "Sachet hermétique zippé 100g",
       quantity: 1,
     });

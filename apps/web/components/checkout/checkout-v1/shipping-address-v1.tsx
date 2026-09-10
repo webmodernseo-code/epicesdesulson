@@ -446,18 +446,26 @@ export default function ShippingAddressV1({
                 </label>
                 <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
                   <Check className="size-3 text-emerald-600" />
-                  <span>Rempli automatiquement</span>
+                  <span>France &amp; Europe</span>
                 </span>
               </div>
-              <div className="w-full h-12 px-4 rounded-xl border border-gray-300 bg-gray-50/80 text-base sm:text-sm text-gray-900 flex items-center justify-between font-semibold shadow-2xs cursor-not-allowed">
-                <div className="flex items-center gap-2">
-                  <span className="text-base">🇫🇷</span>
-                  <span>{data.country || "France"}</span>
-                </div>
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider bg-gray-200/80 px-2 py-0.5 rounded">
-                  France
-                </span>
-              </div>
+              <select
+                value={data.country || "France"}
+                onChange={(e) => onChange("country", e.target.value)}
+                className="w-full h-12 px-4 rounded-xl border border-gray-300 bg-white text-base sm:text-sm text-gray-900 font-semibold focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition cursor-pointer"
+              >
+                <option value="France">France (10 € • Offert dès 45 €)</option>
+                <option value="Belgique">Belgique (14 € • Réduit dès 45 €)</option>
+                <option value="Suisse">Suisse (14 € • Réduit dès 45 €)</option>
+                <option value="Luxembourg">Luxembourg (14 € • Réduit dès 45 €)</option>
+                <option value="Allemagne">Allemagne (14 € • Réduit dès 45 €)</option>
+                <option value="Espagne">Espagne (14 € • Réduit dès 45 €)</option>
+                <option value="Italie">Italie (14 € • Réduit dès 45 €)</option>
+                <option value="Pays-Bas">Pays-Bas (14 € • Réduit dès 45 €)</option>
+                <option value="Portugal">Portugal (14 € • Réduit dès 45 €)</option>
+                <option value="Royaume-Uni">Royaume-Uni (14 € • Réduit dès 45 €)</option>
+                <option value="Europe">Autre pays d'Europe (14 €)</option>
+              </select>
             </div>
           </div>
         </div>

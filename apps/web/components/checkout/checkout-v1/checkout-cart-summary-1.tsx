@@ -5,26 +5,48 @@ import Image from "next/image";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
 import { OfficialPaypalLogo } from "./payment-method-v1";
-import { ShieldCheck, Lock, Trash2 } from "lucide-react";
+import { ShieldCheck, Lock, Trash2, Truck, CheckCircle2 } from "lucide-react";
 
 interface CheckoutCartSummaryProps {
   selectedMethod?: "stripe" | "paypal" | "apple_pay" | "card";
   isProcessing?: boolean;
+  shippingCountry?: string;
   onPlaceOrder?: (coupon?: string) => void;
 }
 
 export default function CheckoutCartSummary1({
   selectedMethod = "stripe",
   isProcessing = false,
+  shippingCountry = "France",
   onPlaceOrder,
 }: CheckoutCartSummaryProps) {
   const { items, subtotal, removeItem } = useCart();
   const [couponCode, setCouponCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
 
+  const countryNormalized = (shippingCountry || "France").trim().toLowerCase();
+  const isFrance = countryNormalized === "france" || countryNormalized === "fr" || countryNormalized === "";
+
+  // Shipping rules:
+  // France: 10 € standard, Offert dès 45 €
+  // Europe: 14 € standard, 4 € dès 45 €, Offert dès 60 €
+  let shipping = 0;
+  let targetThreshold = isFrance ? 45.0 : 60.0;
+
+  if (subtotal > 0) {
+    if (isFrance) {
+      shipping = subtotal >= 45.0 ? 0.0 : 10.0;
+    } else {
+      shipping = subtotal >= 60.0 ? 0.0 : subtotal >= 45.0 ? 4.0 : 14.0;
+    }
+  }
+
   const discountAmount = discountApplied ? subtotal * 0.1 : 0;
-  const shipping = subtotal >= 35 || subtotal === 0 ? 0 : 4.9;
   const total = Math.max(0, subtotal - discountAmount + shipping);
+
+  const isFreeShipping = shipping === 0 && subtotal > 0;
+  const remainingForFreeShipping = Math.max(0, targetThreshold - subtotal);
+  const shippingProgress = Math.min(100, Math.round((subtotal / targetThreshold) * 100));
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +63,7 @@ export default function CheckoutCartSummary1({
   };
 
   return (
-    <div className="border border-gray-200/90 rounded-2xl bg-white p-5 sm:p-7 shadow-2xs sticky top-6 flex flex-col gap-y-6">
+    <div className="border border-gray-200/90 rounded-2xl bg-white p-5 sm:p-7 shadow-2xs sticky top-6 flex flex-col gap-y-5">
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-gray-100">
         <h3 className="font-bold text-gray-950 text-lg">Récapitulatif de commande</h3>
@@ -49,6 +71,38 @@ export default function CheckoutCartSummary1({
           {items.length} {items.length > 1 ? "articles" : "article"}
         </span>
       </div>
+
+      {/* Dynamic Free Shipping Threshold Banner */}
+      {items.length > 0 && (
+        <div className="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-100">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-950">
+              {isFreeShipping ? (
+                <>
+                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <span>Livraison <strong>OFFERTE</strong> ({isFrance ? "France" : "Europe"}) !</span>
+                </>
+              ) : (
+                <>
+                  <Truck className="size-4 text-emerald-600 shrink-0" />
+                  <span>
+                    Plus que <strong className="text-emerald-800 font-extrabold">{remainingForFreeShipping.toFixed(2)} €</strong> pour la livraison offerte !
+                  </span>
+                </>
+              )}
+            </div>
+            <span className="text-xs font-bold text-emerald-700 shrink-0">
+              {shippingProgress}%
+            </span>
+          </div>
+          <div className="w-full h-1.5 bg-emerald-200/60 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-emerald-600 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${shippingProgress}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Cart Items List */}
       <div className="max-h-72 overflow-y-auto space-y-3 pr-1 custom-scrollbar">

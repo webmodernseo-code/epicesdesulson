@@ -6,15 +6,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/cart-context";
+import { Truck, CheckCircle2 } from "lucide-react";
 
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const FREE_SHIPPING_THRESHOLD = 45.0;
+
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const pathname = usePathname();
   const { items, totalCount, subtotal, removeItem, updateQuantity } = useCart();
+
+  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const shippingProgress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
 
   // Close cart drawer on route change
   useEffect(() => {
@@ -52,6 +59,38 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <i className="hgi hgi-stroke hgi-multiplication-sign text-xl text-gray-700" />
             </button>
           </div>
+
+          {/* Dynamic Free Shipping Threshold Progress Bar */}
+          {items.length > 0 && (
+            <div className="px-5 py-3.5 bg-emerald-50/70 border-b border-emerald-100/80">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-emerald-950">
+                  {isFreeShipping ? (
+                    <>
+                      <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                      <span>Livraison <strong>OFFERTE</strong> en France (10 € d'économie) !</span>
+                    </>
+                  ) : (
+                    <>
+                      <Truck className="size-4 text-emerald-600 shrink-0" />
+                      <span>
+                        Plus que <strong className="text-emerald-800 font-extrabold">{remainingForFreeShipping.toFixed(2)} €</strong> pour la livraison offerte en France !
+                      </span>
+                    </>
+                  )}
+                </div>
+                <span className="text-xs font-bold text-emerald-700 shrink-0">
+                  {shippingProgress}%
+                </span>
+              </div>
+              <div className="w-full h-2 bg-emerald-200/60 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald-600 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${shippingProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Cart Items List */}
           <div className="cart-products-content p-5 flex flex-col gap-y-3.5 overflow-y-auto flex-1">

@@ -10,8 +10,8 @@ import { useCart } from "@/context/cart-context";
 import { useProductRatings } from "@/context/ratings-context";
 
 const SULSON_FORMATS = [
-  { id: "100g", name: "Sachet Kraft Zippé 100g", price: 6.90, oldPrice: 8.50 },
-  { id: "pack-4", name: "Pack Intégral 4 Saveurs 400g", price: 24.90, oldPrice: 27.60 },
+  { id: "100g", name: "Sachet Kraft Zippé 100g", price: 5.99, oldPrice: 7.50 },
+  { id: "pack-4", name: "Pack Intégral 4 Saveurs 400g", price: 23.96, oldPrice: 29.90 },
 ];
 
 interface QuickViewDrawerProps {

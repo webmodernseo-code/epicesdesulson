@@ -396,10 +396,10 @@ export default function ProductDetailView({
           <div className="flex flex-wrap items-center justify-center gap-2 mb-8 border-b border-gray-200 pb-4">
             {[
               { id: "description", label: "Description & Histoire" },
-              { id: "ingredients", label: "🌿 Ingrédients & Bienfaits" },
-              { id: "recipes", label: "👨‍🍳 Conseils & Accords Culinaire" },
-              { id: "delivery", label: "🚚 Livraison & Retours" },
-              { id: "reviews", label: `⭐ Avis Clients (${ratingData.ratingCount})` },
+              { id: "ingredients", label: "Ingrédients & Bienfaits" },
+              { id: "recipes", label: "Conseils & Accords Culinaires" },
+              { id: "delivery", label: "Livraison & Retours" },
+              { id: "reviews", label: `Avis Clients (${ratingData.ratingCount})` },
             ].map((tab) => (
               <button
                 key={tab.id}
