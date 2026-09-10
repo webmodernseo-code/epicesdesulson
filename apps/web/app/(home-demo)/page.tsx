@@ -15,6 +15,7 @@ import LatestBlogThree from "@/components/home/latest-blog-three";
 import DealOfTheDay from "@/components/home/deal-of-the-day";
 import HomeThreeHero from "@/components/home/home-three-hero";
 import FirmFreshGrocery from "@/components/home/firm-fresh-grocery";
+import CulinaryCreationsGallery from "@/components/home/culinary-creations-gallery";
 import FAQAccordionThree from "@/components/home/faq-accordion-three";
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
       <FirmFreshGrocery />
       <DealOfTheDay />
       <LatestBlogThree />
+      <CulinaryCreationsGallery />
       <FAQAccordionThree />
     </div>
   );
