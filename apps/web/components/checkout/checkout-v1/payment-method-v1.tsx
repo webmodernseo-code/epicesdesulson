@@ -298,9 +298,13 @@ export default function PaymentMethodV1({
                 <p className="text-xs text-gray-500 mt-0.5">Paiement 1 clic</p>
               </div>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <ApplePaySvg className="h-5.5 w-auto" />
-              <GooglePaySvg className="h-5.5 w-auto" />
+              <img
+                src="/images/payments/google-pay-official.png"
+                alt="Google Pay"
+                className="h-5.5 w-auto object-contain"
+              />
             </div>
           </button>
 
@@ -538,32 +542,56 @@ export default function PaymentMethodV1({
               </p>
             </div>
 
-            <button
-              type="button"
-              disabled={isProcessing || (!isStripeReady && gatewaysStatus.loaded)}
-              onClick={onSubmit}
-              className="w-full h-13 bg-black hover:bg-gray-900 active:scale-[0.99] text-white font-medium rounded-xl text-base shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="size-5 animate-spin" />
-                  <span>Validation Express...</span>
-                </>
-              ) : !isStripeReady && gatewaysStatus.loaded ? (
-                <span className="text-xs sm:text-sm text-gray-400">
-                  Apple & Google Pay indisponibles (Stripe requis)
-                </span>
-              ) : (
-                <div className="flex items-center justify-center gap-2.5">
-                  <span className="text-xs sm:text-sm text-gray-300">Payer avec</span>
-                  <div className="flex items-center gap-1.5">
+            {/* ─── Deux Boutons Dédiés : Apple Pay & Google Pay ─── */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              {/* Bouton 1 : Apple Pay Officiel */}
+              <button
+                type="button"
+                disabled={isProcessing || (!isStripeReady && gatewaysStatus.loaded)}
+                onClick={onSubmit}
+                className="w-full h-13 bg-black hover:bg-neutral-900 active:scale-[0.99] text-white font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" />
+                    <span className="text-xs sm:text-sm">Validation en cours...</span>
+                  </>
+                ) : !isStripeReady && gatewaysStatus.loaded ? (
+                  <span className="text-xs sm:text-sm text-gray-400">Apple Pay indisponible</span>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
                     <ApplePaySvg className="h-6 w-auto" />
-                    <GooglePaySvg className="h-6 w-auto" />
+                    <span className="font-bold text-xs sm:text-sm">• {totalAmountFormatted}</span>
                   </div>
-                  <span className="font-bold text-xs sm:text-sm">• {totalAmountFormatted}</span>
-                </div>
-              )}
-            </button>
+                )}
+              </button>
+
+              {/* Bouton 2 : Google Pay Officiel */}
+              <button
+                type="button"
+                disabled={isProcessing || (!isStripeReady && gatewaysStatus.loaded)}
+                onClick={onSubmit}
+                className="w-full h-13 bg-white hover:bg-gray-50 active:scale-[0.99] text-gray-900 border border-gray-300 font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin text-gray-700" />
+                    <span className="text-xs sm:text-sm">Validation en cours...</span>
+                  </>
+                ) : !isStripeReady && gatewaysStatus.loaded ? (
+                  <span className="text-xs sm:text-sm text-gray-500">Google Pay indisponible</span>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    <img
+                      src="/images/payments/google-pay-official.png"
+                      alt="Google Pay"
+                      className="h-6 sm:h-7 w-auto object-contain"
+                    />
+                    <span className="font-bold text-xs sm:text-sm text-gray-900">• {totalAmountFormatted}</span>
+                  </div>
+                )}
+              </button>
+            </div>
           </div>
         )}
 
