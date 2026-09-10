@@ -1,4 +1,3 @@
-import React from "react";
 import {
   DashboardGridIcon,
   DeliveryBoxIcon,
@@ -9,6 +8,7 @@ import {
   UserSettings,
   CreditCardPosIcon,
   Mail01Icon,
+  DiscountTagIcon,
 } from "../../icons";
 
 export type NavItem = {
@@ -51,6 +51,11 @@ export const navItems: NavItem[] = [
         label: "Paniers abandonnés",
         href: "/abandon-cart",
         icon: <CartRemoveIcon className="size-5.5" />,
+      },
+      {
+        label: "Codes Promo & Réductions",
+        href: "/coupons",
+        icon: <DiscountTagIcon className="size-5.5" />,
       },
     ],
   },

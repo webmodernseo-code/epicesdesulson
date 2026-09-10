@@ -243,3 +243,18 @@ model SmtpEmailConfig {
   @@map("smtp_email_configs")
 }
 
+model Coupon {
+  id              String    @id @default(cuid())
+  code            String    @unique // e.g. "SULSON10", "ETE20", "VIP15"
+  description     String?   // e.g. "Remise spéciale 10%"
+  discountPercent Decimal   @db.Decimal(5, 2) // e.g. 10.00, 15.00, 20.00
+  isActive        Boolean   @default(true)
+  minOrderAmount  Decimal?  @db.Decimal(10, 2)
+  expiresAt       DateTime?
+  usageCount      Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("coupons")
+}
+

@@ -129,10 +129,36 @@ export class OrdersService {
       throw new Error("Le panier ne contient aucun article valide.");
     }
 
-    // Discount Calculation (SULSON10 = -10%)
+    // Discount Calculation (Dynamic database coupon or fallback)
     let discountAmount = 0;
-    if (input.couponCode && input.couponCode.trim().toUpperCase() === "SULSON10") {
-      discountAmount = parseFloat((calculatedSubtotal * 0.1).toFixed(2));
+    if (input.couponCode && input.couponCode.trim()) {
+      const codeClean = input.couponCode.trim().toUpperCase();
+      try {
+        if (process.env.DATABASE_URL) {
+          const dbCoupon = await prisma.coupon.findUnique({
+            where: { code: codeClean },
+          });
+          if (dbCoupon && dbCoupon.isActive) {
+            const minOrder = dbCoupon.minOrderAmount ? Number(dbCoupon.minOrderAmount) : 0;
+            const notExpired = !dbCoupon.expiresAt || new Date(dbCoupon.expiresAt) > new Date();
+            if (calculatedSubtotal >= minOrder && notExpired) {
+              const percent = Number(dbCoupon.discountPercent) / 100;
+              discountAmount = parseFloat((calculatedSubtotal * percent).toFixed(2));
+              prisma.coupon.update({
+                where: { id: dbCoupon.id },
+                data: { usageCount: { increment: 1 } },
+              }).catch(() => {});
+            }
+          }
+        }
+      } catch {
+        // Fallback
+      }
+
+      // Default fallback if DB is offline
+      if (discountAmount === 0 && codeClean === "SULSON10") {
+        discountAmount = parseFloat((calculatedSubtotal * 0.1).toFixed(2));
+      }
     }
 
     // Shipping calculation:

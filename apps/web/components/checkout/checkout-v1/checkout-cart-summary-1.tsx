@@ -22,7 +22,12 @@ export default function CheckoutCartSummary1({
 }: CheckoutCartSummaryProps) {
   const { items, subtotal, removeItem } = useCart();
   const [couponCode, setCouponCode] = useState("");
-  const [discountApplied, setDiscountApplied] = useState(false);
+  const [discountData, setDiscountData] = useState<{
+    code: string;
+    discountPercent: number;
+    discountAmount: number;
+  } | null>(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
   const countryNormalized = (shippingCountry || "France").trim().toLowerCase();
   const isFrance = countryNormalized === "france" || countryNormalized === "fr" || countryNormalized === "";
@@ -41,25 +46,50 @@ export default function CheckoutCartSummary1({
     }
   }
 
-  const discountAmount = discountApplied ? subtotal * 0.1 : 0;
+  const discountAmount = discountData
+    ? parseFloat(((subtotal * discountData.discountPercent) / 100).toFixed(2))
+    : 0;
   const total = Math.max(0, subtotal - discountAmount + shipping);
 
   const isFreeShipping = shipping === 0 && subtotal > 0;
   const remainingForFreeShipping = Math.max(0, targetThreshold - subtotal);
   const shippingProgress = Math.min(100, Math.round((subtotal / targetThreshold) * 100));
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (couponCode.toUpperCase().trim() === "SULSON10") {
-      setDiscountApplied(true);
-      toast.success("Code promo SULSON10 appliqué (-10%) !");
-    } else {
-      toast.error("Code promo invalide. Essayez SULSON10");
+    if (!couponCode.trim()) {
+      toast.error("Veuillez saisir un code promo.");
+      return;
+    }
+
+    setIsValidatingCoupon(true);
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCode.trim(), subtotal }),
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        setDiscountData({
+          code: data.data.code,
+          discountPercent: data.data.discountPercent,
+          discountAmount: data.data.discountAmount,
+        });
+        toast.success(data.data.message || `Code promo ${data.data.code} appliqué (-${data.data.discountPercent}%) !`);
+      } else {
+        setDiscountData(null);
+        toast.error(data.message || "Code promo invalide ou expiré.");
+      }
+    } catch (err) {
+      toast.error("Erreur lors de la vérification du code promo.");
+    } finally {
+      setIsValidatingCoupon(false);
     }
   };
 
   const handleTriggerCheckout = () => {
-    onPlaceOrder?.(discountApplied ? "SULSON10" : undefined);
+    onPlaceOrder?.(discountData?.code);
   };
 
   return (
@@ -79,21 +109,19 @@ export default function CheckoutCartSummary1({
             <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-950">
               {isFreeShipping ? (
                 <>
-                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-                  <span>Livraison <strong>OFFERTE</strong> ({isFrance ? "France" : "Europe"}) !</span>
+                  <CheckCircle2 className="size-4 text-emerald-600" />
+                  <span>Livraison offerte !</span>
                 </>
               ) : (
                 <>
-                  <Truck className="size-4 text-emerald-600 shrink-0" />
+                  <Truck className="size-4 text-emerald-600" />
                   <span>
-                    Plus que <strong className="text-emerald-800 font-extrabold">{remainingForFreeShipping.toFixed(2)} €</strong> pour la livraison offerte !
+                    Plus que <strong>{remainingForFreeShipping.toFixed(2)} €</strong> pour la livraison offerte
                   </span>
                 </>
               )}
             </div>
-            <span className="text-xs font-bold text-emerald-700 shrink-0">
-              {shippingProgress}%
-            </span>
+            <span className="text-xs font-bold text-emerald-700">{shippingProgress}%</span>
           </div>
           <div className="w-full h-1.5 bg-emerald-200/60 rounded-full overflow-hidden">
             <div
@@ -104,49 +132,35 @@ export default function CheckoutCartSummary1({
         </div>
       )}
 
-      {/* Cart Items List */}
-      <div className="max-h-72 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+      {/* Articles Cart Items List Preview */}
+      <div className="space-y-3.5 max-h-60 overflow-y-auto pr-1">
         {items.length === 0 ? (
-          <div className="text-center py-6 text-gray-400 text-sm">
-            Votre panier est actuellement vide.
-          </div>
+          <p className="text-xs text-gray-500 italic">Aucun article dans votre panier.</p>
         ) : (
-          items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-3.5 p-3 rounded-xl bg-gray-50/80 border border-gray-100/90 relative group"
-            >
-              <div className="size-14 rounded-xl bg-white border border-gray-200/80 p-1 flex items-center justify-center shrink-0">
-                <Image
-                  src={item.image || "/images/products/pack-4-saveurs-sulson.jpg"}
-                  alt={item.title}
-                  width={48}
-                  height={48}
-                  unoptimized
-                  className="object-contain max-h-full max-w-full"
-                />
+          items.map((it) => (
+            <div key={it.id} className="flex items-center gap-3 text-xs sm:text-sm">
+              <div className="size-11 rounded-lg border border-gray-200/80 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden relative">
+                {it.image ? (
+                  <Image
+                    src={it.image}
+                    alt={it.title}
+                    fill
+                    className="object-cover"
+                    sizes="44px"
+                  />
+                ) : (
+                  <span className="font-bold text-gray-400 text-xs">SUL</span>
+                )}
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-sm font-bold text-gray-950 line-clamp-1 block">
-                  {item.title}
-                </span>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-gray-600">
-                    Quantité : <strong className="text-gray-900">{item.quantity}</strong>
-                  </span>
-                  <span className="text-sm font-extrabold text-gray-950">
-                    {item.currentPrice}
-                  </span>
-                </div>
+                <p className="font-semibold text-gray-900 truncate">{it.title}</p>
+                <p className="text-xs text-gray-500">
+                  {it.pack || "100g"} • Qté : {it.quantity}
+                </p>
               </div>
-              <button
-                type="button"
-                onClick={() => removeItem(item.id)}
-                aria-label="Supprimer"
-                className="text-gray-400 hover:text-red-500 p-1.5 transition cursor-pointer"
-              >
-                <Trash2 className="size-4" />
-              </button>
+              <span className="font-bold text-gray-950 shrink-0">
+                {(Number(it.currentPrice || 5.99) * it.quantity).toFixed(2)} €
+              </span>
             </div>
           ))
         )}
@@ -156,16 +170,17 @@ export default function CheckoutCartSummary1({
       <form onSubmit={handleApplyCoupon} className="flex gap-2.5">
         <input
           type="text"
-          placeholder="Code promo (ex: SULSON10)"
+          placeholder="Code promo"
           value={couponCode}
           onChange={(e) => setCouponCode(e.target.value)}
           className="flex-1 h-12 px-4 text-sm rounded-xl border border-gray-300 uppercase font-mono focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition placeholder:normal-case placeholder:font-sans"
         />
         <button
           type="submit"
-          className="bg-gray-950 hover:bg-gray-800 text-white h-12 px-5 rounded-xl text-sm font-bold transition cursor-pointer shrink-0"
+          disabled={isValidatingCoupon}
+          className="bg-gray-950 hover:bg-gray-800 disabled:opacity-50 text-white h-12 px-5 rounded-xl text-sm font-bold transition cursor-pointer shrink-0"
         >
-          Appliquer
+          {isValidatingCoupon ? "Vérification..." : "Appliquer"}
         </button>
       </form>
 
@@ -176,9 +191,9 @@ export default function CheckoutCartSummary1({
           <span className="font-bold text-gray-950">{subtotal.toFixed(2)} €</span>
         </div>
 
-        {discountApplied && (
+        {discountData && (
           <div className="flex justify-between text-emerald-700 font-semibold">
-            <span>Remise fidélité (SULSON10 -10%)</span>
+            <span>Remise code promo ({discountData.code} -{discountData.discountPercent}%)</span>
             <span>-{discountAmount.toFixed(2)} €</span>
           </div>
         )}
