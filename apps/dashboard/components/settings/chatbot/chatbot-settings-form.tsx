@@ -85,11 +85,11 @@ export default function ChatbotSettingsForm() {
                 onChange={(e) =>
                   setConfig({ ...config, whatsappNumber: e.target.value })
                 }
-                placeholder="+33 6 12 34 56 78 ou +241 ..."
+                placeholder="+33 6 95 54 57 23 ou +241 ..."
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-900 focus:border-primary focus:outline-none shadow-xs"
               />
               <p className="text-[11px] text-gray-500 mt-1.5">
-                Exemples : <span className="font-mono text-gray-700">+33612345678</span> (France) ou <span className="font-mono text-gray-700">+241XXXXXXXX</span>
+                Exemples : <span className="font-mono text-gray-700">+33695545723</span> (France) ou <span className="font-mono text-gray-700">+241XXXXXXXX</span>
               </p>
             </div>
 

@@ -437,7 +437,7 @@ export default function CulinaryCreationsGallery() {
 
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
-                href="https://wa.me/33758249826?text=Bonjour%20Sulson,%20voici%20une%20photo%20de%20ma%20recette%20!"
+                href="https://wa.me/33695545723?text=Bonjour%20Sulson,%20voici%20une%20photo%20de%20ma%20recette%20!"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs md:text-sm transition-all shadow-sm hover:shadow-md cursor-pointer"

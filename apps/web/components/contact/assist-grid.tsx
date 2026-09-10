@@ -5,7 +5,7 @@ import { getChatbotConfig, formatWhatsappUrl } from "@/lib/chatbot-config";
 import { useState, useEffect } from "react";
 
 export default function AssistGrid() {
-  const [whatsappUrl, setWhatsappUrl] = useState("https://wa.me/33612345678");
+  const [whatsappUrl, setWhatsappUrl] = useState("https://wa.me/33695545723");
 
   useEffect(() => {
     const config = getChatbotConfig();

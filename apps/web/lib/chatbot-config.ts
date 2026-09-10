@@ -7,7 +7,7 @@ export interface ChatbotConfig {
 }
 
 export const DEFAULT_CHATBOT_CONFIG: ChatbotConfig = {
-  whatsappNumber: "+33612345678",
+  whatsappNumber: "+33695545723",
   assistantName: "Assistante Les Épices de Sulson",
   welcomeMessage:
     "Bonjour ! Ici l'assistante Les Épices de Sulson 🌿 Comment allez-vous et comment puis-je vous aider aujourd'hui ?",
@@ -49,7 +49,16 @@ export function saveChatbotConfig(config: Partial<ChatbotConfig>): ChatbotConfig
 }
 
 export function formatWhatsappUrl(number: string, message: string): string {
-  const cleanNumber = number.replace(/[^0-9]/g, "");
+  let cleanNumber = number.replace(/[^0-9]/g, "");
+  // Handle French local prefix with international code (e.g. +33 06... -> 336...)
+  if (cleanNumber.startsWith("330")) {
+    cleanNumber = "33" + cleanNumber.slice(3);
+  } else if (cleanNumber.startsWith("0")) {
+    cleanNumber = "33" + cleanNumber.slice(1);
+  }
+  if (!cleanNumber) {
+    cleanNumber = "33695545723";
+  }
   const encodedMessage = encodeURIComponent(message.trim());
   return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
 }
