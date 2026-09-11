@@ -3,9 +3,17 @@ import { prisma } from "@/lib/prisma";
 import { createHmac } from "node:crypto";
 import { getSessionSecret } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const limit = rateLimit(`forgot-password:${getClientIp(req)}`, 5, 15 * 60 * 1000);
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: "Trop de demandes. Veuillez patienter avant de réessayer." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((limit.reset - Date.now()) / 1000)) } }
+      );
+    }
     const { email } = await req.json();
     if (!email || !email.trim()) {
       return NextResponse.json(
@@ -53,14 +61,21 @@ export async function POST(req: Request) {
     const signature = createHmac("sha256", secret).update(encoded).digest("base64url");
     const resetToken = `${encoded}.${signature}`;
 
-    const host = req.headers.get("host") || "admin.epicesdesulson.com";
-    const protocol = host.includes("localhost") ? "http" : "https";
-    const resetUrl = `${protocol}://${host}/set-new-password?token=${resetToken}`;
+    const configuredOrigin = process.env.NEXT_PUBLIC_DASHBOARD_URL?.replace(/\/$/, "");
+    const origin = configuredOrigin || new URL(req.url).origin;
+    const resetUrl = `${origin}/set-new-password?token=${encodeURIComponent(resetToken)}`;
 
-    await sendPasswordResetEmail({
+    const delivery = await sendPasswordResetEmail({
       to: cleanEmail,
       resetUrl,
     });
+    if (!delivery.success) {
+      console.error("Password reset email delivery failed:", delivery.error);
+      return NextResponse.json(
+        { error: "Le service email est indisponible. Aucun lien n’a été envoyé." },
+        { status: 503 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

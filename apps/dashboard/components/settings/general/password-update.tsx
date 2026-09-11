@@ -21,8 +21,8 @@ export default function PasswordUpdate() {
       setStatusMessage({ type: "error", text: "Veuillez renseigner votre mot de passe actuel." });
       return;
     }
-    if (!newPassword || newPassword.length < 6) {
-      setStatusMessage({ type: "error", text: "Le nouveau mot de passe doit comporter au moins 6 caractères." });
+    if (!newPassword || newPassword.length < 12 || newPassword.length > 128) {
+      setStatusMessage({ type: "error", text: "Le nouveau mot de passe doit comporter entre 12 et 128 caractères." });
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -122,7 +122,8 @@ export default function PasswordUpdate() {
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
               required
-              minLength={6}
+              minLength={12}
+              maxLength={128}
               className="w-full h-11 px-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <button
@@ -148,7 +149,8 @@ export default function PasswordUpdate() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
               required
-              minLength={6}
+              minLength={12}
+              maxLength={128}
               className="w-full h-11 px-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <button

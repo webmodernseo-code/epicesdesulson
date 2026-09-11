@@ -624,8 +624,7 @@ export async function sendPasswordResetEmail({
     });
 
     if (!smtp) {
-      console.log(`[Lien de réinitialisation (Simulation SMTP)] : ${resetUrl}`);
-      return { success: true };
+      return { success: false, error: "Configuration SMTP absente." };
     }
 
     await smtp.transporter.sendMail({

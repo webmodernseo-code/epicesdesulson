@@ -26,8 +26,8 @@ export function NewPasswordForm() {
       toast.error("Lien de réinitialisation invalide ou manquant.");
       return;
     }
-    if (password.length < 6) {
-      toast.error("Le mot de passe doit comporter au moins 6 caractères.");
+    if (password.length < 12 || password.length > 128) {
+      toast.error("Le mot de passe doit comporter entre 12 et 128 caractères.");
       return;
     }
     if (password !== confirmPassword) {

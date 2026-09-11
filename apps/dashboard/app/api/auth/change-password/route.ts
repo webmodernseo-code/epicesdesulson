@@ -1,24 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin, readSession, verifyPassword, hashPassword } from "@/lib/auth";
+import { hashPassword, isAdmin, readSession, verifyPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
-const MASTER_PASSWORDS = [
-  "Sulson2026!",
-  "Sulson@Admin2025!",
-  "Admin@Sulson2026",
-  "Sulson2026!Securite",
-  "admin123",
-  "sulson",
-  "Sulson2026",
-  "sulson2026",
-  "Sulson-Admin-7f3a9d2c6e4b81x",
+const BOOTSTRAP_PASSWORDS = [
   process.env.ADMIN_INITIAL_PASSWORD,
   process.env.ADMIN_PASSWORD,
 ].filter(Boolean) as string[];
 
 export async function POST(req: NextRequest) {
+  const limit = rateLimit(`change-password:${getClientIp(req)}`, 5, 15 * 60 * 1000);
+  if (!limit.success) {
+    return NextResponse.json(
+      { success: false, error: "Trop de tentatives. Réessayez dans quelques minutes." },
+      { status: 429 }
+    );
+  }
+
   try {
     const session = readSession(req);
     if (!session || !isAdmin(req)) {
@@ -28,28 +28,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { oldPassword, newPassword, confirmPassword } = body;
-
-    if (!newPassword || newPassword.length < 6) {
+    const { oldPassword, newPassword, confirmPassword } = await req.json();
+    if (typeof oldPassword !== "string" || !oldPassword) {
       return NextResponse.json(
-        { success: false, error: "Le nouveau mot de passe doit contenir au moins 6 caractères." },
+        { success: false, error: "Le mot de passe actuel est requis." },
         { status: 400 }
       );
     }
-
+    if (typeof newPassword !== "string" || newPassword.length < 12 || newPassword.length > 128) {
+      return NextResponse.json(
+        { success: false, error: "Le nouveau mot de passe doit contenir entre 12 et 128 caractères." },
+        { status: 400 }
+      );
+    }
     if (newPassword !== confirmPassword) {
       return NextResponse.json(
         { success: false, error: "Le nouveau mot de passe et la confirmation ne correspondent pas." },
         { status: 400 }
       );
     }
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { success: false, error: "Service temporairement indisponible. Le mot de passe n'a pas été modifié." },
+        { status: 503 }
+      );
+    }
 
     const targetEmail = (session.email || "admin@epicesdesulson.com").toLowerCase();
-
-    // Check existing user in database
-    let user = null;
-    if (process.env.DATABASE_URL) {
+    let user;
+    try {
       user = await prisma.user.findFirst({
         where: {
           OR: [
@@ -57,57 +64,51 @@ export async function POST(req: NextRequest) {
             { email: { equals: targetEmail, mode: "insensitive" } },
           ],
         },
-      }).catch(() => null);
+      });
+    } catch (error) {
+      console.error("Impossible de lire le compte administrateur:", error);
+      return NextResponse.json(
+        { success: false, error: "Service temporairement indisponible. Le mot de passe n'a pas été modifié." },
+        { status: 503 }
+      );
     }
 
-    // If user exists in DB and has passwordHash, verify old password unless it matches master password
-    if (user && user.passwordHash) {
-      const isOldValid = await verifyPassword(oldPassword, user.passwordHash);
-      const isMasterOld = MASTER_PASSWORDS.includes(oldPassword);
-      if (!isOldValid && !isMasterOld) {
-        return NextResponse.json(
-          { success: false, error: "Le mot de passe actuel est incorrect." },
-          { status: 400 }
-        );
-      }
-    } else if (oldPassword && !MASTER_PASSWORDS.includes(oldPassword)) {
-      // If no DB user or no hash yet, check against master passwords
+    const oldPasswordIsValid = user?.passwordHash
+      ? await verifyPassword(oldPassword, user.passwordHash)
+      : BOOTSTRAP_PASSWORDS.includes(oldPassword);
+
+    if (!oldPasswordIsValid) {
       return NextResponse.json(
         { success: false, error: "Le mot de passe actuel est incorrect." },
         { status: 400 }
       );
     }
 
-    const newHashed = await hashPassword(newPassword);
-
-    if (process.env.DATABASE_URL) {
-      if (user) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { passwordHash: newHashed, role: "MASTER_ADMIN" },
-        });
-      } else {
-        await prisma.user.upsert({
-          where: { email: targetEmail },
-          update: { passwordHash: newHashed, role: "MASTER_ADMIN" },
-          create: {
-            email: targetEmail,
-            name: "Administrateur Sulson",
-            passwordHash: newHashed,
-            role: "MASTER_ADMIN",
-          },
-        });
-      }
+    const passwordHash = await hashPassword(newPassword);
+    if (user) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash },
+      });
+    } else {
+      await prisma.user.create({
+        data: {
+          email: targetEmail,
+          name: "Administrateur Sulson",
+          passwordHash,
+          role: "MASTER_ADMIN",
+        },
+      });
     }
 
     return NextResponse.json({
       success: true,
-      message: "Votre mot de passe a été mis à jour avec succès !",
+      message: "Votre mot de passe a été mis à jour avec succès.",
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erreur change-password:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Erreur lors du changement de mot de passe." },
+      { success: false, error: "Erreur lors du changement de mot de passe." },
       { status: 500 }
     );
   }

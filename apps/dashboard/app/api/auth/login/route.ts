@@ -10,26 +10,15 @@ import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Master emergency passwords accepted for swift administrative access
 const MASTER_PASSWORDS = [
-  "Sulson2026!",
-  "Sulson@Admin2025!",
-  "Admin@Sulson2026",
-  "Sulson2026!Securite",
-  "admin123",
-  "sulson",
-  "Sulson2026",
-  "sulson2026",
-  "Sulson-Admin-7f3a9d2c6e4b81x",
   process.env.ADMIN_INITIAL_PASSWORD,
   process.env.ADMIN_PASSWORD,
 ].filter(Boolean) as string[];
 
 const MASTER_ADMIN_EMAILS = [
   "admin@epicesdesulson.com",
-  "admin@sulson.com",
   "contact@epicesdesulson.com",
-  "vendeuse@epicesdesulson.com",
-  "admin",
-];
+  process.env.ADMIN_EMAIL?.trim().toLowerCase(),
+].filter(Boolean) as string[];
 
 export async function POST(req: Request) {
   try {
@@ -61,6 +50,7 @@ export async function POST(req: Request) {
       name: string;
       role: "MASTER_ADMIN" | "ADMIN";
     } | null = null;
+    let persistedAdminExists = false;
 
     // 1. Check Database for updated custom password (Case-Insensitive)
     if (process.env.DATABASE_URL) {
@@ -71,14 +61,15 @@ export async function POST(req: Request) {
           },
         });
 
-        if (user && user.passwordHash) {
+        if (user && (user.role === "ADMIN" || user.role === "MASTER_ADMIN") && user.passwordHash) {
+          persistedAdminExists = true;
           const isValid = await verifyPassword(inputPassword, user.passwordHash);
           if (isValid) {
             authenticatedUser = {
               id: user.id,
               email: user.email,
               name: user.name || "Administrateur",
-              role: (user.role === "ADMIN" || user.role === "MASTER_ADMIN") ? (user.role as any) : "MASTER_ADMIN",
+              role: user.role,
             };
           }
         }
@@ -88,10 +79,10 @@ export async function POST(req: Request) {
     }
 
     // 2. Direct match for Master / Emergency Passwords
-    const isMasterEmail = MASTER_ADMIN_EMAILS.includes(cleanInput) || cleanInput.includes("admin") || cleanInput.includes("sulson");
+    const isMasterEmail = MASTER_ADMIN_EMAILS.includes(cleanInput);
     const isMasterPassword = MASTER_PASSWORDS.includes(inputPassword);
 
-    if (!authenticatedUser && isMasterEmail && isMasterPassword) {
+    if (!authenticatedUser && !persistedAdminExists && isMasterEmail && isMasterPassword) {
       authenticatedUser = {
         id: "master_admin_root",
         email: cleanInput.includes("@") ? cleanInput : "admin@epicesdesulson.com",

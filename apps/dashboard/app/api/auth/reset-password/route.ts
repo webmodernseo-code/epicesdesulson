@@ -2,9 +2,17 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { getSessionSecret, hashPassword } from "@/lib/auth";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const limit = rateLimit(`reset-password:${getClientIp(req)}`, 5, 15 * 60 * 1000);
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: "Trop de tentatives. Veuillez patienter avant de réessayer." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((limit.reset - Date.now()) / 1000)) } }
+      );
+    }
     const { token, newPassword } = await req.json();
 
     if (!token || !newPassword) {
@@ -14,9 +22,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (newPassword.length < 6) {
+    if (typeof newPassword !== "string" || newPassword.length < 12 || newPassword.length > 128) {
       return NextResponse.json(
-        { error: "Le mot de passe doit comporter au moins 6 caractères." },
+        { error: "Le mot de passe doit comporter entre 12 et 128 caractères." },
         { status: 400 }
       );
     }
@@ -49,7 +57,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const cleanEmail = payload.email.toLowerCase();
+    if (typeof payload.email !== "string" || payload.email.length > 254) {
+      return NextResponse.json({ error: "Jeton de réinitialisation invalide." }, { status: 400 });
+    }
+    const cleanEmail = payload.email.trim().toLowerCase();
     const hashedPassword = await hashPassword(newPassword);
 
     try {
@@ -68,6 +79,10 @@ export async function POST(req: Request) {
       });
     } catch (dbErr) {
       console.error("Database update error during password reset:", dbErr);
+      return NextResponse.json(
+        { error: "La base de données est indisponible. Le mot de passe n’a pas été modifié." },
+        { status: 503 }
+      );
     }
 
     return NextResponse.json({
