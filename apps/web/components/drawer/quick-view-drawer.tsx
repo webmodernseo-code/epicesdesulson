@@ -93,10 +93,12 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
       ? "/images/products/epice-gourmande-verso.jpg"
       : undefined);
 
-  const displayImage =
-    activeSide === "verso" && versoImage
-      ? versoImage
-      : selectedProduct?.image || "/images/products/pack-4-saveurs-sulson.jpg";
+  const isPackSelected = selectedFormat === "pack-4";
+  const displayImage = isPackSelected
+    ? "/images/products/pack-4-saveurs-sulson.jpg"
+    : activeSide === "verso" && versoImage
+    ? versoImage
+    : selectedProduct?.image || "/images/products/pack-4-saveurs-sulson.jpg";
 
   const handleAddToCart = () => {
     addItem({
@@ -104,7 +106,7 @@ export default function QuickViewDrawer({ isOpen: propIsOpen, onClose: propOnClo
       title: `${selectedProduct?.title || "Épice Sulson"} (${currentFormatObj.name})`,
       currentPrice: `${calculatedPrice} €`,
       oldPrice: `${calculatedOldPrice} €`,
-      image: selectedProduct?.image || "/images/products/pack-4-saveurs-sulson.jpg",
+      image: isPackSelected ? "/images/products/pack-4-saveurs-sulson.jpg" : selectedProduct?.image || "/images/products/pack-4-saveurs-sulson.jpg",
       pack: currentFormatObj.name,
       quantity: quantity,
     });

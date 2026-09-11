@@ -2,9 +2,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useCart } from "@/context/cart-context";
+import { useCart, parseCartPrice } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
-import { OfficialPaypalLogo } from "./payment-method-v1";
 import { ShieldCheck, Lock, Trash2, Truck, CheckCircle2 } from "lucide-react";
 
 interface CheckoutCartSummaryProps {
@@ -137,32 +136,38 @@ export default function CheckoutCartSummary1({
         {items.length === 0 ? (
           <p className="text-xs text-gray-500 italic">Aucun article dans votre panier.</p>
         ) : (
-          items.map((it) => (
-            <div key={it.id} className="flex items-center gap-3 text-xs sm:text-sm">
-              <div className="size-11 rounded-lg border border-gray-200/80 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden relative">
-                {it.image ? (
-                  <Image
-                    src={it.image}
-                    alt={it.title}
-                    fill
-                    className="object-cover"
-                    sizes="44px"
-                  />
-                ) : (
-                  <span className="font-bold text-gray-400 text-xs">SUL</span>
-                )}
+          items.map((it) => {
+            const unitPrice = parseCartPrice(it.currentPrice);
+            const qty = Math.max(1, Number(it.quantity) || 1);
+            const rowTotal = (unitPrice * qty).toFixed(2);
+
+            return (
+              <div key={it.id} className="flex items-center gap-3 text-xs sm:text-sm">
+                <div className="size-11 rounded-lg border border-gray-200/80 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden relative">
+                  {it.image ? (
+                    <Image
+                      src={it.image}
+                      alt={it.title}
+                      fill
+                      className="object-cover"
+                      sizes="44px"
+                    />
+                  ) : (
+                    <span className="font-bold text-gray-400 text-xs">SUL</span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 truncate">{it.title}</p>
+                  <p className="text-xs text-gray-500">
+                    {it.pack || "100g"} • Qté : {qty}
+                  </p>
+                </div>
+                <span className="font-bold text-gray-950 shrink-0">
+                  {rowTotal} €
+                </span>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-900 truncate">{it.title}</p>
-                <p className="text-xs text-gray-500">
-                  {it.pack || "100g"} • Qté : {it.quantity}
-                </p>
-              </div>
-              <span className="font-bold text-gray-950 shrink-0">
-                {(Number(it.currentPrice || 5.99) * it.quantity).toFixed(2)} €
-              </span>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

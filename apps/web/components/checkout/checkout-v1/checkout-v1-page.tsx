@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/context/cart-context";
+import { useCart, parseCartPrice } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
 import ShippingAddressV1, { ShippingAddressData } from "./shipping-address-v1";
 import PaymentMethodV1, { CardFormData, PaymentTabType } from "./payment-method-v1";
@@ -156,8 +156,8 @@ export default function CheckoutV1Page() {
             title: it.title,
             formatLabel: it.pack || "100g",
             pack: it.pack || "100g",
-            quantity: it.quantity,
-            currentPrice: it.currentPrice,
+            quantity: Math.max(1, Number(it.quantity) || 1),
+            currentPrice: parseCartPrice(it.currentPrice),
           })),
           paymentMethod: selectedMethod,
           cardLast4: cardData.cardNumber ? cardData.cardNumber.replace(/\s+/g, "").slice(-4) : undefined,
@@ -285,6 +285,10 @@ export default function CheckoutV1Page() {
               shippingCountry={shippingData.country}
               onPlaceOrder={(coupon) => {
                 if (coupon) setCouponCode(coupon);
+                if (selectedMethod === "paypal") {
+                  // Bouton PayPal inerte quand pas d'API
+                  return;
+                }
                 handlePaymentSubmit(undefined, coupon);
               }}
             />

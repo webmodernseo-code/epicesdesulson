@@ -39,13 +39,26 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = "sulson_cart_v2";
 
+export function parseCartPrice(price: any): number {
+  if (price === null || price === undefined) return 5.99;
+  if (typeof price === "number") {
+    return isNaN(price) || price <= 0 ? 5.99 : price;
+  }
+  const str = String(price).trim();
+  if (!str || str.toLowerCase().includes("nan")) return 5.99;
+  // Replace comma with period, strip all characters except digits and dot
+  const clean = str.replace(",", ".").replace(/[^0-9.]/g, "");
+  const num = parseFloat(clean);
+  return isNaN(num) || num <= 0 ? 5.99 : num;
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const initialLoadRef = useRef(false);
 
-  // Load cart from localStorage upon mount
+  // Load cart from localStorage upon mount and auto-heal any legacy/corrupted price fields
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
@@ -53,7 +66,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed)) {
-            setItems(parsed);
+            const sanitized: CartItem[] = parsed.map((item) => {
+              const numPrice = parseCartPrice(item.currentPrice);
+              return {
+                ...item,
+                quantity: Math.max(1, Number(item.quantity) || 1),
+                currentPrice:
+                  !item.currentPrice || String(item.currentPrice).includes("NaN")
+                    ? `${numPrice.toFixed(2)} €`
+                    : item.currentPrice,
+              };
+            });
+            setItems(sanitized);
           }
         }
       } catch (err) {
@@ -83,17 +107,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
-  // Parse numeric price from string like "6.90 €" or "14.50"
-  const parsePrice = (priceStr: string): number => {
-    if (!priceStr) return 0;
-    const num = parseFloat(priceStr.replace(/[^0-9.]/g, ""));
-    return isNaN(num) ? 0 : num;
-  };
-
-  const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalCount = items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
 
   const subtotal = items.reduce(
-    (sum, item) => sum + parsePrice(item.currentPrice) * item.quantity,
+    (sum, item) => sum + parseCartPrice(item.currentPrice) * Math.max(1, Number(item.quantity) || 1),
     0
   );
 

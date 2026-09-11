@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useCart } from "@/context/cart-context";
+import { useCart, parseCartPrice } from "@/context/cart-context";
 
 export default function CartOneTable() {
   const { items, updateQuantity, removeItem } = useCart();
@@ -44,8 +44,9 @@ export default function CartOneTable() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {items.map((item) => {
-              const priceNum = parseFloat(item.currentPrice.replace(/[^0-9.]/g, "")) || 0;
-              const totalRow = (priceNum * item.quantity).toFixed(2);
+              const priceNum = parseCartPrice(item.currentPrice);
+              const qty = Math.max(1, Number(item.quantity) || 1);
+              const totalRow = (priceNum * qty).toFixed(2);
 
               return (
                 <tr key={item.id} className="hover:bg-gray-50/60 transition-colors">

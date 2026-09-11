@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   Lock,
@@ -13,7 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-/* ─── PURE VECTOR SVGS ─── */
+/* ─── PURE VECTOR SVGS (Pixel-Perfect, Zero Pixellation) ─── */
 
 export function VisaSvg({ className = "h-6 w-auto" }: { className?: string }) {
   return (
@@ -41,45 +41,107 @@ export function MastercardSvg({ className = "h-6 w-auto" }: { className?: string
   );
 }
 
+/** Official Pure Apple Pay Logo Vector (Apple glyph + "Pay" typography) */
 export function ApplePaySvg({ className = "h-6 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="50" height="32" rx="5" fill="black" />
-      <path
-        d="M17.8 16.2c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.9-1.4-.1-2.8.8-3.5.8-.8 0-1.9-.8-3.1-.8-1.6 0-3 1-3.9 2.5-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3.1-.7 1.4 0 1.9.7 3.1.7 1.3 0 2.1-1.1 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.6-1-2.6-3.7zM15.9 9.3c.6-.8 1.1-1.9.9-3-.9.1-2.1.6-2.7 1.4-.6.7-1.1 1.8-.9 2.9 1.1.1 2.1-.5 2.7-1.3zM25.7 11.2h-3.4v12.2h1.9v-4.6h1.5c2.4 0 4-1.6 4-3.8 0-2.3-1.6-3.8-4-3.8zm0 5.8h-1.5v-4.1h1.5c1.4 0 2.2.9 2.2 2 0 1.2-.8 2.1-2.2 2.1zm10.7-1.9c-1.4 0-2.5.7-3 1.7v-1.5h-1.8v8h1.9v-4.2c0-1.4.8-2.2 1.8-2.2 1 0 1.7.7 1.7 2v4.4h1.9v-4.7c0-2.2-1.1-3.5-2.5-3.5zm-5.7 8.2h-1.9v-8h1.9v8zm0-9.8h-1.9v-1.9h1.9v1.9z"
-        fill="white"
-      />
+    <svg className={className} viewBox="0 0 110 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g fill="currentColor">
+        {/* Apple glyph */}
+        <path d="M19.78 0.5c1.02 1.29 1.63 3.09 1.42 4.9-1.57.07-3.44-.93-4.42-2.21-.87-1.14-1.6-2.96-1.38-4.75 1.76-.14 3.44.83 4.38 2.06zM22.21 7.08c-2.49-.15-4.61 1.42-5.79 1.42-1.21 0-3.01-1.35-4.99-1.31-2.57.04-4.95 1.5-6.27 3.82-2.7 4.67-.7 11.57 1.91 15.35 1.28 1.85 2.8 3.9 4.8 3.82 1.92-.08 2.66-1.24 4.99-1.24 2.3 0 2.98 1.24 4.99 1.2 2.06-.04 3.37-1.87 4.63-3.72 1.46-2.14 2.06-4.21 2.09-4.32-.04-.02-4.01-1.55-4.06-6.13-.04-3.84 3.14-5.67 3.28-5.76-1.8-2.64-4.6-2.94-5.57-2.99z" />
+        {/* P */}
+        <path d="M37.8 6.34h10.31c5.22 0 8.38 3.15 8.38 7.69 0 4.58-3.18 7.72-8.38 7.72h-4.88v9.63H37.8V6.34zm5.43 11.37h4.56c2.91 0 4.3-1.51 4.3-3.67 0-2.14-1.39-3.65-4.3-3.65h-4.56v7.32z" />
+        {/* a */}
+        <path d="M60.81 21.62c0-4.32 3.45-6.77 9.58-7.12l4.8-.27v-1.45c0-2.09-1.58-3.3-4.3-3.3-2.26 0-4.22.85-5.38 2.22l-2.97-2.5c1.97-2.36 5.15-3.61 8.75-3.61 5.5 0 8.77 3 8.77 7.97v15.53h-4.37v-3.31c-1.6 2.34-4.4 3.72-7.5 3.72-4.61 0-7.4-2.98-7.4-7.87zm14.39-2.41v-1.89l-4.25.25c-3.35.21-5.45 1.56-5.45 4.12 0 2.36 1.83 3.77 4.65 3.77 2.96 0 5.04-2.3 5.04-6.25z" />
+        {/* y */}
+        <path d="M81.95 10.03h5.38l6.1 16.24 6.08-16.24h5.36l-10.1 24.33c-1.94 4.64-4.48 6.32-8.62 6.32-1.16 0-2.34-.23-3.28-.63v-4.22c.87.37 1.69.5 2.54.5 2.39 0 3.77-1.01 4.96-4.06l.57-1.45-8.98-20.79z" />
+      </g>
     </svg>
   );
 }
 
+/** Official Apple Pay Rounded Badge (for tabs, summaries and cards) */
+export function ApplePayBadgeSvg({ className = "h-6 w-auto" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 84 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="84" height="36" rx="7" fill="#000000" />
+      <g fill="#FFFFFF" transform="translate(6, 1) scale(0.65)">
+        {/* Apple glyph */}
+        <path d="M19.78 0.5c1.02 1.29 1.63 3.09 1.42 4.9-1.57.07-3.44-.93-4.42-2.21-.87-1.14-1.6-2.96-1.38-4.75 1.76-.14 3.44.83 4.38 2.06zM22.21 7.08c-2.49-.15-4.61 1.42-5.79 1.42-1.21 0-3.01-1.35-4.99-1.31-2.57.04-4.95 1.5-6.27 3.82-2.7 4.67-.7 11.57 1.91 15.35 1.28 1.85 2.8 3.9 4.8 3.82 1.92-.08 2.66-1.24 4.99-1.24 2.3 0 2.98 1.24 4.99 1.2 2.06-.04 3.37-1.87 4.63-3.72 1.46-2.14 2.06-4.21 2.09-4.32-.04-.02-4.01-1.55-4.06-6.13-.04-3.84 3.14-5.67 3.28-5.76-1.8-2.64-4.6-2.94-5.57-2.99z" />
+        {/* P */}
+        <path d="M37.8 6.34h10.31c5.22 0 8.38 3.15 8.38 7.69 0 4.58-3.18 7.72-8.38 7.72h-4.88v9.63H37.8V6.34zm5.43 11.37h4.56c2.91 0 4.3-1.51 4.3-3.67 0-2.14-1.39-3.65-4.3-3.65h-4.56v7.32z" />
+        {/* a */}
+        <path d="M60.81 21.62c0-4.32 3.45-6.77 9.58-7.12l4.8-.27v-1.45c0-2.09-1.58-3.3-4.3-3.3-2.26 0-4.22.85-5.38 2.22l-2.97-2.5c1.97-2.36 5.15-3.61 8.75-3.61 5.5 0 8.77 3 8.77 7.97v15.53h-4.37v-3.31c-1.6 2.34-4.4 3.72-7.5 3.72-4.61 0-7.4-2.98-7.4-7.87zm14.39-2.41v-1.89l-4.25.25c-3.35.21-5.45 1.56-5.45 4.12 0 2.36 1.83 3.77 4.65 3.77 2.96 0 5.04-2.3 5.04-6.25z" />
+        {/* y */}
+        <path d="M81.95 10.03h5.38l6.1 16.24 6.08-16.24h5.36l-10.1 24.33c-1.94 4.64-4.48 6.32-8.62 6.32-1.16 0-2.34-.23-3.28-.63v-4.22c.87.37 1.69.5 2.54.5 2.39 0 3.77-1.01 4.96-4.06l.57-1.45-8.98-20.79z" />
+      </g>
+    </svg>
+  );
+}
+
+/** Official Google Pay Pure Vector SVG */
 export function GooglePaySvg({ className = "h-6 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="50" height="32" rx="5" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+    <svg className={className} viewBox="0 0 84 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="84" height="36" rx="7" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.2" />
+      {/* G Logo */}
       <path
-        d="M17.4 16.1c0-.4 0-.8-.1-1.2h-4.8v2.3h2.8c-.1.7-.5 1.3-1.1 1.7v1.4h1.8c1-1 1.4-2.5 1.4-4.2z"
+        d="M23.6 18.2c0-.6-.1-1.2-.2-1.8H14v3.4h5.4c-.2 1.2-.9 2.2-1.9 2.9v2.4h3.1c1.8-1.7 2.9-4.1 2.9-6.9z"
         fill="#4285F4"
       />
       <path
-        d="M12.5 21.1c1.4 0 2.6-.5 3.4-1.3l-1.8-1.4c-.5.3-1 .5-1.6.5-1.2 0-2.3-.8-2.7-1.9h-1.8v1.4c.9 1.7 2.6 2.7 4.5 2.7z"
+        d="M14 28c2.7 0 5-1 6.6-2.5l-3.1-2.4c-.9.6-2 1-3.5 1-2.7 0-5-1.8-5.8-4.3H5V22.3C6.7 25.7 10.1 28 14 28z"
         fill="#34A853"
       />
       <path
-        d="M9.8 17c-.1-.3-.2-.7-.2-1s.1-.7.2-1v-1.4h-1.8c-.4.7-.6 1.5-.6 2.4s.2 1.7.6 2.4l1.8-1.4z"
+        d="M8.2 19.8c-.2-.6-.3-1.2-.3-1.8s.1-1.2.3-1.8v-2.5H5C4.3 15 4 16.5 4 18s.3 3 1 4.3l3.2-2.5z"
         fill="#FBBC04"
       />
       <path
-        d="M12.5 12.9c.8 0 1.5.3 2 .8l1.5-1.5c-1-.9-2.2-1.4-3.5-1.4-1.9 0-3.6 1.1-4.5 2.7l1.8 1.4c.4-1.1 1.5-2 2.7-2z"
+        d="M14 11.6c1.5 0 2.8.5 3.8 1.5l2.9-2.9C18.9 8.6 16.7 7.7 14 7.7 10.1 7.7 6.7 10 5 13.4l3.2 2.5c.8-2.4 3.1-4.3 5.8-4.3z"
         fill="#EA4335"
       />
+      {/* Pay Text */}
       <path
-        d="M23.1 13.5h-1.9v7.6h1.9c2 0 3.3-1.4 3.3-3.8 0-2.4-1.3-3.8-3.3-3.8zm0 6h-.6v-4.4h.6c1.1 0 1.9.8 1.9 2.2 0 1.4-.8 2.2-1.9 2.2zm9.1-3.2c-1.3 0-2.3.9-2.3 2.2 0 1.3 1 2.2 2.3 2.2.8 0 1.5-.4 1.8-1.1l-1.1-.6c-.2.4-.4.5-.7.5-.5 0-.9-.3-1-.8h3v-.2c0-1.4-1-2.2-2-2.2zm-.9 1.5c.1-.4.4-.7.9-.7s.8.3.9.7h-1.8zm-4.3 3.3h1.3v-5.2h-1.3v5.2zm0-6.1h1.3v-1.2h-1.3v1.2z"
+        d="M32.8 11.5h4.6c1.5 0 2.6.4 3.4 1.2.8.8 1.2 1.8 1.2 3.1 0 1.3-.4 2.3-1.2 3.1-.8.8-1.9 1.2-3.4 1.2h-2.3v5.6h-2.3V11.5zm2.3 6.6h2.2c.8 0 1.4-.2 1.8-.7.4-.5.7-1.1.7-1.9s-.2-1.4-.7-1.9c-.4-.5-1-.7-1.8-.7h-2.2v5.2z"
+        fill="#5F6368"
+      />
+      <path
+        d="M48.7 21.2c0-1.4.5-2.5 1.5-3.2 1-.7 2.3-1.1 3.9-1.1h2.7v-.8c0-.9-.2-1.6-.7-2-.5-.5-1.3-.7-2.2-.7-.8 0-1.5.2-2 .6-.5.4-.9 1-1.1 1.7l-2.1-.9c.4-1.1 1-1.9 1.9-2.6 1-.7 2.2-1 3.6-1 1.6 0 2.9.4 3.9 1.3 1 .9 1.4 2.1 1.4 3.8v9.4h-2.2v-2.1c-1 1.6-2.5 2.4-4.3 2.4-1.4 0-2.6-.4-3.5-1.2-.9-.8-1.3-1.9-1.3-3.2zm6.9-1v-.9h-2.4c-.9 0-1.6.2-2 .7-.4.5-.7 1-.7 1.7 0 .7.3 1.2.8 1.6.5.4 1.1.6 1.9.6 1.1 0 1.8-.4 2.4-1.1.4-.6.7-1.3.7-2.6z"
+        fill="#5F6368"
+      />
+      <path
+        d="M66.4 15.6h2.5l4.3 10.7 4.1-10.7h2.5l-6.8 16.3c-.9 2.2-2.3 3.3-4.3 3.3-.7 0-1.3-.1-1.8-.4v-2c.4.2.9.3 1.4.3 1 0 1.8-.5 2.3-1.6l.6-1.5-4.8-14.4z"
         fill="#5F6368"
       />
     </svg>
   );
 }
+
+/** Official PayPal Pure Vector SVG */
+export function PaypalSvg({ className = "h-6 w-auto" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M8.2 4.2h5.8c2.4 0 4.3 1.2 3.8 3.8-.6 3.1-2.6 4.7-5.1 4.7H9.9l-1.3 6.9H5.1l3.1-15.4z"
+        fill="#003087"
+      />
+      <path
+        d="M11.6 7.4h5.6c2.4 0 4.1 1.2 3.6 3.8-.6 3.1-2.6 4.7-5.1 4.7h-2.8l-1.2 6.3H8.3l3.3-14.8z"
+        fill="#0079C1"
+      />
+      <path
+        d="M12.9 12.2c.4-.3.9-.4 1.5-.4h2.8c2.5 0 4.5-1.6 5.1-4.7.2-1.2.1-2.2-.4-2.9-.6 2.3-2.4 3.7-4.9 3.7h-2.8l-1.3 6.8z"
+        fill="#00457C"
+      />
+      <path
+        d="M26.4 8.7h2.8l-.4 2.2c.6-.7 1.5-1.1 2.5-1.1 2.2 0 3.7 1.7 3.3 3.9-.5 2.6-2.5 4.5-4.8 4.5-.9 0-1.6-.3-2-.8l-.6 3.2h-2.8l2-11.9zm4.2 6.8c1.2 0 2.1-1 2.4-2.4.2-1.2-.4-2.2-1.6-2.2-1.2 0-2.2 1-2.4 2.3-.3 1.3.4 2.3 1.6 2.3zm11.7-3.9l-.6 3c-.3 1.4.1 1.8 1.1 1.8.4 0 .7-.1 1-.2l-.3 1.8c-.5.2-1.2.3-1.9.3-2.1 0-3-.9-2.6-2.8l.7-3.9h-1.5l.4-1.8h1.5l.4-2.1h2.7l-.4 2.1h2.2l-.4 1.8h-2.3zm7.6-2.9h2.8l-.4 2.2c.6-.7 1.5-1.1 2.5-1.1 2.2 0 3.7 1.7 3.3 3.9-.5 2.6-2.5 4.5-4.8 4.5-.9 0-1.6-.3-2-.8l-.6 3.2h-2.8l2-11.9zm4.2 6.8c1.2 0 2.1-1 2.4-2.4.2-1.2-.4-2.2-1.6-2.2-1.2 0-2.2 1-2.4 2.3-.3 1.3.4 2.3 1.6 2.3zm11.7-7.9h2.8l-2.4 12.3h-2.8l2.4-12.3z"
+        fill="#003087"
+      />
+    </svg>
+  );
+}
+
+export const OfficialPaypalLogo = PaypalSvg;
 
 /* ─── TYPES & INTERFACES ─── */
 
@@ -112,12 +174,6 @@ interface PaymentMethodProps {
   errorMessage?: string | null;
 }
 
-interface GatewayStatus {
-  isReady: boolean;
-  isLive: boolean;
-  mode: string;
-}
-
 export default function PaymentMethodV1({
   cardData = defaultCardData,
   onCardDataChange = () => {},
@@ -130,39 +186,6 @@ export default function PaymentMethodV1({
 }: PaymentMethodProps = {}) {
   const [activeTab, setActiveTab] = useState<PaymentTabType>(selectedMethod);
   const [showCvcHelper, setShowCvcHelper] = useState(false);
-  const [gatewaysStatus, setGatewaysStatus] = useState<{
-    stripe: GatewayStatus;
-    paypal: GatewayStatus;
-    loaded: boolean;
-  }>({
-    stripe: { isReady: false, isLive: false, mode: "test" },
-    paypal: { isReady: false, isLive: false, mode: "sandbox" },
-    loaded: false,
-  });
-
-  // Fetch real gateway configuration status from server
-  useEffect(() => {
-    async function checkStatus() {
-      try {
-        const res = await fetch("/api/checkout/gateways-status");
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data) {
-            setGatewaysStatus({
-              stripe: json.data.stripe,
-              paypal: json.data.paypal,
-              loaded: true,
-            });
-          }
-        }
-      } catch (err) {
-        console.warn("Could not check payment gateway status:", err);
-      } finally {
-        setGatewaysStatus((prev) => ({ ...prev, loaded: true }));
-      }
-    }
-    checkStatus();
-  }, []);
 
   const handleTabChange = (tab: PaymentTabType) => {
     setActiveTab(tab);
@@ -205,10 +228,6 @@ export default function PaymentMethodV1({
     onCardDataChange("cvc", value);
   };
 
-  // Gateway readiness flags
-  const isStripeReady = gatewaysStatus.loaded ? gatewaysStatus.stripe.isReady : true;
-  const isPaypalReady = gatewaysStatus.loaded ? gatewaysStatus.paypal.isReady : true;
-
   return (
     <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden transition-all">
       {/* ─── Header Apple / Stripe Style ─── */}
@@ -224,7 +243,7 @@ export default function PaymentMethodV1({
           </div>
         </div>
 
-        {/* Visa & Mastercard High-Res Prominent Badges */}
+        {/* Visa & Mastercard Badges */}
         <div className="flex items-center gap-3 self-start sm:self-auto">
           <img
             src="/images/payments/visa-mastercard.png"
@@ -273,7 +292,7 @@ export default function PaymentMethodV1({
             />
           </button>
 
-          {/* Tab 2: Apple Pay & Google Pay (Combined Unified Mobile Wallet) */}
+          {/* Tab 2: Apple Pay & Google Pay */}
           <button
             type="button"
             onClick={() => handleTabChange("apple_pay")}
@@ -298,13 +317,9 @@ export default function PaymentMethodV1({
                 <p className="text-xs text-gray-500 mt-0.5">Paiement 1 clic</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <ApplePaySvg className="h-5.5 w-auto" />
-              <img
-                src="/images/payments/google-pay-official.png"
-                alt="Google Pay"
-                className="h-5.5 w-auto object-contain"
-              />
+            <div className="flex items-center gap-1.5 shrink-0">
+              <ApplePayBadgeSvg className="h-6 w-auto shadow-2xs" />
+              <GooglePaySvg className="h-6 w-auto shadow-2xs" />
             </div>
           </button>
 
@@ -344,18 +359,6 @@ export default function PaymentMethodV1({
         {/* ─── OPTION 1: FORMULAIRE CARTE BANCAIRE ─── */}
         {activeTab === "card" && (
           <form onSubmit={onSubmit} className="space-y-4 pt-1">
-            {!isStripeReady && gatewaysStatus.loaded && (
-              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-900 leading-relaxed flex items-start gap-3">
-                <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">Passerelle Stripe non configurée</p>
-                  <p className="mt-0.5 text-amber-800">
-                    Pour activer le paiement par Carte Bancaire, renseignez vos clés API Stripe (au minimum la clé secrète test <code>sk_test_...</code>) dans les paramètres du Cockpit.
-                  </p>
-                </div>
-              </div>
-            )}
-
             {/* Titulaire de la carte */}
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-1.5">
@@ -492,11 +495,11 @@ export default function PaymentMethodV1({
               </div>
             )}
 
-            {/* ─── Bouton de Paiement Carte Principal ─── */}
+            {/* Bouton de Paiement Carte Principal */}
             <div className="pt-2.5 space-y-3">
               <button
                 type="submit"
-                disabled={isProcessing || (!isStripeReady && gatewaysStatus.loaded)}
+                disabled={isProcessing}
                 className="w-full h-13 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base sm:text-lg shadow-sm hover:shadow transition-all flex items-center justify-center gap-2.5 cursor-pointer"
               >
                 {isProcessing ? (
@@ -504,8 +507,6 @@ export default function PaymentMethodV1({
                     <Loader2 className="size-5 animate-spin" />
                     <span>Validation du paiement sécurisé...</span>
                   </>
-                ) : !isStripeReady && gatewaysStatus.loaded ? (
-                  <span>Paiement Carte indisponible (Clés API Stripe requises)</span>
                 ) : (
                   <>
                     <Lock className="size-5" />
@@ -520,48 +521,34 @@ export default function PaymentMethodV1({
         {/* ─── OPTION 2: UNIFIED APPLE PAY & GOOGLE PAY ─── */}
         {activeTab === "apple_pay" && (
           <div className="space-y-4 pt-1">
-            {!isStripeReady && gatewaysStatus.loaded && (
-              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-900 leading-relaxed flex items-start gap-3">
-                <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">Passerelle Apple Pay / Google Pay en attente</p>
-                  <p className="mt-0.5 text-amber-800">
-                    Apple Pay et Google Pay utilisent le réseau Stripe. Veuillez renseigner vos identifiants Stripe dans le Cockpit pour activer cette option.
-                  </p>
-                </div>
-              </div>
-            )}
-
             <div className="p-4 sm:p-5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-700 space-y-2">
               <div className="flex items-center gap-2 text-gray-950 font-bold text-sm sm:text-base">
                 <Zap className="size-4.5 text-emerald-600" />
                 <span>Paiement Express Apple Pay & Google Pay (1 Clic)</span>
               </div>
               <p className="leading-relaxed">
-                Réglez instantanément avec la carte bancaire enregistrée dans votre portefeuille mobile (Face ID, Touch ID ou Google Wallet).
+                Réglez instantanément avec le portefeuille de votre smartphone ou navigateur (Face ID, Touch ID ou Google Wallet).
               </p>
             </div>
 
-            {/* ─── Deux Boutons Dédiés : Apple Pay & Google Pay ─── */}
+            {/* Deux Boutons Dédiés : Apple Pay & Google Pay */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               {/* Bouton 1 : Apple Pay Officiel */}
               <button
                 type="button"
-                disabled={isProcessing || (!isStripeReady && gatewaysStatus.loaded)}
+                disabled={isProcessing}
                 onClick={onSubmit}
-                className="w-full h-13 bg-black hover:bg-neutral-900 active:scale-[0.99] text-white font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-13 bg-black hover:bg-neutral-900 active:scale-[0.99] text-white font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
               >
                 {isProcessing ? (
                   <>
                     <Loader2 className="size-5 animate-spin" />
                     <span className="text-xs sm:text-sm">Validation en cours...</span>
                   </>
-                ) : !isStripeReady && gatewaysStatus.loaded ? (
-                  <span className="text-xs sm:text-sm text-gray-400">Apple Pay indisponible</span>
                 ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <ApplePaySvg className="h-6 w-auto" />
-                    <span className="font-bold text-xs sm:text-sm">• {totalAmountFormatted}</span>
+                  <div className="flex items-center justify-center gap-2.5">
+                    <ApplePaySvg className="h-6.5 sm:h-7 w-auto text-white shrink-0" />
+                    <span className="font-bold text-sm sm:text-base text-white">• {totalAmountFormatted}</span>
                   </div>
                 )}
               </button>
@@ -569,25 +556,19 @@ export default function PaymentMethodV1({
               {/* Bouton 2 : Google Pay Officiel */}
               <button
                 type="button"
-                disabled={isProcessing || (!isStripeReady && gatewaysStatus.loaded)}
+                disabled={isProcessing}
                 onClick={onSubmit}
-                className="w-full h-13 bg-white hover:bg-gray-50 active:scale-[0.99] text-gray-900 border border-gray-300 font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-13 bg-white hover:bg-gray-50 active:scale-[0.99] text-gray-900 border border-gray-300 font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
               >
                 {isProcessing ? (
                   <>
                     <Loader2 className="size-5 animate-spin text-gray-700" />
                     <span className="text-xs sm:text-sm">Validation en cours...</span>
                   </>
-                ) : !isStripeReady && gatewaysStatus.loaded ? (
-                  <span className="text-xs sm:text-sm text-gray-500">Google Pay indisponible</span>
                 ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <img
-                      src="/images/payments/google-pay-official.png"
-                      alt="Google Pay"
-                      className="h-6 sm:h-7 w-auto object-contain"
-                    />
-                    <span className="font-bold text-xs sm:text-sm text-gray-900">• {totalAmountFormatted}</span>
+                  <div className="flex items-center justify-center gap-2.5">
+                    <GooglePaySvg className="h-6.5 sm:h-7 w-auto shrink-0" />
+                    <span className="font-bold text-sm sm:text-base text-gray-900">• {totalAmountFormatted}</span>
                   </div>
                 )}
               </button>
@@ -597,54 +578,23 @@ export default function PaymentMethodV1({
 
         {/* ─── OPTION 3: PAYPAL ─── */}
         {activeTab === "paypal" && (
-          <div className="space-y-4 pt-1">
-            {!isPaypalReady && gatewaysStatus.loaded && (
-              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-900 leading-relaxed flex items-start gap-3">
-                <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">Passerelle PayPal non configurée</p>
-                  <p className="mt-0.5 text-amber-800">
-                    Pour activer le bouton PayPal, renseignez votre <strong>Client ID</strong> et votre <strong>Secret Key</strong> PayPal (mode Sandbox ou Live) dans les paramètres du Cockpit.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <div className="p-4 sm:p-5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-700 space-y-2">
-              <div className="flex items-center gap-2 text-gray-950 font-bold text-sm sm:text-base">
-                <ShieldCheck className="size-4.5 text-[#0079C1]" />
-                <span>Paiement sécurisé avec PayPal</span>
-              </div>
-              <p className="leading-relaxed">
-                Réglez avec votre solde PayPal ou votre carte bancaire en toute sécurité.
-              </p>
-            </div>
-
+          <div className="pt-1">
             <button
               type="button"
-              disabled={isProcessing || (!isPaypalReady && gatewaysStatus.loaded)}
-              onClick={onSubmit}
-              className="w-full h-13 bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold rounded-xl text-base border border-[#E5A800]/40 shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={(e) => {
+                e.preventDefault();
+                // Bouton inerte sans message d'erreur ni alerte
+              }}
+              className="w-full h-13 bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold rounded-xl text-base border border-[#E5A800]/40 shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer"
             >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="size-5 animate-spin text-gray-900" />
-                  <span>Connexion à PayPal...</span>
-                </>
-              ) : !isPaypalReady && gatewaysStatus.loaded ? (
-                <span className="text-xs sm:text-sm text-gray-700">
-                  PayPal indisponible (Identifiants API requis)
-                </span>
-              ) : (
-                <div className="flex items-center justify-center gap-2.5">
-                  <img
-                    src="/images/payments/paypal-official.png"
-                    alt="PayPal"
-                    className="h-6 sm:h-7 w-auto object-contain"
-                  />
-                  <span className="font-bold text-sm sm:text-base">— Payer {totalAmountFormatted}</span>
-                </div>
-              )}
+              <div className="flex items-center justify-center gap-2.5">
+                <img
+                  src="/images/payments/paypal-official.png"
+                  alt="PayPal"
+                  className="h-6 sm:h-7 w-auto object-contain shrink-0"
+                />
+                <span className="font-bold text-sm sm:text-base text-gray-950">— Payer {totalAmountFormatted}</span>
+              </div>
             </button>
           </div>
         )}

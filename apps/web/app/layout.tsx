@@ -83,8 +83,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico?v=sulson_official_2026", sizes: "any" },
-      { url: "/icon.png?v=sulson_official_2026", sizes: "512x512", type: "image/png" },
+      { url: "/favicon-48x48.png?v=sulson_official_2026", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96x96.png?v=sulson_official_2026", sizes: "96x96", type: "image/png" },
       { url: "/favicon.png?v=sulson_official_2026", sizes: "192x192", type: "image/png" },
+      { url: "/icon.png?v=sulson_official_2026", sizes: "512x512", type: "image/png" },
     ],
     shortcut: "/favicon.ico?v=sulson_official_2026",
     apple: [
@@ -106,6 +108,8 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth">
       <head>
         <link rel="icon" href="/favicon.ico?v=sulson_official_2026" sizes="any" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=sulson_official_2026" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=sulson_official_2026" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=sulson_official_2026" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=sulson_official_2026" />
         <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png?v=sulson_official_2026" />

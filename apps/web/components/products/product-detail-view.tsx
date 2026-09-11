@@ -40,11 +40,11 @@ export default function ProductDetailView({
   // Ratings for current product
   const ratingData = getRating(Number(product.id) || 301);
 
-  // Gallery state (switch between Recto / Verso)
+  // Gallery state (switch between Recto / Verso / Pack 4)
   const [selectedImage, setSelectedImage] = useState<string>(
     product.imageRecto || "/images/products/pack-4-saveurs-sulson.jpg"
   );
-  const [activeSide, setActiveSide] = useState<"recto" | "verso">("recto");
+  const [activeSide, setActiveSide] = useState<"recto" | "verso" | "pack">("recto");
 
   // Keep gallery image synchronized when product prop changes
   React.useEffect(() => {
@@ -58,6 +58,19 @@ export default function ProductDetailView({
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [isAdded, setIsAdded] = useState<boolean>(false);
+
+  // Function to switch format and update image simultaneously
+  const handleSelectFormat = (fmtLabel: string) => {
+    setSelectedFormat(fmtLabel);
+    const isPack = fmtLabel.toLowerCase().includes("pack") || fmtLabel.includes("400");
+    if (isPack) {
+      setSelectedImage("/images/products/pack-4-saveurs-sulson.jpg");
+      setActiveSide("pack");
+    } else {
+      setSelectedImage(product.imageRecto);
+      setActiveSide("recto");
+    }
+  };
 
   // Active tab
   const [activeTab, setActiveTab] = useState<
@@ -78,17 +91,22 @@ export default function ProductDetailView({
   const currentOldPrice = activeFormatObj?.oldPrice || product.baseOldPrice;
 
   const handleAddToCart = () => {
+    const isPack = selectedFormat.toLowerCase().includes("pack") || selectedFormat.includes("400");
+    const cartImage = isPack
+      ? "/images/products/pack-4-saveurs-sulson.jpg"
+      : product.imageRecto;
+
     addItem({
       id: `${product.id}-${selectedFormat}`,
       title: `${product.title} (${selectedFormat})`,
       currentPrice: `${currentPrice.toFixed(2)} €`,
-      image: product.imageRecto,
+      image: cartImage,
       pack: selectedFormat,
       quantity: quantity,
     });
 
     setIsAdded(true);
-    toast.success(`${quantity}x ${product.title} ajouté au panier !`, {
+    toast.success(`${quantity}x ${product.title} (${selectedFormat}) ajouté au panier !`, {
       description: "Vous pouvez poursuivre vos achats ou finaliser votre commande.",
     });
 
@@ -174,17 +192,20 @@ export default function ProductDetailView({
               </motion.div>
             </div>
 
-            {/* Thumbnail Selectors (Recto Face & Verso Composition) */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Thumbnail Selectors (Recto Face, Verso Composition, and Pack 4 Saveurs) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              {/* Thumbnail 1: Recto */}
               <button
                 type="button"
                 onClick={() => {
                   setSelectedImage(product.imageRecto);
                   setActiveSide("recto");
+                  const singleFormat = product.formats.find((f) => !f.label.toLowerCase().includes("pack"));
+                  if (singleFormat) setSelectedFormat(singleFormat.label);
                 }}
-                className={`flex-1 flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-2.5 p-2.5 rounded-2xl border-2 transition-all cursor-pointer ${
                   activeSide === "recto"
-                    ? "border-emerald-700 bg-emerald-50/50 shadow-xs"
+                    ? "border-emerald-700 bg-emerald-50/50 shadow-xs ring-1 ring-emerald-700/20"
                     : "border-gray-200 hover:border-gray-300 bg-white"
                 }`}
               >
@@ -197,24 +218,27 @@ export default function ProductDetailView({
                     className="object-contain"
                   />
                 </div>
-                <div className="text-left">
-                  <span className="text-xs font-bold text-gray-900 block leading-tight whitespace-nowrap">
-                    Face Avant (Recto)
+                <div className="text-left min-w-0">
+                  <span className="text-xs font-bold text-gray-900 block leading-tight truncate">
+                    Face Avant
                   </span>
-                  <span className="text-[11px] text-gray-500 whitespace-nowrap">Packaging officiel</span>
+                  <span className="text-[10px] text-gray-500 block truncate">Recto 100g</span>
                 </div>
               </button>
 
+              {/* Thumbnail 2: Verso */}
               {product.imageVerso && (
                 <button
                   type="button"
                   onClick={() => {
                     setSelectedImage(product.imageVerso!);
                     setActiveSide("verso");
+                    const singleFormat = product.formats.find((f) => !f.label.toLowerCase().includes("pack"));
+                    if (singleFormat) setSelectedFormat(singleFormat.label);
                   }}
-                  className={`flex-1 flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                  className={`flex items-center gap-2.5 p-2.5 rounded-2xl border-2 transition-all cursor-pointer ${
                     activeSide === "verso"
-                      ? "border-emerald-700 bg-emerald-50/50 shadow-xs"
+                      ? "border-emerald-700 bg-emerald-50/50 shadow-xs ring-1 ring-emerald-700/20"
                       : "border-gray-200 hover:border-gray-300 bg-white"
                   }`}
                 >
@@ -227,11 +251,45 @@ export default function ProductDetailView({
                       className="object-contain"
                     />
                   </div>
-                  <div className="text-left">
-                    <span className="text-xs font-bold text-gray-900 block leading-tight whitespace-nowrap">
-                      Face Arrière (Verso)
+                  <div className="text-left min-w-0">
+                    <span className="text-xs font-bold text-gray-900 block leading-tight truncate">
+                      Face Arrière
                     </span>
-                    <span className="text-[11px] text-gray-500 whitespace-nowrap">Ingrédients & Conseils</span>
+                    <span className="text-[10px] text-gray-500 block truncate">Verso</span>
+                  </div>
+                </button>
+              )}
+
+              {/* Thumbnail 3: Pack 4 Saveurs */}
+              {!product.isPack && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedImage("/images/products/pack-4-saveurs-sulson.jpg");
+                    setActiveSide("pack");
+                    const packFormat = product.formats.find((f) => f.label.toLowerCase().includes("pack") || f.weightGrams >= 400);
+                    if (packFormat) setSelectedFormat(packFormat.label);
+                  }}
+                  className={`flex items-center gap-2.5 p-2.5 rounded-2xl border-2 transition-all cursor-pointer ${
+                    activeSide === "pack"
+                      ? "border-emerald-700 bg-emerald-50/50 shadow-xs ring-1 ring-emerald-700/20"
+                      : "border-gray-200 hover:border-gray-300 bg-white"
+                  }`}
+                >
+                  <div className="relative size-10 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+                    <Image
+                      src="/images/products/pack-4-saveurs-sulson.jpg"
+                      alt="Pack 4 Saveurs"
+                      fill
+                      unoptimized
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="text-left min-w-0">
+                    <span className="text-xs font-bold text-gray-900 block leading-tight truncate">
+                      Pack 4 Saveurs
+                    </span>
+                    <span className="text-[10px] text-emerald-700 font-semibold block truncate">Lot 400g</span>
                   </div>
                 </button>
               )}
@@ -304,10 +362,10 @@ export default function ProductDetailView({
                   <button
                     key={fmt.label}
                     type="button"
-                    onClick={() => setSelectedFormat(fmt.label)}
+                    onClick={() => handleSelectFormat(fmt.label)}
                     className={`p-3.5 rounded-2xl border-2 transition-all text-left cursor-pointer ${
                       selectedFormat === fmt.label
-                        ? "border-emerald-700 bg-emerald-50/40 shadow-xs"
+                        ? "border-emerald-700 bg-emerald-50/40 shadow-xs ring-1 ring-emerald-700/20"
                         : "border-gray-200 hover:border-gray-300 bg-white"
                     }`}
                   >
