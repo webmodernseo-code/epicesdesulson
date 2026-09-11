@@ -311,11 +311,25 @@ export default function AddProductForm() {
 
                   {rectoImage ? (
                     <div className="space-y-2 text-center">
-                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs overflow-hidden">
                         <img
-                          src={rectoImage}
+                          src={rectoImage.startsWith("http") || rectoImage.startsWith("blob:") || rectoImage.startsWith("data:") || rectoImage.startsWith("/") ? rectoImage : `/images/products/${rectoImage}`}
                           alt="Face Recto"
                           className="max-h-full max-w-full object-contain"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (sku?.includes("301") || name?.toLowerCase().includes("poulet")) {
+                              target.src = "/images/products/epice-poulet-recto.jpg";
+                            } else if (sku?.includes("302") || name?.toLowerCase().includes("viande")) {
+                              target.src = "/images/products/epice-viande-recto.jpg";
+                            } else if (sku?.includes("303") || name?.toLowerCase().includes("poisson")) {
+                              target.src = "/images/products/epice-poisson-recto.jpg";
+                            } else if (sku?.includes("304") || name?.toLowerCase().includes("gourmande") || name?.toLowerCase().includes("secret")) {
+                              target.src = "/images/products/epice-gourmande-recto.jpg";
+                            } else {
+                              target.src = "/images/products/pack-4-saveurs-sulson.jpg";
+                            }
+                          }}
                         />
                       </div>
                       <div className="flex items-center justify-center gap-2">
@@ -372,11 +386,25 @@ export default function AddProductForm() {
 
                   {versoImage ? (
                     <div className="space-y-2 text-center">
-                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs overflow-hidden">
                         <img
-                          src={versoImage}
+                          src={versoImage.startsWith("http") || versoImage.startsWith("blob:") || versoImage.startsWith("data:") || versoImage.startsWith("/") ? versoImage : `/images/products/${versoImage}`}
                           alt="Dos Verso"
                           className="max-h-full max-w-full object-contain"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (sku?.includes("301") || name?.toLowerCase().includes("poulet")) {
+                              target.src = "/images/products/epice-poulet-verso.jpg";
+                            } else if (sku?.includes("302") || name?.toLowerCase().includes("viande")) {
+                              target.src = "/images/products/epice-viande-verso.jpg";
+                            } else if (sku?.includes("303") || name?.toLowerCase().includes("poisson")) {
+                              target.src = "/images/products/epice-poisson-verso.jpg";
+                            } else if (sku?.includes("304") || name?.toLowerCase().includes("gourmande") || name?.toLowerCase().includes("secret")) {
+                              target.src = "/images/products/epice-gourmande-verso.jpg";
+                            } else {
+                              target.src = "/images/products/epice-poulet-verso.jpg";
+                            }
+                          }}
                         />
                       </div>
                       <div className="flex items-center justify-center gap-2">

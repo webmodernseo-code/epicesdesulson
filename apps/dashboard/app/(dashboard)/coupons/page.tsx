@@ -9,10 +9,12 @@ import {
   XCircle,
   Percent,
   Calendar,
+  Clock,
   ShoppingBag,
   Loader2,
   AlertCircle,
   RefreshCw,
+  Infinity as InfinityIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -28,6 +30,8 @@ interface CouponItem {
   createdAt: string;
 }
 
+type ValidityMode = "days" | "date" | "unlimited";
+
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState<CouponItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,9 +44,13 @@ export default function CouponsPage() {
     discountPercent: "10",
     description: "",
     minOrderAmount: "",
-    expiresAt: "",
     isActive: true,
   });
+
+  // Validity Mode States
+  const [validityMode, setValidityMode] = useState<ValidityMode>("days");
+  const [validityDays, setValidityDays] = useState<string>("30");
+  const [customExpiryDate, setCustomExpiryDate] = useState<string>("");
 
   const fetchCoupons = async () => {
     setLoading(true);
@@ -57,7 +65,7 @@ export default function CouponsPage() {
           {
             id: "default_sulson10",
             code: "SULSON10",
-            description: "Code promo de lancement",
+            description: "Code promo de bienvenue",
             discountPercent: 10,
             isActive: true,
             minOrderAmount: null,
@@ -78,6 +86,46 @@ export default function CouponsPage() {
     fetchCoupons();
   }, []);
 
+  // Compute calculated expiry date preview
+  const getCalculatedExpiryPreview = (): { label: string; date: Date | null } => {
+    if (validityMode === "unlimited") {
+      return { label: "Illimité (sans date de fin)", date: null };
+    }
+    if (validityMode === "days") {
+      const days = parseInt(validityDays, 10);
+      if (isNaN(days) || days <= 0) {
+        return { label: "Veuillez indiquer un nombre de jours valide", date: null };
+      }
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      d.setHours(23, 59, 59, 999);
+      return {
+        label: `Valable ${days} jour${days > 1 ? "s" : ""} (jusqu'au ${d.toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })})`,
+        date: d,
+      };
+    }
+    if (validityMode === "date") {
+      if (!customExpiryDate) {
+        return { label: "Veuillez sélectionner une date d'expiration", date: null };
+      }
+      const d = new Date(customExpiryDate);
+      d.setHours(23, 59, 59, 999);
+      return {
+        label: `Valable jusqu'au ${d.toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}`,
+        date: d,
+      };
+    }
+    return { label: "Illimité", date: null };
+  };
+
   const handleCreateCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.code.trim()) {
@@ -91,6 +139,28 @@ export default function CouponsPage() {
       return;
     }
 
+    // Determine expiresAt based on validityMode
+    let calculatedExpiresAt: string | undefined = undefined;
+    if (validityMode === "days") {
+      const days = parseInt(validityDays, 10);
+      if (isNaN(days) || days <= 0) {
+        toast.error("Veuillez renseigner une durée en jours valide.");
+        return;
+      }
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      d.setHours(23, 59, 59, 999);
+      calculatedExpiresAt = d.toISOString();
+    } else if (validityMode === "date") {
+      if (!customExpiryDate) {
+        toast.error("Veuillez choisir une date d'expiration.");
+        return;
+      }
+      const d = new Date(customExpiryDate);
+      d.setHours(23, 59, 59, 999);
+      calculatedExpiresAt = d.toISOString();
+    }
+
     setSubmitting(true);
     try {
       const res = await fetch("/api/admin/coupons", {
@@ -101,7 +171,7 @@ export default function CouponsPage() {
           discountPercent: percent,
           description: formData.description.trim() || undefined,
           minOrderAmount: formData.minOrderAmount ? parseFloat(formData.minOrderAmount) : undefined,
-          expiresAt: formData.expiresAt ? formData.expiresAt : undefined,
+          expiresAt: calculatedExpiresAt,
           isActive: formData.isActive,
         }),
       });
@@ -115,9 +185,11 @@ export default function CouponsPage() {
           discountPercent: "10",
           description: "",
           minOrderAmount: "",
-          expiresAt: "",
           isActive: true,
         });
+        setValidityMode("days");
+        setValidityDays("30");
+        setCustomExpiryDate("");
         fetchCoupons();
       } else {
         toast.error(data.error || "Erreur lors de la création.");
@@ -165,6 +237,9 @@ export default function CouponsPage() {
     }
   };
 
+  const preview = getCalculatedExpiryPreview();
+  const minDateString = new Date().toISOString().split("T")[0];
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       {/* ─── Header & Action Button ─── */}
@@ -179,7 +254,7 @@ export default function CouponsPage() {
                 Codes Promo & Réductions
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                Créez vos codes promotionnels personnalisés avec pourcentage de remise sur-mesure
+                Créez vos codes promotionnels personnalisés avec durée de validité en jours ou date d'expiration
               </p>
             </div>
           </div>
@@ -213,7 +288,11 @@ export default function CouponsPage() {
         <div className="p-4 rounded-2xl bg-white border border-gray-200/90 shadow-2xs space-y-1">
           <span className="text-xs font-semibold text-gray-500">Codes Actifs</span>
           <p className="text-2xl font-extrabold text-emerald-700">
-            {coupons.filter((c) => c.isActive).length}
+            {coupons.filter((c) => {
+              if (!c.isActive) return false;
+              if (c.expiresAt && new Date(c.expiresAt) < new Date()) return false;
+              return true;
+            }).length}
           </p>
         </div>
 
@@ -254,6 +333,7 @@ export default function CouponsPage() {
                 <tr>
                   <th className="py-3.5 px-4 sm:px-6">Code Promo</th>
                   <th className="py-3.5 px-4">Réduction</th>
+                  <th className="py-3.5 px-4">Validité & Expiration</th>
                   <th className="py-3.5 px-4">Description / Conditions</th>
                   <th className="py-3.5 px-4">Utilisations</th>
                   <th className="py-3.5 px-4">Statut</th>
@@ -261,85 +341,122 @@ export default function CouponsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-gray-800 font-medium">
-                {coupons.map((coupon) => (
-                  <tr key={coupon.id} className="hover:bg-gray-50/60 transition">
-                    <td className="py-4 px-4 sm:px-6">
-                      <div className="flex items-center gap-2">
-                        <span className="px-3 py-1.5 rounded-lg bg-gray-100 font-mono font-bold text-gray-950 text-xs sm:text-sm border border-gray-200">
-                          {coupon.code}
+                {coupons.map((coupon) => {
+                  const hasExpiry = Boolean(coupon.expiresAt);
+                  const isExpired = hasExpiry && new Date(coupon.expiresAt!) < new Date();
+                  const daysLeft = hasExpiry
+                    ? Math.ceil((new Date(coupon.expiresAt!).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                    : null;
+
+                  return (
+                    <tr key={coupon.id} className="hover:bg-gray-50/60 transition">
+                      <td className="py-4 px-4 sm:px-6">
+                        <div className="flex items-center gap-2">
+                          <span className="px-3 py-1.5 rounded-lg bg-gray-100 font-mono font-bold text-gray-950 text-xs sm:text-sm border border-gray-200">
+                            {coupon.code}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="py-4 px-4">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold text-xs border border-emerald-200/80">
+                          <Percent className="size-3" />
+                          <span>-{coupon.discountPercent}%</span>
                         </span>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className="py-4 px-4">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold text-xs border border-emerald-200/80">
-                        <Percent className="size-3" />
-                        <span>-{coupon.discountPercent}%</span>
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-4 text-xs text-gray-600">
-                      <p className="font-semibold text-gray-900">{coupon.description || "—"}</p>
-                      {coupon.minOrderAmount && (
-                        <p className="text-gray-500 mt-0.5">
-                          Min. commande : {coupon.minOrderAmount.toFixed(2)} €
-                        </p>
-                      )}
-                    </td>
-
-                    <td className="py-4 px-4 text-xs font-semibold text-gray-700">
-                      <div className="flex items-center gap-1.5">
-                        <ShoppingBag className="size-3.5 text-gray-400" />
-                        <span>{coupon.usageCount || 0} commandes</span>
-                      </div>
-                    </td>
-
-                    <td className="py-4 px-4">
-                      <button
-                        type="button"
-                        onClick={() => handleToggleActive(coupon)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border transition cursor-pointer ${
-                          coupon.isActive
-                            ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
-                            : "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200"
-                        }`}
-                      >
-                        {coupon.isActive ? (
-                          <>
-                            <CheckCircle2 className="size-3 text-emerald-600" />
-                            <span>Actif</span>
-                          </>
+                      <td className="py-4 px-4 text-xs">
+                        {isExpired ? (
+                          <div className="space-y-0.5">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 font-bold text-2xs border border-red-200">
+                              <AlertCircle className="size-3" />
+                              <span>Expiré</span>
+                            </span>
+                            <p className="text-gray-500 text-2xs">
+                              le {new Date(coupon.expiresAt!).toLocaleDateString("fr-FR")}
+                            </p>
+                          </div>
+                        ) : hasExpiry ? (
+                          <div className="space-y-0.5">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold text-2xs border border-amber-200">
+                              <Clock className="size-3 text-amber-600" />
+                              <span>{daysLeft! <= 0 ? "Expire aujourd'hui" : `Expire dans ${daysLeft}j`}</span>
+                            </span>
+                            <p className="text-gray-500 text-2xs">
+                              jusqu'au {new Date(coupon.expiresAt!).toLocaleDateString("fr-FR")}
+                            </p>
+                          </div>
                         ) : (
-                          <>
-                            <XCircle className="size-3 text-gray-500" />
-                            <span>Inactif</span>
-                          </>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 font-semibold text-2xs border border-gray-200">
+                            <InfinityIcon className="size-3 text-gray-500" />
+                            <span>Permanent</span>
+                          </span>
                         )}
-                      </button>
-                    </td>
+                      </td>
 
-                    <td className="py-4 px-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteCoupon(coupon.id, coupon.code)}
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer"
-                        title="Supprimer le code"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="py-4 px-4 text-xs text-gray-600">
+                        <p className="font-semibold text-gray-900">{coupon.description || "—"}</p>
+                        {coupon.minOrderAmount && (
+                          <p className="text-gray-500 mt-0.5">
+                            Min. commande : {coupon.minOrderAmount.toFixed(2)} €
+                          </p>
+                        )}
+                      </td>
+
+                      <td className="py-4 px-4 text-xs font-semibold text-gray-700">
+                        <div className="flex items-center gap-1.5">
+                          <ShoppingBag className="size-3.5 text-gray-400" />
+                          <span>{coupon.usageCount || 0} commandes</span>
+                        </div>
+                      </td>
+
+                      <td className="py-4 px-4">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleActive(coupon)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border transition cursor-pointer ${
+                            coupon.isActive && !isExpired
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
+                              : "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200"
+                          }`}
+                        >
+                          {coupon.isActive && !isExpired ? (
+                            <>
+                              <CheckCircle2 className="size-3 text-emerald-600" />
+                              <span>Actif</span>
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="size-3 text-gray-500" />
+                              <span>Inactif</span>
+                            </>
+                          )}
+                        </button>
+                      </td>
+
+                      <td className="py-4 px-4 text-right">
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCoupon(coupon.id, coupon.code)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer"
+                          title="Supprimer le code"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
 
-      {/* ─── Creation Modal ─── */}
+      {/* ─── Creation Modal with Validity Selector ─── */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-xl max-w-lg w-full p-6 space-y-5 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <Tag className="size-5 text-emerald-700" />
@@ -356,12 +473,12 @@ export default function CouponsPage() {
             <form onSubmit={handleCreateCoupon} className="space-y-4 text-sm">
               <div>
                 <label className="block font-semibold text-gray-800 mb-1">
-                  Libellé du Code <span className="text-red-500">*</span>
+                  Libellé du Code Promo <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="ex: ETE20, BIENVENUE, CHEFVIP"
+                  placeholder="ex: SULSON20, PRINTEMPS, VIP15"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                   className="w-full h-11 px-3.5 rounded-xl border border-gray-300 font-mono uppercase font-bold text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
@@ -388,13 +505,133 @@ export default function CouponsPage() {
                 </div>
               </div>
 
+              {/* ─── SÉLECTEUR DE VALIDITÉ & EXPIRATION ─── */}
+              <div className="p-4 rounded-xl bg-gray-50 border border-gray-200/90 space-y-3">
+                <label className="block font-bold text-gray-900">
+                  Temps de validité & Expiration <span className="text-red-500">*</span>
+                </label>
+
+                {/* Onglets Modes de validité */}
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setValidityMode("days")}
+                    className={`py-2 px-3 rounded-lg font-semibold text-xs border transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      validityMode === "days"
+                        ? "bg-emerald-700 text-white border-emerald-700 shadow-2xs"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Clock className="size-3.5" />
+                    <span>En jours</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setValidityMode("date")}
+                    className={`py-2 px-3 rounded-lg font-semibold text-xs border transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      validityMode === "date"
+                        ? "bg-emerald-700 text-white border-emerald-700 shadow-2xs"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Calendar className="size-3.5" />
+                    <span>Date / Période</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setValidityMode("unlimited")}
+                    className={`py-2 px-3 rounded-lg font-semibold text-xs border transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      validityMode === "unlimited"
+                        ? "bg-emerald-700 text-white border-emerald-700 shadow-2xs"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <InfinityIcon className="size-3.5" />
+                    <span>Permanent</span>
+                  </button>
+                </div>
+
+                {/* Option 1 : Durée en jours */}
+                {validityMode === "days" && (
+                  <div className="space-y-2.5 pt-1">
+                    <p className="text-xs text-gray-600 font-medium">Sélectionnez ou saisissez le nombre de jours :</p>
+                    {/* Boutons rapides */}
+                    <div className="grid grid-cols-5 gap-1.5">
+                      {["3", "7", "14", "30", "60"].map((d) => (
+                        <button
+                          key={d}
+                          type="button"
+                          onClick={() => setValidityDays(d)}
+                          className={`py-1.5 px-2 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                            validityDays === d
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-300 ring-1 ring-emerald-300"
+                              : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                          }`}
+                        >
+                          {d}j
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="relative pt-1">
+                      <input
+                        type="number"
+                        min="1"
+                        max="3650"
+                        placeholder="Nombre de jours personnalisé (ex: 45)"
+                        value={validityDays}
+                        onChange={(e) => setValidityDays(e.target.value)}
+                        className="w-full h-10 px-3 pr-16 rounded-lg border border-gray-300 bg-white text-gray-900 text-xs font-semibold focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-bold pointer-events-none mt-0.5">
+                        jours
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Option 2 : Date d'expiration précise */}
+                {validityMode === "date" && (
+                  <div className="space-y-2 pt-1">
+                    <label className="block text-xs text-gray-600 font-medium">
+                      Date de fin de validité (inclus) :
+                    </label>
+                    <input
+                      type="date"
+                      min={minDateString}
+                      required={validityMode === "date"}
+                      value={customExpiryDate}
+                      onChange={(e) => setCustomExpiryDate(e.target.value)}
+                      className="w-full h-10 px-3 rounded-lg border border-gray-300 bg-white text-gray-900 text-xs font-semibold focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 cursor-pointer"
+                    />
+                  </div>
+                )}
+
+                {/* Option 3 : Illimité */}
+                {validityMode === "unlimited" && (
+                  <p className="text-xs text-gray-600 italic pt-1">
+                    Ce code promo n'aura pas de date de fin et restera actif jusqu'à sa désactivation manuelle.
+                  </p>
+                )}
+
+                {/* Aperçu dynamique de calcul */}
+                {validityMode !== "unlimited" && (
+                  <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/80 text-xs text-emerald-950 flex items-center gap-2">
+                    <Calendar className="size-4 text-emerald-700 shrink-0" />
+                    <span className="font-semibold">{preview.label}</span>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="block font-semibold text-gray-800 mb-1">
-                  Description / Note interne
+                  Description / Note interne (Optionnel)
                 </label>
                 <input
                   type="text"
-                  placeholder="ex: Remise spéciale clients VIP"
+                  placeholder="ex: Offre spéciale abonnés newsletter"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
@@ -416,7 +653,7 @@ export default function CouponsPage() {
                 />
               </div>
 
-              <label className="flex items-center gap-2.5 pt-2 cursor-pointer select-none">
+              <label className="flex items-center gap-2.5 pt-1 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={formData.isActive}

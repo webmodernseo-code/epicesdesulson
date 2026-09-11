@@ -107,17 +107,21 @@ export default function ProductListTable() {
       .then((r) => r.json())
       .then((json) => {
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          const dbItems = json.data.map((p: any) => ({
-            id: p.code || p.id,
-            name: p.title || p.name,
-            category: p.category?.name || p.category || "Sans catégorie",
-            price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`,
-            origin: p.origin || "Cameroun (Recette Artisanale)",
-            stock: p.stockQuantity ?? 100,
-            status: p.isAvailable !== false ? "Publié" : "Brouillon",
-            format: p.formats?.[0]?.label || "Sachet 100g",
-            image: p.imageRecto || p.image || "/images/products/sachet-poulet-recto.png",
-          }));
+          const dbItems = json.data.map((p: any) => {
+            const rawImg = p.imageRecto || p.image || "/images/products/epice-poulet-recto.jpg";
+            const safeImg = rawImg.startsWith("http") || rawImg.startsWith("/") ? rawImg : `/images/products/${rawImg}`;
+            return {
+              id: p.code || p.id,
+              name: p.title || p.name,
+              category: p.category?.name || p.category || "Sans catégorie",
+              price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`,
+              origin: p.origin || "Cameroun (Recette Artisanale)",
+              stock: p.stockQuantity ?? 100,
+              status: p.isAvailable !== false ? "Publié" : "Brouillon",
+              format: p.formats?.[0]?.label || "Sachet 100g",
+              image: safeImg,
+            };
+          });
 
           const dbIds = new Set(dbItems.map((item: any) => String(item.id).toUpperCase()));
           const remainingDefaults = SPICES_DATA.filter(

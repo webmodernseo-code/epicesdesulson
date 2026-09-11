@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   const sku = (body.sku?.trim() || `SUL-${Math.floor(100 + Math.random() * 900)}`).toUpperCase();
   const price = Number(body.price);
   const stock = body.stock != null ? Number(body.stock) : 100;
-  const image = body.image?.trim() || body.imageRecto?.trim() || "/images/products/sachet-poulet-recto.png";
+  const image = body.image?.trim() || body.imageRecto?.trim() || "/images/products/epice-poulet-recto.jpg";
 
   if (!name || !Number.isFinite(price) || price <= 0 || !Number.isInteger(stock) || stock < 0) {
     return NextResponse.json(

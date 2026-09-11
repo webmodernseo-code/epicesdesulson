@@ -164,26 +164,30 @@ export default function StockProductTable() {
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          const dbItems: StockItem[] = json.data.map((p: any) => ({
-            id: p.code || p.id,
-            code: p.code || p.id,
-            name: p.title || p.name,
-            category: p.category?.name || p.category || "Sans catégorie",
-            price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`,
-            priceNum: Number(p.basePrice) || 6.9,
-            stock: Number(p.stockQuantity) ?? 100,
-            origin: p.origin || "Cameroun",
-            format: p.formats?.[0]?.label || "Sachet 100g",
-            image: p.imageRecto || p.image || "/images/products/sachet-poulet-recto.png",
-            status: p.isAvailable !== false ? "Publié" : "Brouillon",
-            lastUpdated: p.updatedAt
-              ? new Date(p.updatedAt).toLocaleDateString("fr-FR", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })
-              : "Récemment",
-          }));
+          const dbItems: StockItem[] = json.data.map((p: any) => {
+            const rawImg = p.imageRecto || p.image || "/images/products/epice-poulet-recto.jpg";
+            const safeImg = rawImg.startsWith("http") || rawImg.startsWith("/") ? rawImg : `/images/products/${rawImg}`;
+            return {
+              id: p.code || p.id,
+              code: p.code || p.id,
+              name: p.title || p.name,
+              category: p.category?.name || p.category || "Sans catégorie",
+              price: `${Number(p.basePrice).toFixed(2).replace(".", ",")} €`,
+              priceNum: Number(p.basePrice) || 6.9,
+              stock: Number(p.stockQuantity) ?? 100,
+              origin: p.origin || "Cameroun",
+              format: p.formats?.[0]?.label || "Sachet 100g",
+              image: safeImg,
+              status: p.isAvailable !== false ? "Publié" : "Brouillon",
+              lastUpdated: p.updatedAt
+                ? new Date(p.updatedAt).toLocaleDateString("fr-FR", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "Récemment",
+            };
+          });
 
           const dbCodes = new Set(dbItems.map((item) => item.code.toUpperCase()));
           const remainingDefaults = DEFAULT_STOCK_DATA.filter(

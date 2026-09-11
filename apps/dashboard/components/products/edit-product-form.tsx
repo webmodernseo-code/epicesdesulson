@@ -141,6 +141,20 @@ const DEFAULT_PRODUCTS_MAP: Record<string, {
   },
 };
 
+const ID_ALIASES: Record<string, string> = {
+  "1": "SUL-301",
+  "2": "SUL-302",
+  "3": "SUL-303",
+  "4": "SUL-304",
+  "5": "SUL-305",
+  "EPICE-POULET": "SUL-301",
+  "EPICE-VIANDE": "SUL-302",
+  "EPICE-POISSON": "SUL-303",
+  "EPICE-GOURMANDE": "SUL-304",
+  "SECRET-SULSON": "SUL-304",
+  "PACK-4": "SUL-305",
+};
+
 export default function EditProductForm() {
   const router = useRouter();
   const params = useParams();
@@ -170,7 +184,8 @@ export default function EditProductForm() {
 
   useEffect(() => {
     const upperId = productId.toUpperCase();
-    const fallback = DEFAULT_PRODUCTS_MAP[upperId] || DEFAULT_PRODUCTS_MAP[productId];
+    const mappedKey = ID_ALIASES[upperId] || ID_ALIASES[productId] || upperId;
+    const fallback = DEFAULT_PRODUCTS_MAP[mappedKey] || DEFAULT_PRODUCTS_MAP[productId] || DEFAULT_PRODUCTS_MAP["SUL-301"];
 
     if (fallback) {
       setName(fallback.name);
@@ -486,11 +501,25 @@ export default function EditProductForm() {
 
                   {rectoImage ? (
                     <div className="space-y-2 text-center">
-                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs overflow-hidden">
                         <img
-                          src={rectoImage}
+                          src={rectoImage.startsWith("http") || rectoImage.startsWith("blob:") || rectoImage.startsWith("data:") || rectoImage.startsWith("/") ? rectoImage : `/images/products/${rectoImage}`}
                           alt="Face Recto"
                           className="max-h-full max-w-full object-contain"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (sku?.includes("301") || name?.toLowerCase().includes("poulet")) {
+                              target.src = "/images/products/epice-poulet-recto.jpg";
+                            } else if (sku?.includes("302") || name?.toLowerCase().includes("viande")) {
+                              target.src = "/images/products/epice-viande-recto.jpg";
+                            } else if (sku?.includes("303") || name?.toLowerCase().includes("poisson")) {
+                              target.src = "/images/products/epice-poisson-recto.jpg";
+                            } else if (sku?.includes("304") || name?.toLowerCase().includes("gourmande") || name?.toLowerCase().includes("secret")) {
+                              target.src = "/images/products/epice-gourmande-recto.jpg";
+                            } else {
+                              target.src = "/images/products/pack-4-saveurs-sulson.jpg";
+                            }
+                          }}
                         />
                       </div>
                       <div className="flex items-center justify-center gap-2">
@@ -544,11 +573,25 @@ export default function EditProductForm() {
 
                   {versoImage ? (
                     <div className="space-y-2 text-center">
-                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs">
+                      <div className="w-full h-44 rounded-xl bg-white border border-gray-200 flex items-center justify-center p-2 shadow-2xs overflow-hidden">
                         <img
-                          src={versoImage}
+                          src={versoImage.startsWith("http") || versoImage.startsWith("blob:") || versoImage.startsWith("data:") || versoImage.startsWith("/") ? versoImage : `/images/products/${versoImage}`}
                           alt="Dos Verso"
                           className="max-h-full max-w-full object-contain"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (sku?.includes("301") || name?.toLowerCase().includes("poulet")) {
+                              target.src = "/images/products/epice-poulet-verso.jpg";
+                            } else if (sku?.includes("302") || name?.toLowerCase().includes("viande")) {
+                              target.src = "/images/products/epice-viande-verso.jpg";
+                            } else if (sku?.includes("303") || name?.toLowerCase().includes("poisson")) {
+                              target.src = "/images/products/epice-poisson-verso.jpg";
+                            } else if (sku?.includes("304") || name?.toLowerCase().includes("gourmande") || name?.toLowerCase().includes("secret")) {
+                              target.src = "/images/products/epice-gourmande-verso.jpg";
+                            } else {
+                              target.src = "/images/products/epice-poulet-verso.jpg";
+                            }
+                          }}
                         />
                       </div>
                       <div className="flex items-center justify-center gap-2">
@@ -578,6 +621,9 @@ export default function EditProductForm() {
                       </div>
                       <span className="block text-xs font-bold text-gray-800">
                         {uploadingSide === "verso" ? "Téléversement..." : "Photo de Dos"}
+                      </span>
+                      <span className="block text-[10px] text-gray-400 mt-0.5">
+                        Ingrédients & Conseils
                       </span>
                       <input
                         type="file"
