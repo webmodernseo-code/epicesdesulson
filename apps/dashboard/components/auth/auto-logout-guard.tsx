@@ -26,7 +26,7 @@ export default function AutoLogoutGuard() {
         .finally(() => {
           sessionStorage.clear();
           localStorage.removeItem("userRole");
-          window.location.replace("/signin?reason=session_ended");
+          window.location.replace("/signin");
         });
       return;
     }
@@ -77,7 +77,7 @@ export default function AutoLogoutGuard() {
         fetch("/api/auth/logout", { method: "POST" })
           .catch(() => undefined)
           .finally(() => {
-            window.location.replace("/signin?reason=inactivity");
+            window.location.replace("/signin");
           });
       }
     }, 5000);

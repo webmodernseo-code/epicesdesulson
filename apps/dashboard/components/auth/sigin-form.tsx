@@ -8,13 +8,12 @@ import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, ShieldCheck, Lock, AlertCircle } from "lucide-react";
+import { Loader2, ArrowRight, Lock } from "lucide-react";
 
 export function SigninForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
-  const reason = searchParams.get("reason");
 
   const [email, setEmail] = useState("admin@epicesdesulson.com");
   const [password, setPassword] = useState("");
@@ -83,34 +82,6 @@ export function SigninForm() {
           Connectez-vous avec vos identifiants pour piloter les commandes, stocks et clients.
         </p>
       </div>
-
-      {/* Dynamic Alert Banner for auto-logout reasons */}
-      {reason === "session_ended" && (
-        <div className="mb-5 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-800 flex items-start gap-2.5 leading-relaxed">
-          <Lock className="size-4 text-amber-600 shrink-0 mt-0.5" />
-          <span>
-            <strong>Déconnexion automatique effectuée :</strong> Par mesure de sécurité, la session est fermée dès que vous quittez le tableau de bord.
-          </span>
-        </div>
-      )}
-
-      {reason === "inactivity" && (
-        <div className="mb-5 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-800 flex items-start gap-2.5 leading-relaxed">
-          <AlertCircle className="size-4 text-amber-600 shrink-0 mt-0.5" />
-          <span>
-            <strong>Session verrouillée :</strong> Déconnexion automatique suite à 20 minutes d'inactivité.
-          </span>
-        </div>
-      )}
-
-      {reason === "logged_out" && (
-        <div className="mb-5 p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-xs text-emerald-800 flex items-start gap-2.5 leading-relaxed">
-          <ShieldCheck className="size-4 text-emerald-600 shrink-0 mt-0.5" />
-          <span>
-            Vous avez été déconnecté avec succès.
-          </span>
-        </div>
-      )}
 
       {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit}>

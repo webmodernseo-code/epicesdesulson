@@ -20,10 +20,10 @@ export default function UserDropdown() {
         localStorage.removeItem("userRole");
       }
       await fetch("/api/auth/logout", { method: "POST" });
-      router.push("/signin?reason=logged_out");
+      router.push("/signin");
       router.refresh();
     } catch {
-      router.push("/signin?reason=logged_out");
+      router.push("/signin");
     } finally {
       setLoggingOut(false);
     }
