@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -498,13 +499,12 @@ export default function StockProductTable() {
 
                       <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="relative size-11 rounded-xl overflow-hidden bg-white border border-gray-200 shrink-0 p-1">
-                            <Image
-                              src={item.image}
+                          <div className="size-11 rounded-xl overflow-hidden bg-white border border-gray-200 shrink-0 p-1 flex items-center justify-center">
+                            <img
+                              src={getSafeProductImage(item.image, item.code, item.name)}
                               alt={item.name}
-                              fill
-                              unoptimized
-                              className="object-contain"
+                              className="w-full h-full object-contain"
+                              onError={(e) => handleProductImageError(e, item.code, item.name)}
                             />
                           </div>
                           <div>

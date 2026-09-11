@@ -12,15 +12,34 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-// Dummy Data
-const productsData = Array.from({ length: 7 }).map((_, i) => ({
-  name: `Product ${i + 1}`,
-  id: `#${23453 + i}`,
-  image: `/images/products/${String(i + 4).padStart(2, "0")}.png`,
-  category: "Cloth",
-  items: (i % 3) + 1,
-  price: `$${(i + 1) * 20}`,
-}));
+import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
+
+const productsData = [
+  {
+    name: "Épice de Sulson - Spéciale Poulet",
+    id: "SUL-301",
+    image: "/images/products/epice-poulet-recto.jpg",
+    category: "Volailles & Rôtis",
+    items: 2,
+    price: "13,80 €",
+  },
+  {
+    name: "Épice de Sulson - Spéciale Viande",
+    id: "SUL-302",
+    image: "/images/products/epice-viande-recto.jpg",
+    category: "Viandes & Grillades",
+    items: 1,
+    price: "6,90 €",
+  },
+  {
+    name: "Le Pack Intégral : 4 Saveurs Authentiques",
+    id: "SUL-305",
+    image: "/images/products/pack-4-saveurs-sulson.jpg",
+    category: "Packs Gourmets",
+    items: 1,
+    price: "24,90 €",
+  },
+];
 
 export default function OrderSmallProductTable() {
   return (
@@ -43,12 +62,12 @@ export default function OrderSmallProductTable() {
             >
               <TableCell className="pl-6 py-2 whitespace-nowrap">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg shrink-0 relative overflow-hidden">
-                    <Image
-                      src={product.image}
+                  <div className="size-10 rounded-lg bg-gray-50 border border-gray-200 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
+                    <img
+                      src={getSafeProductImage(product.image, product.id, product.name)}
                       alt={product.name}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-contain"
+                      onError={(e) => handleProductImageError(e, product.id, product.name)}
                     />
                   </div>
                   <div>

@@ -19,6 +19,7 @@ import CustomSelect, { Option } from "@/components/ui/custom-select";
 import SearchInput from "../common/search-input";
 import DeleteModal from "../ui/delete-modal";
 import { Star, CheckCircle, MessageSquareQuote } from "lucide-react";
+import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
 
 interface ProductReview {
   id: string;
@@ -248,12 +249,12 @@ export default function ProductReviewTable() {
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-3">
-                    <div className="relative size-9 rounded-lg overflow-hidden border border-gray-200 shrink-0">
-                      <Image
-                        src={item.productImage}
+                    <div className="size-9 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white p-0.5 flex items-center justify-center">
+                      <img
+                        src={getSafeProductImage(item.productImage, item.id, item.productName)}
                         alt={item.productName}
-                        fill
-                        className="object-cover"
+                        className="w-full h-full object-contain"
+                        onError={(e) => handleProductImageError(e, item.id, item.productName)}
                       />
                     </div>
                     <span className="text-xs font-bold text-gray-900">

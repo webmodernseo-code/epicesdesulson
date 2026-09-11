@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -323,13 +324,12 @@ export default function OrderDetails({ id = "SUL-10842" }: { id?: string }) {
                 className="py-3.5 flex items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="relative size-14 rounded-2xl bg-gray-50 border border-gray-200 overflow-hidden shrink-0 p-1">
-                    <Image
-                      src={item.image || "/images/products/pack-4-saveurs-sulson.jpg"}
+                  <div className="size-14 rounded-2xl bg-gray-50 border border-gray-200 overflow-hidden shrink-0 p-1 flex items-center justify-center">
+                    <img
+                      src={getSafeProductImage(item.image, item.id, item.productName)}
                       alt={item.productName}
-                      fill
-                      unoptimized
-                      className="object-contain"
+                      className="w-full h-full object-contain"
+                      onError={(e) => handleProductImageError(e, item.id, item.productName)}
                     />
                   </div>
                   <div>

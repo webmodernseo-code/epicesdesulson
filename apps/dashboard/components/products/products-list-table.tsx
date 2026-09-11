@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +18,7 @@ import CustomSelect, { Option } from "../ui/custom-select";
 import SearchInput from "../common/search-input";
 import DeleteModal from "../ui/delete-modal";
 import Link from "next/link";
+import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
 
 const SPICES_DATA = [
   {
@@ -108,8 +108,8 @@ export default function ProductListTable() {
       .then((json) => {
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
           const dbItems = json.data.map((p: any) => {
-            const rawImg = p.imageRecto || p.image || "/images/products/epice-poulet-recto.jpg";
-            const safeImg = rawImg.startsWith("http") || rawImg.startsWith("/") ? rawImg : `/images/products/${rawImg}`;
+            const rawImg = p.imageRecto || p.image;
+            const safeImg = getSafeProductImage(rawImg, p.code || p.id, p.title || p.name);
             return {
               id: p.code || p.id,
               name: p.title || p.name,
@@ -134,7 +134,10 @@ export default function ProductListTable() {
       .catch(() => undefined);
   }, []);
 
-  const filteredProducts = products.filter((item) => {
+  const filteredProducts = products.map((item) => ({
+    ...item,
+    image: getSafeProductImage(item.image, item.id, item.name),
+  })).filter((item) => {
     const matchesCategory =
       !selectedCategory?.value || item.category === selectedCategory.value;
     const matchesStatus =
@@ -245,12 +248,12 @@ export default function ProductListTable() {
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-3">
-                    <div className="relative size-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
-                      <Image
-                        src={product.image}
+                    <div className="size-12 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 shrink-0 flex items-center justify-center p-0.5">
+                      <img
+                        src={getSafeProductImage(product.image, product.id, product.name)}
                         alt={product.name}
-                        fill
-                        className="object-cover"
+                        className="w-full h-full object-contain"
+                        onError={(e) => handleProductImageError(e, product.id, product.name)}
                       />
                     </div>
                     <div>

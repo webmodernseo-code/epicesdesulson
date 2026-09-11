@@ -14,20 +14,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SearchIcon, Eye } from "@/icons";
-import CustomSelect, { Option } from "../ui/custom-select";
-import SearchInput from "../common/search-input";
+import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
 
-// Dummy Data matching the screenshot
-const topProductsData = Array.from({ length: 15 }).map((_, i) => ({
-  id: `#${73423 + i}`,
-  productName: `Product Model ${i + 1}`,
-  category: i % 2 === 0 ? "Fashion" : "Electronics",
-  price: `$${((i % 5) + 1) * 40}`,
-  seller: i % 3 === 0 ? "Eleanor Pena" : "Jane Cooper",
-  status: i % 4 === 0 ? "Draft" : "Publish",
-  image: `/images/products/${String((i % 24) + 1).padStart(2, "0")}.png`,
-}));
+const topProductsData = [
+  {
+    id: "SUL-301",
+    productName: "Épice de Sulson - Spéciale Poulet",
+    category: "Épices Volailles & Rôtis",
+    price: "6,90 €",
+    seller: "Atelier Sulson",
+    status: "Publié",
+    image: "/images/products/epice-poulet-recto.jpg",
+  },
+  {
+    id: "SUL-302",
+    productName: "Épice de Sulson - Spéciale Viande",
+    category: "Épices Viandes & Grillades",
+    price: "6,90 €",
+    seller: "Atelier Sulson",
+    status: "Publié",
+    image: "/images/products/epice-viande-recto.jpg",
+  },
+  {
+    id: "SUL-303",
+    productName: "Épice de Sulson - Spéciale Poisson",
+    category: "Épices Poissons & Marinades",
+    price: "6,90 €",
+    seller: "Atelier Sulson",
+    status: "Publié",
+    image: "/images/products/epice-poisson-recto.jpg",
+  },
+  {
+    id: "SUL-304",
+    productName: "Épice de Sulson - Saveur Gourmande",
+    category: "Assaisonnements Signatures",
+    price: "6,90 €",
+    seller: "Atelier Sulson",
+    status: "Publié",
+    image: "/images/products/epice-gourmande-recto.jpg",
+  },
+  {
+    id: "SUL-305",
+    productName: "Le Pack Intégral : 4 Saveurs Authentiques",
+    category: "Packs & Coffrets Gourmets",
+    price: "24,90 €",
+    seller: "Atelier Sulson",
+    status: "Publié",
+    image: "/images/products/pack-4-saveurs-sulson.jpg",
+  },
+];
 
 // Filter Options
 const categoryOptions = [
@@ -169,12 +204,12 @@ export default function TopProductsTable() {
               </TableCell>
               <TableCell className="text-sm text-light-secondary-text">
                 <div className="flex items-center gap-2">
-                  <div className="size-8 relative rounded bg-gray-100 shrink-0 overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt=""
-                      fill
-                      className="object-cover"
+                  <div className="size-9 rounded-lg bg-gray-50 border border-gray-200 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
+                    <img
+                      src={getSafeProductImage(item.image, item.id, item.productName)}
+                      alt={item.productName}
+                      className="w-full h-full object-contain"
+                      onError={(e) => handleProductImageError(e, item.id, item.productName)}
                     />
                   </div>
                   <span>{item.productName}</span>
