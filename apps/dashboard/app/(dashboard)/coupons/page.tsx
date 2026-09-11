@@ -60,22 +60,10 @@ export default function CouponsPage() {
       if (json.success && Array.isArray(json.data)) {
         setCoupons(json.data);
       } else {
-        // Fallback default sample if DB empty
-        setCoupons([
-          {
-            id: "default_sulson10",
-            code: "SULSON10",
-            description: "Code promo de bienvenue",
-            discountPercent: 10,
-            isActive: true,
-            minOrderAmount: null,
-            expiresAt: null,
-            usageCount: 12,
-            createdAt: new Date().toISOString(),
-          },
-        ]);
+        setCoupons([]);
       }
-    } catch (err) {
+    } catch {
+      setCoupons([]);
       toast.error("Impossible de charger les codes promo.");
     } finally {
       setLoading(false);

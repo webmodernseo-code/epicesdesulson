@@ -74,7 +74,8 @@ const euros = new Intl.NumberFormat("fr-FR", {
 });
 
 export default function AbandonCartList() {
-  const [carts, setCarts] = useState<AbandonCartItem[]>(INITIAL_ABANDONED_CARTS);
+  // No abandoned-cart persistence exists yet: never present demo records as real data.
+  const [carts, setCarts] = useState<AbandonCartItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;

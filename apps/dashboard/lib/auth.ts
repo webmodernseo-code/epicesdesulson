@@ -17,10 +17,11 @@ export interface SessionPayload {
 }
 
 export function getSessionSecret(): string {
-  return (
-    process.env.NEXTAUTH_SECRET ||
-    "Sulson-2026-4d8f2a91c7e563b0f6a18d43e9c275ba"
-  );
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret || secret.length < 32 || secret.includes("your_32_characters")) {
+    throw new Error("NEXTAUTH_SECRET doit contenir au moins 32 caractères aléatoires.");
+  }
+  return secret;
 }
 
 export function sign(value: string, secret = getSessionSecret()): string {
@@ -72,12 +73,6 @@ export function isAdmin(req: NextRequest): boolean {
   try {
     const session = readSession(req);
     if (session && (session.role === "ADMIN" || session.role === "MASTER_ADMIN")) {
-      return true;
-    }
-
-    const secret = getSessionSecret();
-    const authHeader = req.headers.get("authorization");
-    if (secret && authHeader === `Bearer ${secret}`) {
       return true;
     }
 

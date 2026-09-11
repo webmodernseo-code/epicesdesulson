@@ -5,6 +5,16 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 export interface RatingStat {
   ratingScore: number;
   ratingCount: number;
+  reviews?: ProductReview[];
+}
+
+export interface ProductReview {
+  id: string;
+  author: string;
+  rating: number;
+  comment: string;
+  date: string;
+  verifiedPurchase: boolean;
 }
 
 // Initial realistic baseline ratings between 40-80 reviews and 4.0 to 4.5 stars
@@ -35,6 +45,7 @@ const STORAGE_KEY = "sulson_dynamic_product_ratings_v1";
 interface RatingsContextType {
   getRating: (idOrCode: string | number) => RatingStat;
   addRating: (idOrCode: string | number, stars: number) => void;
+  addReview: (idOrCode: string | number, review: Omit<ProductReview, "id">) => void;
   ratingsMap: Record<string, RatingStat>;
 }
 
@@ -150,8 +161,29 @@ export function RatingsProvider({ children }: { children: React.ReactNode }) {
     [getRating]
   );
 
+  const addReview = useCallback(
+    (idOrCode: string | number, review: Omit<ProductReview, "id">) => {
+      const aliases = getAliases(idOrCode);
+      const current = getRating(idOrCode);
+      const stars = Math.min(5, Math.max(1, Math.round(review.rating)));
+      const newCount = current.ratingCount + 1;
+      const next: RatingStat = {
+        ratingScore: Number(((current.ratingScore * current.ratingCount + stars) / newCount).toFixed(1)),
+        ratingCount: newCount,
+        reviews: [{ ...review, rating: stars, id: crypto.randomUUID() }, ...(current.reviews || [])].slice(0, 50),
+      };
+      setRatingsMap((prev) => {
+        const updated = { ...prev };
+        for (const alias of aliases) updated[alias] = next;
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch { /* storage unavailable */ }
+        return updated;
+      });
+    },
+    [getRating]
+  );
+
   return (
-    <RatingsContext.Provider value={{ getRating, addRating, ratingsMap }}>
+    <RatingsContext.Provider value={{ getRating, addRating, addReview, ratingsMap }}>
       {children}
     </RatingsContext.Provider>
   );
@@ -167,6 +199,7 @@ export function useProductRatings() {
         return DEFAULT_PRODUCT_RATINGS[key] || { ratingScore: 4.4, ratingCount: 65 };
       },
       addRating: () => {},
+      addReview: () => {},
       ratingsMap: DEFAULT_PRODUCT_RATINGS,
     };
   }

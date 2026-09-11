@@ -142,7 +142,7 @@ const stockLevelOptions: Option[] = [
 ];
 
 export default function StockProductTable() {
-  const [stockItems, setStockItems] = useState<StockItem[]>(DEFAULT_STOCK_DATA);
+  const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<Option | null>(null);
@@ -190,16 +190,13 @@ export default function StockProductTable() {
             };
           });
 
-          const dbCodes = new Set(dbItems.map((item) => item.code.toUpperCase()));
-          const remainingDefaults = DEFAULT_STOCK_DATA.filter(
-            (defItem) => !dbCodes.has(defItem.code.toUpperCase())
-          );
-
-          setStockItems([...dbItems, ...remainingDefaults]);
+          setStockItems(dbItems);
+        } else {
+          setStockItems([]);
         }
       }
     } catch {
-      // Keep existing data on fetch error
+      setStockItems([]);
     } finally {
       setIsRefreshing(false);
     }

@@ -39,12 +39,13 @@ async function verifySessionToken(token: string, secret: string): Promise<boolea
       key,
       encoder.encode(encodedPayload)
     );
-    const computedSig = btoa(String.fromCharCode(...new Uint8Array(sigBuffer)))
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
-
-    return computedSig === signature;
+    const signatureBase64 = signature.replace(/-/g, "+").replace(/_/g, "/");
+    const signaturePadded = signatureBase64.padEnd(
+      signatureBase64.length + (4 - (signatureBase64.length % 4)) % 4,
+      "="
+    );
+    const signatureBytes = Uint8Array.from(atob(signaturePadded), (char) => char.charCodeAt(0));
+    return crypto.subtle.verify("HMAC", key, signatureBytes, encoder.encode(encodedPayload));
   } catch {
     return false;
   }
@@ -64,15 +65,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const secret =
-    process.env.NEXTAUTH_SECRET ||
-    "Sulson-2026-4d8f2a91c7e563b0f6a18d43e9c275ba";
+  const secret = process.env.NEXTAUTH_SECRET;
 
   const sessionToken =
     req.cookies.get("sulson_admin_session")?.value ||
     req.cookies.get("sulson_session")?.value;
 
-  const isAuthenticated = sessionToken
+  const isAuthenticated = secret && secret.length >= 32 && sessionToken
     ? await verifySessionToken(sessionToken, secret)
     : false;
 

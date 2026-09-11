@@ -177,7 +177,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Add fallback realistic conversations if database is brand new
-    if (customers.length <= 1) {
+    if (false && customers.length <= 1) {
       customers.push(
         {
           id: "cust_demo_1",

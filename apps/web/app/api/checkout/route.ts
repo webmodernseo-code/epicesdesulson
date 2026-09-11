@@ -204,6 +204,12 @@ export async function POST(req: Request) {
         }
       }
 
+      // A failed or unavailable provider must never be converted into a paid order.
+      return NextResponse.json(
+        { success: false, error: "PayPal est momentanément indisponible. Aucun débit n’a été effectué." },
+        { status: 503 }
+      );
+
       // Smooth direct confirmation for PayPal
       const paypalTxId = `tx_paypal_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
       await OrdersService.markOrderPaid(order.id, paypalTxId);
@@ -267,12 +273,19 @@ export async function POST(req: Request) {
     }
 
     // ── 3. STRIPE / DIRECT ON-SITE CARD / APPLE & GOOGLE PAY ──
+    // Raw card fields are not a payment proof. Stripe Elements and the verified
+    // webhook are the only components allowed to confirm a card payment.
+    return NextResponse.json(
+      { success: false, error: "Le paiement doit être confirmé par Stripe. Aucun débit n’a été effectué." },
+      { status: 409 }
+    );
+
     const { stripe } = await getStripeServer();
     let txId = `tx_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
     if (stripe) {
       try {
-        const paymentIntent = await stripe.paymentIntents.create({
+        const paymentIntent = await stripe!.paymentIntents.create({
           amount: Math.round(order.totalAmount * 100),
           currency: "eur",
           description: `Commande ${order.orderNumber} - Les Épices de Sulson (${paymentMethod === "apple_pay" ? "Apple/Google Pay" : "Carte"})`,

@@ -1,11 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { OrdersService } from "@/lib/orders-service";
 import { prisma } from "@/lib/prisma";
+import { isAdmin, readSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
+function escapeHtml(value: unknown): string {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -64,6 +74,12 @@ export async function GET(
       return new NextResponse("Commande introuvable", { status: 404 });
     }
 
+    const session = readSession(req);
+    const ownsOrder = Boolean(session && order.customerEmail.toLowerCase() === session.email.toLowerCase());
+    if (!ownsOrder && !isAdmin(req)) {
+      return new NextResponse("Non autorisé", { status: 401 });
+    }
+
     const invoiceNumber = `FAC-${new Date(order.createdAt).getFullYear()}-${order.orderNumber.replace(/[^0-9]/g, "")}`;
     const invoiceDate = new Date(order.createdAt).toLocaleDateString("fr-FR", {
       day: "2-digit",
@@ -84,9 +100,9 @@ export async function GET(
         return `
           <tr style="border-bottom: 1px solid #e2e8f0;">
             <td style="padding: 14px 12px; font-weight: 600; color: #0f172a;">
-              ${item.productName}
+              ${escapeHtml(item.productName)}
               <div style="font-size: 11px; font-weight: 400; color: #64748b; margin-top: 2px;">
-                Format : ${item.formatLabel}
+                Format : ${escapeHtml(item.formatLabel)}
               </div>
             </td>
             <td style="padding: 14px 12px; text-align: center; color: #334155; font-weight: 600;">
@@ -340,8 +356,8 @@ export async function GET(
       <div>
         <div class="meta-title">Facturé &amp; Livré à</div>
         <div class="meta-content">
-          <strong>${order.customerName}</strong><br>
-          ${order.customerEmail}
+          <strong>${escapeHtml(order.customerName)}</strong><br>
+          ${escapeHtml(order.customerEmail)}
         </div>
       </div>
 

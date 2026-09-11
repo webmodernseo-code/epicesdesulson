@@ -32,14 +32,14 @@ const initialNewItems: SearchItem[] = [
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState("");
-  const [products, setProducts] = useState<SearchItem[]>(initialProducts);
-  const [newItems, setNewItems] = useState<SearchItem[]>(initialNewItems);
+  const [products, setProducts] = useState<SearchItem[]>([]);
+  const [newItems, setNewItems] = useState<SearchItem[]>([]);
 
   useEffect(() => {
     if (isOpen) {
       setQuery("");
-      setProducts(initialProducts);
-      setNewItems(initialNewItems);
+      setProducts([]);
+      setNewItems([]);
     }
   }, [isOpen]);
 

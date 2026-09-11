@@ -135,6 +135,9 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Erreur API Summary:", error);
-    return NextResponse.json({ success: true, setupRequired: true, data: { revenue: 0, revenueTrend: null, paidOrders: 0, averageOrder: 0, activeProducts: 0, lowStock: 0, recentOrders: [] } });
+    return NextResponse.json(
+      { success: false, setupRequired: true, error: "Les données réelles sont indisponibles." },
+      { status: 503 }
+    );
   }
 }

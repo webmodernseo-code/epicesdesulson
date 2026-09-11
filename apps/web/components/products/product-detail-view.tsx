@@ -124,7 +124,7 @@ export default function ProductDetailView({
       rating: reviewRating,
       comment: reviewComment.trim(),
       date: "Aujourd'hui",
-      verifiedPurchase: true,
+      verifiedPurchase: false,
     });
 
     setReviewSubmitted(true);
@@ -610,7 +610,7 @@ export default function ProductDetailView({
                 <h4 className="text-base font-bold text-gray-900">
                   Avis vérifiés de nos clients ({ratingData.ratingCount})
                 </h4>
-                {ratingData.reviews.slice(0, 5).map((rev) => (
+                {(ratingData.reviews || []).slice(0, 5).map((rev) => (
                   <div
                     key={rev.id}
                     className="p-5 rounded-2xl bg-gray-50/80 border border-gray-200/80 space-y-2"

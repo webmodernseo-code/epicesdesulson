@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
+import CustomSelect, { type Option } from "@/components/ui/custom-select";
+import SearchInput from "@/components/common/search-input";
 import {
   Table,
   TableBody,

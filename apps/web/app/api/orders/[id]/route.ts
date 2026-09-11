@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { OrdersService } from "@/lib/orders-service";
+import { isAdmin, readSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,12 @@ export async function GET(
         { success: false, error: "Commande introuvable." },
         { status: 404 }
       );
+    }
+
+    const session = readSession(req);
+    const ownsOrder = Boolean(session && order.customerEmail.toLowerCase() === session.email.toLowerCase());
+    if (!ownsOrder && !isAdmin(req)) {
+      return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
     }
 
     // Mask sensitive phone or address if needed, return order summary

@@ -108,7 +108,8 @@ const dateOptions: Option[] = [
 ];
 
 export default function ProductReviewTable() {
-  const [reviews, setReviews] = useState<ProductReview[]>(initialReviews);
+  // Reviews must come from a persisted moderation API before being displayed.
+  const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [selectedReviews, setSelectedReviews] = useState<string[]>([]);
   const [ratingFilter, setRatingFilter] = useState<Option | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -118,7 +119,7 @@ export default function ProductReviewTable() {
 
   const filteredReviews = reviews.filter((r) => {
     const matchesRating =
-      !ratingFilter?.value || r.rating === parseInt(ratingFilter.value);
+      !ratingFilter?.value || r.rating === Number(ratingFilter.value);
     const matchesSearch =
       !searchTerm ||
       r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -129,7 +130,7 @@ export default function ProductReviewTable() {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedReviews(filteredReviews.map((r) => r.id));
+      setSelectedReviews(filteredReviews.map((r) => String(r.id)));
     } else {
       setSelectedReviews([]);
     }

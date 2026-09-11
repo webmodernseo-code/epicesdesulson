@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createSessionToken, SESSION_COOKIE, verifyPassword } from "@/lib/auth";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const limit = rateLimit(`customer-login:${getClientIp(req)}`, 5, 15 * 60 * 1000);
+    if (!limit.success) {
+      return NextResponse.json(
+        { success: false, error: "Trop de tentatives. Réessayez dans quelques minutes." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((limit.reset - Date.now()) / 1000)) } }
+      );
+    }
     const { email, password } = await req.json();
     if (typeof email !== "string" || typeof password !== "string" || !email.trim() || !password) {
       return NextResponse.json({ success: false, error: "Email et mot de passe requis." }, { status: 400 });
@@ -36,7 +44,7 @@ export async function POST(req: Request) {
     });
     return response;
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Erreur de connexion";
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    console.error("Customer login failed:", error);
+    return NextResponse.json({ success: false, error: "Erreur de connexion." }, { status: 500 });
   }
 }

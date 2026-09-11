@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import type { Coupon } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    let coupons = [];
+    let coupons: Coupon[] = [];
     if (process.env.DATABASE_URL) {
       coupons = await prisma.coupon.findMany({
         orderBy: { createdAt: "desc" },

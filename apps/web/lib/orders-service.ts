@@ -1,4 +1,5 @@
 import { ProductsService, SULSON_CATALOGUE } from "./products-service";
+import { prisma } from "./prisma";
 
 export interface CreateOrderItemInput {
   id?: string | number;

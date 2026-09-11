@@ -53,7 +53,8 @@ const initialAdmins: AdminUser[] = [
 ];
 
 export default function AdminListTable() {
-  const [admins, setAdmins] = useState<AdminUser[]>(initialAdmins);
+  // Do not expose template identities as real administrator accounts.
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 

@@ -102,23 +102,17 @@ export default function CheckoutV1Page() {
 
   const validateCard = (): boolean => {
     if (selectedMethod !== "card") return true;
-
-    // Auto-fill fallback for seamless test mode if fields were left blank
-    if (!cardData.nameOnCard || !cardData.nameOnCard.trim()) {
-      const fallbackName = `${shippingData.firstName.trim()} ${shippingData.lastName.trim()}`.trim() || "Client Sulson";
-      onCardDataChange("nameOnCard", fallbackName);
+    const digits = cardData.cardNumber.replace(/\D/g, "");
+    const [monthText, yearText] = cardData.expiryDate.split("/");
+    const month = Number(monthText);
+    const year = Number(yearText?.length === 2 ? `20${yearText}` : yearText);
+    const expiry = new Date(year, month, 0, 23, 59, 59);
+    if (!cardData.nameOnCard.trim() || digits.length < 13 || digits.length > 19 ||
+        !Number.isInteger(month) || month < 1 || month > 12 || expiry < new Date() ||
+        !/^\d{3,4}$/.test(cardData.cvc)) {
+      setCardError("Veuillez vérifier le nom, le numéro, la date d’expiration et le cryptogramme.");
+      return false;
     }
-    if (!cardData.cardNumber || !cardData.cardNumber.trim()) {
-      onCardDataChange("cardNumber", "4242 4242 4242 4242");
-    }
-    if (!cardData.expiryDate || !cardData.expiryDate.trim()) {
-      onCardDataChange("expiryDate", "12/28");
-    }
-    if (!cardData.cvc || !cardData.cvc.trim()) {
-      onCardDataChange("cvc", "123");
-    }
-
-    setCardError(null);
     return true;
   };
 

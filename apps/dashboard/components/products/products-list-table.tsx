@@ -94,7 +94,7 @@ const statusOptions = [
 ];
 
 export default function ProductListTable() {
-  const [products, setProducts] = useState(SPICES_DATA);
+  const [products, setProducts] = useState<typeof SPICES_DATA>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<Option | null>(null);
@@ -123,15 +123,12 @@ export default function ProductListTable() {
             };
           });
 
-          const dbIds = new Set(dbItems.map((item: any) => String(item.id).toUpperCase()));
-          const remainingDefaults = SPICES_DATA.filter(
-            (defItem) => !dbIds.has(defItem.id.toUpperCase())
-          );
-
-          setProducts([...dbItems, ...remainingDefaults]);
+          setProducts(dbItems);
+        } else {
+          setProducts([]);
         }
       })
-      .catch(() => undefined);
+      .catch(() => setProducts([]));
   }, []);
 
   const filteredProducts = products.map((item) => ({

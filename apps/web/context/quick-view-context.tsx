@@ -10,6 +10,8 @@ export interface QuickViewProduct {
   oldPrice?: string | number;
   price?: string | number;
   rating?: number;
+  slug?: string;
+  imageVerso?: string;
 }
 
 interface QuickViewContextType {
