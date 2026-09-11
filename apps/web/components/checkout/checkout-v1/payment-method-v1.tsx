@@ -319,10 +319,11 @@ export default function PaymentMethodV1({
                 <p className="text-xs text-gray-500 mt-0.5">Paiement 1 clic</p>
               </div>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <ApplePayBadgeSvg className="h-6 w-auto shadow-2xs" />
-              <GooglePaySvg className="h-6 w-auto shadow-2xs" />
-            </div>
+            <img
+              src="/images/payments/google-apple-pay.png"
+              alt="Google Pay & Apple Pay"
+              className="h-6 sm:h-7 w-auto object-contain shrink-0"
+            />
           </button>
 
           {/* Tab 3: PayPal */}
