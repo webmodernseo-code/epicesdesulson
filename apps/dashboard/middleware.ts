@@ -54,6 +54,15 @@ async function verifySessionToken(token: string, secret: string): Promise<boolea
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Authentication pages must remain reachable even when the browser sends a
+  // stale or malformed session cookie. Authentication is performed by the API.
+  const isPublicAuthRoute = PUBLIC_AUTH_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+  if (isPublicAuthRoute) {
+    return NextResponse.next();
+  }
+
   // 1. Bypass static files, internal Next.js assets, and API routes
   if (
     pathname.startsWith("/_next") ||
@@ -75,21 +84,7 @@ export async function middleware(req: NextRequest) {
     ? await verifySessionToken(sessionToken, secret)
     : false;
 
-  const isPublicAuthRoute = PUBLIC_AUTH_PATHS.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  // 2. If logged in and visiting login/auth pages, redirect to dashboard cockpit
-  if (isPublicAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  // 3. If accessing login/auth pages while not logged in, allow
-  if (isPublicAuthRoute) {
-    return NextResponse.next();
-  }
-
-  // 4. If accessing protected dashboard pages without session, redirect to /signin
+  // If accessing protected dashboard pages without session, redirect to /signin
   if (!isAuthenticated) {
     const signinUrl = new URL("/signin", req.url);
     if (pathname !== "/") {
