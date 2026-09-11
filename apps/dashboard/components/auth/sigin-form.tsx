@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight, Lock } from "lucide-react";
+import { Loader2, ArrowRight, Lock, Eye, EyeOff } from "lucide-react";
 
 export function SigninForm() {
   const router = useRouter();
@@ -17,6 +17,7 @@ export function SigninForm() {
 
   const [email, setEmail] = useState("admin@epicesdesulson.com");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,17 +98,32 @@ export function SigninForm() {
           className="h-12"
         />
 
-        <FloatingInput
-          label="Mot de passe"
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          autoComplete="current-password"
-          disabled={loading}
-          className="h-12"
-        />
+        <div className="relative">
+          <FloatingInput
+            label="Mot de passe"
+            id="password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+            disabled={loading}
+            className="h-12 pr-12"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            tabIndex={-1}
+            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            {showPassword ? (
+              <EyeOff className="size-4.5" />
+            ) : (
+              <Eye className="size-4.5" />
+            )}
+          </button>
+        </div>
 
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-1.5 text-xs text-gray-500">

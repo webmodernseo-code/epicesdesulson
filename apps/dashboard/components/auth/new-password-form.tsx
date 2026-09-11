@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Loader2, ArrowLeft, CheckCircle2, Eye, EyeOff } from "lucide-react";
 
 export function NewPasswordForm() {
   const router = useRouter();
@@ -16,6 +16,8 @@ export function NewPasswordForm() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,28 +87,59 @@ export function NewPasswordForm() {
 
       {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <FloatingInput
-          label="Nouveau mot de passe"
-          id="new-password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          autoComplete="new-password"
-          disabled={loading}
-          className="h-12"
-        />
-        <FloatingInput
-          label="Confirmer le nouveau mot de passe"
-          id="confirm-new-password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          autoComplete="new-password"
-          disabled={loading}
-          className="h-12"
-        />
+        <div className="relative">
+          <FloatingInput
+            label="Nouveau mot de passe"
+            id="new-password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="new-password"
+            disabled={loading}
+            className="h-12 pr-12"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            tabIndex={-1}
+            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            {showPassword ? (
+              <EyeOff className="size-4.5" />
+            ) : (
+              <Eye className="size-4.5" />
+            )}
+          </button>
+        </div>
+
+        <div className="relative">
+          <FloatingInput
+            label="Confirmer le nouveau mot de passe"
+            id="confirm-new-password"
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            autoComplete="new-password"
+            disabled={loading}
+            className="h-12 pr-12"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            tabIndex={-1}
+            aria-label={showConfirmPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            {showConfirmPassword ? (
+              <EyeOff className="size-4.5" />
+            ) : (
+              <Eye className="size-4.5" />
+            )}
+          </button>
+        </div>
 
         <Button
           type="submit"

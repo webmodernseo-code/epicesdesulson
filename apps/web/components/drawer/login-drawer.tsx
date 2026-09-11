@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 
 interface LoginDrawerProps {
   isOpen: boolean;
@@ -14,6 +16,9 @@ export default function LoginDrawer({
   onClose,
   onOpenForgotPassword,
 }: LoginDrawerProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("••••••••••••");
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Redirect to the real dashboard administration URL
@@ -43,15 +48,15 @@ export default function LoginDrawer({
                 Espace Vendeuse & Administration
               </h5>
               <p className="text-xs text-gray-500 mt-0.5">
-                Connexion sécurisée au tableau de bord
+                Accès réservé à la gestion de la boutique Sulson
               </p>
             </div>
             <button
+              type="button"
               onClick={onClose}
-              aria-label="Fermer"
-              className="cursor-pointer inline-flex items-center justify-center size-9 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="size-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 transition-colors cursor-pointer"
             >
-              <i className="hgi hgi-stroke hgi-multiplication-sign text-lg text-gray-700" />
+              <i className="hgi hgi-stroke hgi-cancel-01 text-base" />
             </button>
           </div>
 
@@ -104,13 +109,27 @@ export default function LoginDrawer({
                     <i className="hgi hgi-stroke hgi-shield-security text-lg" />
                   </span>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="admin-password"
                     required
-                    defaultValue="••••••••••••"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm text-gray-900 focus:bg-white focus:border-primary focus:outline-none transition-colors"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-11 text-sm text-gray-900 focus:bg-white focus:border-primary focus:outline-none transition-colors"
                     placeholder="Mot de passe"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4.5" />
+                    ) : (
+                      <Eye className="size-4.5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
