@@ -15,15 +15,15 @@ export default function UserDropdown() {
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
-      await fetch("/api/auth/logout", { method: "POST" });
       if (typeof window !== "undefined") {
+        sessionStorage.clear();
         localStorage.removeItem("userRole");
       }
-      toast.success("Vous avez été déconnecté avec succès.");
-      router.push("/signin");
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/signin?reason=logged_out");
       router.refresh();
     } catch {
-      router.push("/signin");
+      router.push("/signin?reason=logged_out");
     } finally {
       setLoggingOut(false);
     }

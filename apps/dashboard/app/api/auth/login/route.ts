@@ -102,15 +102,15 @@ export async function POST(req: Request) {
       );
     }
 
-    // TTL: 7 days if keepSignedIn, else 24 hours
-    const maxAge = keepSignedIn ? 7 * 24 * 60 * 60 : 24 * 60 * 60;
+    // Token payload expiration (12 hours maximum active session)
+    const tokenExpSeconds = 12 * 60 * 60;
     const token = createSessionToken(
       {
         userId: authenticatedUser.id,
         email: authenticatedUser.email,
         role: authenticatedUser.role,
       },
-      maxAge
+      tokenExpSeconds
     );
 
     const response = NextResponse.json({
@@ -125,31 +125,28 @@ export async function POST(req: Request) {
 
     const isProd = process.env.NODE_ENV === "production";
 
-    // Set primary session cookie
+    // Set primary session cookie (session lifetime: erased automatically on browser/tab exit)
     response.cookies.set(SESSION_COOKIE, token, {
       httpOnly: true,
       secure: isProd,
       sameSite: "lax",
       path: "/",
-      maxAge,
     });
 
-    // Set compatibility cookie
+    // Set compatibility cookie (session lifetime)
     response.cookies.set(COMPAT_COOKIE, token, {
       httpOnly: true,
       secure: isProd,
       sameSite: "lax",
       path: "/",
-      maxAge,
     });
 
-    // Set client-accessible role cookie
+    // Set client-accessible role cookie (session lifetime)
     response.cookies.set("userRole", "master", {
       httpOnly: false,
       secure: isProd,
       sameSite: "lax",
       path: "/",
-      maxAge,
     });
 
     return response;

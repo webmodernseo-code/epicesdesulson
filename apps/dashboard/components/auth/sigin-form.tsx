@@ -8,16 +8,16 @@ import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight, ShieldCheck, Lock, AlertCircle } from "lucide-react";
 
 export function SigninForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const reason = searchParams.get("reason");
 
   const [email, setEmail] = useState("admin@epicesdesulson.com");
   const [password, setPassword] = useState("");
-  const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +35,6 @@ export function SigninForm() {
         body: JSON.stringify({
           email: email.trim(),
           password: password.trim(),
-          keepSignedIn,
         }),
       });
 
@@ -48,6 +47,8 @@ export function SigninForm() {
       }
 
       if (typeof window !== "undefined") {
+        sessionStorage.setItem("sulson_admin_active_tab", "1");
+        sessionStorage.setItem("sulson_last_activity", Date.now().toString());
         localStorage.setItem("userRole", "master");
       }
 
@@ -63,7 +64,7 @@ export function SigninForm() {
   return (
     <div>
       {/* Brand Logo & Header */}
-      <div className="flex flex-col items-start mb-8">
+      <div className="flex flex-col items-start mb-6">
         <Link href="/" className="mb-6 inline-block transition-transform hover:scale-102">
           <Image
             src="/images/logo/logo.png"
@@ -82,6 +83,34 @@ export function SigninForm() {
           Connectez-vous avec vos identifiants pour piloter les commandes, stocks et clients.
         </p>
       </div>
+
+      {/* Dynamic Alert Banner for auto-logout reasons */}
+      {reason === "session_ended" && (
+        <div className="mb-5 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-800 flex items-start gap-2.5 leading-relaxed">
+          <Lock className="size-4 text-amber-600 shrink-0 mt-0.5" />
+          <span>
+            <strong>Déconnexion automatique effectuée :</strong> Par mesure de sécurité, la session est fermée dès que vous quittez le tableau de bord.
+          </span>
+        </div>
+      )}
+
+      {reason === "inactivity" && (
+        <div className="mb-5 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-800 flex items-start gap-2.5 leading-relaxed">
+          <AlertCircle className="size-4 text-amber-600 shrink-0 mt-0.5" />
+          <span>
+            <strong>Session verrouillée :</strong> Déconnexion automatique suite à 20 minutes d'inactivité.
+          </span>
+        </div>
+      )}
+
+      {reason === "logged_out" && (
+        <div className="mb-5 p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-xs text-emerald-800 flex items-start gap-2.5 leading-relaxed">
+          <ShieldCheck className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+          <span>
+            Vous avez été déconnecté avec succès.
+          </span>
+        </div>
+      )}
 
       {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit}>
@@ -110,19 +139,9 @@ export function SigninForm() {
         />
 
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="keep-signed-in"
-              checked={keepSignedIn}
-              onCheckedChange={(checked) => setKeepSignedIn(checked as boolean)}
-              disabled={loading}
-            />
-            <label
-              htmlFor="keep-signed-in"
-              className="text-sm font-public-sans text-light-secondary-text font-medium cursor-pointer select-none"
-            >
-              Mémoriser ma session
-            </label>
+          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <Lock className="size-3.5 text-emerald-600 shrink-0" />
+            <span>Déconnexion automatique à la fermeture</span>
           </div>
           <Link
             href="/forgot-password"

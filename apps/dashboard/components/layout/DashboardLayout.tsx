@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import AutoLogoutGuard from "@/components/auth/auto-logout-guard";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -24,6 +25,7 @@ export default function DashboardLayout({
 
   return (
     <div className="xl:flex min-h-screen">
+      <AutoLogoutGuard />
       {/* Sidebar */}
       <Sidebar
         isOpen={isMobileSidebarOpen}
