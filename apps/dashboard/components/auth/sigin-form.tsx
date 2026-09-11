@@ -22,7 +22,7 @@ export function SigninForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() || !password) {
       toast.error("Veuillez renseigner votre email et mot de passe.");
       return;
     }
@@ -34,7 +34,7 @@ export function SigninForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email.trim(),
-          password: password.trim(),
+          password,
         }),
       });
 

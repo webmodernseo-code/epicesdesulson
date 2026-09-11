@@ -101,9 +101,25 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    const persistedUser = await prisma.user.findUnique({
+      where: { email: targetEmail },
+      select: { passwordHash: true },
+    });
+    const passwordWasPersisted = await verifyPassword(
+      newPassword,
+      persistedUser?.passwordHash ?? null
+    );
+    if (!passwordWasPersisted) {
+      console.error("Password update verification failed for authenticated administrator");
+      return NextResponse.json(
+        { success: false, error: "La vérification en base a échoué. Le nouveau mot de passe n'est pas confirmé." },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      message: "Votre mot de passe a été mis à jour avec succès.",
+      message: "Nouveau mot de passe enregistré et vérifié avec succès.",
     });
   } catch (error) {
     console.error("Erreur change-password:", error);

@@ -42,7 +42,8 @@ export async function POST(req: Request) {
     }
 
     const cleanInput = String(email).trim().toLowerCase();
-    const inputPassword = String(password).trim();
+    // A password is an exact secret: never alter it before verification.
+    const inputPassword = String(password);
 
     let authenticatedUser: {
       id: string;
