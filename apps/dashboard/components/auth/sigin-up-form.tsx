@@ -1,14 +1,17 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { FacebookIcon, GoogleIcon } from "../../icons";
 
 export function SignupForm() {
-  const [acceptedTerms, setAcceptedTerms] = React.useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <div>
@@ -80,17 +83,48 @@ export function SignupForm() {
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FloatingInput
-            label="Password"
-            id="password"
-            type="password"
-            className="h-12"
-          />
-          <FloatingInput
-            label="Confirm password"
-            id="confirm-password"
-            type="password"
-          />
+          <div className="relative">
+            <FloatingInput
+              label="Password"
+              id="password"
+              type={showPassword ? "text" : "password"}
+              className="h-12 pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+              aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="size-4.5" />
+              ) : (
+                <Eye className="size-4.5" />
+              )}
+            </button>
+          </div>
+          <div className="relative">
+            <FloatingInput
+              label="Confirm password"
+              id="confirm-password"
+              type={showConfirmPassword ? "text" : "password"}
+              className="h-12 pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              tabIndex={-1}
+              aria-label={showConfirmPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="size-4.5" />
+              ) : (
+                <Eye className="size-4.5" />
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 mt-2">

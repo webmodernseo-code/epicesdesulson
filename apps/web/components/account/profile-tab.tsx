@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { InputWithLabelProps } from "@/lib/types";
 
 const ProfileTab = () => {
@@ -39,7 +40,7 @@ const ProfileTab = () => {
                   <InputWithLabel id="email_address" label="Email Address (Optional)" type="email" />
                 </div>
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary btn-large md:px-[42px] w-full md:w-auto py-[11px] rounded-[100px]">Save</button>
+                  <button type="submit" className="btn btn-primary btn-large md:px-[42px] w-full md:w-auto py-[11px] rounded-[100px] cursor-pointer">Save</button>
                 </div>
               </form>
             </div>
@@ -57,7 +58,7 @@ const ProfileTab = () => {
               <InputWithLabel id="new_password" label="New Password" type="password" />
               <InputWithLabel id="confirm_new_password" label="Confirm New Password" type="password" />
               <div className="text-end">
-                <button type="submit" className="btn btn-primary btn-large md:px-[22px] w-full md:w-auto py-[11px] rounded-[100px]">Save Changes</button>
+                <button type="submit" className="btn btn-primary btn-large md:px-[22px] w-full md:w-auto py-[11px] rounded-[100px] cursor-pointer">Save Changes</button>
               </div>
             </form>
           </div>
@@ -67,21 +68,38 @@ const ProfileTab = () => {
   );
 };
 
-const InputWithLabel = ({ id, label, type = "text" }: InputWithLabelProps) => (
-  <div className="relative w-full">
-    <input
-      type={type}
-      id={id}
-      className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:outline-none"
-      placeholder={label}
-    />
-    <label
-      htmlFor={id}
-      className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
-    >
-      {label}
-    </label>
-  </div>
-);
+const InputWithLabel = ({ id, label, type = "text" }: InputWithLabelProps) => {
+  const [show, setShow] = useState(false);
+  const isPassword = type === "password";
+  const inputType = isPassword ? (show ? "text" : "password") : type;
+
+  return (
+    <div className="relative w-full">
+      <input
+        type={inputType}
+        id={id}
+        className={`peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:outline-none ${isPassword ? "pr-11" : ""}`}
+        placeholder={label}
+      />
+      <label
+        htmlFor={id}
+        className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-focus:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
+      >
+        {label}
+      </label>
+      {isPassword && (
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          tabIndex={-1}
+          aria-label={show ? "Masquer" : "Afficher"}
+          className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+        >
+          {show ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+        </button>
+      )}
+    </div>
+  );
+};
 
 export default ProfileTab;

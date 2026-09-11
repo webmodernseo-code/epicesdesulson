@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 
 interface SetPasswordDrawerProps {
   isOpen: boolean;
@@ -12,6 +14,8 @@ export default function SetPasswordDrawer({
   isOpen,
   onClose,
 }: SetPasswordDrawerProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,9 +51,9 @@ export default function SetPasswordDrawer({
               <form className="flex flex-col gap-y-6">
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="reset-password"
-                    className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:placeholder-transparent focus:outline-none"
+                    className="peer form-control input-group medium rounded-[80px] px-3.5 pr-11 placeholder-transparent focus:placeholder-transparent focus:outline-none"
                     placeholder="Password *"
                   />
                   <label
@@ -58,12 +62,21 @@ export default function SetPasswordDrawer({
                   >
                     Password *
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Masquer" : "Afficher"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                  </button>
                 </div>
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showConfirm ? "text" : "password"}
                     id="reset-confirm-password"
-                    className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:placeholder-transparent focus:outline-none"
+                    className="peer form-control input-group medium rounded-[80px] px-3.5 pr-11 placeholder-transparent focus:placeholder-transparent focus:outline-none"
                     placeholder="Confirm Password *"
                   />
                   <label
@@ -72,9 +85,18 @@ export default function SetPasswordDrawer({
                   >
                     Confirm Password *
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    tabIndex={-1}
+                    aria-label={showConfirm ? "Masquer" : "Afficher"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showConfirm ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                  </button>
                 </div>
                 <div>
-                  <button className="btn btn-primary btn-large rounded-[80px] w-full">
+                  <button className="btn btn-primary btn-large rounded-[80px] w-full cursor-pointer">
                     Change Password
                   </button>
                 </div>

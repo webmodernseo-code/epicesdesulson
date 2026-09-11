@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 
 interface RegisterDrawerProps {
   isOpen: boolean;
@@ -14,6 +16,10 @@ export default function RegisterDrawer({
   onClose,
   onOpenLogin,
 }: RegisterDrawerProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   return (
     <AnimatePresence>
       {isOpen && (
@@ -140,35 +146,57 @@ export default function RegisterDrawer({
                 </div>
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="register-password"
-                    className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:placeholder-transparent focus:outline-none"
-                    placeholder="Password *"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="peer form-control input-group medium rounded-[80px] px-3.5 pr-11 placeholder-transparent focus:placeholder-transparent focus:outline-none"
+                    placeholder="Mot de passe *"
                   />
                   <label
                     htmlFor="register-password"
                     className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-focus:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
                   >
-                    Password *
+                    Mot de passe *
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Masquer" : "Afficher"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                  </button>
                 </div>
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showConfirm ? "text" : "password"}
                     id="confirm-password"
-                    className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:placeholder-transparent focus:outline-none"
-                    placeholder="Confirm Password *"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="peer form-control input-group medium rounded-[80px] px-3.5 pr-11 placeholder-transparent focus:placeholder-transparent focus:outline-none"
+                    placeholder="Confirmer le mot de passe *"
                   />
                   <label
                     htmlFor="confirm-password"
                     className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-focus:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
                   >
-                    Confirm Password *
+                    Confirmer le mot de passe *
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    tabIndex={-1}
+                    aria-label={showConfirm ? "Masquer" : "Afficher"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showConfirm ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                  </button>
                 </div>
                 <div>
-                  <button className="btn btn-primary btn-large rounded-[80px] w-full">
-                    Create Account
+                  <button className="btn btn-primary btn-large rounded-[80px] w-full cursor-pointer">
+                    Créer mon compte
                   </button>
                 </div>
               </form>

@@ -1,8 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function VendorAccountForm() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   return (
     <section className="pb-[70px]">
       <div className="container">
@@ -92,33 +97,51 @@ export default function VendorAccountForm() {
               <div className="w-full">
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="vendor-account-password"
-                    className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:placeholder-transparent focus:outline-none"
+                    className="peer form-control input-group medium rounded-[80px] px-3.5 pr-11 placeholder-transparent focus:placeholder-transparent focus:outline-none"
                     placeholder="Password*"
                   />
                   <label
                     htmlFor="vendor-account-password"
-                    className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
+                    className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-focus:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
                   >
                     Password*
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Masquer" : "Afficher"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                  </button>
                 </div>
               </div>
               <div className="w-full pt-6 pb-10">
                 <div className="relative w-full">
                   <input
-                    type="password"
+                    type={showConfirm ? "text" : "password"}
                     id="vendor-account-confirm-password"
-                    className="peer form-control input-group medium rounded-[80px] px-3.5 placeholder-transparent focus:placeholder-transparent focus:outline-none"
+                    className="peer form-control input-group medium rounded-[80px] px-3.5 pr-11 placeholder-transparent focus:placeholder-transparent focus:outline-none"
                     placeholder="Confirm Password*"
                   />
                   <label
                     htmlFor="vendor-account-confirm-password"
-                    className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
+                    className="absolute left-[14px] top-1/2 -translate-y-1/2 text-xs leading-[18px] transition-all peer-placeholder-shown:text-light-disabled-text peer-focus:text-light-disabled-text peer-placeholder-shown:text-[16px] peer-placeholder-shown:top-1/2 peer-focus:text-[12px] peer-focus:top-0 peer-[:not(:placeholder-shown)]:text-[12px] peer-[:not(:placeholder-shown)]:top-0 bg-white peer-focus:px-1 peer-[:not(:placeholder-shown)]:px-1"
                   >
                     Confirm Password*
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    tabIndex={-1}
+                    aria-label={showConfirm ? "Masquer" : "Afficher"}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  >
+                    {showConfirm ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                  </button>
                 </div>
               </div>
               <a
