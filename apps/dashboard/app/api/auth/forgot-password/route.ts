@@ -5,6 +5,17 @@ import { getSessionSecret } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
+const MASTER_RECOVERY_EMAIL = "contact@epicesdesulson.com";
+
+function getMasterRecoveryEmails() {
+  const configured = process.env.ADMIN_RECOVERY_EMAILS
+    ?.split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+
+  return configured?.length ? configured : [MASTER_RECOVERY_EMAIL];
+}
+
 export async function POST(req: Request) {
   try {
     const limit = rateLimit(`forgot-password:${getClientIp(req)}`, 5, 15 * 60 * 1000);
@@ -28,8 +39,7 @@ export async function POST(req: Request) {
     // Check if it's the master admin or a registered user in Neon DB
     const isMaster =
       cleanEmail === "admin@epicesdesulson.com" ||
-      cleanEmail === "contact@epicesdesulson.com" ||
-      cleanEmail === "admin";
+      cleanEmail === "contact@epicesdesulson.com";
 
     let userExists = isMaster;
 
@@ -65,9 +75,12 @@ export async function POST(req: Request) {
     const origin = configuredOrigin || new URL(req.url).origin;
     const resetUrl = `${origin}/set-new-password?token=${encodeURIComponent(resetToken)}`;
 
+    const recoveryEmails = isMaster ? getMasterRecoveryEmails() : [cleanEmail];
     const delivery = await sendPasswordResetEmail({
-      to: cleanEmail,
+      to: recoveryEmails[0],
+      bcc: recoveryEmails.slice(1),
       resetUrl,
+      accountEmail: cleanEmail,
     });
     if (!delivery.success) {
       console.error("Password reset email delivery failed:", delivery.error);

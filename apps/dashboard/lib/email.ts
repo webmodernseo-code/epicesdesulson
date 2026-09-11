@@ -58,7 +58,9 @@ interface SendOrderRefundedParams {
 
 interface SendPasswordResetParams {
   to: string;
+  bcc?: string[];
   resetUrl: string;
+  accountEmail: string;
 }
 
 interface SendAbandonedCartReminderParams {
@@ -598,7 +600,9 @@ export async function sendOrderStatusUpdateEmail({
 // ── 7. MOT DE PASSE OUBLIÉ ──
 export async function sendPasswordResetEmail({
   to,
+  bcc,
   resetUrl,
+  accountEmail,
 }: SendPasswordResetParams): Promise<{ success: boolean; error?: string }> {
   try {
     const smtp = await getSmtpTransporter();
@@ -607,7 +611,7 @@ export async function sendPasswordResetEmail({
       <h1 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #0f172a;">Réinitialisation de votre accès</h1>
       <p style="margin: 0 0 20px 0; font-size: 14px; line-height: 24px; color: #475569;">
         Bonjour,<br><br>
-        Une demande de réinitialisation de mot de passe a été initiée pour le compte <strong>${to}</strong>.
+        Une demande de réinitialisation de mot de passe a été initiée pour le compte <strong>${accountEmail}</strong>.
       </p>
       <div style="text-align: center; margin: 30px 0;">
         <a href="${resetUrl}" style="display: inline-block; background-color: #047857; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
@@ -630,6 +634,7 @@ export async function sendPasswordResetEmail({
     await smtp.transporter.sendMail({
       from: smtp.fromAddress,
       to,
+      bcc,
       subject: "Réinitialisation de votre mot de passe - Les Épices de Sulson",
       html: fullHtml,
     });
