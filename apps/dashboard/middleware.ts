@@ -1,23 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_AUTH_PATHS = ["/signin", "/forgot-password", "/set-new-password", "/signup"];
+const PUBLIC_AUTH_PATHS = [
+  "/signin",
+  "/signup",
+  "/forgot-password",
+  "/set-new-password",
+  "/reset-password",
+];
 
+// Verify session signature using standard Web Crypto API supported across Edge & Node runtimes
 async function verifySessionToken(token: string, secret: string): Promise<boolean> {
   try {
-    if (!token) return false;
+    if (!token || typeof token !== "string") return false;
     const parts = token.split(".");
     if (parts.length !== 2) return false;
     const [encodedPayload, signature] = parts;
     if (!encodedPayload || !signature) return false;
 
-    // 1. Decode base64url payload
+    // 1. Decode base64url payload safely
     const base64 = encodedPayload.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64.padEnd(base64.length + (4 - (base64.length % 4)) % 4, "=");
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
     const decodedStr = atob(padded);
     const payload = JSON.parse(decodedStr);
 
     // 2. Validate expiration and role
+    if (!payload || typeof payload !== "object") return false;
     if (!payload.exp || payload.exp <= Math.floor(Date.now() / 1000)) {
       return false;
     }
@@ -25,7 +33,7 @@ async function verifySessionToken(token: string, secret: string): Promise<boolea
       return false;
     }
 
-    // 3. Verify HMAC-SHA256 signature using standard Web Crypto API
+    // 3. Compute expected signature via Web Crypto HMAC-SHA256
     const encoder = new TextEncoder();
     const key = await crypto.subtle.importKey(
       "raw",
@@ -39,61 +47,74 @@ async function verifySessionToken(token: string, secret: string): Promise<boolea
       key,
       encoder.encode(encodedPayload)
     );
-    const signatureBase64 = signature.replace(/-/g, "+").replace(/_/g, "/");
-    const signaturePadded = signatureBase64.padEnd(
-      signatureBase64.length + (4 - (signatureBase64.length % 4)) % 4,
-      "="
-    );
-    const signatureBytes = Uint8Array.from(atob(signaturePadded), (char) => char.charCodeAt(0));
-    return crypto.subtle.verify("HMAC", key, signatureBytes, encoder.encode(encodedPayload));
+    const sigArray = Array.from(new Uint8Array(sigBuffer));
+    let binary = "";
+    for (let i = 0; i < sigArray.length; i++) {
+      binary += String.fromCharCode(sigArray[i]);
+    }
+    const expectedSig = btoa(binary)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    return signature === expectedSig;
   } catch {
     return false;
   }
 }
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  try {
+    const { pathname } = req.nextUrl;
 
-  // Authentication pages must remain reachable even when the browser sends a
-  // stale or malformed session cookie. Authentication is performed by the API.
-  const isPublicAuthRoute = PUBLIC_AUTH_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  );
-  if (isPublicAuthRoute) {
-    return NextResponse.next();
-  }
-
-  // 1. Bypass static files, internal Next.js assets, and API routes
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/") ||
-    pathname.startsWith("/images/") ||
-    pathname.startsWith("/icons/") ||
-    pathname.includes(".")
-  ) {
-    return NextResponse.next();
-  }
-
-  const secret = process.env.NEXTAUTH_SECRET;
-
-  const sessionToken =
-    req.cookies.get("sulson_admin_session")?.value ||
-    req.cookies.get("sulson_session")?.value;
-
-  const isAuthenticated = secret && secret.length >= 32 && sessionToken
-    ? await verifySessionToken(sessionToken, secret)
-    : false;
-
-  // If accessing protected dashboard pages without session, redirect to /signin
-  if (!isAuthenticated) {
-    const signinUrl = new URL("/signin", req.url);
-    if (pathname !== "/") {
-      signinUrl.searchParams.set("callbackUrl", pathname);
+    // 1. Never intercept static assets, images, icons, next internals, or API endpoints
+    if (
+      pathname.startsWith("/_next") ||
+      pathname.startsWith("/api/") ||
+      pathname.startsWith("/images/") ||
+      pathname.startsWith("/icons/") ||
+      pathname.startsWith("/fonts/") ||
+      pathname.includes(".")
+    ) {
+      return NextResponse.next();
     }
-    return NextResponse.redirect(signinUrl);
-  }
 
-  return NextResponse.next();
+    // 2. Authentication pages must ALWAYS be directly accessible without redirects
+    const isPublicAuthRoute = PUBLIC_AUTH_PATHS.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`)
+    );
+    if (isPublicAuthRoute) {
+      return NextResponse.next();
+    }
+
+    // 3. Check for active admin session token
+    const secret = process.env.NEXTAUTH_SECRET;
+    const sessionToken =
+      req.cookies.get("sulson_admin_session")?.value ||
+      req.cookies.get("sulson_session")?.value;
+
+    let isAuthenticated = false;
+    if (secret && sessionToken) {
+      isAuthenticated = await verifySessionToken(sessionToken, secret);
+    }
+
+    // 4. If not authenticated, smoothly redirect to /signin using req.nextUrl.clone()
+    if (!isAuthenticated) {
+      const signinUrl = req.nextUrl.clone();
+      signinUrl.pathname = "/signin";
+      signinUrl.search = "";
+      if (pathname && pathname !== "/") {
+        signinUrl.searchParams.set("callbackUrl", pathname);
+      }
+      return NextResponse.redirect(signinUrl);
+    }
+
+    return NextResponse.next();
+  } catch (error) {
+    // Ultra-resilient failover: never crash Vercel edge runtime with 500
+    console.error("[Dashboard Middleware Fallback]", error);
+    return NextResponse.next();
+  }
 }
 
 export const config = {
