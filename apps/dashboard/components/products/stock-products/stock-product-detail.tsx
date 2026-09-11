@@ -306,31 +306,7 @@ export default function StockProductDetail({ id = "SUL-301" }: StockProductDetai
         </div>
 
         {/* Product Details Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-gray-200/80 shadow-2xs">
-            <div className="size-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-              <Layers className="size-5" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold text-gray-500">Catégorie</p>
-              <p className="text-xs font-bold text-gray-900 line-clamp-1">
-                {product.category}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-gray-200/80 shadow-2xs">
-            <div className="size-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
-              <MapPin className="size-5" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold text-gray-500">Terroir d'Origine</p>
-              <p className="text-xs font-bold text-gray-900 line-clamp-1">
-                {product.origin}
-              </p>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-gray-200/80 shadow-2xs">
             <div className="size-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
               <Warehouse className="size-5" />

@@ -135,16 +135,13 @@ export default function ProductListTable() {
     ...item,
     image: getSafeProductImage(item.image, item.id, item.name),
   })).filter((item) => {
-    const matchesCategory =
-      !selectedCategory?.value || item.category === selectedCategory.value;
     const matchesStatus =
       !selectedStatus?.value || item.status === selectedStatus.value;
     const matchesSearch =
       !searchTerm ||
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.id.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesStatus && matchesSearch;
+    return matchesStatus && matchesSearch;
   });
 
   const pageSize = 6;
@@ -174,20 +171,12 @@ export default function ProductListTable() {
       <div className="p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-100">
         <div className="w-full md:w-72">
           <SearchInput
-            placeholder="Rechercher une épice, origine, réf..."
+            placeholder="Rechercher une épice, réf..."
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <div className="w-full sm:w-48">
-            <CustomSelect
-              options={categoryOptions}
-              value={selectedCategory}
-              onChange={setSelectedCategory}
-              placeholder="Filtrer par catégorie"
-            />
-          </div>
           <div className="w-full sm:w-36">
             <CustomSelect
               options={statusOptions}
@@ -216,9 +205,7 @@ export default function ProductListTable() {
             </TableHead>
             <TableHead className="text-xs font-semibold text-gray-600">Réf.</TableHead>
             <TableHead className="text-xs font-semibold text-gray-600">Épice / Visuel</TableHead>
-            <TableHead className="text-xs font-semibold text-gray-600">Catégorie</TableHead>
             <TableHead className="text-xs font-semibold text-gray-600">Prix TTC</TableHead>
-            <TableHead className="text-xs font-semibold text-gray-600">Terroir d'Origine</TableHead>
             <TableHead className="text-xs font-semibold text-gray-600">Stock</TableHead>
             <TableHead className="text-xs font-semibold text-gray-600">Statut</TableHead>
             <TableHead className="text-xs font-semibold text-gray-600 text-right pr-6">Actions</TableHead>
@@ -263,14 +250,8 @@ export default function ProductListTable() {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-xs text-gray-600">
-                  {product.category}
-                </TableCell>
                 <TableCell className="font-bold text-xs sm:text-sm text-primary whitespace-nowrap">
                   {product.price}
-                </TableCell>
-                <TableCell className="text-xs text-gray-600 whitespace-nowrap">
-                  {product.origin}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <span

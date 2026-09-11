@@ -88,23 +88,21 @@ export default function StockUpdateTable() {
           <TableHeader>
             <TableRow className="border-b border-gray-100 hover:bg-transparent bg-gray-50/50 text-xs text-gray-700">
               <TableHead className="py-3 pl-6 font-bold">Épice / Référence</TableHead>
-              <TableHead className="py-3 font-bold">Catégorie</TableHead>
               <TableHead className="py-3 whitespace-nowrap font-bold">Stock Disponible</TableHead>
               <TableHead className="py-3 font-bold">Statut</TableHead>
-              <TableHead className="py-3 font-bold">Terroir d'Origine</TableHead>
               <TableHead className="py-3 font-bold text-right pr-6">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-10 text-center text-xs text-gray-500">
+                <TableCell colSpan={4} className="py-10 text-center text-xs text-gray-500">
                   Actualisation des stocks...
                 </TableCell>
               </TableRow>
             ) : paginated.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-10 text-center">
+                <TableCell colSpan={4} className="py-10 text-center">
                   <div className="max-w-xs mx-auto space-y-2">
                     <Package className="size-6 text-gray-400 mx-auto" />
                     <p className="text-xs font-bold text-gray-800">Aucun produit dans l'inventaire</p>
@@ -129,9 +127,6 @@ export default function StockUpdateTable() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="py-3.5 whitespace-nowrap text-xs text-gray-600 font-medium">
-                      {item.category?.name || "Épices d'Exception"}
-                    </TableCell>
                     <TableCell className="py-3.5 whitespace-nowrap text-xs font-bold text-gray-900">
                       {item.stockQuantity} unités
                     </TableCell>
@@ -139,9 +134,6 @@ export default function StockUpdateTable() {
                       <Badge variant={status.variant}>
                         {status.label}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="py-3.5 whitespace-nowrap text-xs text-gray-600">
-                      {item.origin || "Atelier Sulson"}
                     </TableCell>
                     <TableCell className="py-3.5 whitespace-nowrap text-right pr-6">
                       <Link

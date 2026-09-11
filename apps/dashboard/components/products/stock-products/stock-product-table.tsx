@@ -369,39 +369,27 @@ export default function StockProductTable() {
         }}
       />
 
-      {/* ─── Main Stock Table Container ─── */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
-        {/* Search & Filters Bar */}
-        <div className="p-4 sm:p-5 border-b border-gray-100 flex flex-col lg:flex-row justify-between gap-4 lg:items-center bg-gray-50/40">
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="size-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+      {/* ─── TABLE & FILTERS CONTAINER ─── */}
+      <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden">
+        {/* Toolbar Header */}
+        <div className="p-4 sm:p-5 border-b border-gray-100 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          {/* Search Bar */}
+          <div className="w-full md:w-80 relative">
+            <Search className="size-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Rechercher par référence, épice, terroir..."
+              placeholder="Rechercher une référence, épice..."
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full h-10 pl-9 pr-4 rounded-xl border border-gray-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-1 focus:ring-emerald-600 focus:border-emerald-600 shadow-2xs placeholder:text-gray-400"
+              className="w-full h-10 pl-9.5 pr-4 rounded-xl border border-gray-300 text-sm placeholder:text-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-600 shadow-2xs"
             />
           </div>
 
           {/* Filters Row */}
           <div className="flex flex-wrap items-center gap-2.5">
-            <div className="min-w-[170px]">
-              <CustomSelect
-                options={categoryOptions}
-                value={selectedCategory}
-                onChange={(opt) => {
-                  setSelectedCategory(opt);
-                  setCurrentPage(1);
-                }}
-                placeholder="Catégorie"
-              />
-            </div>
-
             <div className="min-w-[160px]">
               <CustomSelect
                 options={stockLevelOptions}
@@ -453,11 +441,9 @@ export default function StockProductTable() {
                 </TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600">Réf.</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600">Épice / Format</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-600">Catégorie</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600">Prix TTC</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600">Stock Réel</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600">Niveau de Stock</TableHead>
-                <TableHead className="text-xs font-semibold text-gray-600">Terroir d'Origine</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600">Statut</TableHead>
                 <TableHead className="text-xs font-semibold text-gray-600 text-right pr-6">
                   Actions de Stock
@@ -467,7 +453,7 @@ export default function StockProductTable() {
             <TableBody>
               {paginatedItems.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-12 text-sm text-gray-500">
+                  <TableCell colSpan={8} className="text-center py-12 text-sm text-gray-500">
                     Aucune référence d'épice ne correspond à vos critères de recherche.
                   </TableCell>
                 </TableRow>
@@ -515,10 +501,6 @@ export default function StockProductTable() {
                         </div>
                       </TableCell>
 
-                      <TableCell className="text-xs font-medium text-gray-700 whitespace-nowrap">
-                        {item.category}
-                      </TableCell>
-
                       <TableCell className="font-extrabold text-xs sm:text-sm text-gray-950 whitespace-nowrap">
                         {item.price}
                       </TableCell>
@@ -554,10 +536,6 @@ export default function StockProductTable() {
                             <span>En stock optimal</span>
                           </span>
                         )}
-                      </TableCell>
-
-                      <TableCell className="text-xs text-gray-600 whitespace-nowrap">
-                        {item.origin}
                       </TableCell>
 
                       <TableCell className="whitespace-nowrap">

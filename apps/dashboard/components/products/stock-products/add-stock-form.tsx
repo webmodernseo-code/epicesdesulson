@@ -210,12 +210,12 @@ export default function AddStockForm() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-2">
-                Catégorie & Conditionnement
+                Conditionnement
               </label>
               <input
                 type="text"
                 disabled
-                value={`${currentProduct?.category} • ${currentProduct?.format}`}
+                value={currentProduct?.format || "Sachet 100g"}
                 className="w-full h-11 px-3.5 rounded-xl border border-gray-200 text-xs sm:text-sm bg-gray-100/80 text-gray-600 font-medium"
               />
             </div>

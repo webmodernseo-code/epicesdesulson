@@ -109,7 +109,6 @@ export default function TopProductsTable() {
             <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-y border-gray-200 text-xs font-bold text-gray-700">
               <TableHead className="py-3 pl-6">Réf.</TableHead>
               <TableHead className="py-3">Épice & Saveur</TableHead>
-              <TableHead className="py-3">Catégorie</TableHead>
               <TableHead className="py-3">Prix de Base</TableHead>
               <TableHead className="py-3">Stock Disponible</TableHead>
               <TableHead className="py-3">Statut</TableHead>
@@ -119,13 +118,13 @@ export default function TopProductsTable() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-12 text-center text-xs text-gray-500">
+                <TableCell colSpan={6} className="py-12 text-center text-xs text-gray-500">
                   Chargement des épices depuis la base de données...
                 </TableCell>
               </TableRow>
             ) : paginated.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-12 text-center">
+                <TableCell colSpan={6} className="py-12 text-center">
                   <div className="max-w-xs mx-auto space-y-2">
                     <Package className="size-8 text-gray-400 mx-auto stroke-1" />
                     <p className="text-sm font-bold text-gray-800">Aucun produit trouvé</p>
@@ -156,9 +155,6 @@ export default function TopProductsTable() {
                       </div>
                       <span className="font-bold text-xs sm:text-sm text-gray-900">{item.title}</span>
                     </div>
-                  </TableCell>
-                  <TableCell className="py-3.5 text-xs text-gray-600 font-medium whitespace-nowrap">
-                    {item.category?.name || "Mélanges d'Exception"}
                   </TableCell>
                   <TableCell className="py-3.5 text-xs font-bold text-gray-900 whitespace-nowrap">
                     {euros.format(Number(item.basePrice || 0))}
