@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function PasswordUpdate() {
   const [oldPassword, setOldPassword] = useState("");
@@ -40,9 +41,13 @@ export default function PasswordUpdate() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setStatusMessage({ type: "error", text: data.error || "Échec de la mise à jour du mot de passe." });
+        const message = data.error || "Échec de la mise à jour du mot de passe.";
+        setStatusMessage({ type: "error", text: message });
+        toast.error(message);
       } else {
-        setStatusMessage({ type: "success", text: data.message || "Mot de passe modifié avec succès !" });
+        const message = data.message || "Mot de passe modifié avec succès !";
+        setStatusMessage({ type: "success", text: message });
+        toast.success(message);
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
@@ -183,7 +188,7 @@ export default function PasswordUpdate() {
               <span>Mise à jour...</span>
             </>
           ) : (
-            <span>Enregistrer le nouveau mot de passe</span>
+            <span>Modifier et vérifier mon mot de passe</span>
           )}
         </button>
       </div>
