@@ -273,105 +273,112 @@ export async function POST(req: Request) {
     }
 
     // ── 3. STRIPE / DIRECT ON-SITE CARD / APPLE & GOOGLE PAY ──
-    // Raw card fields are not a payment proof. Stripe Elements and the verified
-    // webhook are the only components allowed to confirm a card payment.
-    return NextResponse.json(
-      { success: false, error: "Le paiement doit être confirmé par Stripe. Aucun débit n’a été effectué." },
-      { status: 409 }
-    );
-
     const { stripe } = await getStripeServer();
-    let txId = `tx_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
-    if (stripe) {
-      try {
-        const paymentIntent = await stripe!.paymentIntents.create({
-          amount: Math.round(order.totalAmount * 100),
+    if (!stripe) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "La passerelle de paiement Stripe n'est pas encore configurée. Veuillez renseigner vos clés API Stripe dans le tableau de bord ou vos variables d'environnement.",
+        },
+        { status: 503 }
+      );
+    }
+
+    try {
+      const lineItems = sanitizedItems.map((item: any) => ({
+        price_data: {
           currency: "eur",
-          description: `Commande ${order.orderNumber} - Les Épices de Sulson (${paymentMethod === "apple_pay" ? "Apple/Google Pay" : "Carte"})`,
-          receipt_email: order.customerEmail,
-          payment_method: "pm_card_visa",
-          confirm: true,
-          automatic_payment_methods: {
-            enabled: true,
-            allow_redirects: "never",
+          product_data: {
+            name: `${item.title || item.productName || "Épice de Sulson"} (${item.formatLabel || "100g"})`,
           },
-          metadata: {
-            orderId: order.id,
-            orderNumber: order.orderNumber,
-            customerName: order.customerName,
-            customerEmail: order.customerEmail,
-            paymentMethod: paymentMethod,
+          unit_amount: Math.round(Number(item.currentPrice || item.unitPrice || 0) * 100),
+        },
+        quantity: item.quantity,
+      }));
+
+      // Ajout des frais de livraison si applicables
+      if (order.shippingCost > 0) {
+        lineItems.push({
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "Frais de livraison sécurisée",
+            },
+            unit_amount: Math.round(order.shippingCost * 100),
           },
+          quantity: 1,
         });
-        if (paymentIntent?.id) {
-          txId = paymentIntent.id;
+      }
+
+      // Gestion de la réduction / code promo si applicable
+      let discounts: any[] = [];
+      if (order.discountAmount > 0) {
+        try {
+          const coupon = await stripe.coupons.create({
+            amount_off: Math.round(order.discountAmount * 100),
+            currency: "eur",
+            duration: "once",
+            name: couponCode || "Remise Sulson",
+          });
+          discounts = [{ coupon: coupon.id }];
+        } catch (couponErr) {
+          console.warn("Coupon Stripe non créé:", couponErr);
         }
-      } catch (stripeErr: any) {
-        console.warn("Stripe API execution notice (proceeding with test authorization):", stripeErr?.message);
       }
-    }
 
-    // Mark order as paid in Database & Domain Cache
-    await OrdersService.markOrderPaid(order.id, txId);
+      const session = await stripe.checkout.sessions.create({
+        customer_email: order.customerEmail,
+        payment_method_types: ["card", "link"],
+        line_items: lineItems,
+        discounts: discounts.length > 0 ? discounts : undefined,
+        mode: "payment",
+        success_url: `${origin}/order-successful?orderNumber=${order.orderNumber}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/checkout?canceled=true`,
+        metadata: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          paymentMethod: paymentMethod,
+        },
+      });
 
-    try {
-      if (process.env.DATABASE_URL) {
-        await prisma.order.updateMany({
-          where: { id: order.id },
-          data: {
-            paymentMethod: paymentMethod === "apple_pay" ? "apple_pay" : "card",
-            paymentStatus: "PAID",
-            status: "PAID",
-            stripePaymentId: txId,
-          },
+      if (session.url) {
+        if (process.env.DATABASE_URL) {
+          await prisma.order.updateMany({
+            where: { id: order.id },
+            data: {
+              stripeSessionId: session.id,
+              paymentMethod: paymentMethod === "apple_pay" ? "apple_pay" : "card",
+              paymentStatus: "PENDING",
+            },
+          });
+        }
+
+        return NextResponse.json({
+          success: true,
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          checkoutUrl: session.url,
         });
       }
-    } catch (e) {
-      console.warn("Could not update order payment metadata:", e);
+
+      return NextResponse.json(
+        { success: false, error: "Impossible d'obtenir l'URL de paiement sécurisée Stripe." },
+        { status: 500 }
+      );
+    } catch (stripeErr: any) {
+      console.error("Erreur Stripe Checkout Session:", stripeErr);
+      return NextResponse.json(
+        {
+          success: false,
+          error: stripeErr.message || "Erreur de communication avec la passerelle Stripe.",
+        },
+        { status: 500 }
+      );
     }
-
-    // 4. Dispatch Order Confirmation Email to Customer with PDF Invoice
-    try {
-      sendOrderConfirmationEmail({
-        to: order.customerEmail,
-        customerName: order.customerName,
-        orderNumber: order.orderNumber,
-        totalAmount: order.totalAmount,
-        shippingStreet: shippingStreet,
-        shippingCity: shippingCity || "France",
-        shippingPostal: shippingPostal || "75000",
-        items: order.items,
-        invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
-      }).catch((emailErr) => console.warn("Email async dispatch notice (customer):", emailErr));
-
-      // Dispatch New Order Alert Email to Merchant / Admin
-      sendAdminNewOrderAlertEmail({
-        orderNumber: order.orderNumber,
-        customerName: order.customerName,
-        customerEmail: order.customerEmail,
-        customerPhone: customerPhone,
-        totalAmount: order.totalAmount,
-        paymentMethod: paymentMethod,
-        shippingAddress: `${shippingStreet}, ${shippingPostal || ""} ${shippingCity || "France"}`,
-        items: order.items,
-        dashboardUrl: `https://epicesdesulson.com/orders`,
-      }).catch((emailErr) => console.warn("Email async dispatch notice (admin):", emailErr));
-    } catch (e) {
-      console.warn("Could not trigger confirmation / admin emails:", e);
-    }
-
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      orderNumber: order.orderNumber,
-      totalAmount: order.totalAmount,
-      customerEmail: order.customerEmail,
-      paymentMethod: paymentMethod,
-      transactionId: txId,
-      invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
-      status: "PAID",
-    });
   } catch (error: any) {
     console.error("Erreur checkout:", error);
     return NextResponse.json(
