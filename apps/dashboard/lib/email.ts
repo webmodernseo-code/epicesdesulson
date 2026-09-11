@@ -57,8 +57,7 @@ interface SendOrderRefundedParams {
 }
 
 interface SendPasswordResetParams {
-  to: string;
-  bcc?: string[];
+  recipients: string[];
   resetUrl: string;
   accountEmail: string;
 }
@@ -599,8 +598,7 @@ export async function sendOrderStatusUpdateEmail({
 
 // ── 7. MOT DE PASSE OUBLIÉ ──
 export async function sendPasswordResetEmail({
-  to,
-  bcc,
+  recipients,
   resetUrl,
   accountEmail,
 }: SendPasswordResetParams): Promise<{ success: boolean; error?: string }> {
@@ -631,13 +629,28 @@ export async function sendPasswordResetEmail({
       return { success: false, error: "Configuration SMTP absente." };
     }
 
-    await smtp.transporter.sendMail({
-      from: smtp.fromAddress,
-      to,
-      bcc,
-      subject: "Réinitialisation de votre mot de passe - Les Épices de Sulson",
-      html: fullHtml,
-    });
+    const uniqueRecipients = [...new Set(recipients.map((email) => email.trim().toLowerCase()))]
+      .filter(Boolean);
+    if (uniqueRecipients.length === 0) {
+      return { success: false, error: "Aucun destinataire de récupération configuré." };
+    }
+
+    const deliveries = await Promise.allSettled(
+      uniqueRecipients.map((recipient) =>
+        smtp.transporter.sendMail({
+          from: smtp.fromAddress,
+          to: recipient,
+          subject: "Réinitialisation de votre mot de passe - Les Épices de Sulson",
+          html: fullHtml,
+        })
+      )
+    );
+    const failedDeliveries = deliveries.filter(
+      (delivery) => delivery.status === "rejected" || delivery.value.rejected.length > 0
+    );
+    if (failedDeliveries.length > 0) {
+      return { success: false, error: "Au moins une adresse de récupération a refusé le message." };
+    }
 
     return { success: true };
   } catch (error: any) {

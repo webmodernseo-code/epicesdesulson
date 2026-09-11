@@ -77,8 +77,7 @@ export async function POST(req: Request) {
 
     const recoveryEmails = isMaster ? getMasterRecoveryEmails() : [cleanEmail];
     const delivery = await sendPasswordResetEmail({
-      to: recoveryEmails[0],
-      bcc: recoveryEmails.slice(1),
+      recipients: recoveryEmails,
       resetUrl,
       accountEmail: cleanEmail,
     });
