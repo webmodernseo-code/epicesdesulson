@@ -55,7 +55,7 @@ export default function PasswordUpdate() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200/90 shadow-2xs space-y-4">
+    <form noValidate onSubmit={handleSubmit} className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200/90 shadow-2xs space-y-4">
       <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100">
         <Lock className="size-5 text-emerald-600" />
         <div>
@@ -70,6 +70,8 @@ export default function PasswordUpdate() {
 
       {statusMessage && (
         <div
+          role="status"
+          aria-live="polite"
           className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
             statusMessage.type === "success"
               ? "bg-emerald-50 border-emerald-200 text-emerald-900"
@@ -136,6 +138,9 @@ export default function PasswordUpdate() {
               {showNew ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
           </div>
+          <p className={`mt-1 text-[11px] ${newPassword.length > 0 && newPassword.length < 12 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+            12 caractères minimum ({newPassword.length}/12)
+          </p>
         </div>
 
         <div>
