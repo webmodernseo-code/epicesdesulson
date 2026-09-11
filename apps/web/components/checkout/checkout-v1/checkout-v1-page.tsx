@@ -44,6 +44,19 @@ export default function CheckoutV1Page() {
   const [cardError, setCardError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [couponCode, setCouponCode] = useState<string | undefined>(undefined);
+  const [isPayPalAvailable, setIsPayPalAvailable] = useState(false);
+
+  // Check PayPal gateway availability
+  useEffect(() => {
+    fetch("/api/checkout/gateways-status")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success && data?.data?.paypal?.isReady) {
+          setIsPayPalAvailable(true);
+        }
+      })
+      .catch(() => setIsPayPalAvailable(false));
+  }, []);
 
   // Auto-sync cardholder name when customer types their name
   useEffect(() => {
@@ -274,6 +287,7 @@ export default function CheckoutV1Page() {
               isProcessing={isProcessing}
               onSubmit={handlePaymentSubmit}
               errorMessage={cardError}
+              isPayPalAvailable={isPayPalAvailable}
             />
           </div>
 
@@ -283,9 +297,10 @@ export default function CheckoutV1Page() {
               selectedMethod={selectedMethod === "paypal" ? "paypal" : "stripe"}
               isProcessing={isProcessing}
               shippingCountry={shippingData.country}
+              isPayPalAvailable={isPayPalAvailable}
               onPlaceOrder={(coupon) => {
                 if (coupon) setCouponCode(coupon);
-                if (selectedMethod === "paypal") {
+                if (selectedMethod === "paypal" && !isPayPalAvailable) {
                   // Bouton PayPal inerte quand pas d'API
                   return;
                 }

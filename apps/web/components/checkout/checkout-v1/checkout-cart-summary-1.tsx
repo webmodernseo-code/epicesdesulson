@@ -11,6 +11,7 @@ interface CheckoutCartSummaryProps {
   isProcessing?: boolean;
   shippingCountry?: string;
   onPlaceOrder?: (coupon?: string) => void;
+  isPayPalAvailable?: boolean;
 }
 
 export default function CheckoutCartSummary1({
@@ -18,6 +19,7 @@ export default function CheckoutCartSummary1({
   isProcessing = false,
   shippingCountry = "France",
   onPlaceOrder,
+  isPayPalAvailable = false,
 }: CheckoutCartSummaryProps) {
   const { items, subtotal, removeItem } = useCart();
   const [couponCode, setCouponCode] = useState("");
@@ -225,12 +227,14 @@ export default function CheckoutCartSummary1({
       {/* Dynamic Place Order Action Button */}
       <button
         type="button"
-        disabled={isProcessing}
+        disabled={isProcessing || (selectedMethod === "paypal" && !isPayPalAvailable)}
         onClick={handleTriggerCheckout}
-        className={`w-full h-13 rounded-xl font-bold text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 ${
+        className={`w-full h-13 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2.5 ${
           selectedMethod === "paypal"
-            ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 border border-[#E5A800]/40"
-            : "bg-emerald-800 hover:bg-emerald-900 active:scale-[0.99] text-white"
+            ? isPayPalAvailable
+              ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 border border-[#E5A800]/40 shadow-sm hover:shadow cursor-pointer"
+              : "bg-[#FFC439]/50 text-gray-700 font-semibold border border-amber-300/40 opacity-55 cursor-not-allowed shadow-none"
+            : "bg-emerald-800 hover:bg-emerald-900 active:scale-[0.99] text-white shadow-sm hover:shadow cursor-pointer"
         }`}
       >
         {isProcessing ? (
@@ -246,10 +250,10 @@ export default function CheckoutCartSummary1({
             <img
               src="/images/payments/paypal-official.png"
               alt="PayPal"
-              className="h-6 sm:h-7 w-auto object-contain"
+              className={`h-5.5 sm:h-6.5 w-auto object-contain shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
             />
-            <span className="text-sm sm:text-base font-bold text-gray-950">
-              — Payer {total.toFixed(2)} €
+            <span className="text-xs sm:text-sm font-semibold">
+              {isPayPalAvailable ? `— Payer ${total.toFixed(2)} €` : "Moyen de paiement indisponible"}
             </span>
           </div>
         ) : (

@@ -172,6 +172,7 @@ interface PaymentMethodProps {
   isProcessing?: boolean;
   onSubmit?: (e: React.FormEvent) => void;
   errorMessage?: string | null;
+  isPayPalAvailable?: boolean;
 }
 
 export default function PaymentMethodV1({
@@ -183,6 +184,7 @@ export default function PaymentMethodV1({
   isProcessing = false,
   onSubmit = (e) => e.preventDefault(),
   errorMessage,
+  isPayPalAvailable = false,
 }: PaymentMethodProps = {}) {
   const [activeTab, setActiveTab] = useState<PaymentTabType>(selectedMethod);
   const [showCvcHelper, setShowCvcHelper] = useState(false);
@@ -345,13 +347,15 @@ export default function PaymentMethodV1({
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold text-gray-950 truncate">PayPal</p>
-                <p className="text-xs text-gray-500 mt-0.5">Paiement sécurisé</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {isPayPalAvailable ? "Paiement sécurisé" : "Moyen de paiement indisponible"}
+                </p>
               </div>
             </div>
             <img
               src="/images/payments/paypal-official.png"
               alt="PayPal"
-              className="h-5 sm:h-6 w-auto object-contain shrink-0"
+              className={`h-5 sm:h-6 w-auto object-contain shrink-0 ${!isPayPalAvailable ? "opacity-50 grayscale-20" : ""}`}
             />
           </button>
         </div>
@@ -581,19 +585,30 @@ export default function PaymentMethodV1({
           <div className="pt-1">
             <button
               type="button"
+              disabled={!isPayPalAvailable}
               onClick={(e) => {
                 e.preventDefault();
-                // Bouton inerte sans message d'erreur ni alerte
+                if (isPayPalAvailable) {
+                  onSubmit(e);
+                }
               }}
-              className="w-full h-13 bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold rounded-xl text-base border border-[#E5A800]/40 shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+              className={`w-full h-13 rounded-xl text-base border transition-all flex items-center justify-center gap-2.5 select-none ${
+                isPayPalAvailable
+                  ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold border-[#E5A800]/40 shadow-xs cursor-pointer"
+                  : "bg-[#FFC439]/50 text-gray-700 font-semibold border-amber-300/40 opacity-55 cursor-not-allowed shadow-none"
+              }`}
             >
               <div className="flex items-center justify-center gap-2.5">
                 <img
                   src="/images/payments/paypal-official.png"
                   alt="PayPal"
-                  className="h-6 sm:h-7 w-auto object-contain shrink-0"
+                  className={`h-5.5 sm:h-6.5 w-auto object-contain shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
                 />
-                <span className="font-bold text-sm sm:text-base text-gray-950">— Payer {totalAmountFormatted}</span>
+                <span className="font-semibold text-xs sm:text-sm">
+                  {isPayPalAvailable
+                    ? `— Payer ${totalAmountFormatted}`
+                    : "Moyen de paiement indisponible"}
+                </span>
               </div>
             </button>
           </div>
