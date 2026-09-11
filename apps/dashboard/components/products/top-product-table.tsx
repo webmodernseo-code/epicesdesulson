@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import React, { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
+import { Eye, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
-import CustomSelect, { type Option } from "@/components/ui/custom-select";
 import SearchInput from "@/components/common/search-input";
 import {
   Table,
@@ -18,238 +16,186 @@ import {
 } from "@/components/ui/table";
 import { getSafeProductImage, handleProductImageError } from "@/lib/product-image";
 
-const topProductsData = [
-  {
-    id: "SUL-301",
-    productName: "Épice de Sulson - Spéciale Poulet",
-    category: "Épices Volailles & Rôtis",
-    price: "6,90 €",
-    seller: "Atelier Sulson",
-    status: "Publié",
-    image: "/images/products/epice-poulet-recto.jpg",
-  },
-  {
-    id: "SUL-302",
-    productName: "Épice de Sulson - Spéciale Viande",
-    category: "Épices Viandes & Grillades",
-    price: "6,90 €",
-    seller: "Atelier Sulson",
-    status: "Publié",
-    image: "/images/products/epice-viande-recto.jpg",
-  },
-  {
-    id: "SUL-303",
-    productName: "Épice de Sulson - Spéciale Poisson",
-    category: "Épices Poissons & Marinades",
-    price: "6,90 €",
-    seller: "Atelier Sulson",
-    status: "Publié",
-    image: "/images/products/epice-poisson-recto.jpg",
-  },
-  {
-    id: "SUL-304",
-    productName: "Épice de Sulson - Saveur Gourmande",
-    category: "Assaisonnements Signatures",
-    price: "6,90 €",
-    seller: "Atelier Sulson",
-    status: "Publié",
-    image: "/images/products/epice-gourmande-recto.jpg",
-  },
-  {
-    id: "SUL-305",
-    productName: "Le Pack Intégral : 4 Saveurs Authentiques",
-    category: "Packs & Coffrets Gourmets",
-    price: "24,90 €",
-    seller: "Atelier Sulson",
-    status: "Publié",
-    image: "/images/products/pack-4-saveurs-sulson.jpg",
-  },
-];
+interface Product {
+  id: string;
+  code: string;
+  title: string;
+  basePrice: number;
+  stockQuantity: number;
+  isAvailable: boolean;
+  imageRecto: string;
+  category?: { name: string } | null;
+}
 
-// Filter Options
-const categoryOptions = [
-  { label: "Fashion", value: "fashion" },
-  { label: "Electronics", value: "electronics" },
-];
-const sellerOptions = [
-  { label: "Eleanor Pena", value: "eleanor" },
-  { label: "Jane Cooper", value: "jane" },
-];
-const statusOptions = [
-  { label: "Publish", value: "publish" },
-  { label: "Draft", value: "draft" },
-];
-const dateOptions = [
-  { label: "Newest", value: "newest" },
-  { label: "Oldest", value: "oldest" },
-];
+const euros = new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR",
+});
 
 export default function TopProductsTable() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [category, setCategory] = useState<Option | null>(null);
-  const [seller, setSeller] = useState<Option | null>(null);
-  const [status, setStatus] = useState<Option | null>(null);
-  const [dateSort, setDateSort] = useState<Option | null>(null);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const pageSize = 10;
 
-  const toggleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRows(topProductsData.map((_, i) => String(i)));
-    } else {
-      setSelectedRows([]);
+  useEffect(() => {
+    async function loadProducts() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/admin/products", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            setProducts(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load products:", err);
+      } finally {
+        setLoading(false);
+      }
     }
-  };
+    loadProducts();
+  }, []);
 
-  const toggleSelectRow = (index: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRows((prev) => [...prev, index]);
-    } else {
-      setSelectedRows((prev) => prev.filter((rowId) => rowId !== index));
-    }
-  };
+  const filteredProducts = useMemo(() => {
+    return products.filter((item) => {
+      const matchSearch =
+        !searchTerm ||
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.category?.name && item.category.name.toLowerCase().includes(searchTerm.toLowerCase()));
+      return matchSearch;
+    });
+  }, [products, searchTerm]);
 
-  const isAllSelected =
-    topProductsData.length > 0 &&
-    selectedRows.length === topProductsData.length;
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  const paginated = filteredProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div className="bg-white rounded-2xl w-full">
+    <div className="bg-white rounded-2xl w-full border border-gray-200/90 shadow-2xs overflow-hidden">
       <div className="p-4 sm:p-6 pb-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <h3 className="text-xl font-bold text-light-primary-text leading-7">
-            Top Products List
-          </h3>
-
-          <div className="flex items-center gap-3">
-            <Button className="rounded-full bg-teal-700 hover:bg-teal-800 text-white px-6">
-              Export
-            </Button>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-7">
+              Catalogue des Épices & Références
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Toutes les saveurs actives et stocks en atelier
+            </p>
           </div>
+          <Link
+            href="/products/add"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors shadow-2xs self-start sm:self-auto"
+          >
+            <span>+ Ajouter une épice</span>
+          </Link>
         </div>
 
-        <div className="w-full  flex justify-between gap-4 items-center flex-wrap">
-          {/* Search */}
-          <SearchInput />
-
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3 w-full">
-            <div className="lg:min-w-[120px]">
-              <CustomSelect
-                options={categoryOptions}
-                value={category}
-                onChange={setCategory}
-                placeholder="Category"
-              />
-            </div>
-            <div className="lg:min-w-[120px]">
-              <CustomSelect
-                options={sellerOptions}
-                value={seller}
-                onChange={setSeller}
-                placeholder="Seller"
-              />
-            </div>
-            <div className="lg:min-w-[120px]">
-              <CustomSelect
-                options={statusOptions}
-                value={status}
-                onChange={setStatus}
-                placeholder="Status"
-              />
-            </div>
-            <div className="lg:min-w-[120px]">
-              <CustomSelect
-                options={dateOptions}
-                value={dateSort}
-                onChange={setDateSort}
-                placeholder="Date"
-              />
-            </div>
+        <div className="w-full flex justify-between gap-4 items-center">
+          <div className="w-full sm:w-80">
+            <SearchInput
+              placeholder="Rechercher une épice, un code..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100 hover:bg-gray-100 border-y border-gray-500/20">
-            <TableHead className="w-[50px] pl-6">
-              <Checkbox
-                checked={isAllSelected}
-                onCheckedChange={toggleSelectAll}
-              />
-            </TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Seller</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="pr-6">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {topProductsData.slice((currentPage - 1) * 10, currentPage * 10).map((item, index) => (
-            <TableRow
-              key={index}
-              className="border-b last:border-0 border-gray-500/20 hover:bg-gray-50/50"
-            >
-              <TableCell className="pl-6">
-                <Checkbox
-                  checked={selectedRows.includes(String(index))}
-                  onCheckedChange={(checked) =>
-                    toggleSelectRow(String(index), checked)
-                  }
-                />
-              </TableCell>
-              <TableCell className="font-normal text-sm text-light-secondary-text">
-                {item.id}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text">
-                <div className="flex items-center gap-2">
-                  <div className="size-9 rounded-lg bg-gray-50 border border-gray-200 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
-                    <img
-                      src={getSafeProductImage(item.image, item.id, item.productName)}
-                      alt={item.productName}
-                      className="w-full h-full object-contain"
-                      onError={(e) => handleProductImageError(e, item.id, item.productName)}
-                    />
-                  </div>
-                  <span>{item.productName}</span>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text">
-                {item.category}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text">
-                {item.price}
-              </TableCell>
-              <TableCell className="text-sm text-light-secondary-text">
-                {item.seller}
-              </TableCell>
-              <TableCell>
-                <Badge variant="success">{item.status}</Badge>
-              </TableCell>
-
-              <TableCell className="pr-6">
-                <Button
-                  variant="icon"
-                  className="hover:text-primary transition-colors p-0 h-auto"
-                >
-                  <Eye className="size-4" />
-                </Button>
-              </TableCell>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50/70 hover:bg-gray-50/70 border-y border-gray-200 text-xs font-bold text-gray-700">
+              <TableHead className="py-3 pl-6">Réf.</TableHead>
+              <TableHead className="py-3">Épice & Saveur</TableHead>
+              <TableHead className="py-3">Catégorie</TableHead>
+              <TableHead className="py-3">Prix de Base</TableHead>
+              <TableHead className="py-3">Stock Disponible</TableHead>
+              <TableHead className="py-3">Statut</TableHead>
+              <TableHead className="py-3 pr-6 text-right">Fiche</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      <div className="p-6 border-t border-gray-500/20 flex justify-end">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(topProductsData.length / 10)}
-          onPageChange={setCurrentPage}
-        />
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="py-12 text-center text-xs text-gray-500">
+                  Chargement des épices depuis la base de données...
+                </TableCell>
+              </TableRow>
+            ) : paginated.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="py-12 text-center">
+                  <div className="max-w-xs mx-auto space-y-2">
+                    <Package className="size-8 text-gray-400 mx-auto stroke-1" />
+                    <p className="text-sm font-bold text-gray-800">Aucun produit trouvé</p>
+                    <p className="text-xs text-gray-500">
+                      Les épices créées dans votre boutique apparaîtront ici.
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginated.map((item) => (
+                <TableRow
+                  key={item.id}
+                  className="border-b last:border-0 border-gray-100 hover:bg-gray-50/50 transition-colors"
+                >
+                  <TableCell className="py-3.5 pl-6 font-mono text-xs font-semibold text-gray-500 whitespace-nowrap">
+                    {item.code || "SUL-AUTO"}
+                  </TableCell>
+                  <TableCell className="py-3.5 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <div className="size-9 rounded-xl bg-gray-50 border border-gray-200 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
+                        <img
+                          src={getSafeProductImage(item.imageRecto, item.id, item.title)}
+                          alt={item.title}
+                          className="w-full h-full object-contain"
+                          onError={(e) => handleProductImageError(e, item.id, item.title)}
+                        />
+                      </div>
+                      <span className="font-bold text-xs sm:text-sm text-gray-900">{item.title}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-3.5 text-xs text-gray-600 font-medium whitespace-nowrap">
+                    {item.category?.name || "Mélanges d'Exception"}
+                  </TableCell>
+                  <TableCell className="py-3.5 text-xs font-bold text-gray-900 whitespace-nowrap">
+                    {euros.format(Number(item.basePrice || 0))}
+                  </TableCell>
+                  <TableCell className="py-3.5 text-xs font-semibold text-gray-700 whitespace-nowrap">
+                    {item.stockQuantity} unités
+                  </TableCell>
+                  <TableCell className="py-3.5 whitespace-nowrap">
+                    <Badge variant={item.isAvailable ? "success" : "error"}>
+                      {item.isAvailable ? "En Ligne" : "Désactivé"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="py-3.5 pr-6 text-right whitespace-nowrap">
+                    <Link
+                      href={`/products/edit/${item.id}`}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 transition-colors"
+                    >
+                      <Eye className="size-3.5" />
+                      <span>Modifier</span>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="p-4 sm:p-6 border-t border-gray-100 flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

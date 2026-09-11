@@ -25,82 +25,9 @@ interface ProductItem {
   basePrice: number;
 }
 
-const defaultFlagshipCatalogue: ProductItem[] = [
-  {
-    id: "prod-1",
-    code: "SUL-301",
-    title: "Épice de Sulson - Spéciale Poulet",
-    category: { name: "Mélanges Signatures" },
-    stockQuantity: 100,
-    isAvailable: true,
-    origin: "Cameroun (Recette Artisanale)",
-    basePrice: 6.9,
-  },
-  {
-    id: "prod-2",
-    code: "SUL-302",
-    title: "Épice de Sulson - Spéciale Viande",
-    category: { name: "Mélanges Signatures" },
-    stockQuantity: 85,
-    isAvailable: true,
-    origin: "Cameroun (Recette Artisanale)",
-    basePrice: 6.9,
-  },
-  {
-    id: "prod-3",
-    code: "SUL-303",
-    title: "Épice de Sulson - Spéciale Poisson",
-    category: { name: "Mélanges Signatures" },
-    stockQuantity: 75,
-    isAvailable: true,
-    origin: "Cameroun (Recette Artisanale)",
-    basePrice: 6.9,
-  },
-  {
-    id: "prod-4",
-    code: "SUL-304",
-    title: "Saveur Gourmande Signature",
-    category: { name: "Mélanges Signatures" },
-    stockQuantity: 60,
-    isAvailable: true,
-    origin: "Atelier Sulson",
-    basePrice: 7.5,
-  },
-  {
-    id: "prod-5",
-    code: "SUL-PACK",
-    title: "Le Pack Intégral (4 Saveurs 4x100g)",
-    category: { name: "Packs & Coffrets" },
-    stockQuantity: 30,
-    isAvailable: true,
-    origin: "Atelier Sulson",
-    basePrice: 49.9,
-  },
-  {
-    id: "prod-6",
-    code: "SUL-VB",
-    title: "Vanille Bourbon Gourmet Sambava",
-    category: { name: "Grands Crus & Épices Nobles" },
-    stockQuantity: 18,
-    isAvailable: true,
-    origin: "Madagascar (Sambava)",
-    basePrice: 12.9,
-  },
-  {
-    id: "prod-7",
-    code: "SUL-KP",
-    title: "Poivre Noir de Kampot IGP",
-    category: { name: "Poivres Rares & Baies" },
-    stockQuantity: 24,
-    isAvailable: true,
-    origin: "Cambodge (Kampot)",
-    basePrice: 8.9,
-  },
-];
-
 export default function StockUpdateTable() {
-  const [products, setProducts] = useState<ProductItem[]>(defaultFlagshipCatalogue);
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
 
@@ -111,7 +38,7 @@ export default function StockUpdateTable() {
         const res = await fetch("/api/admin/products", { cache: "no-store" });
         if (res.ok) {
           const json = await res.json();
-          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          if (json.success && Array.isArray(json.data)) {
             setProducts(json.data);
           }
         }

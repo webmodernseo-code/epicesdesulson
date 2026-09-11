@@ -29,31 +29,7 @@ interface AdminUser {
   avatar: string;
 }
 
-const initialAdmins: AdminUser[] = [
-  {
-    id: "ADM-001",
-    user: "Sulson Admin (Fondateur)",
-    email: "admin@epicesdesulson.com",
-    role: "Administrateur Principal",
-    isPrimary: true,
-    date: "01 Sept, 2026",
-    activeStatus: "Actif",
-    avatar: "/images/admin/user_01.png",
-  },
-  {
-    id: "ADM-002",
-    user: "Équipe Opérations & Stocks",
-    email: "contact@epicesdesulson.com",
-    role: "Gestionnaire Secondaire",
-    isPrimary: false,
-    date: "05 Sept, 2026",
-    activeStatus: "Actif",
-    avatar: "/images/admin/user_02.png",
-  },
-];
-
 export default function AdminListTable() {
-  // Do not expose template identities as real administrator accounts.
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);

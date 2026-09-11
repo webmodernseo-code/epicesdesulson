@@ -35,39 +35,6 @@ interface AbandonCartItem {
   isReminded: boolean;
 }
 
-const INITIAL_ABANDONED_CARTS: AbandonCartItem[] = [
-  {
-    id: "PAN-8910",
-    customerName: "Marie Laurent",
-    customerEmail: "marie.laurent78@outlook.fr",
-    itemsSummary: "Pack Intégral 4 Saveurs (1x), Épice Poisson 100g (1x)",
-    itemCount: 2,
-    amount: 31.80,
-    date: "Il y a 3 heures",
-    isReminded: false,
-  },
-  {
-    id: "PAN-8908",
-    customerName: "Thierry Bernard",
-    customerEmail: "t.bernard.pro@gmail.com",
-    itemsSummary: "Épice Spéciale Poulet 100g (2x), Saveur Gourmande 100g (2x)",
-    itemCount: 4,
-    amount: 27.60,
-    date: "Hier à 18:45",
-    isReminded: true,
-  },
-  {
-    id: "PAN-8902",
-    customerName: "Sophie Morel",
-    customerEmail: "morel.sophie92@free.fr",
-    itemsSummary: "Pack Intégral 4 Saveurs (2x)",
-    itemCount: 2,
-    amount: 49.80,
-    date: "06 Sept. 2026",
-    isReminded: true,
-  },
-];
-
 const euros = new Intl.NumberFormat("fr-FR", {
   style: "currency",
   currency: "EUR",

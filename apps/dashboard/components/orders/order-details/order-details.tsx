@@ -74,54 +74,18 @@ const euros = new Intl.NumberFormat("fr-FR", {
   currency: "EUR",
 });
 
-const DEFAULT_ORDER: OrderDetailData = {
-  id: "ord_default_1",
-  orderNumber: "SUL-10842",
-  customerName: "Alexandre Dupont",
-  customerEmail: "alexandre.dupont@gmail.com",
-  customerPhone: "+33 6 12 34 56 78",
-  shippingStreet: "14 Rue de la Paix",
-  shippingCity: "Paris",
-  shippingPostal: "75002",
-  shippingCountry: "France",
-  subtotal: 38.70,
-  shippingCost: 0,
-  discountAmount: 0,
-  totalAmount: 38.70,
-  status: "PROCESSING",
-  paymentStatus: "PAID",
-  paymentMethod: "stripe",
-  createdAt: new Date().toISOString(),
-  items: [
-    {
-      id: "it_1",
-      productName: "Le Pack Intégral : 4 Saveurs Authentiques",
-      formatLabel: "Pack 4x100g",
-      quantity: 1,
-      unitPrice: 24.90,
-      totalPrice: 24.90,
-      image: "/images/products/pack-4-saveurs-sulson.jpg",
-    },
-    {
-      id: "it_2",
-      productName: "Épice de Sulson - Spéciale Poulet",
-      formatLabel: "Sachet 100g",
-      quantity: 2,
-      unitPrice: 6.90,
-      totalPrice: 13.80,
-      image: "/images/products/epice-poulet-recto.jpg",
-    },
-  ],
-};
-
-export default function OrderDetails({ id = "SUL-10842" }: { id?: string }) {
-  const [order, setOrder] = useState<OrderDetailData>(DEFAULT_ORDER);
+export default function OrderDetails({ id }: { id?: string }) {
+  const [order, setOrder] = useState<OrderDetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [trackingNumber, setTrackingNumber] = useState(`FR-${Math.floor(10000000 + Math.random() * 90000000)}`);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   useEffect(() => {
     async function loadOrder() {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
         const res = await fetch(`/api/admin/orders/${encodeURIComponent(id)}`, {
@@ -134,7 +98,7 @@ export default function OrderDetails({ id = "SUL-10842" }: { id?: string }) {
           }
         }
       } catch (err) {
-        console.warn("Utilisation de la commande de démonstration:", err);
+        console.warn("Erreur chargement commande:", err);
       } finally {
         setLoading(false);
       }
@@ -150,6 +114,31 @@ export default function OrderDetails({ id = "SUL-10842" }: { id?: string }) {
     { key: "SHIPPED", label: "Expédiée (Colissimo)", icon: Truck },
     { key: "DELIVERED", label: "Livrée au client", icon: CheckCircle2 },
   ];
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-3xl border border-gray-200 p-12 text-center text-xs text-gray-500 shadow-2xs max-w-5xl mx-auto">
+        Chargement des détails de la commande...
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="bg-white rounded-3xl border border-gray-200 p-12 text-center space-y-4 shadow-2xs max-w-5xl mx-auto">
+        <h3 className="text-base font-bold text-gray-900">Commande introuvable</h3>
+        <p className="text-xs text-gray-500">
+          Cette commande n&apos;existe pas dans la base de données ou a été retirée.
+        </p>
+        <Link
+          href="/orders"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-700 text-white text-xs font-bold hover:bg-emerald-800 transition-colors"
+        >
+          Retour aux commandes
+        </Link>
+      </div>
+    );
+  }
 
   const currentStatusIndex =
     order.status === "DELIVERED"
@@ -177,10 +166,11 @@ export default function OrderDetails({ id = "SUL-10842" }: { id?: string }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
 
-      setOrder((prev) => ({ ...prev, status: newStatus }));
+      setOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
       toast.success(`Statut mis à jour : ${statusLabels[newStatus]}`);
-    } catch (err: any) {
-      toast.error(err.message || "Erreur lors de la mise à jour.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erreur inattendue";
+      toast.error(msg);
     } finally {
       setIsUpdatingStatus(false);
     }

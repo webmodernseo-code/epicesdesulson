@@ -27,73 +27,10 @@ interface ProductReview {
   productImage: string;
   user: string;
   review: string;
-  rating: number; // 4 or 5
+  rating: number;
   status: "Publié" | "En attente";
   date: string;
 }
-
-const initialReviews: ProductReview[] = [
-  {
-    id: "REV-101",
-    productName: "Épice de Sulson - Spéciale Poulet",
-    productImage: "/images/products/epice-poulet-recto.jpg",
-    user: "Marc Dupont (Lyon)",
-    review: "Un parfum exceptionnel ! Le poulet rôti du dimanche avait une croûte dorée et une saveur digne d'un grand chef.",
-    rating: 5,
-    status: "Publié",
-    date: "06 Sept, 2026",
-  },
-  {
-    id: "REV-102",
-    productName: "Épice de Sulson - Spéciale Viande",
-    productImage: "/images/products/epice-viande-recto.jpg",
-    user: "Sophie Laurent (Bordeaux)",
-    review: "Parfait pour mes marinades de bœuf au barbecue. Les épices sont fraîches et très aromatiques sans être trop piquantes.",
-    rating: 5,
-    status: "Publié",
-    date: "05 Sept, 2026",
-  },
-  {
-    id: "REV-103",
-    productName: "Épice de Sulson - Spéciale Poisson",
-    productImage: "/images/products/epice-poisson-recto.jpg",
-    user: "Alain Mercier (Nantes)",
-    review: "Sublime les papillotes de daurade et le dos de cabillaud. Une touche subtile de poivre rare très agréable.",
-    rating: 4,
-    status: "Publié",
-    date: "04 Sept, 2026",
-  },
-  {
-    id: "REV-104",
-    productName: "Épice de Sulson - Saveur Gourmande",
-    productImage: "/images/products/epice-gourmande-recto.jpg",
-    user: "Mireille Kouam (Paris)",
-    review: "La signature secrète de Sulson est incroyable. Je l'utilise sur mes légumes rôtis et mijotés, toute la famille adore.",
-    rating: 5,
-    status: "Publié",
-    date: "03 Sept, 2026",
-  },
-  {
-    id: "REV-105",
-    productName: "Le Pack Intégral : 4 Saveurs Authentiques",
-    productImage: "/images/products/pack-4-saveurs-sulson.jpg",
-    user: "Thomas Bernard (Toulouse)",
-    review: "Coffret très soigné et emballage qualitatif. C'est le cadeau gourmand idéal pour les amateurs de bonne cuisine.",
-    rating: 5,
-    status: "Publié",
-    date: "02 Sept, 2026",
-  },
-  {
-    id: "REV-106",
-    productName: "Épice de Sulson - Spéciale Poulet",
-    productImage: "/images/products/epice-poulet-recto.jpg",
-    user: "Émilie V. (Strasbourg)",
-    review: "Livraison rapide en 48h et sachet hermétique qui préserve bien la fraîcheur. Très satisfaite de mon achat.",
-    rating: 5,
-    status: "Publié",
-    date: "01 Sept, 2026",
-  },
-];
 
 const ratingOptions: Option[] = [
   { label: "Toutes les notes", value: "" },
