@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const targetEmail = (session.email || "admin@epicesdesulson.com").toLowerCase();
+    const targetEmail = (session.email || "contact@epicesdesulson.com").toLowerCase();
     let user;
     try {
       user = await prisma.user.findFirst({

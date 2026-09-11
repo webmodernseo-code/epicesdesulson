@@ -60,9 +60,11 @@ export default function GeneralSettingsForm() {
             id="contactEmail"
             type="email"
             value={formData.contactEmail}
-            onChange={handleChange}
-            className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            readOnly
+            aria-readonly="true"
+            className="w-full h-11 px-3.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-600 cursor-not-allowed"
           />
+          <p className="mt-1 text-[11px] text-gray-500">Adresse officielle conservée pour la boutique et l’administration.</p>
         </div>
 
         <div>

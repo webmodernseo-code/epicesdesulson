@@ -37,9 +37,7 @@ export async function POST(req: Request) {
     const secret = getSessionSecret();
 
     // Check if it's the master admin or a registered user in Neon DB
-    const isMaster =
-      cleanEmail === "admin@epicesdesulson.com" ||
-      cleanEmail === "contact@epicesdesulson.com";
+    const isMaster = cleanEmail === "contact@epicesdesulson.com";
 
     let userExists = isMaster;
 

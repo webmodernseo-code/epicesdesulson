@@ -15,9 +15,7 @@ const MASTER_PASSWORDS = [
 ].filter(Boolean) as string[];
 
 const MASTER_ADMIN_EMAILS = [
-  "admin@epicesdesulson.com",
   "contact@epicesdesulson.com",
-  process.env.ADMIN_EMAIL?.trim().toLowerCase(),
 ].filter(Boolean) as string[];
 
 export async function POST(req: Request) {
@@ -86,7 +84,7 @@ export async function POST(req: Request) {
     if (!authenticatedUser && !persistedAdminExists && isMasterEmail && isMasterPassword) {
       authenticatedUser = {
         id: "master_admin_root",
-        email: cleanInput.includes("@") ? cleanInput : "admin@epicesdesulson.com",
+        email: cleanInput.includes("@") ? cleanInput : "contact@epicesdesulson.com",
         name: "Admin Sulson",
         role: "MASTER_ADMIN",
       };
