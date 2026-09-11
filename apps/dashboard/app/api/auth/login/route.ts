@@ -6,6 +6,7 @@ import {
   SESSION_COOKIE,
   COMPAT_COOKIE,
 } from "@/lib/auth";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 // Master passwords accepted for swift administrative access
 const MASTER_PASSWORDS = [
@@ -29,8 +30,17 @@ const MASTER_ADMIN_EMAILS = [
 
 export async function POST(req: Request) {
   try {
+    const clientIp = getClientIp(req);
+    const { success } = rateLimit(`login:${clientIp}`, 10, 60 * 1000);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Trop de tentatives de connexion. Veuillez patienter une minute." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
-    const { email, password, keepSignedIn = true } = body;
+    const { email, password } = body;
 
     if (!email || !password) {
       return NextResponse.json(

@@ -145,18 +145,21 @@ export default function CheckoutCartSummary1({
 
             return (
               <div key={it.id} className="flex items-center gap-3 text-xs sm:text-sm">
-                <div className="size-11 rounded-lg border border-gray-200/80 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden relative">
-                  {it.image ? (
-                    <Image
-                      src={it.image}
-                      alt={it.title}
-                      fill
-                      className="object-cover"
-                      sizes="44px"
-                    />
-                  ) : (
-                    <span className="font-bold text-gray-400 text-xs">SUL</span>
-                  )}
+                <div className="size-11 rounded-lg border border-gray-200/80 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+                  <img
+                    src={it.image ? (it.image.startsWith("http") || it.image.startsWith("/") ? it.image : `/images/products/${it.image}`) : "/images/products/epice-poulet-recto.jpg"}
+                    alt={it.title}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const title = (it.title || "").toLowerCase();
+                      if (title.includes("poulet")) target.src = "/images/products/epice-poulet-recto.jpg";
+                      else if (title.includes("viande")) target.src = "/images/products/epice-viande-recto.jpg";
+                      else if (title.includes("poisson")) target.src = "/images/products/epice-poisson-recto.jpg";
+                      else if (title.includes("gourmande") || title.includes("secret")) target.src = "/images/products/epice-gourmande-recto.jpg";
+                      else target.src = "/images/products/pack-4-saveurs-sulson.jpg";
+                    }}
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-900 truncate">{it.title}</p>

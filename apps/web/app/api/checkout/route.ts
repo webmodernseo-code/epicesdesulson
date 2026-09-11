@@ -3,9 +3,19 @@ import { OrdersService } from "@/lib/orders-service";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail, sendAdminNewOrderAlertEmail } from "@/lib/email";
 import { getStripeServer } from "@/lib/stripe";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const clientIp = getClientIp(req);
+    const { success } = rateLimit(`checkout:${clientIp}`, 25, 60 * 1000);
+    if (!success) {
+      return NextResponse.json(
+        { success: false, error: "Trop de requêtes de paiement. Veuillez patienter un instant." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const {
       customerName,
