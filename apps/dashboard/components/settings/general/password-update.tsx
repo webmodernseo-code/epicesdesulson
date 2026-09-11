@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 export default function PasswordUpdate() {
   const [oldPassword, setOldPassword] = useState("");
@@ -10,9 +10,52 @@ export default function PasswordUpdate() {
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatusMessage(null);
+
+    if (!oldPassword) {
+      setStatusMessage({ type: "error", text: "Veuillez renseigner votre mot de passe actuel." });
+      return;
+    }
+    if (!newPassword || newPassword.length < 6) {
+      setStatusMessage({ type: "error", text: "Le nouveau mot de passe doit comporter au moins 6 caractères." });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setStatusMessage({ type: "error", text: "Les deux nouveaux mots de passe ne correspondent pas." });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setStatusMessage({ type: "error", text: data.error || "Échec de la mise à jour du mot de passe." });
+      } else {
+        setStatusMessage({ type: "success", text: data.message || "Mot de passe modifié avec succès !" });
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
+    } catch (err: any) {
+      setStatusMessage({ type: "error", text: "Erreur réseau. Veuillez réessayer." });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200/90 shadow-2xs space-y-4">
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-200/90 shadow-2xs space-y-4">
       <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100">
         <Lock className="size-5 text-emerald-600" />
         <div>
@@ -24,6 +67,24 @@ export default function PasswordUpdate() {
           </p>
         </div>
       </div>
+
+      {statusMessage && (
+        <div
+          className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
+            statusMessage.type === "success"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-900"
+              : "bg-red-50 border-red-200 text-red-900"
+          }`}
+        >
+          {statusMessage.type === "success" ? (
+            <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+          ) : (
+            <AlertCircle className="size-4 text-red-600 shrink-0" />
+          )}
+          <span>{statusMessage.text}</span>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <label className="block text-xs font-bold text-gray-700 mb-1">
@@ -35,6 +96,7 @@ export default function PasswordUpdate() {
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
               placeholder="••••••••"
+              required
               className="w-full h-11 px-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <button
@@ -59,6 +121,8 @@ export default function PasswordUpdate() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
+              required
+              minLength={6}
               className="w-full h-11 px-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <button
@@ -83,6 +147,8 @@ export default function PasswordUpdate() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
+              required
+              minLength={6}
               className="w-full h-11 px-3.5 pr-10 rounded-xl border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             <button
@@ -97,6 +163,24 @@ export default function PasswordUpdate() {
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="flex justify-end pt-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn-primary text-white px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="size-4 animate-spin" />
+              <span>Mise à jour...</span>
+            </>
+          ) : (
+            <span>Enregistrer le nouveau mot de passe</span>
+          )}
+        </button>
+      </div>
+    </form>
   );
 }
+

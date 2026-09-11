@@ -17,6 +17,7 @@ import {
   X,
   CreditCard,
   Send,
+  Trash2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
@@ -243,6 +244,44 @@ export default function OrderTable() {
     }
   };
 
+  // Delete single order handler
+  const handleDeleteOrder = async (order: AdminOrder) => {
+    if (!window.confirm(`Supprimer définitivement la commande ${order.orderNumber} ?`)) return;
+
+    try {
+      const r = await fetch(`/api/admin/orders?id=${order.id}`, { method: "DELETE" });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error);
+
+      toast.success(`Commande ${order.orderNumber} supprimée.`);
+      loadOrders();
+    } catch (err: any) {
+      toast.error(err.message || "Erreur lors de la suppression de la commande.");
+    }
+  };
+
+  // Purge all test orders handler
+  const handlePurgeAllOrders = async () => {
+    if (
+      !window.confirm(
+        "Êtes-vous sûr de vouloir supprimer TOUTES les commandes de test et remettre les compteurs à zéro pour le lancement officiel ?"
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const r = await fetch(`/api/admin/orders?purgeAll=true`, { method: "DELETE" });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error);
+
+      toast.success(j.message || "Toutes les commandes de test ont été purgées avec succès !");
+      loadOrders();
+    } catch (err: any) {
+      toast.error(err.message || "Erreur lors de la purge des commandes.");
+    }
+  };
+
   // Refund Order Handler
   const handleRefund = async (order: AdminOrder) => {
     if (
@@ -390,13 +429,27 @@ export default function OrderTable() {
               );
             })}
 
-            <button
-              onClick={loadOrders}
-              title="Actualiser les commandes"
-              className="ml-auto size-8 rounded-full bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center text-gray-600 shrink-0 cursor-pointer shadow-2xs"
-            >
-              <RefreshCw className={`size-3.5 ${loading ? "animate-spin text-emerald-600" : ""}`} />
-            </button>
+            <div className="ml-auto flex items-center gap-2 shrink-0">
+              {orders.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handlePurgeAllOrders}
+                  title="Purger toutes les commandes de test pour le lancement"
+                  className="px-3 py-1.5 rounded-full text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                >
+                  <Trash2 className="size-3.5 text-rose-600" />
+                  <span>Purger les tests ({orders.length})</span>
+                </button>
+              )}
+
+              <button
+                onClick={loadOrders}
+                title="Actualiser les commandes"
+                className="size-8 rounded-full bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center text-gray-600 shrink-0 cursor-pointer shadow-2xs"
+              >
+                <RefreshCw className={`size-3.5 ${loading ? "animate-spin text-emerald-600" : ""}`} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -562,6 +615,16 @@ export default function OrderTable() {
                               <RotateCcw className="size-3.5" />
                             </button>
                           )}
+
+                          {/* Delete order action */}
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteOrder(order)}
+                            title="Supprimer la commande"
+                            className="size-8 rounded-full border border-gray-200 text-gray-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </button>
                         </div>
                       </TableCell>
                     </TableRow>
