@@ -346,6 +346,13 @@ export async function POST(req: Request) {
           customerEmail: order.customerEmail,
           paymentMethod: paymentMethod,
         },
+        payment_intent_data: {
+          metadata: {
+            orderId: order.id,
+            orderNumber: order.orderNumber,
+            customerEmail: order.customerEmail,
+          },
+        },
       });
 
       if (session.url) {

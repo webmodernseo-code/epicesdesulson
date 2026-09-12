@@ -247,7 +247,9 @@ export default function RecentOrdersTable() {
                   <TableCell className="py-3.5 whitespace-nowrap">
                     <Badge
                       variant={
-                        order.status === "DELIVERED"
+                        order.paymentStatus === "FAILED"
+                          ? "error"
+                          : order.status === "DELIVERED"
                           ? "success"
                           : order.status === "SHIPPED"
                             ? "default"
@@ -256,7 +258,7 @@ export default function RecentOrdersTable() {
                               : "error"
                       }
                     >
-                      {labels[order.status] || order.status}
+                      {order.paymentStatus === "FAILED" ? "Paiement refusé" : labels[order.status] || order.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-3.5 text-right pr-6 whitespace-nowrap">

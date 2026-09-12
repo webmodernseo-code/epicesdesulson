@@ -339,6 +339,7 @@ export class OrdersService {
               { id: orderIdOrNumber },
               { orderNumber: orderIdOrNumber },
               { stripeSessionId: orderIdOrNumber },
+              { stripePaymentId: orderIdOrNumber },
             ],
           },
           data: {

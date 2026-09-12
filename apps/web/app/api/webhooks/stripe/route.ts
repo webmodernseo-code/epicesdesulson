@@ -86,6 +86,17 @@ export async function POST(req: Request) {
         break;
       }
 
+      case "checkout.session.async_payment_failed": {
+        const session = event.data.object;
+        const orderRef =
+          session.metadata?.orderId ||
+          session.metadata?.orderNumber ||
+          session.payment_intent ||
+          session.id;
+        if (orderRef) await OrdersService.markOrderFailed(String(orderRef));
+        break;
+      }
+
       case "checkout.session.completed": {
         const session = event.data.object;
         const orderRef =

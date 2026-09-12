@@ -73,6 +73,7 @@ export async function GET(req: NextRequest) {
     };
 
     allOrders.forEach((o) => {
+      if (o.paymentStatus === "FAILED") return;
       const s = o.status as keyof typeof statusCounts;
       if (statusCounts[s] !== undefined) {
         statusCounts[s] += 1;

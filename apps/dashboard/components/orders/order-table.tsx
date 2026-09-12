@@ -551,7 +551,9 @@ export default function OrderTable() {
                       <TableCell className="whitespace-nowrap">
                         <Badge
                           variant={
-                            order.status === "DELIVERED"
+                            order.paymentStatus === "FAILED"
+                              ? "error"
+                              : order.status === "DELIVERED"
                               ? "success"
                               : order.status === "SHIPPED"
                               ? "primary"
@@ -564,7 +566,9 @@ export default function OrderTable() {
                               : "neutral"
                           }
                         >
-                          {statusLabels[order.status] || order.status}
+                          {order.paymentStatus === "FAILED"
+                            ? "Paiement refusé"
+                            : statusLabels[order.status] || order.status}
                         </Badge>
                       </TableCell>
 
