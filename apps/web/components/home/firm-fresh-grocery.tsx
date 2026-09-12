@@ -326,7 +326,7 @@ export default function FirmFreshGrocery() {
         </div>
 
         {/* Centered 4-card grid: 2 columns on Mobile, 4 columns on Desktop */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {FOUR_PRODUCTS.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
