@@ -11,6 +11,7 @@
     "db:seed": "node prisma/seed.js",
     "payments:check": "node scripts/check-payments.js",
     "admin:bootstrap": "node scripts/bootstrap-admin.js",
+    "smtp:sync": "node scripts/sync-smtp-config.js",
     "lint": "eslint"
   },
   "dependencies": {
