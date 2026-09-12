@@ -74,7 +74,7 @@ export default function DashboardLayout({
               inert={isLocked}
               aria-disabled={isLocked}
               className={isLocked
-                ? "pointer-events-none select-none opacity-45 brightness-75 saturate-50 transition-all duration-300"
+                ? "pointer-events-none select-none opacity-75 brightness-95 saturate-[0.85] transition-all duration-300"
                 : undefined}
             >
               {children}
