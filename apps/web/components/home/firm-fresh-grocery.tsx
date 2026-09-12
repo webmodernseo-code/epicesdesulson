@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { Eye } from "lucide-react";
 import { useCart } from "@/context/cart-context";
 import { useProductRatings } from "@/context/ratings-context";
 import StarRating from "@/components/common/star-rating";
@@ -151,36 +152,49 @@ function ProductCard({ product }: { product: SpiceProduct }) {
       <div className="border border-gray-200/90 rounded-2xl p-2.5 sm:p-4 bg-white hover:border-primary hover:shadow-md transition-all duration-300 h-full flex flex-col justify-between group shadow-2xs">
         <div>
           {/* Clickable Image -> Product Detail Page */}
-          <Link
-            href={`/products/${product.slug}`}
-            className="relative rounded-xl overflow-hidden mb-2 sm:mb-3 bg-gray-50/80 h-[125px] sm:h-[210px] md:h-[230px] flex items-center justify-center p-1 cursor-pointer block"
-          >
+          <div className="relative rounded-xl overflow-hidden mb-2 sm:mb-3 bg-gray-50/80 h-[130px] sm:h-[210px] md:h-[230px] flex items-center justify-center p-1">
             <span className="absolute top-2 left-2 bg-primary text-white text-[9px] sm:text-[11px] font-extrabold tracking-wider py-0.5 px-2 sm:py-1 sm:px-2.5 rounded-full shadow-xs z-10">
               100g
             </span>
-            <Image
-              src={product.image}
-              alt={product.alt}
-              width={260}
-              height={220}
-              unoptimized
-              className={`w-full h-full object-contain transition-all duration-300 transform ${
-                product.hoverImage
-                  ? "scale-105 group-hover:opacity-0 group-hover:scale-95"
-                  : "scale-105 group-hover:scale-110"
-              }`}
-            />
-            {product.hoverImage && (
+
+            {/* Floating Eye Action Button */}
+            <Link
+              href={`/products/${product.slug}`}
+              aria-label={`Voir la fiche détaillée de ${product.title}`}
+              title="Voir la fiche produit & recettes"
+              className="absolute top-2 right-2 z-20 size-7 sm:size-8 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-emerald-700 border border-gray-200/80 shadow-xs flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+            >
+              <Eye className="size-3.5 sm:size-4" />
+            </Link>
+
+            <Link
+              href={`/products/${product.slug}`}
+              className="absolute inset-0 z-1 flex items-center justify-center cursor-pointer"
+            >
               <Image
-                src={product.hoverImage}
-                alt={`${product.alt} - Verso`}
+                src={product.image}
+                alt={product.alt}
                 width={260}
                 height={220}
                 unoptimized
-                className="w-full h-full object-contain absolute inset-0 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-110 transition-all duration-300"
+                className={`w-full h-full object-contain transition-all duration-300 transform ${
+                  product.hoverImage
+                    ? "scale-105 group-hover:opacity-0 group-hover:scale-95"
+                    : "scale-105 group-hover:scale-110"
+                }`}
               />
-            )}
-          </Link>
+              {product.hoverImage && (
+                <Image
+                  src={product.hoverImage}
+                  alt={`${product.alt} - Verso`}
+                  width={260}
+                  height={220}
+                  unoptimized
+                  className="w-full h-full object-contain absolute inset-0 opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-110 transition-all duration-300"
+                />
+              )}
+            </Link>
+          </div>
 
           {/* Catégorie Badge */}
           <div className="mb-1.5 flex items-center overflow-hidden">
@@ -326,20 +340,20 @@ export default function FirmFreshGrocery() {
         </div>
 
         {/* Centered 4-card grid: 2 columns on Mobile, 4 columns on Desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {FOUR_PRODUCTS.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
         {/* 5th Product Showcase with direct purchase */}
-        <div className="mt-10 sm:mt-16 pt-6 sm:pt-10 border-t border-gray-200/60">
+        <div className="mt-8 sm:mt-16 pt-6 sm:pt-10 border-t border-gray-200/60">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3 }}
-            className="max-w-4xl mx-auto bg-gray-50/80 border border-gray-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs hover:shadow-xs transition-all overflow-hidden"
+            className="max-w-4xl mx-auto bg-gray-50/80 border border-gray-200 rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 shadow-2xs hover:shadow-xs transition-all overflow-hidden"
           >
             {/* Top Header: Badge, Title, Rating, Description */}
             <div className="mb-4 sm:mb-5 flex flex-col gap-y-2">
@@ -393,25 +407,39 @@ export default function FirmFreshGrocery() {
             </div>
 
             {/* Product Image Clickable */}
-            <Link
-              href={`/products/${FIFTH_PRODUCT.slug}`}
-              className="relative w-full h-[180px] sm:h-[300px] md:h-[360px] rounded-xl sm:rounded-2xl overflow-hidden bg-white p-2 border border-gray-200 shadow-2xs mb-4 sm:mb-6 group flex items-center justify-center cursor-pointer block"
-            >
+            <div className="relative w-full h-[180px] sm:h-[300px] md:h-[360px] rounded-xl sm:rounded-2xl overflow-hidden bg-white p-2 border border-gray-200 shadow-2xs mb-4 sm:mb-6 group flex items-center justify-center">
               <span className="absolute top-3 left-3 bg-primary text-white text-[10px] sm:text-xs font-bold tracking-wider py-1 px-3 rounded-full shadow-xs z-10">
                 Lot 4 x 100g
               </span>
-              <Image
-                src={FIFTH_PRODUCT.image}
-                alt={FIFTH_PRODUCT.alt}
-                fill
-                unoptimized
-                className="object-contain p-2 scale-105 group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute bottom-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-white text-[10px] sm:text-[11px] font-bold py-0.5 px-2.5 rounded-full shadow-md flex items-center gap-1">
+
+              {/* Floating Eye Action Button */}
+              <Link
+                href={`/products/${FIFTH_PRODUCT.slug}`}
+                aria-label={`Voir la fiche détaillée de ${FIFTH_PRODUCT.title}`}
+                title="Voir la fiche produit & recettes"
+                className="absolute top-3 right-3 z-20 size-8 sm:size-9 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-emerald-700 border border-gray-200/90 shadow-xs flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+              >
+                <Eye className="size-4 sm:size-4.5" />
+              </Link>
+
+              <Link
+                href={`/products/${FIFTH_PRODUCT.slug}`}
+                className="absolute inset-0 z-1 flex items-center justify-center cursor-pointer"
+              >
+                <Image
+                  src={FIFTH_PRODUCT.image}
+                  alt={FIFTH_PRODUCT.alt}
+                  fill
+                  unoptimized
+                  className="object-contain p-2 scale-105 group-hover:scale-110 transition-transform duration-500"
+                />
+              </Link>
+
+              <div className="absolute bottom-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-white text-[10px] sm:text-[11px] font-bold py-0.5 px-2.5 rounded-full shadow-md flex items-center gap-1 z-10">
                 <i className="hgi hgi-stroke hgi-leaf-01 text-[11px] text-emerald-400" />
                 <span>Récolte Artisanale 2026</span>
               </div>
-            </Link>
+            </div>
 
             {/* Bottom Controls: Price, Direct Add to Cart & Full Page Link */}
             <div className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
