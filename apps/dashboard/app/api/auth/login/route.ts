@@ -53,6 +53,7 @@ export async function POST(req: Request) {
         if (
           user &&
           (user.role === "ADMIN" || user.role === "SUPER_ADMIN" || user.role === "MASTER_ADMIN") &&
+          user.adminEnabled &&
           user.passwordHash
         ) {
           persistedAdminExists = true;

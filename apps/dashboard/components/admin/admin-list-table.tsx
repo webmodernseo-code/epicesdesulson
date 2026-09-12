@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,7 +25,7 @@ interface AdminUser {
   role: "Administrateur Principal" | "Gestionnaire Secondaire";
   isPrimary: boolean;
   date: string;
-  activeStatus: "Actif" | "Suspendu";
+  activeStatus: "Actif" | "Suspendu" | "Invitation";
   avatar: string;
 }
 
@@ -33,6 +33,36 @@ export default function AdminListTable() {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("/api/admin/users", { cache: "no-store" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Chargement impossible.");
+        const users: AdminUser[] = data.users.map((user: any) => ({
+          id: user.id,
+          user: user.name || "Administrateur",
+          email: user.email,
+          role: user.role === "ADMIN" ? "Gestionnaire Secondaire" : "Administrateur Principal",
+          isPrimary: user.role !== "ADMIN",
+          date: new Date(user.createdAt).toLocaleDateString("fr-FR"),
+          activeStatus: user.adminEnabled ? "Actif" : "Suspendu",
+          avatar: "",
+        }));
+        const pending: AdminUser[] = data.invitations.map((invite: any) => ({
+          id: invite.id,
+          user: invite.name || "Invitation",
+          email: invite.email,
+          role: "Gestionnaire Secondaire",
+          isPrimary: false,
+          date: new Date(invite.createdAt).toLocaleDateString("fr-FR"),
+          activeStatus: "Invitation",
+          avatar: "",
+        }));
+        setAdmins([...users, ...pending]);
+      })
+      .catch(() => setAdmins([]));
+  }, []);
 
   const toggleSelectAll = (checked: boolean) => {
     if (checked) {

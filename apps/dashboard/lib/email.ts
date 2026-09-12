@@ -62,6 +62,13 @@ interface SendPasswordResetParams {
   accountEmail: string;
 }
 
+interface SendAdminInvitationParams {
+  to: string;
+  name?: string;
+  invitationUrl: string;
+  expiresAt: Date;
+}
+
 interface SendAbandonedCartReminderParams {
   to: string;
   customerName: string;
@@ -652,6 +659,33 @@ export async function sendPasswordResetEmail({
       return { success: false, error: "Au moins une adresse de récupération a refusé le message." };
     }
 
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function sendAdminInvitationEmail({
+  to,
+  name,
+  invitationUrl,
+  expiresAt,
+}: SendAdminInvitationParams): Promise<{ success: boolean; error?: string }> {
+  try {
+    const smtp = await getSmtpTransporter();
+    if (!smtp) return { success: false, error: "Configuration SMTP absente." };
+
+    const contentHtml = `
+      <h1 style="margin:0 0 16px;font-size:20px;color:#0f172a;">Invitation au tableau de bord</h1>
+      <p style="font-size:14px;line-height:24px;color:#475569;">Bonjour ${name || ""},<br><br>Le super administrateur vous invite à rejoindre le tableau de bord Les Épices de Sulson avec le rôle Administrateur.</p>
+      <div style="text-align:center;margin:30px 0;"><a href="${invitationUrl}" style="display:inline-block;background:#047857;color:#fff;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:12px;">Accepter l'invitation</a></div>
+      <p style="font-size:12px;color:#64748b;">Ce lien personnel expire le ${expiresAt.toLocaleString("fr-FR")} et ne peut être utilisé qu'une fois.</p>`;
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
+      to,
+      subject: "Invitation administrateur - Les Épices de Sulson",
+      html: buildEmailTemplate({ title: "Invitation administrateur", preheader: "Accès au cockpit Sulson", contentHtml }),
+    });
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };

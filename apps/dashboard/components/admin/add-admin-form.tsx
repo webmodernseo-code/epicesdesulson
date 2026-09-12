@@ -7,31 +7,37 @@ import { PageHeader } from "@/components/ui/page-header";
 import { toast } from "sonner";
 import { ShieldCheck, UserPlus, CheckCircle2 } from "lucide-react";
 
-const roleOptions = [
-  { value: "Gestionnaire Logistique & Stocks", label: "Gestionnaire Logistique & Stocks" },
-  { value: "Préparateur de Commandes", label: "Préparateur de Commandes Atelier" },
-  { value: "Support Client & Relation Acheteur", label: "Support Client & Relation Acheteur" },
-  { value: "Administrateur Délégué", label: "Administrateur Délégué" },
-];
-
 export default function AddAdminForm() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("Gestionnaire Logistique & Stocks");
-  const [tempPassword, setTempPassword] = useState("Sulson2026!");
-  const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [invitationUrl, setInvitationUrl] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    setTimeout(() => {
+    setInvitationUrl("");
+    try {
+      const response = await fetch("/api/admin/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Invitation impossible.");
+      if (data.invitationUrl) {
+        setInvitationUrl(data.invitationUrl);
+        toast.warning(data.warning);
+      } else {
+        toast.success(`Invitation envoyée à ${email}.`);
+        router.push("/admin-users");
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Invitation impossible.");
+    } finally {
       setIsSubmitting(false);
-      toast.success(`Administrateur ${name} (${email}) créé avec le rôle "${role}" !`);
-      router.push("/admin-users");
-    }, 400);
+    }
   };
 
   return (
@@ -83,50 +89,25 @@ export default function AddAdminForm() {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-700 mb-2">
-                Rôle & Niveau d'accès *
-              </label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
-              >
-                {roleOptions.map((r) => (
-                  <option key={r.value} value={r.value}>
-                    {r.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-700 mb-2">
-                Mot de passe temporaire *
-              </label>
-              <input
-                type="text"
-                required
-                value={tempPassword}
-                onChange={(e) => setTempPassword(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-xl border border-gray-300 text-xs sm:text-sm font-mono font-bold text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
-              />
-            </div>
-
             <div className="sm:col-span-2">
               <label className="block text-xs font-bold text-gray-700 mb-2">
-                Notes internes / Périmètre de responsabilité
+                Rôle attribué
               </label>
-              <textarea
-                rows={3}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="ex: En charge de l'étiquetage et des expéditions Colissimo depuis l'entrepôt..."
-                className="w-full p-3 rounded-xl border border-gray-300 text-xs sm:text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
-              />
+              <div className="flex h-11 items-center rounded-xl border border-gray-300 bg-gray-100 px-3.5 text-sm font-semibold text-gray-700">ADMIN</div>
             </div>
           </div>
         </div>
+
+        {invitationUrl && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+            <p className="font-bold">L'e-mail n'a pas pu être envoyé.</p>
+            <p className="mt-1">Copiez ce lien maintenant et transmettez-le uniquement à la personne invitée :</p>
+            <div className="mt-3 flex gap-2">
+              <input readOnly value={invitationUrl} className="min-w-0 flex-1 rounded-lg border border-amber-300 bg-white px-3 py-2 text-xs" />
+              <button type="button" onClick={() => navigator.clipboard.writeText(invitationUrl)} className="rounded-lg bg-amber-700 px-4 py-2 font-bold text-white">Copier</button>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-gray-100">
@@ -147,7 +128,7 @@ export default function AddAdminForm() {
             className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 rounded-full text-xs shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             <CheckCircle2 className="size-3.5" />
-            <span>{isSubmitting ? "Création..." : "Enregistrer le compte"}</span>
+            <span>{isSubmitting ? "Envoi..." : "Envoyer l'invitation"}</span>
           </Button>
         </div>
       </form>

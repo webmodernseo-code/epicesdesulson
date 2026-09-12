@@ -8,6 +8,7 @@ const PUBLIC_AUTH_PATHS = [
   "/set-new-password",
   "/reset-password",
   "/unauthorized",
+  "/accept-invitation",
 ];
 
 const SUPER_ADMIN_PATHS = [

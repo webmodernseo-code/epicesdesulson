@@ -64,18 +64,13 @@ export async function POST(req: Request) {
     const hashedPassword = await hashPassword(newPassword);
 
     try {
-      await prisma.user.upsert({
-        where: { email: cleanEmail },
-        update: {
-          passwordHash: hashedPassword,
-          role: "SUPER_ADMIN",
-        },
-        create: {
-          email: cleanEmail,
-          name: "Admin Sulson",
-          passwordHash: hashedPassword,
-          role: "SUPER_ADMIN",
-        },
+      const user = await prisma.user.findUnique({ where: { email: cleanEmail } });
+      if (!user || !["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(user.role)) {
+        return NextResponse.json({ error: "Compte administrateur introuvable." }, { status: 404 });
+      }
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash: hashedPassword },
       });
     } catch (dbErr) {
       console.error("Database update error during password reset:", dbErr);
