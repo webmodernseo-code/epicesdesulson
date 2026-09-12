@@ -4,7 +4,7 @@ import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  if (!isAdmin(req)) {
+  if (!(await isAdmin(req))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 

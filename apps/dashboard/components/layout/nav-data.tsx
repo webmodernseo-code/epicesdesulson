@@ -18,6 +18,7 @@ export type NavItem = {
   category?: string;
   items?: NavItem[];
   subItems?: { label: string; href: string }[];
+  superAdminOnly?: boolean;
 };
 
 export const navItems: NavItem[] = [
@@ -89,16 +90,19 @@ export const navItems: NavItem[] = [
         label: "Passerelles API (Stripe & PayPal)",
         href: "/settings/payment-api",
         icon: <CreditCardPosIcon className="size-5.5" />,
+        superAdminOnly: true,
       },
       {
         label: "Serveur SMTP & E-mails",
         href: "/settings/smtp",
         icon: <Mail01Icon className="size-5.5" />,
+        superAdminOnly: true,
       },
       {
         label: "Administrateurs",
         href: "/admin-users",
         icon: <UserSettings className="size-5.5" />,
+        superAdminOnly: true,
       },
     ],
   },

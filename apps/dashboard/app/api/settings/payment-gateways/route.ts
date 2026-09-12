@@ -8,7 +8,7 @@ const masked = (value?: string | null) =>
   value ? `${value.slice(0, 7)}••••••••${value.slice(-4)}` : "";
 
 export async function GET(req: NextRequest) {
-  if (!isSuperAdmin(req)) {
+  if (!(await isSuperAdmin(req))) {
     return NextResponse.json({ error: "Accès réservé au super administrateur." }, { status: 403 });
   }
 
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isSuperAdmin(req)) {
+  if (!(await isSuperAdmin(req))) {
     return NextResponse.json({ error: "Accès réservé au super administrateur." }, { status: 403 });
   }
 

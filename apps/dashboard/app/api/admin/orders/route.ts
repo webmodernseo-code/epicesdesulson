@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!(await isAdmin(req))) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   const orders = await prisma.order.findMany({ include: { items: true }, orderBy: { createdAt: "desc" }, take: 100 }).catch(() => []);
   return NextResponse.json({
     success: true,
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!(await isAdmin(req))) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
   try {
     const { searchParams } = new URL(req.url);

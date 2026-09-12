@@ -13,7 +13,7 @@ function maskSecret(key: string | null | undefined): string {
 
 // GET /api/settings/payment-gateways
 export async function GET(req: NextRequest) {
-  if (!isSuperAdmin(req)) return NextResponse.json({ success: false, error: "Accès réservé au super administrateur." }, { status: 403 });
+  if (!(await isSuperAdmin(req))) return NextResponse.json({ success: false, error: "Accès réservé au super administrateur." }, { status: 403 });
   try {
     let stripeConfig = null;
     let paypalConfig = null;
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/settings/payment-gateways
 export async function POST(req: NextRequest) {
-  if (!isSuperAdmin(req)) return NextResponse.json({ success: false, error: "Accès réservé au super administrateur." }, { status: 403 });
+  if (!(await isSuperAdmin(req))) return NextResponse.json({ success: false, error: "Accès réservé au super administrateur." }, { status: 403 });
   try {
     const body = await req.json();
     const { action, gateway, isEnabled, isLiveMode, publishableKey, secretKey, webhookSecret, clientId } = body;

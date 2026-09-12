@@ -19,7 +19,7 @@ function formatRelativeTime(date: Date): string {
 }
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req)) {
+  if (!(await isAdmin(req))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 

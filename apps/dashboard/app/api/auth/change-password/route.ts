@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const session = readSession(req);
-    if (!session || !isAdmin(req)) {
+    if (!session || !(await isAdmin(req))) {
       return NextResponse.json(
         { success: false, error: "Session expirée ou non autorisée. Veuillez vous reconnecter." },
         { status: 401 }

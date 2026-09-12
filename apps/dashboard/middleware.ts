@@ -11,25 +11,6 @@ const PUBLIC_AUTH_PATHS = [
   "/accept-invitation",
 ];
 
-const SUPER_ADMIN_PATHS = [
-  "/admin-users",
-  "/settings/payment-api",
-  "/settings/smtp",
-  "/settings/media",
-  "/settings/maintenance",
-];
-
-function readTokenRole(token: string): string | null {
-  try {
-    const encodedPayload = token.split(".")[0];
-    const base64 = encodedPayload.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
-    return JSON.parse(atob(padded))?.role || null;
-  } catch {
-    return null;
-  }
-}
-
 // Verify session signature using standard Web Crypto API supported across Edge & Node runtimes
 async function verifySessionToken(token: string, secret: string): Promise<boolean> {
   try {
@@ -128,17 +109,6 @@ export async function middleware(req: NextRequest) {
         signinUrl.searchParams.set("callbackUrl", pathname);
       }
       return NextResponse.redirect(signinUrl);
-    }
-
-    const role = sessionToken ? readTokenRole(sessionToken) : null;
-    const requiresSuperAdmin = SUPER_ADMIN_PATHS.some(
-      (path) => pathname === path || pathname.startsWith(`${path}/`),
-    );
-    if (requiresSuperAdmin && role !== "SUPER_ADMIN" && role !== "MASTER_ADMIN") {
-      const unauthorizedUrl = req.nextUrl.clone();
-      unauthorizedUrl.pathname = "/unauthorized";
-      unauthorizedUrl.search = "";
-      return NextResponse.redirect(unauthorizedUrl);
     }
 
     return NextResponse.next();

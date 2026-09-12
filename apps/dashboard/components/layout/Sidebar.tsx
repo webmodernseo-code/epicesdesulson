@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { navItems } from "./nav-data";
 import { SidebarHeader } from "./sidebar/sidebar-header";
@@ -31,41 +31,11 @@ export default function Sidebar({
     initialUserRole,
   );
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const storedRole = localStorage.getItem("userRole");
-        if (storedRole === "admin" || storedRole === "seller") setUserRole("seller");
-        if (storedRole === "super_admin" || storedRole === "master") setUserRole("master");
-      } catch {
-        // Safe fallback
-      }
-    }
-  }, []);
-
-  // Navigation items for the boutique dashboard
-  const filteredNavItems = useMemo(() => {
-    if (userRole === "master") return navItems;
-
-    const superAdminOnly = new Set([
-      "/admin-users",
-      "/settings/payment-api",
-      "/settings/smtp",
-      "/settings/media",
-    ]);
-
-    return navItems
-      .map((group) =>
-        group.items
-          ? { ...group, items: group.items.filter((item) => !item.href || !superAdminOnly.has(item.href)) }
-          : group,
-      )
-      .filter((group) => !group.items || group.items.length > 0);
-  }, [userRole]);
+  useEffect(() => setUserRole(initialUserRole), [initialUserRole]);
 
   useEffect(() => {
     // Synchronize active submenu with pathname
-    filteredNavItems.slice(1).forEach((group) => {
+    navItems.slice(1).forEach((group) => {
       if ("items" in group && Array.isArray(group.items)) {
         group.items.forEach((item) => {
           if (item.subItems) {
@@ -80,7 +50,7 @@ export default function Sidebar({
         });
       }
     });
-  }, [pathname, filteredNavItems]);
+  }, [pathname]);
 
   const toggleSubMenu = (label: string) => {
     if (isCollapsed && toggleCollapse) {
@@ -104,7 +74,7 @@ export default function Sidebar({
         className={`h-screen shrink-0 fixed left-0 top-0 z-50 flex flex-col transition-all duration-300 
         ${isOpen ? "translate-x-0" : "-translate-x-full"} xl:translate-x-0 
         ${isCollapsed ? "w-[80px]" : "w-[280px]"}
-        bg-primary-darker`}
+        bg-[#075f5c] border-r border-white/10 shadow-[8px_0_32px_rgba(7,95,92,0.12)]`}
       >
         <SidebarHeader
           isCollapsed={isCollapsed}
@@ -121,8 +91,8 @@ export default function Sidebar({
               href="/"
               className={`flex items-center gap-3 py-2 rounded-lg mb-6 transition-all duration-300 ${isCollapsed ? "justify-center px-0" : "px-4"} ${
                 pathname === "/"
-                  ? "bg-primary-dark text-white"
-                  : "text-white hover:bg-white/5"
+                  ? "bg-white text-[#075f5c] shadow-sm"
+                  : "text-white/85 hover:bg-white/10 hover:text-white"
               }`}
             >
               <DashboardGridIcon className="w-5.5 h-5.5" />
@@ -134,14 +104,12 @@ export default function Sidebar({
             </Link>
           </SidebarItemWrapper>
 
-          {filteredNavItems.slice(1).map((group, idx) => (
+          {navItems.slice(1).map((group, idx) => (
             <div key={idx} className="mb-6">
               {"category" in group && (
                 <div
                   className={`text-xs font-medium tracking-wider mb-3 uppercase whitespace-nowrap transition-all duration-300 ${
-                    userRole === "seller"
-                      ? "text-light-disabled-text"
-                      : "text-warning-light"
+                    "text-emerald-100/70"
                   } ${
                     isCollapsed
                       ? "flex justify-center px-0 overflow-hidden"
@@ -150,7 +118,7 @@ export default function Sidebar({
                 >
                   {isCollapsed ? (
                     <MoreHorizontalIcon
-                      className={`size-5.5 ${userRole === "seller" ? "text-gray-500" : "text-white"}`}
+                      className="size-5.5 text-emerald-100/70"
                     />
                   ) : (
                     group.category
@@ -195,6 +163,7 @@ export default function Sidebar({
                             pathname={pathname}
                             isCollapsed={isCollapsed}
                             userRole={userRole}
+                            locked={userRole === "seller" && Boolean(item.superAdminOnly)}
                           />
                         </SidebarItemWrapper>
                       )}

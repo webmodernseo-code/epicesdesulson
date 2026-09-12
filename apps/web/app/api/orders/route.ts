@@ -3,7 +3,7 @@ import { OrdersService } from "@/lib/orders-service";
 import { isAdmin } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req)) {
+  if (!(await isAdmin(req))) {
     return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
   }
   try {

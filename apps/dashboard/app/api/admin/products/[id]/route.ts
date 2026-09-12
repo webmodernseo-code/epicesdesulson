@@ -6,7 +6,7 @@ export async function GET(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  if (!isAdmin(req)) {
+  if (!(await isAdmin(req))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
@@ -65,7 +65,7 @@ async function handleUpdate(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  if (!isAdmin(req)) {
+  if (!(await isAdmin(req))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
@@ -151,7 +151,7 @@ export async function DELETE(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  if (!isAdmin(req)) {
+  if (!(await isAdmin(req))) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 

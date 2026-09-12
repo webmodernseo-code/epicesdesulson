@@ -6,12 +6,14 @@ import UserDropdown from "./dropdown/user-dropdown";
 import NotificationDropdown from "./dropdown/notification-dropdown";
 import Link from "next/link";
 import SearchModal from "./search-modal";
+import type { AdminIdentity } from "@/components/auth/admin-session-context";
 
 interface HeaderProps {
   onMenuClick?: () => void;
+  identity?: AdminIdentity | null;
 }
 
-export default function Header({ onMenuClick }: HeaderProps) {
+export default function Header({ onMenuClick, identity }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
@@ -63,7 +65,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <NotificationDropdown />
 
           {/* User Profile */}
-          <UserDropdown />
+          <UserDropdown identity={identity} />
         </div>
       </header>
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />

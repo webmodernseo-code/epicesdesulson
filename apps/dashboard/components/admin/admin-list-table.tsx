@@ -17,6 +17,7 @@ import {
 import { Pencil, Trash } from "@/icons";
 import { ShieldCheck, UserPlus, Lock } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface AdminUser {
   id: string;
@@ -107,6 +108,15 @@ export default function AdminListTable() {
 
   const isAllSelected =
     admins.length > 0 && selectedRows.length === admins.length;
+
+  async function revokeAccess(item: AdminUser) {
+    if (!window.confirm(`Supprimer l'accès administrateur de ${item.email} ?`)) return;
+    const response = await fetch(`/api/admin/users/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+    const result = await response.json();
+    if (!response.ok) return toast.error(result.error || "Suppression impossible.");
+    setAdmins((current) => current.filter((admin) => admin.id !== item.id));
+    toast.success(item.activeStatus === "Invitation" ? "Invitation annulée." : "Accès administrateur supprimé.");
+  }
 
   return (
     <div className="bg-white rounded-2xl w-full border border-gray-200/90 shadow-2xs overflow-hidden">
@@ -215,9 +225,7 @@ export default function AdminListTable() {
                         variant="icon"
                         className="hover:text-red-500 transition-colors p-1.5 text-gray-400"
                         title="Révoquer l'accès"
-                        onClick={() => {
-                          setAdmins((prev) => prev.filter((a) => a.id !== item.id));
-                        }}
+                        onClick={() => revokeAccess(item)}
                       >
                         <Trash className="size-4" />
                       </Button>

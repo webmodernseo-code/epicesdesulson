@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 const DEFAULT_MESSAGE = "Notre boutique est momentanément indisponible. Nous revenons très vite.";
 
 export async function GET(req: NextRequest) {
-  if (!isSuperAdmin(req)) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
+  if (!(await isSuperAdmin(req))) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
   const config = await prisma.maintenanceConfig.findUnique({ where: { id: "site" } });
   return NextResponse.json({
     success: true,
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isSuperAdmin(req)) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
+  if (!(await isSuperAdmin(req))) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
   const session = readSession(req)!;
   const body = await req.json();
   const enabled = Boolean(body.enabled);

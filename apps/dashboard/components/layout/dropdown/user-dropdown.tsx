@@ -7,10 +7,14 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, LogoutIcon, SettingsIcon } from "@/icons";
 import { ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import type { AdminIdentity } from "@/components/auth/admin-session-context";
 
-export default function UserDropdown() {
+export default function UserDropdown({ identity }: { identity?: AdminIdentity | null }) {
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const displayName = identity?.name?.trim() || identity?.email?.split("@")[0] || "Administrateur";
+  const initials = displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+  const roleLabel = identity?.role === "ADMIN" ? "Administrateur" : "Super administrateur";
 
   const handleLogout = async () => {
     try {
@@ -36,15 +40,15 @@ export default function UserDropdown() {
           <>
             <MenuButton className="inline-flex items-center gap-2.5 justify-center focus:outline-none text-sm cursor-pointer p-1 rounded-xl hover:bg-gray-100 transition-colors">
               <span className="size-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
-                AS
+                {initials}
               </span>
               <span className="hidden text-left md:block">
                 <span className="text-xs font-bold text-gray-900 block leading-tight">
-                  Admin Sulson
+                  {displayName}
                 </span>
                 <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
                   <ShieldCheck className="size-3 text-emerald-600 inline" />
-                  Boutique
+                  {roleLabel}
                 </span>
               </span>
               <ChevronDown

@@ -1,6 +1,7 @@
 import { createHmac, randomBytes, scrypt as nodeScrypt, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import type { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 const scrypt = promisify(nodeScrypt);
 
@@ -69,23 +70,28 @@ export function readSession(req: NextRequest): SessionPayload | null {
   }
 }
 
-export function isAdmin(req: NextRequest): boolean {
+export async function isAdmin(req: NextRequest): Promise<boolean> {
   try {
     const session = readSession(req);
-    if (session && ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(session.role)) {
-      return true;
-    }
-
-    return false;
+    if (!session || !["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(session.role)) return false;
+    const user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { role: true, adminEnabled: true },
+    });
+    return Boolean(user?.adminEnabled && ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(user.role));
   } catch {
     return false;
   }
 }
 
-export function isSuperAdmin(req: NextRequest): boolean {
-  const role = readSession(req)?.role;
-  // MASTER_ADMIN reste accepté pendant la migration des comptes existants.
-  return role === "SUPER_ADMIN" || role === "MASTER_ADMIN";
+export async function isSuperAdmin(req: NextRequest): Promise<boolean> {
+  const session = readSession(req);
+  if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "MASTER_ADMIN")) return false;
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { role: true, adminEnabled: true },
+  }).catch(() => null);
+  return Boolean(user?.adminEnabled && (user.role === "SUPER_ADMIN" || user.role === "MASTER_ADMIN"));
 }
 
 export async function hashPassword(password: string): Promise<string> {

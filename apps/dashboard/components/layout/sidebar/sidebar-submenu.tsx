@@ -33,17 +33,15 @@ export function SidebarSubmenu({
         onClick={onToggle}
         className={`w-full font-semibold flex items-center rounded-lg transition-colors py-2 pl-3 pr-3 ${
           hasActiveChild
-            ? "bg-primary-lighter text-primary"
-            : userRole === "seller"
-              ? "text-light-secondary-text hover:bg-gray-200 hover:text-light-primary-text"
-              : "text-white hover:bg-white/5"
+            ? "bg-white text-[#075f5c] shadow-sm"
+            : "text-white/80 hover:bg-white/10 hover:text-white"
         } ${isCollapsed ? "justify-center px-0" : "justify-between px-4"}`}
       >
         <div
           className={`flex items-center gap-3 ${isCollapsed ? "" : "min-w-0"}`}
         >
           <span
-            className={`${userRole === "seller" && !hasActiveChild ? "text-light-secondary-text group-hover:text-light-primary-text" : ""}`}
+            className={hasActiveChild ? "text-[#088178]" : "text-emerald-50/80"}
           >
             {item.icon}
           </span>
@@ -56,11 +54,11 @@ export function SidebarSubmenu({
         {!isCollapsed &&
           (isOpen ? (
             <ChevronDown
-              className={`shrink-0 size-4 ${userRole === "seller" && !hasActiveChild ? "text-light-secondary-text" : ""}`}
+              className="shrink-0 size-4"
             />
           ) : (
             <ChevronRight
-              className={`shrink-0 size-4 ${userRole === "seller" && !hasActiveChild ? "text-light-secondary-text" : ""}`}
+              className="shrink-0 size-4"
             />
           ))}
       </button>
@@ -135,9 +133,7 @@ export function SidebarSubmenu({
                   className={`relative block pl-[50px] py-2 text-sm transition-colors z-10 ${
                     isActive
                       ? "text-primary-light font-semibold"
-                      : userRole === "seller"
-                        ? "text-light-secondary-text hover:text-light-primary-text"
-                        : "text-white hover:text-primary-light"
+                      : "text-white/65 hover:text-white"
                   }`}
                 >
                   {/* Dot on the line - only for first and last items */}

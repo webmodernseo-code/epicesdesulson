@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  if (!isSuperAdmin(req)) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
+  if (!(await isSuperAdmin(req))) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
   const [users, invitations] = await Promise.all([
     prisma.user.findMany({
       where: { role: { in: ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"] } },
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isSuperAdmin(req)) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
+  if (!(await isSuperAdmin(req))) return NextResponse.json({ error: "Accès refusé." }, { status: 403 });
   const session = readSession(req)!;
   const body = await req.json();
   const email = String(body.email || "").trim().toLowerCase();

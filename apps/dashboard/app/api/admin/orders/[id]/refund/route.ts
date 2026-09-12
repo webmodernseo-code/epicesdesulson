@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { sendOrderRefundedEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!(await isAdmin(req))) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   const { id } = await context.params;
   const order = await prisma.order.findUnique({ where: { id } });
   if (!order || order.paymentStatus !== "PAID" || !order.stripePaymentId) {

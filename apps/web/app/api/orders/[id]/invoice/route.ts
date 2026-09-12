@@ -76,7 +76,7 @@ export async function GET(
 
     const session = readSession(req);
     const ownsOrder = Boolean(session && order.customerEmail.toLowerCase() === session.email.toLowerCase());
-    if (!ownsOrder && !isAdmin(req)) {
+    if (!ownsOrder && !(await isAdmin(req))) {
       return new NextResponse("Non autorisé", { status: 401 });
     }
 
