@@ -126,27 +126,28 @@ export default async function RootLayout({
         className={`${publicSans.variable} ${urbanist.variable} ${dmSans.variable} antialiased`}
       >
         {maintenance.enabled ? (
-          <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8f6ef] px-5 py-12 text-[#18362b] sm:px-8">
-            <div aria-hidden="true" className="absolute -left-40 -top-40 size-[34rem] rounded-full bg-[#dce8d7]/70 blur-3xl" />
-            <div aria-hidden="true" className="absolute -bottom-56 -right-32 size-[38rem] rounded-full bg-[#ead9ad]/55 blur-3xl" />
-            <section className="relative w-full max-w-3xl overflow-hidden rounded-[2rem] border border-[#18362b]/10 bg-white/90 px-6 py-10 text-center shadow-[0_28px_90px_rgba(28,55,42,0.12)] backdrop-blur sm:px-14 sm:py-14">
+          <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f2faf9] px-5 py-12 text-[#202927] sm:px-8">
+            <div aria-hidden="true" className="maintenance-drift absolute -left-36 -top-36 size-[28rem] rounded-full border-[72px] border-[#088178]/[0.06]" />
+            <div aria-hidden="true" className="maintenance-drift-reverse absolute -bottom-52 -right-44 size-[34rem] rounded-full border-[92px] border-[#5ed9ba]/10" />
+            <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-[#088178]" />
+            <section className="maintenance-enter relative w-full max-w-3xl overflow-hidden rounded-[2rem] border border-[#088178]/15 bg-white px-6 py-10 text-center shadow-[0_30px_90px_rgba(8,129,120,0.12)] sm:px-14 sm:py-14">
               <Image src="/images/logo-sulson.png" alt="Les Épices de Sulson" width={190} height={72} priority className="mx-auto h-16 w-auto object-contain" />
-              <span className="mx-auto mt-8 inline-flex items-center gap-2 rounded-full border border-[#b89142]/25 bg-[#fbf6e9] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#8a6827]">
-                <span className="size-1.5 rounded-full bg-[#c49a45]" /> Pause temporaire
+              <span className="mx-auto mt-8 inline-flex items-center gap-2 rounded-full border border-[#088178]/20 bg-[#caf8e4]/35 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#056d6e]">
+                <span className="maintenance-pulse size-1.5 rounded-full bg-[#088178]" /> Pause temporaire
               </span>
-              <h1 className="mx-auto mt-7 max-w-2xl font-urbanist text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-[#17382b] sm:text-6xl">Notre atelier prend un instant.</h1>
-              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#66736d] sm:text-lg">{maintenance.message}</p>
+              <h1 className="mx-auto mt-7 max-w-2xl font-urbanist text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-[#202927] sm:text-6xl">Une courte pause,<br className="hidden sm:block" /> les saveurs restent.</h1>
+              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#65716e] sm:text-lg">{maintenance.message}</p>
               {maintenance.expectedBackAt && (
-                <div className="mx-auto mt-7 w-fit rounded-xl bg-[#f1f5ef] px-5 py-3 text-sm font-semibold text-[#29483b]">
+                <div className="mx-auto mt-7 w-fit rounded-xl border border-[#088178]/10 bg-[#f2faf9] px-5 py-3 text-sm font-semibold text-[#056d6e]">
                   Retour prévu le {maintenance.expectedBackAt.toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })}
                 </div>
               )}
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <a href="https://wa.me/33695545723?text=Bonjour%20Les%20%C3%89pices%20de%20Sulson%2C%20j%27ai%20une%20question%20pendant%20la%20maintenance%20de%20la%20boutique." target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-[#17382b] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#24533f]">
+                <a href="https://wa.me/33695545723?text=Bonjour%20Les%20%C3%89pices%20de%20Sulson%2C%20j%27ai%20une%20question%20pendant%20la%20maintenance%20de%20la%20boutique." target="_blank" rel="noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-[#088178] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(8,129,120,0.2)] transition hover:-translate-y-0.5 hover:bg-[#056d6e]">
                   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="size-5"><path d="M12.03 2A9.84 9.84 0 0 0 3.5 16.73L2 22l5.4-1.42A9.97 9.97 0 1 0 12.03 2Zm0 18.18a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.2.84.85-3.1-.2-.32a8.14 8.14 0 1 1 7.03 3.9Zm4.47-6.1c-.24-.12-1.45-.71-1.67-.79-.23-.08-.4-.12-.56.12-.17.25-.64.8-.79.97-.14.16-.29.18-.53.06-1.44-.72-2.39-1.29-3.35-2.92-.25-.44.25-.41.72-1.36.08-.16.04-.3-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.3-.22.25-.87.85-.87 2.07s.89 2.4 1.01 2.57c.12.16 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.45-.6 1.65-1.17.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.47-.28Z" /></svg>
                   Nous écrire sur WhatsApp
                 </a>
-                <a href="mailto:contact@epicesdesulson.com" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#17382b]/20 px-6 py-3 text-sm font-bold text-[#17382b] transition hover:bg-[#f1f5ef]">Envoyer un e-mail</a>
+                <a href="mailto:contact@epicesdesulson.com" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#088178]/25 px-6 py-3 text-sm font-bold text-[#088178] transition hover:border-[#088178]/40 hover:bg-[#f2faf9]">Envoyer un e-mail</a>
               </div>
               <p className="mt-8 text-xs leading-5 text-[#8a948f]">Vos commandes déjà confirmées continuent d'être suivies par notre équipe.</p>
             </section>

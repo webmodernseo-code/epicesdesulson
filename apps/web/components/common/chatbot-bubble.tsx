@@ -191,12 +191,12 @@ export default function ChatbotBubble() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 25 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-22 right-4 sm:right-6 w-[calc(100vw-32px)] sm:w-[410px] h-[580px] max-h-[84vh] z-60 bg-white rounded-3xl shadow-2xl border border-gray-200/90 flex flex-col overflow-hidden text-gray-900"
+            className="fixed inset-0 z-60 flex h-[100dvh] w-full flex-col overflow-hidden bg-white text-gray-900 sm:inset-auto sm:bottom-22 sm:right-6 sm:h-[580px] sm:max-h-[84vh] sm:w-[410px] sm:rounded-3xl sm:border sm:border-gray-200/90 sm:shadow-2xl"
           >
             {/* Header */}
-            <div className="bg-gray-900 text-white px-5 py-4 flex items-center justify-between shrink-0 border-b border-gray-800">
-              <div className="flex items-center gap-3">
-                <div className="relative size-10 rounded-2xl bg-white/10 p-1 flex items-center justify-center border border-white/15 shrink-0 overflow-hidden">
+            <div className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-gray-800 bg-gray-900 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] text-white sm:px-5 sm:py-4">
+              <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                <div className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-white/10 p-1 sm:size-10 sm:rounded-2xl">
                   <Image
                     src="/images/logo-sulson-trimmed.png"
                     alt="Sulson"
@@ -206,26 +206,26 @@ export default function ChatbotBubble() {
                   />
                   <span className="absolute top-1 right-1 size-2 rounded-full bg-emerald-400 ring-2 ring-gray-900 animate-pulse" />
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-white flex items-center gap-1.5 leading-tight">
+                <div className="min-w-0">
+                  <h4 className="flex min-w-0 items-center gap-1.5 truncate text-sm font-bold leading-tight text-white">
                     {config.assistantName || "Conseillère Sulson"}
-                    <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded-full border border-emerald-800/60">
+                    <span className="hidden shrink-0 rounded-full border border-emerald-800/60 bg-emerald-950/80 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400 min-[390px]:inline-flex">
                       En ligne
                     </span>
                   </h4>
-                  <p className="text-[11px] text-gray-400">
+                  <p className="truncate text-[10px] text-gray-400 sm:text-[11px]">
                     Conseils culinaires & service client
                   </p>
                 </div>
               </div>
 
               {/* Header Right Actions */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex shrink-0 items-center gap-1.5">
                 <button
                   type="button"
                   onClick={resetConversation}
                   title="Recommencer la discussion"
-                  className="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="hidden size-8 items-center justify-center rounded-xl bg-white/10 text-gray-300 transition-colors hover:bg-white/20 hover:text-white min-[360px]:flex cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                 </button>
