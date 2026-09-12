@@ -74,7 +74,7 @@ export default function Sidebar({
         className={`h-screen shrink-0 fixed left-0 top-0 z-50 flex flex-col transition-all duration-300 
         ${isOpen ? "translate-x-0" : "-translate-x-full"} xl:translate-x-0 
         ${isCollapsed ? "w-[80px]" : "w-[280px]"}
-        bg-[#075f5c] border-r border-white/10 shadow-[8px_0_32px_rgba(7,95,92,0.12)]`}
+        bg-primary-darker border-r border-white/10 shadow-[8px_0_32px_rgba(7,95,92,0.12)]`}
       >
         <SidebarHeader
           isCollapsed={isCollapsed}

@@ -6,7 +6,6 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import AutoLogoutGuard from "@/components/auth/auto-logout-guard";
 import { AdminIdentity, AdminSessionProvider, isSuperAdminRole } from "@/components/auth/admin-session-context";
-import LockedAdminPreview from "@/components/auth/locked-admin-preview";
 
 const SUPER_ADMIN_PATHS = ["/admin-users", "/settings/payment-api", "/settings/smtp", "/settings/media", "/settings/maintenance"];
 
@@ -70,7 +69,17 @@ export default function DashboardLayout({
         <main className="flex-1 py-4 px-4 lg:p-6 xl:px-10  overflow-auto">
           {!sessionLoaded ? (
             <div className="min-h-[60vh] animate-pulse rounded-[28px] bg-white/70" />
-          ) : isLocked ? <LockedAdminPreview /> : children}
+          ) : (
+            <div
+              inert={isLocked}
+              aria-disabled={isLocked}
+              className={isLocked
+                ? "pointer-events-none select-none opacity-45 brightness-75 saturate-50 transition-all duration-300"
+                : undefined}
+            >
+              {children}
+            </div>
+          )}
         </main>
       </div>
     </div>
