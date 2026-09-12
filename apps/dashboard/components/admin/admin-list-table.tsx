@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil, Trash } from "@/icons";
-import { ShieldCheck, UserPlus, Lock, Crown, UserRoundCheck } from "lucide-react";
+import { ShieldCheck, UserPlus, Lock } from "lucide-react";
 import Link from "next/link";
 
 interface AdminUser {
@@ -27,6 +27,31 @@ interface AdminUser {
   date: string;
   activeStatus: "Actif" | "Suspendu" | "Invitation";
   avatar: string;
+}
+
+function AdminRoleIcon({ primary }: { primary: boolean }) {
+  return (
+    <span
+      className={`flex size-9 shrink-0 items-center justify-center rounded-full border ${
+        primary
+          ? "border-zinc-900 bg-zinc-900 text-white"
+          : "border-zinc-200 bg-zinc-50 text-zinc-700"
+      }`}
+      title={primary ? "Super administrateur" : "Administrateur"}
+    >
+      {primary ? (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="size-[18px]">
+          <path d="M5 17.25h14M6.25 14.5l-1-7 4.15 3.15L12 5l2.6 5.65 4.15-3.15-1 7H6.25Z" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="size-[18px]">
+          <circle cx="12" cy="8.25" r="3.25" stroke="currentColor" strokeWidth="1.65" />
+          <path d="M5.75 18.5c.55-3.15 2.58-4.75 6.25-4.75s5.7 1.6 6.25 4.75" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" />
+          <path d="m16.5 11.5 1.15 1.15L20 10.3" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </span>
+  );
 }
 
 export default function AdminListTable() {
@@ -147,26 +172,7 @@ export default function AdminListTable() {
                 </TableCell>
                 <TableCell className="text-xs whitespace-nowrap text-gray-900 font-bold">
                   <div className="flex items-center gap-2.5">
-                    <div
-                      className={`relative flex size-10 shrink-0 items-center justify-center rounded-xl border shadow-sm ring-2 ring-white ${
-                        item.isPrimary
-                          ? "border-amber-200 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100 text-amber-700"
-                          : "border-violet-200 bg-gradient-to-br from-violet-50 via-indigo-50 to-purple-100 text-violet-700"
-                      }`}
-                      title={item.isPrimary ? "Super administrateur" : "Administrateur"}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`absolute right-1 top-1 size-1.5 rounded-full ring-2 ring-white ${
-                          item.activeStatus === "Actif" ? "bg-emerald-500" : "bg-amber-400"
-                        }`}
-                      />
-                      {item.isPrimary ? (
-                        <Crown aria-hidden="true" className="size-5 fill-amber-400/25 stroke-[1.8]" />
-                      ) : (
-                        <UserRoundCheck aria-hidden="true" className="size-5 stroke-[1.8]" />
-                      )}
-                    </div>
+                    <AdminRoleIcon primary={item.isPrimary} />
                     <span>{item.user}</span>
                   </div>
                 </TableCell>
