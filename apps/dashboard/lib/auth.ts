@@ -7,7 +7,7 @@ const scrypt = promisify(nodeScrypt);
 export const SESSION_COOKIE = "sulson_admin_session";
 export const COMPAT_COOKIE = "sulson_session";
 
-export type SessionRole = "CUSTOMER" | "ADMIN" | "MASTER_ADMIN";
+export type SessionRole = "CUSTOMER" | "ADMIN" | "SUPER_ADMIN" | "MASTER_ADMIN";
 
 export interface SessionPayload {
   userId: string;
@@ -72,7 +72,7 @@ export function readSession(req: NextRequest): SessionPayload | null {
 export function isAdmin(req: NextRequest): boolean {
   try {
     const session = readSession(req);
-    if (session && (session.role === "ADMIN" || session.role === "MASTER_ADMIN")) {
+    if (session && ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(session.role)) {
       return true;
     }
 
@@ -80,6 +80,12 @@ export function isAdmin(req: NextRequest): boolean {
   } catch {
     return false;
   }
+}
+
+export function isSuperAdmin(req: NextRequest): boolean {
+  const role = readSession(req)?.role;
+  // MASTER_ADMIN reste accepté pendant la migration des comptes existants.
+  return role === "SUPER_ADMIN" || role === "MASTER_ADMIN";
 }
 
 export async function hashPassword(password: string): Promise<string> {

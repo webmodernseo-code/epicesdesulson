@@ -49,7 +49,10 @@ export function SigninForm() {
       if (typeof window !== "undefined") {
         sessionStorage.setItem("sulson_admin_active_tab", "1");
         sessionStorage.setItem("sulson_last_activity", Date.now().toString());
-        localStorage.setItem("userRole", "master");
+        localStorage.setItem(
+          "userRole",
+          data.user?.role === "ADMIN" ? "admin" : "super_admin",
+        );
       }
 
       toast.success("Connexion réussie. Bienvenue sur le tableau de bord !");

@@ -46,7 +46,7 @@ export async function POST(req: Request) {
         const dbUser = await prisma.user.findUnique({
           where: { email: cleanEmail },
         });
-        if (dbUser && (dbUser.role === "ADMIN" || dbUser.role === "MASTER_ADMIN")) {
+        if (dbUser && ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(dbUser.role)) {
           userExists = true;
         }
       } catch (err) {

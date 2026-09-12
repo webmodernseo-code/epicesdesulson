@@ -4,9 +4,9 @@ import { randomBytes, scryptSync } from "node:crypto";
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminPassword = process.env.ADMIN_INITIAL_PASSWORD;
+  const adminPassword = process.env.SUPER_ADMIN_INITIAL_PASSWORD;
   if (!adminPassword || adminPassword.length < 12) {
-    throw new Error("ADMIN_INITIAL_PASSWORD doit contenir au moins 12 caractères avant le seed.");
+    throw new Error("SUPER_ADMIN_INITIAL_PASSWORD doit contenir au moins 12 caractères avant le seed.");
   }
   const passwordSalt = randomBytes(16).toString("hex");
   const passwordHash = `scrypt:${passwordSalt}:${scryptSync(adminPassword, passwordSalt, 64).toString("hex")}`;
@@ -205,7 +205,7 @@ async function main() {
       name: "Chef Sulson",
       email: "contact@epicesdesulson.com",
       passwordHash,
-      role: "MASTER_ADMIN",
+      role: "SUPER_ADMIN",
     },
   });
 

@@ -4,7 +4,7 @@ import { readSession } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const session = readSession(req);
-  if (!session || (session.role !== "ADMIN" && session.role !== "MASTER_ADMIN")) {
+  if (!session || !["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(session.role)) {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
 

@@ -68,13 +68,13 @@ export async function POST(req: Request) {
         where: { email: cleanEmail },
         update: {
           passwordHash: hashedPassword,
-          role: "MASTER_ADMIN",
+          role: "SUPER_ADMIN",
         },
         create: {
           email: cleanEmail,
           name: "Admin Sulson",
           passwordHash: hashedPassword,
-          role: "MASTER_ADMIN",
+          role: "SUPER_ADMIN",
         },
       });
     } catch (dbErr) {

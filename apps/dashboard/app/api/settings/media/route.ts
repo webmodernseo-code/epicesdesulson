@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/auth";
+import { isSuperAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function mask(value?: string | null) { return value ? `${value.slice(0, 4)}••••${value.slice(-3)}` : ""; }
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!isSuperAdmin(req)) return NextResponse.json({ error: "Accès réservé au super administrateur." }, { status: 403 });
   const config = await prisma.mediaStorageConfig.findUnique({ where: { provider: "cloudinary" } }).catch(() => null);
   return NextResponse.json({ success: true, data: config ? { cloudName: config.cloudName, apiKey: mask(config.apiKey), apiSecret: mask(config.apiSecret), uploadFolder: config.uploadFolder, isEnabled: config.isEnabled, configured: true } : { cloudName: "", apiKey: "", apiSecret: "", uploadFolder: "les-epices-de-sulson/products", isEnabled: false, configured: false } });
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!isSuperAdmin(req)) return NextResponse.json({ error: "Accès réservé au super administrateur." }, { status: 403 });
   const body = await req.json(); const existing = await prisma.mediaStorageConfig.findUnique({ where: { provider: "cloudinary" } });
   const apiKey = body.apiKey?.includes("••••") ? existing?.apiKey : body.apiKey?.trim(); const apiSecret = body.apiSecret?.includes("••••") ? existing?.apiSecret : body.apiSecret?.trim();
   if (!body.cloudName?.trim() || !apiKey || !apiSecret) return NextResponse.json({ error: "Cloud name, API key et API secret sont requis." }, { status: 400 });

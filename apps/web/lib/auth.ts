@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 const scrypt = promisify(nodeScrypt);
 export const SESSION_COOKIE = "sulson_session";
-export type SessionRole = "CUSTOMER" | "ADMIN" | "MASTER_ADMIN";
+export type SessionRole = "CUSTOMER" | "ADMIN" | "SUPER_ADMIN" | "MASTER_ADMIN";
 interface SessionPayload { userId: string; email: string; role: SessionRole; exp: number }
 
 function sessionSecret(): string {
@@ -41,7 +41,12 @@ export function readSession(req: NextRequest): SessionPayload | null {
 
 export function isAdmin(req: NextRequest): boolean {
   const role = readSession(req)?.role;
-  return role === "ADMIN" || role === "MASTER_ADMIN";
+  return role === "ADMIN" || role === "SUPER_ADMIN" || role === "MASTER_ADMIN";
+}
+
+export function isSuperAdmin(req: NextRequest): boolean {
+  const role = readSession(req)?.role;
+  return role === "SUPER_ADMIN" || role === "MASTER_ADMIN";
 }
 
 export async function hashPassword(password: string): Promise<string> {

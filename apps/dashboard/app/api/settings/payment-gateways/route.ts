@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/auth";
+import { isSuperAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -8,8 +8,8 @@ const masked = (value?: string | null) =>
   value ? `${value.slice(0, 7)}••••••••${value.slice(-4)}` : "";
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req)) {
-    return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!isSuperAdmin(req)) {
+    return NextResponse.json({ error: "Accès réservé au super administrateur." }, { status: 403 });
   }
 
   try {
@@ -69,8 +69,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAdmin(req)) {
-    return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  if (!isSuperAdmin(req)) {
+    return NextResponse.json({ error: "Accès réservé au super administrateur." }, { status: 403 });
   }
 
   try {

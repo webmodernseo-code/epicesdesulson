@@ -14,6 +14,8 @@ generator client {
 enum Role {
   CUSTOMER
   ADMIN
+  SUPER_ADMIN
+  // Conservé temporairement pour permettre la migration des anciens comptes.
   MASTER_ADMIN
 }
 

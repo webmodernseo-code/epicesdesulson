@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { isAdmin } from "@/lib/auth";
+import { isSuperAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,7 @@ function maskSecret(key: string | null | undefined): string {
 
 // GET /api/settings/payment-gateways
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req)) return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
+  if (!isSuperAdmin(req)) return NextResponse.json({ success: false, error: "Accès réservé au super administrateur." }, { status: 403 });
   try {
     let stripeConfig = null;
     let paypalConfig = null;
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/settings/payment-gateways
 export async function POST(req: NextRequest) {
-  if (!isAdmin(req)) return NextResponse.json({ success: false, error: "Non autorisé." }, { status: 401 });
+  if (!isSuperAdmin(req)) return NextResponse.json({ success: false, error: "Accès réservé au super administrateur." }, { status: 403 });
   try {
     const body = await req.json();
     const { action, gateway, isEnabled, isLiveMode, publishableKey, secretKey, webhookSecret, clientId } = body;

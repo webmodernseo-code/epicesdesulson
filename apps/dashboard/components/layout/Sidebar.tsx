@@ -35,9 +35,8 @@ export default function Sidebar({
     if (typeof window !== "undefined") {
       try {
         const storedRole = localStorage.getItem("userRole");
-        if (storedRole === "seller" || storedRole === "master") {
-          setUserRole(storedRole as "master" | "seller");
-        }
+        if (storedRole === "admin" || storedRole === "seller") setUserRole("seller");
+        if (storedRole === "super_admin" || storedRole === "master") setUserRole("master");
       } catch {
         // Safe fallback
       }
@@ -46,8 +45,23 @@ export default function Sidebar({
 
   // Navigation items for the boutique dashboard
   const filteredNavItems = useMemo(() => {
-    return navItems;
-  }, []);
+    if (userRole === "master") return navItems;
+
+    const superAdminOnly = new Set([
+      "/admin-users",
+      "/settings/payment-api",
+      "/settings/smtp",
+      "/settings/media",
+    ]);
+
+    return navItems
+      .map((group) =>
+        group.items
+          ? { ...group, items: group.items.filter((item) => !item.href || !superAdminOnly.has(item.href)) }
+          : group,
+      )
+      .filter((group) => !group.items || group.items.length > 0);
+  }, [userRole]);
 
   useEffect(() => {
     // Synchronize active submenu with pathname

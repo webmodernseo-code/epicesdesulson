@@ -5,11 +5,6 @@ import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
-const BOOTSTRAP_PASSWORDS = [
-  process.env.ADMIN_INITIAL_PASSWORD,
-  process.env.ADMIN_PASSWORD,
-].filter(Boolean) as string[];
-
 export async function POST(req: NextRequest) {
   const limit = rateLimit(`change-password:${getClientIp(req)}`, 5, 15 * 60 * 1000);
   if (!limit.success) {
@@ -73,9 +68,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const oldPasswordIsValid = user?.passwordHash
-      ? await verifyPassword(oldPassword, user.passwordHash)
-      : BOOTSTRAP_PASSWORDS.includes(oldPassword);
+    if (!user?.passwordHash) {
+      return NextResponse.json(
+        { success: false, error: "Compte administrateur introuvable en base de données." },
+        { status: 404 }
+      );
+    }
+
+    const oldPasswordIsValid = await verifyPassword(oldPassword, user.passwordHash);
 
     if (!oldPasswordIsValid) {
       return NextResponse.json(
@@ -85,21 +85,10 @@ export async function POST(req: NextRequest) {
     }
 
     const passwordHash = await hashPassword(newPassword);
-    if (user) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { passwordHash },
-      });
-    } else {
-      await prisma.user.create({
-        data: {
-          email: targetEmail,
-          name: "Administrateur Sulson",
-          passwordHash,
-          role: "MASTER_ADMIN",
-        },
-      });
-    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
+    });
 
     const persistedUser = await prisma.user.findUnique({
       where: { email: targetEmail },

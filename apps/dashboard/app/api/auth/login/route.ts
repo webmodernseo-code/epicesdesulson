@@ -8,16 +8,6 @@ import {
 } from "@/lib/auth";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
-// Master emergency passwords accepted for swift administrative access
-const MASTER_PASSWORDS = [
-  process.env.ADMIN_INITIAL_PASSWORD,
-  process.env.ADMIN_PASSWORD,
-].filter(Boolean) as string[];
-
-const MASTER_ADMIN_EMAILS = [
-  "contact@epicesdesulson.com",
-].filter(Boolean) as string[];
-
 export async function POST(req: Request) {
   try {
     const clientIp = getClientIp(req);
@@ -47,7 +37,7 @@ export async function POST(req: Request) {
       id: string;
       email: string;
       name: string;
-      role: "MASTER_ADMIN" | "ADMIN";
+      role: "SUPER_ADMIN" | "MASTER_ADMIN" | "ADMIN";
     } | null = null;
     let persistedAdminExists = false;
 
@@ -60,7 +50,11 @@ export async function POST(req: Request) {
           },
         });
 
-        if (user && (user.role === "ADMIN" || user.role === "MASTER_ADMIN") && user.passwordHash) {
+        if (
+          user &&
+          (user.role === "ADMIN" || user.role === "SUPER_ADMIN" || user.role === "MASTER_ADMIN") &&
+          user.passwordHash
+        ) {
           persistedAdminExists = true;
           const isValid = await verifyPassword(inputPassword, user.passwordHash);
           if (isValid) {
@@ -75,19 +69,6 @@ export async function POST(req: Request) {
       } catch (dbError) {
         console.error("Database lookup failed during dashboard signin:", dbError);
       }
-    }
-
-    // 2. Direct match for Master / Emergency Passwords
-    const isMasterEmail = MASTER_ADMIN_EMAILS.includes(cleanInput);
-    const isMasterPassword = MASTER_PASSWORDS.includes(inputPassword);
-
-    if (!authenticatedUser && !persistedAdminExists && isMasterEmail && isMasterPassword) {
-      authenticatedUser = {
-        id: "master_admin_root",
-        email: cleanInput.includes("@") ? cleanInput : "contact@epicesdesulson.com",
-        name: "Admin Sulson",
-        role: "MASTER_ADMIN",
-      };
     }
 
     if (!authenticatedUser) {
@@ -137,7 +118,7 @@ export async function POST(req: Request) {
     });
 
     // Set client-accessible role cookie (session lifetime)
-    response.cookies.set("userRole", "master", {
+    response.cookies.set("userRole", authenticatedUser.role === "ADMIN" ? "admin" : "super_admin", {
       httpOnly: false,
       secure: isProd,
       sameSite: "lax",
