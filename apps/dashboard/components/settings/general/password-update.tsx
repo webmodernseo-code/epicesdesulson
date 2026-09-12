@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useAdminSession } from "@/components/auth/admin-session-context";
 
 export default function PasswordUpdate() {
+  const identity = useAdminSession();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -68,7 +71,7 @@ export default function PasswordUpdate() {
             Sécurité du Compte & Mot de Passe
           </h3>
           <p className="text-xs text-gray-500">
-            Mettre à jour vos identifiants d'accès administrateur
+            Modification du mot de passe de {identity?.email || "votre compte administrateur"}
           </p>
         </div>
       </div>
@@ -176,7 +179,13 @@ export default function PasswordUpdate() {
         </div>
       </div>
 
-      <div className="flex justify-end pt-2">
+      <div className="flex flex-col-reverse items-start justify-between gap-3 pt-2 sm:flex-row sm:items-center">
+        <Link
+          href={`/forgot-password${identity?.email ? `?email=${encodeURIComponent(identity.email)}` : ""}`}
+          className="text-xs font-semibold text-gray-500 transition-colors hover:text-[#088178]"
+        >
+          Mot de passe actuel oublié ? Recevoir un lien par e-mail
+        </Link>
         <button
           type="submit"
           disabled={loading}

@@ -5,17 +5,6 @@ import { getSessionSecret } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
-const MASTER_RECOVERY_EMAIL = "contact@epicesdesulson.com";
-
-function getMasterRecoveryEmails() {
-  const configured = process.env.ADMIN_RECOVERY_EMAILS
-    ?.split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-
-  return configured?.length ? configured : [MASTER_RECOVERY_EMAIL];
-}
-
 export async function POST(req: Request) {
   try {
     const limit = rateLimit(`forgot-password:${getClientIp(req)}`, 5, 15 * 60 * 1000);
@@ -36,23 +25,16 @@ export async function POST(req: Request) {
     const cleanEmail = email.trim().toLowerCase();
     const secret = getSessionSecret();
 
-    // Check if it's the master admin or a registered user in Neon DB
-    const isMaster = cleanEmail === "contact@epicesdesulson.com";
-
-    let userExists = isMaster;
-
-    if (!userExists) {
-      try {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: cleanEmail },
-        });
-        if (dbUser && ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(dbUser.role)) {
-          userExists = true;
-        }
-      } catch (err) {
-        console.error("Database check error during password reset:", err);
-      }
-    }
+    const user = await prisma.user.findFirst({
+      where: { email: { equals: cleanEmail, mode: "insensitive" } },
+      select: { id: true, email: true, passwordHash: true, role: true, adminEnabled: true },
+    }).catch((err) => {
+      console.error("Database check error during password reset:", err);
+      return null;
+    });
+    const userExists = Boolean(
+      user?.adminEnabled && user.passwordHash && ["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(user.role),
+    );
 
     // Always respond with success to avoid email enumeration
     if (!userExists) {
@@ -64,7 +46,8 @@ export async function POST(req: Request) {
 
     // Generate signed reset token valid for 1 hour
     const exp = Math.floor(Date.now() / 1000) + 3600;
-    const payload = JSON.stringify({ email: cleanEmail, exp });
+    const credential = createHmac("sha256", secret).update(user!.passwordHash!).digest("base64url");
+    const payload = JSON.stringify({ userId: user!.id, email: user!.email.toLowerCase(), credential, exp });
     const encoded = Buffer.from(payload).toString("base64url");
     const signature = createHmac("sha256", secret).update(encoded).digest("base64url");
     const resetToken = `${encoded}.${signature}`;
@@ -73,11 +56,10 @@ export async function POST(req: Request) {
     const origin = configuredOrigin || new URL(req.url).origin;
     const resetUrl = `${origin}/set-new-password?token=${encodeURIComponent(resetToken)}`;
 
-    const recoveryEmails = isMaster ? getMasterRecoveryEmails() : [cleanEmail];
     const delivery = await sendPasswordResetEmail({
-      recipients: recoveryEmails,
+      recipients: [user!.email],
       resetUrl,
-      accountEmail: cleanEmail,
+      accountEmail: user!.email,
     });
     if (!delivery.success) {
       console.error("Password reset email delivery failed:", delivery.error);

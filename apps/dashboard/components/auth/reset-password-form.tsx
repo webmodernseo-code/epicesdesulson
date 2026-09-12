@@ -7,9 +7,11 @@ import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export function ResetPasswordForm() {
-  const [email, setEmail] = useState("");
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState(() => searchParams.get("email") || "");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 

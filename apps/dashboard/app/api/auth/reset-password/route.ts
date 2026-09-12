@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     const payload = JSON.parse(Buffer.from(encoded, "base64url").toString());
-    if (!payload.email || !payload.exp || payload.exp <= Math.floor(Date.now() / 1000)) {
+    if (!payload.userId || !payload.email || !payload.credential || !payload.exp || payload.exp <= Math.floor(Date.now() / 1000)) {
       return NextResponse.json(
         { error: "Ce lien de réinitialisation a expiré. Veuillez refaire une demande." },
         { status: 400 }
@@ -64,9 +64,18 @@ export async function POST(req: Request) {
     const hashedPassword = await hashPassword(newPassword);
 
     try {
-      const user = await prisma.user.findUnique({ where: { email: cleanEmail } });
-      if (!user || !["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(user.role)) {
+      const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+      if (!user || !user.adminEnabled || user.email.toLowerCase() !== cleanEmail || !user.passwordHash || !["ADMIN", "SUPER_ADMIN", "MASTER_ADMIN"].includes(user.role)) {
         return NextResponse.json({ error: "Compte administrateur introuvable." }, { status: 404 });
+      }
+      const currentCredential = createHmac("sha256", secret).update(user.passwordHash).digest("base64url");
+      const expectedCredential = Buffer.from(currentCredential);
+      const receivedCredential = Buffer.from(payload.credential);
+      if (expectedCredential.length !== receivedCredential.length || !timingSafeEqual(expectedCredential, receivedCredential)) {
+        return NextResponse.json(
+          { error: "Ce lien a déjà été utilisé ou n’est plus valide. Veuillez refaire une demande." },
+          { status: 400 },
+        );
       }
       await prisma.user.update({
         where: { id: user.id },
