@@ -334,7 +334,18 @@ export default function Footer() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="text-center text-white/80 text-[11px] sm:text-xs pt-4 border-t border-[rgba(145,158,171,0.12)]"
           >
-            {new Date().getFullYear()} © Les Épices de Sulson. Tous droits réservés.
+            <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
+              <span>{new Date().getFullYear()} © Les Épices de Sulson. Tous droits réservés.</span>
+              <span aria-hidden="true" className="hidden text-white/25 sm:inline">·</span>
+              <a
+                href={process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://admin.epicesdesulson.com"}
+                className="inline-flex items-center gap-1.5 text-white/40 transition-colors hover:text-white/70"
+                rel="nofollow"
+              >
+                <i className="hgi hgi-stroke hgi-lock-password text-[12px]" aria-hidden="true" />
+                <span>Espace administration</span>
+              </a>
+            </div>
           </motion.div>
           {/* ========== Footer Bottom Section End ========== */}
         </div>

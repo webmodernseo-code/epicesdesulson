@@ -150,6 +150,14 @@ export default async function RootLayout({
                 <a href="mailto:contact@epicesdesulson.com" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#088178]/25 px-6 py-3 text-sm font-bold text-[#088178] transition hover:border-[#088178]/40 hover:bg-[#f2faf9]">Envoyer un e-mail</a>
               </div>
               <p className="mt-8 text-xs leading-5 text-[#8a948f]">Vos commandes déjà confirmées continuent d'être suivies par notre équipe.</p>
+              <a
+                href={process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://admin.epicesdesulson.com"}
+                rel="nofollow"
+                className="mt-6 inline-flex items-center gap-1.5 text-[11px] font-medium text-[#82908c] transition-colors hover:text-[#088178]"
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="size-3.5"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.7"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>
+                Accès administration
+              </a>
             </section>
           </main>
         ) : (
