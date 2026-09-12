@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil, Trash } from "@/icons";
-import { ShieldCheck, UserPlus, Lock } from "lucide-react";
+import { ShieldCheck, UserPlus, Lock, Crown, UserRoundCheck } from "lucide-react";
 import Link from "next/link";
 
 interface AdminUser {
@@ -147,8 +147,25 @@ export default function AdminListTable() {
                 </TableCell>
                 <TableCell className="text-xs whitespace-nowrap text-gray-900 font-bold">
                   <div className="flex items-center gap-2.5">
-                    <div className="size-8 relative shrink-0 overflow-hidden rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-xs font-bold text-gray-700">
-                      {item.isPrimary ? "👑" : "👤"}
+                    <div
+                      className={`relative flex size-10 shrink-0 items-center justify-center rounded-xl border shadow-sm ring-2 ring-white ${
+                        item.isPrimary
+                          ? "border-amber-200 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100 text-amber-700"
+                          : "border-violet-200 bg-gradient-to-br from-violet-50 via-indigo-50 to-purple-100 text-violet-700"
+                      }`}
+                      title={item.isPrimary ? "Super administrateur" : "Administrateur"}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`absolute right-1 top-1 size-1.5 rounded-full ring-2 ring-white ${
+                          item.activeStatus === "Actif" ? "bg-emerald-500" : "bg-amber-400"
+                        }`}
+                      />
+                      {item.isPrimary ? (
+                        <Crown aria-hidden="true" className="size-5 fill-amber-400/25 stroke-[1.8]" />
+                      ) : (
+                        <UserRoundCheck aria-hidden="true" className="size-5 stroke-[1.8]" />
+                      )}
                     </div>
                     <span>{item.user}</span>
                   </div>
