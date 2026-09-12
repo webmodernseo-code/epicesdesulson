@@ -599,7 +599,7 @@ export default function SmtpSettings() {
         <Button
           onClick={handleSave}
           disabled={loading}
-          className="btn-primary text-white px-8 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer self-end"
+          className="self-end rounded-xl border border-emerald-700 bg-emerald-700 px-8 py-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 sm:text-sm"
         >
           {loading ? "Enregistrement en cours..." : "Enregistrer la configuration SMTP"}
         </Button>

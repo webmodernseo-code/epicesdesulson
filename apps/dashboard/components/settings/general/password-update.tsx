@@ -180,7 +180,7 @@ export default function PasswordUpdate() {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary text-white px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-700 bg-emerald-700 px-6 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
         >
           {loading ? (
             <>
