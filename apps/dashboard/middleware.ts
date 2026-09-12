@@ -16,6 +16,7 @@ const SUPER_ADMIN_PATHS = [
   "/settings/payment-api",
   "/settings/smtp",
   "/settings/media",
+  "/settings/maintenance",
 ];
 
 function readTokenRole(token: string): string | null {

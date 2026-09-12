@@ -4,9 +4,12 @@ import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail, sendAdminNewOrderAlertEmail } from "@/lib/email";
 import { getStripeServer } from "@/lib/stripe";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { maintenanceResponse } from "@/lib/maintenance";
 
 export async function POST(req: Request) {
   try {
+    const maintenance = await maintenanceResponse();
+    if (maintenance) return NextResponse.json({ success: false, error: maintenance.message }, { status: 503 });
     const clientIp = getClientIp(req);
     const { success } = rateLimit(`checkout:${clientIp}`, 25, 60 * 1000);
     if (!success) {

@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { OrdersService } from "@/lib/orders-service";
 import { getStripeServer } from "@/lib/stripe";
+import { maintenanceResponse } from "@/lib/maintenance";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
+    const maintenance = await maintenanceResponse();
+    if (maintenance) return NextResponse.json({ success: false, error: maintenance.message }, { status: 503 });
     const body = await req.json();
     const { customer, items, couponCode } = body;
 

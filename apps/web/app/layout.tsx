@@ -9,6 +9,7 @@ import { QuickViewProvider } from "@/context/quick-view-context";
 import { CartProvider } from "@/context/cart-context";
 import { RatingsProvider } from "@/context/ratings-context";
 import NextTopLoader from "nextjs-toploader";
+import { getMaintenanceStatus } from "@/lib/maintenance";
 
 const publicSans = Public_Sans({
   variable: "--font-public-sans",
@@ -99,11 +100,15 @@ import ChatbotBubble from "@/components/common/chatbot-bubble";
 import CookieConsent from "@/components/common/cookie-consent";
 import { OrganizationAndWebsiteJsonLd } from "@/components/seo/json-ld";
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const maintenance = await getMaintenanceStatus();
+
   return (
     <html lang="fr" className="scroll-smooth">
       <head>
@@ -119,6 +124,23 @@ export default function RootLayout({
       <body
         className={`${publicSans.variable} ${urbanist.variable} ${dmSans.variable} antialiased`}
       >
+        {maintenance.enabled ? (
+          <main className="flex min-h-screen items-center justify-center bg-[#f7f5ef] px-6 py-16 text-[#1b1b18]">
+            <section className="w-full max-w-2xl text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#8a6a2f]">Les Épices de Sulson</p>
+              <div className="mx-auto my-8 h-px w-16 bg-[#b8975a]" />
+              <h1 className="font-urbanist text-4xl font-semibold tracking-tight sm:text-6xl">La boutique fait une courte pause.</h1>
+              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#5c5a52] sm:text-lg">{maintenance.message}</p>
+              {maintenance.expectedBackAt && (
+                <p className="mt-8 text-sm font-semibold text-[#34332e]">
+                  Retour prévu le {maintenance.expectedBackAt.toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })}
+                </p>
+              )}
+              <a href="mailto:contact@epicesdesulson.com" className="mt-10 inline-flex border-b border-[#1b1b18] pb-1 text-sm font-semibold">contact@epicesdesulson.com</a>
+            </section>
+          </main>
+        ) : (
+          <>
         <OrganizationAndWebsiteJsonLd />
         <NextTopLoader color="#ffc107" showSpinner={false} />
         <CartProvider>
@@ -134,6 +156,8 @@ export default function RootLayout({
         <ScrollToTop />
         <ChatbotBubble />
         <CookieConsent />
+          </>
+        )}
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ const tabs = [
   { name: "Passerelles API & Paiements", href: "/settings/payment-api" },
   { name: "Serveur SMTP & E-mails", href: "/settings/smtp" },
   { name: "SEO & Référencement", href: "/settings/seo" },
+  { name: "Maintenance", href: "/settings/maintenance" },
 ];
 
 export default function SettingTabs() {
