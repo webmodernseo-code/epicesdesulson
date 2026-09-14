@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCart, parseCartPrice } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
 import { ShieldCheck, Lock, Trash2, Truck, CheckCircle2 } from "lucide-react";
+import { PaypalSvg } from "./payment-method-v1";
 
 interface CheckoutCartSummaryProps {
   selectedMethod?: "stripe" | "paypal" | "apple_pay" | "card";
@@ -250,10 +251,8 @@ export default function CheckoutCartSummary1({
           </>
         ) : selectedMethod === "paypal" ? (
           <div className="flex items-center justify-center gap-2.5">
-            <img
-              src="/images/payments/paypal-official.png"
-              alt="PayPal"
-              className={`h-5.5 sm:h-6.5 w-auto object-contain shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
+            <PaypalSvg
+              className={`h-5.5 sm:h-6.5 w-auto shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
             />
             <span className="text-xs sm:text-sm font-semibold">
               {isPayPalAvailable ? `— Payer ${total.toFixed(2)} €` : "Moyen de paiement indisponible"}

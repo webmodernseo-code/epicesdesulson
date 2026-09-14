@@ -120,23 +120,55 @@ export function GooglePaySvg({ className = "h-6 w-auto" }: { className?: string 
 /** Official PayPal Pure Vector SVG */
 export function PaypalSvg({ className = "h-6 w-auto" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      viewBox="0 0 130 34"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="PayPal"
+    >
+      {/* Double P Monogram */}
       <path
-        d="M8.2 4.2h5.8c2.4 0 4.3 1.2 3.8 3.8-.6 3.1-2.6 4.7-5.1 4.7H9.9l-1.3 6.9H5.1l3.1-15.4z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12.8 2.5H23.5C28.2 2.5 31.5 4.7 30.7 9.4C29.8 14.8 25.7 17.7 21.4 17.7H16.6L14.1 31.8H7.5L12.8 2.5Z"
         fill="#003087"
       />
       <path
-        d="M11.6 7.4h5.6c2.4 0 4.1 1.2 3.6 3.8-.6 3.1-2.6 4.7-5.1 4.7h-2.8l-1.2 6.3H8.3l3.3-14.8z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M19.2 7.0H29.0C32.9 7.0 35.6 8.8 35.0 12.7C34.2 17.2 30.8 19.6 27.2 19.6H23.2L21.1 31.8H16.1L19.2 7.0Z"
         fill="#0079C1"
       />
       <path
-        d="M12.9 12.2c.4-.3.9-.4 1.5-.4h2.8c2.5 0 4.5-1.6 5.1-4.7.2-1.2.1-2.2-.4-2.9-.6 2.3-2.4 3.7-4.9 3.7h-2.8l-1.3 6.8z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M17.6 10.9H25.9C29.4 10.9 32.1 12.6 31.5 16.0C30.7 20.1 27.6 22.3 24.3 22.3H21.5L19.5 33.2H14.9L17.6 10.9Z"
         fill="#00457C"
       />
+      {/* Official PayPal Typography - Pay */}
       <path
-        d="M26.4 8.7h2.8l-.4 2.2c.6-.7 1.5-1.1 2.5-1.1 2.2 0 3.7 1.7 3.3 3.9-.5 2.6-2.5 4.5-4.8 4.5-.9 0-1.6-.3-2-.8l-.6 3.2h-2.8l2-11.9zm4.2 6.8c1.2 0 2.1-1 2.4-2.4.2-1.2-.4-2.2-1.6-2.2-1.2 0-2.2 1-2.4 2.3-.3 1.3.4 2.3 1.6 2.3zm11.7-3.9l-.6 3c-.3 1.4.1 1.8 1.1 1.8.4 0 .7-.1 1-.2l-.3 1.8c-.5.2-1.2.3-1.9.3-2.1 0-3-.9-2.6-2.8l.7-3.9h-1.5l.4-1.8h1.5l.4-2.1h2.7l-.4 2.1h2.2l-.4 1.8h-2.3zm7.6-2.9h2.8l-.4 2.2c.6-.7 1.5-1.1 2.5-1.1 2.2 0 3.7 1.7 3.3 3.9-.5 2.6-2.5 4.5-4.8 4.5-.9 0-1.6-.3-2-.8l-.6 3.2h-2.8l2-11.9zm4.2 6.8c1.2 0 2.1-1 2.4-2.4.2-1.2-.4-2.2-1.6-2.2-1.2 0-2.2 1-2.4 2.3-.3 1.3.4 2.3 1.6 2.3zm11.7-7.9h2.8l-2.4 12.3h-2.8l2.4-12.3z"
+        d="M43.2 9.5H48.8C52.1 9.5 54.4 10.8 53.8 14.2C53.1 18.2 50.1 20.3 47.0 20.3H44.6L43.3 27.3H39.5L43.2 9.5ZM44.9 17.4H47.1C49.1 17.4 50.4 16.3 50.8 14.2C51.1 12.3 50.1 11.6 48.4 11.6H46.0L44.9 17.4Z"
         fill="#003087"
       />
+      <path
+        d="M57.9 14.8H61.4L61.0 16.8C61.8 15.4 63.3 14.5 65.0 14.5C67.6 14.5 69.2 16.4 68.7 19.3C68.1 22.7 65.7 25.4 63.1 25.4C61.9 25.4 60.9 24.8 60.5 23.9L59.9 27.3H56.1L57.9 14.8ZM61.8 22.1C62.3 22.6 63.0 22.8 63.7 22.8C65.3 22.8 66.4 21.0 66.8 18.9C67.0 17.6 66.5 16.6 65.2 16.6C64.4 16.6 63.5 17.1 62.9 18.0L61.8 22.1Z"
+        fill="#003087"
+      />
+      <path
+        d="M78.6 14.8L73.1 26.6C72.3 28.3 71.3 29.3 69.6 29.3C68.8 29.3 68.2 29.1 67.8 28.8L68.5 25.9C68.8 26.0 69.1 26.1 69.5 26.1C70.3 26.1 70.8 25.6 71.2 24.6L71.4 24.0L67.7 14.8H71.7L73.4 20.3L76.8 14.8H78.6Z"
+        fill="#003087"
+      />
+      {/* Official PayPal Typography - Pal */}
+      <path
+        d="M83.2 9.5H88.8C92.1 9.5 94.4 10.8 93.8 14.2C93.1 18.2 90.1 20.3 87.0 20.3H84.6L83.3 27.3H79.5L83.2 9.5ZM84.9 17.4H87.1C89.1 17.4 90.4 16.3 90.8 14.2C91.1 12.3 90.1 11.6 88.4 11.6H86.0L84.9 17.4Z"
+        fill="#0079C1"
+      />
+      <path
+        d="M97.9 14.8H101.4L101.0 16.8C101.8 15.4 103.3 14.5 105.0 14.5C107.6 14.5 109.2 16.4 108.7 19.3C108.1 22.7 105.7 25.4 103.1 25.4C101.9 25.4 100.9 24.8 100.5 23.9L99.9 27.3H96.1L97.9 14.8ZM101.8 22.1C102.3 22.6 103.0 22.8 103.7 22.8C105.3 22.8 106.4 21.0 106.8 18.9C107.0 17.6 106.5 16.6 105.2 16.6C104.4 16.6 103.5 17.1 102.9 18.0L101.8 22.1Z"
+        fill="#0079C1"
+      />
+      <path d="M113.8 7.5L110.8 24.9H114.6L117.6 7.5H113.8Z" fill="#0079C1" />
     </svg>
   );
 }
@@ -230,6 +262,13 @@ export default function PaymentMethodV1({
     onCardDataChange("cvc", value);
   };
 
+  // Sync activeTab with parent prop
+  React.useEffect(() => {
+    if (selectedMethod && selectedMethod !== activeTab) {
+      setActiveTab(selectedMethod);
+    }
+  }, [selectedMethod]);
+
   return (
     <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden transition-all">
       {/* ─── Header Apple / Stripe Style ─── */}
@@ -242,17 +281,15 @@ export default function PaymentMethodV1({
             <h2 className="font-bold text-base sm:text-lg text-gray-950 tracking-tight">
               Paiement sécurisé
             </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Toutes les transactions sont chiffrées et sécurisées
+            </p>
           </div>
         </div>
 
-        {/* Visa & Mastercard Badges */}
-        <div className="flex items-center gap-3 self-start sm:self-auto">
-          <img
-            src="/images/payments/visa-mastercard.png"
-            alt="Visa & Mastercard"
-            className="h-7 sm:h-8 w-auto object-contain"
-          />
-          <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-emerald-800 bg-emerald-50/90 px-3 py-1.5 rounded-full border border-emerald-200/70 font-semibold shadow-2xs whitespace-nowrap shrink-0">
+        {/* Security badge */}
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50/90 px-3 py-1.5 rounded-full border border-emerald-200/70 font-semibold shadow-2xs whitespace-nowrap shrink-0">
             <Lock className="size-3.5 text-emerald-600" />
             <span>SSL 256-bit</span>
           </span>
@@ -260,372 +297,387 @@ export default function PaymentMethodV1({
       </div>
 
       <div className="p-5 sm:p-7 space-y-6">
-        {/* ─── Mode de Paiement Tabs (Carte, Apple Pay / Google Pay, PayPal) ─── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* Tab 1: Carte Bancaire (Visa / Mastercard) */}
-          <button
-            type="button"
-            onClick={() => handleTabChange("card")}
-            className={`p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer ${
+        {/* ─── Mode de Paiement : Liste Accordion Verticale (Style Stripe & Apple) ─── */}
+        <div className="space-y-3.5">
+          {/* ─── OPTION 1 : CARTE BANCAIRE (VISA / MASTERCARD) ─── */}
+          <div
+            className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
               activeTab === "card"
-                ? "border-emerald-600 bg-emerald-50/50 ring-1.5 ring-emerald-600 shadow-xs"
+                ? "border-emerald-600 bg-white shadow-xs ring-1 ring-emerald-600/30"
                 : "border-gray-200 hover:border-gray-300 bg-white"
             }`}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
-                  activeTab === "card"
-                    ? "border-emerald-600 bg-emerald-600"
-                    : "border-gray-300 bg-white"
-                }`}
-              >
-                {activeTab === "card" && <div className="size-2 rounded-full bg-white" />}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-gray-950 truncate">Carte bancaire</p>
-                <p className="text-xs text-gray-500 mt-0.5">Visa & Mastercard</p>
-              </div>
-            </div>
-            <img
-              src="/images/payments/visa-mastercard.png"
-              alt="Visa Mastercard"
-              className="h-6 sm:h-7 w-auto object-contain shrink-0"
-            />
-          </button>
-
-          {/* Tab 2: Apple Pay & Google Pay */}
-          <button
-            type="button"
-            onClick={() => handleTabChange("apple_pay")}
-            className={`p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer ${
-              activeTab === "apple_pay"
-                ? "border-emerald-600 bg-emerald-50/50 ring-1.5 ring-emerald-600 shadow-xs"
-                : "border-gray-200 hover:border-gray-300 bg-white"
-            }`}
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
-                  activeTab === "apple_pay"
-                    ? "border-emerald-600 bg-emerald-600"
-                    : "border-gray-300 bg-white"
-                }`}
-              >
-                {activeTab === "apple_pay" && <div className="size-2 rounded-full bg-white" />}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-gray-950 truncate">Apple & Google Pay</p>
-                <p className="text-xs text-gray-500 mt-0.5">Paiement 1 clic</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <ApplePayBadgeSvg className="h-5 sm:h-6 w-auto" />
-              <GooglePaySvg className="h-5 sm:h-6 w-auto" />
-            </div>
-          </button>
-
-          {/* Tab 3: PayPal */}
-          <button
-            type="button"
-            onClick={() => handleTabChange("paypal")}
-            className={`p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer ${
-              activeTab === "paypal"
-                ? "border-emerald-600 bg-emerald-50/50 ring-1.5 ring-emerald-600 shadow-xs"
-                : "border-gray-200 hover:border-gray-300 bg-white"
-            }`}
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
-                  activeTab === "paypal"
-                    ? "border-emerald-600 bg-emerald-600"
-                    : "border-gray-300 bg-white"
-                }`}
-              >
-                {activeTab === "paypal" && <div className="size-2 rounded-full bg-white" />}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-gray-950 truncate">PayPal</p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {isPayPalAvailable ? "Paiement sécurisé" : "Moyen de paiement indisponible"}
-                </p>
-              </div>
-            </div>
-            <PaypalSvg
-              className={`h-5 sm:h-6 w-auto shrink-0 ${!isPayPalAvailable ? "opacity-50 grayscale-20" : ""}`}
-            />
-          </button>
-        </div>
-
-        {/* ─── OPTION 1: FORMULAIRE CARTE BANCAIRE ─── */}
-        {activeTab === "card" && (
-          <form onSubmit={onSubmit} className="space-y-4 pt-1">
-            {/* Titulaire de la carte */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
-                Titulaire de la carte <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Jean Dupont"
-                value={cardData.nameOnCard}
-                onChange={(e) => onCardDataChange("nameOnCard", e.target.value)}
-                className="w-full h-12 px-4 text-base sm:text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition placeholder:text-gray-400"
-              />
-            </div>
-
-            {/* Numéro de carte avec détection dynamique de la marque */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-semibold text-gray-800">
-                  Numéro de carte bancaire <span className="text-red-500">*</span>
-                </label>
-                <span className="text-xs sm:text-sm text-gray-600 font-medium flex items-center gap-1.5">
-                  <ShieldCheck className="size-4 text-emerald-600" />
-                  <span>3D Secure 2.0 certifié</span>
-                </span>
-              </div>
-
-              <div className="relative">
-                <input
-                  type="text"
-                  required
-                  placeholder="4242 •••• •••• 4242"
-                  value={cardData.cardNumber}
-                  onChange={handleCardNumberChange}
-                  maxLength={19}
-                  className="w-full h-12 px-4 pr-16 text-base sm:text-sm font-mono tracking-wider rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
-                />
-
-                {/* Dynamic Brand Logo inside input */}
-                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center">
-                  {currentBrand === "visa" ? (
-                    <VisaSvg className="h-6 w-auto shadow-2xs" />
-                  ) : currentBrand === "mastercard" ? (
-                    <MastercardSvg className="h-6 w-auto shadow-2xs" />
-                  ) : (
-                    <img
-                      src="/images/payments/visa-mastercard.png"
-                      alt="Cartes acceptées"
-                      className="h-6 w-auto object-contain opacity-80"
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Date d'expiration & CVC alignés */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-1.5">
-                  Expiration <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="MM/AA"
-                  value={cardData.expiryDate}
-                  onChange={handleExpiryChange}
-                  maxLength={5}
-                  className="w-full h-12 px-4 text-base sm:text-sm font-mono rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-semibold text-gray-800">
-                    CVC / CVV <span className="text-red-500">*</span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowCvcHelper(!showCvcHelper)}
-                    className="text-gray-400 hover:text-gray-600 cursor-pointer"
-                    title="Aide CVC"
-                  >
-                    <HelpCircle className="size-4" />
-                  </button>
-                </div>
-
-                <div className="relative">
-                  <input
-                    type="text"
-                    required
-                    placeholder="123"
-                    value={cardData.cvc}
-                    onChange={handleCvcChange}
-                    maxLength={3}
-                    className="w-full h-12 px-4 pr-9 text-base sm:text-sm font-mono rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
-                  />
-                  <Lock className="size-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-
-            {/* CVC Info Bubble if toggled */}
-            {showCvcHelper && (
-              <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-700 flex items-start gap-2.5">
-                <ShieldCheck className="size-4.5 text-emerald-600 shrink-0 mt-0.5" />
-                <span>
-                  Le code de sécurité CVC correspond aux <strong>3 derniers chiffres</strong> situés au verso de votre carte bancaire.
-                </span>
-              </div>
-            )}
-
-            {/* Checkbox "Mémoriser cette carte" */}
-            <label className="flex items-center gap-3 pt-1.5 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={cardData.saveCard || false}
-                onChange={(e) => onCardDataChange("saveCard", e.target.checked)}
-                className="size-4.5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-              />
-              <span className="text-xs sm:text-sm text-gray-700">
-                Enregistrer cette carte pour mes futurs achats en toute sécurité
-              </span>
-            </label>
-
-            {/* Message d'erreur clair si applicable */}
-            {errorMessage && (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-200/80 text-xs sm:text-sm text-red-700 font-medium leading-relaxed flex items-start gap-3">
-                <AlertCircle className="size-5 text-red-500 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">Information de paiement requise</p>
-                  <p>{errorMessage}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Bouton de Paiement Carte Principal */}
-            <div className="pt-2.5 space-y-3">
-              <button
-                type="submit"
-                disabled={isProcessing}
-                className="w-full h-13 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base sm:text-lg shadow-sm hover:shadow transition-all flex items-center justify-center gap-2.5 cursor-pointer"
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="size-5 animate-spin" />
-                    <span>Validation du paiement sécurisé...</span>
-                  </>
-                ) : (
-                  <>
-                    <Lock className="size-5" />
-                    <span>Payer {totalAmountFormatted}</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* ─── OPTION 2: UNIFIED APPLE PAY & GOOGLE PAY ─── */}
-        {activeTab === "apple_pay" && (
-          <div className="space-y-4 pt-1">
-            <div className="p-4 sm:p-5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-700 space-y-2">
-              <div className="flex items-center gap-2 text-gray-950 font-bold text-sm sm:text-base">
-                <Zap className="size-4.5 text-emerald-600" />
-                <span>Paiement Express Apple Pay & Google Pay (1 Clic)</span>
-              </div>
-              <p className="leading-relaxed">
-                Réglez instantanément avec le portefeuille de votre smartphone ou navigateur (Face ID, Touch ID ou Google Wallet).
-              </p>
-            </div>
-
-            {/* Deux Boutons Dédiés : Apple Pay & Google Pay */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              {/* Bouton 1 : Apple Pay Officiel */}
-              <button
-                type="button"
-                disabled={isProcessing}
-                onClick={onSubmit}
-                className="w-full h-13 bg-black hover:bg-neutral-900 active:scale-[0.99] text-white font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="size-5 animate-spin" />
-                    <span className="text-xs sm:text-sm">Validation en cours...</span>
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center gap-2.5">
-                    <ApplePaySvg className="h-6.5 sm:h-7 w-auto text-white shrink-0" />
-                    <span className="font-bold text-sm sm:text-base text-white">• {totalAmountFormatted}</span>
-                  </div>
-                )}
-              </button>
-
-              {/* Bouton 2 : Google Pay Officiel */}
-              <button
-                type="button"
-                disabled={isProcessing}
-                onClick={onSubmit}
-                className="w-full h-13 bg-white hover:bg-gray-50 active:scale-[0.99] text-gray-900 border border-gray-300 font-medium rounded-xl text-base shadow-2xs transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="size-5 animate-spin text-gray-700" />
-                    <span className="text-xs sm:text-sm">Validation en cours...</span>
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center gap-2.5">
-                    <GooglePaySvg className="h-6.5 sm:h-7 w-auto shrink-0" />
-                    <span className="font-bold text-sm sm:text-base text-gray-900">• {totalAmountFormatted}</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ─── OPTION 3: PAYPAL ─── */}
-        {activeTab === "paypal" && (
-          <div className="pt-1">
+            {/* Header / Bouton Radio */}
             <button
               type="button"
-              disabled={!isPayPalAvailable}
-              onClick={(e) => {
-                e.preventDefault();
-                if (isPayPalAvailable) {
-                  onSubmit(e);
-                }
-              }}
-              className={`w-full h-13 rounded-xl text-base border transition-all flex items-center justify-center gap-2.5 select-none ${
-                isPayPalAvailable
-                  ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold border-[#E5A800]/40 shadow-xs cursor-pointer"
-                  : "bg-[#FFC439]/50 text-gray-700 font-semibold border-amber-300/40 opacity-55 cursor-not-allowed shadow-none"
-              }`}
+              onClick={() => handleTabChange("card")}
+              className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-3 cursor-pointer"
             >
-              <div className="flex items-center justify-center gap-2.5">
-                <img
-                  src="/images/payments/paypal-official.png"
-                  alt="PayPal"
-                  className={`h-5.5 sm:h-6.5 w-auto object-contain shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
-                />
-                <span className="font-semibold text-xs sm:text-sm">
-                  {isPayPalAvailable
-                    ? `— Payer ${totalAmountFormatted}`
-                    : "Moyen de paiement indisponible"}
-                </span>
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div
+                  className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                    activeTab === "card"
+                      ? "border-emerald-600 bg-emerald-600"
+                      : "border-gray-300 bg-white"
+                  }`}
+                >
+                  {activeTab === "card" && <div className="size-2 rounded-full bg-white" />}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm sm:text-base font-bold text-gray-950">Carte bancaire</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Règlement sécurisé par Visa, Mastercard ou CB
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <VisaSvg className="h-5 sm:h-5.5 w-auto" />
+                <MastercardSvg className="h-5 sm:h-5.5 w-auto" />
               </div>
             </button>
+
+            {/* Formulaire Carte Bancaire Déplié */}
+            {activeTab === "card" && (
+              <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-2 border-t border-gray-100 bg-gray-50/40">
+                <form onSubmit={onSubmit} className="space-y-4 pt-2">
+                  {/* Titulaire de la carte */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                      Titulaire de la carte <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Jean Dupont"
+                      value={cardData.nameOnCard}
+                      onChange={(e) => onCardDataChange("nameOnCard", e.target.value)}
+                      className="w-full h-11 sm:h-12 px-4 text-base sm:text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  {/* Numéro de carte avec détection dynamique de la marque */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-sm font-semibold text-gray-800">
+                        Numéro de carte bancaire <span className="text-red-500">*</span>
+                      </label>
+                      <span className="text-xs text-gray-600 font-medium flex items-center gap-1.5">
+                        <ShieldCheck className="size-3.5 text-emerald-600" />
+                        <span>3D Secure 2.0</span>
+                      </span>
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        placeholder="4242 •••• •••• 4242"
+                        value={cardData.cardNumber}
+                        onChange={handleCardNumberChange}
+                        maxLength={19}
+                        className="w-full h-11 sm:h-12 px-4 pr-16 text-base sm:text-sm font-mono tracking-wider rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                      />
+
+                      {/* Dynamic Brand Logo inside input */}
+                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center">
+                        {currentBrand === "visa" ? (
+                          <VisaSvg className="h-5.5 w-auto shadow-2xs" />
+                        ) : currentBrand === "mastercard" ? (
+                          <MastercardSvg className="h-5.5 w-auto shadow-2xs" />
+                        ) : (
+                          <div className="flex items-center gap-1 opacity-70">
+                            <VisaSvg className="h-4.5 w-auto" />
+                            <MastercardSvg className="h-4.5 w-auto" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Date d'expiration & CVC alignés */}
+                  <div className="grid grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                        Expiration <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="MM/AA"
+                        value={cardData.expiryDate}
+                        onChange={handleExpiryChange}
+                        maxLength={5}
+                        className="w-full h-11 sm:h-12 px-4 text-base sm:text-sm font-mono rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-sm font-semibold text-gray-800">
+                          CVC / CVV <span className="text-red-500">*</span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setShowCvcHelper(!showCvcHelper)}
+                          className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                          title="Aide CVC"
+                        >
+                          <HelpCircle className="size-4" />
+                        </button>
+                      </div>
+
+                      <div className="relative">
+                        <input
+                          type="text"
+                          required
+                          placeholder="123"
+                          value={cardData.cvc}
+                          onChange={handleCvcChange}
+                          maxLength={3}
+                          className="w-full h-11 sm:h-12 px-4 pr-9 text-base sm:text-sm font-mono rounded-xl border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs transition"
+                        />
+                        <Lock className="size-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CVC Info Bubble if toggled */}
+                  {showCvcHelper && (
+                    <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-700 flex items-start gap-2.5">
+                      <ShieldCheck className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>
+                        Le code de sécurité CVC correspond aux <strong>3 derniers chiffres</strong> situés au verso de votre carte bancaire.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Checkbox "Mémoriser cette carte" */}
+                  <label className="flex items-center gap-3 pt-1 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={cardData.saveCard || false}
+                      onChange={(e) => onCardDataChange("saveCard", e.target.checked)}
+                      className="size-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="text-xs sm:text-sm text-gray-700">
+                      Enregistrer cette carte pour mes futurs achats en toute sécurité
+                    </span>
+                  </label>
+
+                  {/* Message d'erreur clair si applicable */}
+                  {errorMessage && (
+                    <div className="p-3.5 rounded-xl bg-red-50 border border-red-200/80 text-xs sm:text-sm text-red-700 font-medium leading-relaxed flex items-start gap-2.5">
+                      <AlertCircle className="size-4.5 text-red-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-bold">Information de paiement requise</p>
+                        <p>{errorMessage}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bouton de Paiement Carte Principal */}
+                  <div className="pt-2 space-y-3">
+                    <button
+                      type="submit"
+                      disabled={isProcessing}
+                      className="w-full h-12 sm:h-13 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Loader2 className="size-5 animate-spin" />
+                          <span>Validation du paiement sécurisé...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="size-4.5" />
+                          <span>Payer {totalAmountFormatted}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* ─── OPTION 2 : APPLE PAY & GOOGLE PAY ─── */}
+          <div
+            className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+              activeTab === "apple_pay"
+                ? "border-emerald-600 bg-white shadow-xs ring-1 ring-emerald-600/30"
+                : "border-gray-200 hover:border-gray-300 bg-white"
+            }`}
+          >
+            {/* Header / Bouton Radio */}
+            <button
+              type="button"
+              onClick={() => handleTabChange("apple_pay")}
+              className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-3 cursor-pointer"
+            >
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div
+                  className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                    activeTab === "apple_pay"
+                      ? "border-emerald-600 bg-emerald-600"
+                      : "border-gray-300 bg-white"
+                  }`}
+                >
+                  {activeTab === "apple_pay" && <div className="size-2 rounded-full bg-white" />}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm sm:text-base font-bold text-gray-950">Apple Pay & Google Pay</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Paiement express et instantané en 1 clic
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <ApplePayBadgeSvg className="h-5 sm:h-5.5 w-auto" />
+                <GooglePaySvg className="h-5 sm:h-5.5 w-auto" />
+              </div>
+            </button>
+
+            {/* Body Apple Pay & Google Pay Déplié */}
+            {activeTab === "apple_pay" && (
+              <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-2 border-t border-gray-100 bg-gray-50/40 space-y-4">
+                <div className="p-3.5 rounded-xl bg-white border border-gray-200/80 text-xs sm:text-sm text-gray-700 flex items-start gap-2.5">
+                  <Zap className="size-4.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <span>
+                    Réglez instantanément avec Face ID, Touch ID ou Google Wallet sans devoir saisir manuellement votre numéro de carte.
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Bouton Apple Pay Officiel */}
+                  <button
+                    type="button"
+                    disabled={isProcessing}
+                    onClick={onSubmit}
+                    className="w-full h-12 bg-black hover:bg-neutral-900 active:scale-[0.99] text-white font-medium rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isProcessing ? (
+                      <Loader2 className="size-5 animate-spin text-white" />
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <ApplePaySvg className="h-6 w-auto text-white shrink-0" />
+                        <span className="font-bold text-sm text-white">• {totalAmountFormatted}</span>
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Bouton Google Pay Officiel */}
+                  <button
+                    type="button"
+                    disabled={isProcessing}
+                    onClick={onSubmit}
+                    className="w-full h-12 bg-white hover:bg-gray-50 active:scale-[0.99] text-gray-900 border border-gray-300 font-medium rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isProcessing ? (
+                      <Loader2 className="size-5 animate-spin text-gray-700" />
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <GooglePaySvg className="h-6 w-auto shrink-0" />
+                        <span className="font-bold text-sm text-gray-900">• {totalAmountFormatted}</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ─── OPTION 3 : PAYPAL ─── */}
+          <div
+            className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+              activeTab === "paypal"
+                ? "border-emerald-600 bg-white shadow-xs ring-1 ring-emerald-600/30"
+                : "border-gray-200 hover:border-gray-300 bg-white"
+            }`}
+          >
+            {/* Header / Bouton Radio */}
+            <button
+              type="button"
+              onClick={() => handleTabChange("paypal")}
+              className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-3 cursor-pointer"
+            >
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div
+                  className={`size-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                    activeTab === "paypal"
+                      ? "border-emerald-600 bg-emerald-600"
+                      : "border-gray-300 bg-white"
+                  }`}
+                >
+                  {activeTab === "paypal" && <div className="size-2 rounded-full bg-white" />}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm sm:text-base font-bold text-gray-950">PayPal</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {isPayPalAvailable
+                      ? "Compte PayPal ou paiement en 4x sans frais"
+                      : "Moyen de paiement momentanément indisponible"}
+                  </p>
+                </div>
+              </div>
+              <PaypalSvg
+                className={`h-5 sm:h-5.5 w-auto shrink-0 ${
+                  !isPayPalAvailable ? "opacity-50 grayscale-20" : ""
+                }`}
+              />
+            </button>
+
+            {/* Body PayPal Déplié */}
+            {activeTab === "paypal" && (
+              <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-2 border-t border-gray-100 bg-gray-50/40 space-y-3.5">
+                <p className="text-xs sm:text-sm text-gray-600 pt-1">
+                  {isPayPalAvailable
+                    ? "Vous allez être redirigé vers l'interface sécurisée de PayPal pour finaliser votre commande en toute tranquillité."
+                    : "La passerelle de paiement PayPal est momentanément inactive. Veuillez privilégier le règlement par Carte Bancaire ou Apple Pay."}
+                </p>
+
+                <button
+                  type="button"
+                  disabled={!isPayPalAvailable || isProcessing}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isPayPalAvailable) onSubmit(e);
+                  }}
+                  className={`w-full h-12 rounded-xl text-base border transition-all flex items-center justify-center gap-2.5 select-none ${
+                    isPayPalAvailable
+                      ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold border-[#E5A800]/40 shadow-xs cursor-pointer"
+                      : "bg-[#FFC439]/50 text-gray-700 font-semibold border-amber-300/40 opacity-55 cursor-not-allowed shadow-none"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-2.5">
+                    <PaypalSvg
+                      className={`h-5.5 sm:h-6 w-auto shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
+                    />
+                    <span className="font-semibold text-xs sm:text-sm">
+                      {isPayPalAvailable
+                        ? `— Payer ${totalAmountFormatted}`
+                        : "Moyen de paiement indisponible"}
+                    </span>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* ─── 3 Badges de Réassurance Discrets ─── */}
         <div className="pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm text-gray-700">
           <div className="flex items-center gap-2.5 bg-gray-50/80 p-3 rounded-xl border border-gray-100/90 shadow-2xs">
-            <ShieldCheck className="size-5 text-emerald-600 shrink-0" />
+            <ShieldCheck className="size-4.5 text-emerald-600 shrink-0" />
             <span className="font-medium">Chiffrement SSL 256-bit</span>
           </div>
 
           <div className="flex items-center gap-2.5 bg-gray-50/80 p-3 rounded-xl border border-gray-100/90 shadow-2xs">
-            <Lock className="size-5 text-emerald-600 shrink-0" />
+            <Lock className="size-4.5 text-emerald-600 shrink-0" />
             <span className="font-medium">Protocole 3D Secure 2.0</span>
           </div>
 
           <div className="flex items-center gap-2.5 bg-gray-50/80 p-3 rounded-xl border border-gray-100/90 shadow-2xs">
-            <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="size-4.5 text-emerald-600 shrink-0" />
             <span className="font-medium">Satisfait ou remboursé</span>
           </div>
         </div>

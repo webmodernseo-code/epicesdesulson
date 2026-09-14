@@ -323,6 +323,13 @@ export default function Footer() {
                 height={24}
                 className="h-5 sm:h-6 w-auto rounded shadow-2xs bg-white/90 p-0.5"
               />
+              <Image
+                src="/images/payments/paypal.svg"
+                alt="PayPal"
+                width={38}
+                height={24}
+                className="h-5 sm:h-6 w-auto rounded shadow-2xs bg-white/90 p-0.5"
+              />
             </div>
           </div>
 
