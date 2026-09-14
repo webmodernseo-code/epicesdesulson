@@ -333,7 +333,7 @@ export default function LatestBlogThree() {
                         className="py-3 px-5 text-xs sm:text-sm font-bold text-gray-700 bg-white border border-gray-300 hover:border-primary hover:text-primary rounded-full transition-all inline-flex items-center justify-center gap-1.5 whitespace-nowrap flex-1 sm:flex-none"
                       >
                         <i className="hgi hgi-stroke hgi-shopping-bag-01 text-sm" />
-                        <span>Fiche Produit (6,90 €)</span>
+                        <span>Fiche Produit (5,99 €)</span>
                       </Link>
                     </div>
                   </div>

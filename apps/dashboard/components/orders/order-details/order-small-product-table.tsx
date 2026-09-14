@@ -21,7 +21,7 @@ const productsData = [
     image: "/images/products/epice-poulet-recto.jpg",
     category: "Volailles & Rôtis",
     items: 2,
-    price: "13,80 €",
+    price: "11,98 €",
   },
   {
     name: "Épice de Sulson - Spéciale Viande",
@@ -29,7 +29,7 @@ const productsData = [
     image: "/images/products/epice-viande-recto.jpg",
     category: "Viandes & Grillades",
     items: 1,
-    price: "6,90 €",
+    price: "5,99 €",
   },
   {
     name: "Le Pack Intégral : 4 Saveurs Authentiques",
@@ -37,7 +37,7 @@ const productsData = [
     image: "/images/products/pack-4-saveurs-sulson.jpg",
     category: "Packs Gourmets",
     items: 1,
-    price: "24,90 €",
+    price: "23,96 €",
   },
 ];
 

@@ -40,11 +40,11 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     question: "Quelles épices vendez-vous ?",
     answer:
       "Les Épices de Sulson vous proposent une gamme de 4 mélanges artisanaux d'exception du terroir camerounais :\n\n" +
-      "1. 🍗 Épice Poulet (100g — 6,90 €) : pour volailles dorées, rôtis et marinades.\n" +
-      "2. 🥩 Épice Viande (100g — 6,90 €) : pour bœuf, agneau, porc et grillades au barbecue.\n" +
-      "3. 🐟 Épice Poisson (50g/100g — 6,90 €) : pour poissons braisés, papillotes et soupes.\n" +
-      "4. ✨ Le Secret de Sulson (100g — 6,90 €) : notre mélange signature universel pour tous vos plats.\n\n" +
-      "🎁 Retrouvez également notre Pack Intégral réunissant les 4 saveurs (400g) à 24,90 €.",
+      "1. 🍗 Épice Poulet (100g — 5,99 €) : pour volailles dorées, rôtis et marinades.\n" +
+      "2. 🥩 Épice Viande (100g — 5,99 €) : pour bœuf, agneau, porc et grillades au barbecue.\n" +
+      "3. 🐟 Épice Poisson (100g — 5,99 €) : pour poissons braisés, papillotes et soupes.\n" +
+      "4. ✨ Le Secret de Sulson (100g — 5,99 €) : notre mélange signature universel pour tous vos plats.\n\n" +
+      "🎁 Retrouvez également notre Pack Intégral réunissant les 4 saveurs (400g) à 23,96 €.",
     action: {
       type: "link",
       label: "Découvrir la boutique",
@@ -217,11 +217,11 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     question: "Quelle épice me conseillez-vous ?",
     answer:
       "Tout dépend de votre menu !\n\n" +
-      "• 🍗 Pour du poulet ou de la volaille : Épice Sulson Poulet (6,90 €)\n" +
-      "• 🥩 Pour des viandes rouges ou grillades : Épice Sulson Viande (6,90 €)\n" +
-      "• 🐟 Pour du poisson ou fruits de mer : Épice Sulson Poisson (6,90 €)\n" +
-      "• ✨ Pour tout réussir (sauces, riz, légumes) : Le Secret de Sulson (6,90 €)\n" +
-      "• 🎁 Pour tout avoir sous la main : Le Pack Intégral 4 Saveurs (24,90 €)",
+      "• 🍗 Pour du poulet ou de la volaille : Épice Sulson Poulet (5,99 €)\n" +
+      "• 🥩 Pour des viandes rouges ou grillades : Épice Sulson Viande (5,99 €)\n" +
+      "• 🐟 Pour du poisson ou fruits de mer : Épice Sulson Poisson (5,99 €)\n" +
+      "• ✨ Pour tout réussir (sauces, riz, légumes) : Le Secret de Sulson (5,99 €)\n" +
+      "• 🎁 Pour tout avoir sous la main : Le Pack Intégral 4 Saveurs (23,96 €)",
     action: {
       type: "link",
       label: "Voir toute la collection",
@@ -236,11 +236,11 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/quelle\s+epice\s+utiliser\s+pour\s+le\s+poulet/i, /pour\s+le\s+poulet/i],
     question: "Quelle épice utiliser pour le poulet ?",
     answer:
-      "L'Épice de Sulson - Poulet (100g — 6,90 €) est la référence absolue !\n\n" +
+      "L'Épice de Sulson - Poulet (100g — 5,99 €) est la référence absolue !\n\n" +
       "👨‍🍳 Astuce du Chef : Mélangez 1 à 2 cuillères à soupe d'épices avec un filet d'huile et du jus de citron. Massez votre volaille et laissez reposer 20 à 30 min. Le curcuma frais et les aromates offriront une chair juteuse et une peau dorée et croustillante au four ou à la braise.",
     action: {
       type: "link",
-      label: "Voir l'Épice Poulet (6,90 €)",
+      label: "Voir l'Épice Poulet (5,99 €)",
       url: "/products/epice-poulet-100g",
     },
     quickPrompts: ["Pour la viande", "Pour le poisson", "Le Secret de Sulson"],
@@ -252,11 +252,11 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/quelle\s+epice\s+utiliser\s+pour\s+la\s+viande/i, /pour\s+la\s+viande/i],
     question: "Quelle épice utiliser pour la viande ?",
     answer:
-      "L'Épice de Sulson - Viande (100g — 6,90 €) est formulée pour les viandes rouges, steaks, brochettes Suya et rôtis.\n\n" +
+      "L'Épice de Sulson - Viande (100g — 5,99 €) est formulée pour les viandes rouges, steaks, brochettes Suya et rôtis.\n\n" +
       "🔥 Son alliance de paprika, poivre noir de Penja, ail et herbes nobles forme une croûte parfumée et caramélisée irrésistible sur la braise ou à la poêle.",
     action: {
       type: "link",
-      label: "Voir l'Épice Viande (6,90 €)",
+      label: "Voir l'Épice Viande (5,99 €)",
       url: "/products/epice-viande-100g",
     },
     quickPrompts: ["Pour le poulet", "Pour le poisson", "Pack 4 Saveurs"],
@@ -268,12 +268,12 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/quelle\s+epice\s+utiliser\s+pour\s+le\s+poisson/i, /pour\s+le\s+poisson/i],
     question: "Quelle épice utiliser pour le poisson ?",
     answer:
-      "L'Épice de Sulson - Poisson (6,90 €) est l'incontournable des poissons braisés, papillotes et soupes !\n\n" +
+      "L'Épice de Sulson - Poisson (5,99 €) est l'incontournable des poissons braisés, papillotes et soupes !\n\n" +
       "🐟 Avec le poivre de Guinée (maniguette), des rondelles et des herbes du Cameroun, elle apporte une note fraîche et parfumée sans masquer la délicatesse de la chair.",
     action: {
       type: "link",
-      label: "Voir l'Épice Poisson (6,90 €)",
-      url: "/products/epice-poisson-50g",
+      label: "Voir l'Épice Poisson (5,99 €)",
+      url: "/products/epice-poisson-100g",
     },
     quickPrompts: ["Le Secret de Sulson", "Pack 4 Saveurs", "Commander"],
   },
@@ -287,7 +287,7 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
       "Le Secret de Sulson (Saveur Gourmande) ! Ajoutez 1 cuillère à café dans votre eau de cuisson ou faites-la revenir dans un filet d'huile avec vos oignons pour obtenir un riz parfumé irrésistible.",
     action: {
       type: "link",
-      label: "Voir Le Secret de Sulson (6,90 €)",
+      label: "Voir Le Secret de Sulson (5,99 €)",
       url: "/products/secret-de-sulson-100g",
     },
     quickPrompts: ["Pour les légumes", "Pour les sauces", "Pack 4 Saveurs"],
@@ -354,10 +354,10 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/par\s+quoi\s+commencer/i, /premiere\s+commande/i],
     question: "Je ne connais pas vos produits. Par quoi commencer ?",
     answer:
-      "Le Pack Intégral 4 Saveurs (24,90 €) est le choix idéal pour une première commande : il vous permet de tester chaque mélange sur tous vos plats et vous fait bénéficier d'un tarif plus avantageux !",
+      "Le Pack Intégral 4 Saveurs (23,96 €) est le choix idéal pour une première commande : il vous permet de tester chaque mélange sur tous vos plats et vous fait bénéficier d'un tarif avantageux !",
     action: {
       type: "link",
-      label: "Commander le Pack Découverte (24,90 €)",
+      label: "Commander le Pack Découverte (23,96 €)",
       url: "/products/pack-integral-4-saveurs",
     },
     quickPrompts: ["Que contient le pack ?", "Livraison offerte dès 50 €"],
@@ -369,7 +369,7 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/quel\s+produit\s+pour\s+tester/i],
     question: "Quel produit me conseillez-vous pour tester la marque ?",
     answer:
-      "Le Pack 4 Saveurs (400g) pour avoir la collection complète, ou Le Secret de Sulson (100g à 6,90 €) pour un premier test gourmand et universel.",
+      "Le Pack 4 Saveurs (400g) pour avoir la collection complète, ou Le Secret de Sulson (100g à 5,99 €) pour un premier test gourmand et universel.",
     quickPrompts: ["Pack 4 Saveurs", "Le Secret de Sulson"],
   },
   {
@@ -396,7 +396,7 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
       "Oui ! Le Pack Intégral 4 Saveurs Sulson réunit l'ensemble de notre collection dans un seul coffret pratique de 400g.",
     action: {
       type: "link",
-      label: "Voir le Pack 4 Saveurs (24,90 €)",
+      label: "Voir le Pack 4 Saveurs (23,96 €)",
       url: "/products/pack-integral-4-saveurs",
     },
     quickPrompts: ["Que contient le pack ?", "Est-ce moins cher ?"],
@@ -423,10 +423,10 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/est[- ]ce\s+moins\s+cher\s+d[' ]acheter\s+le\s+pack/i],
     question: "Est-ce moins cher d'acheter le pack ?",
     answer:
-      "Oui ! Le pack est proposé à 24,90 € au lieu de 27,60 € (prix des 4 sachets achetés séparément à 6,90 €), soit près de 3 € d'économie immédiate.",
+      "Oui ! Le pack est proposé à 23,96 € pour réunir les 4 sachets de 100g (Poulet, Viande, Poisson, Secret de Sulson) à 5,99 € l'unité.",
     action: {
       type: "link",
-      label: "Profiter du Pack 4 Saveurs (24,90 €)",
+      label: "Profiter du Pack 4 Saveurs (23,96 €)",
       url: "/products/pack-integral-4-saveurs",
     },
     quickPrompts: ["Frais de port", "Code promo"],
@@ -457,7 +457,7 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     keywords: ["difference individuel pack", "unite ou pack", "achat individuel"],
     question: "Quelle est la différence entre acheter individuellement et prendre le pack ?",
     answer:
-      "L'achat individuel (6,90 €) est idéal pour renouveler votre saveur préférée. Le Pack 4 Saveurs (24,90 €) vous offre la gamme complète pour toute votre cuisine avec un tarif plus avantageux.",
+      "L'achat individuel (5,99 €) est idéal pour renouveler votre saveur préférée. Le Pack 4 Saveurs (23,96 €) vous offre la gamme complète pour toute votre cuisine.",
     quickPrompts: ["Pack Intégral 4 Saveurs", "Boutique"],
   },
   {
@@ -467,7 +467,7 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/decouvrir\s+toutes\s+vos\s+saveurs/i],
     question: "Je veux découvrir toutes vos saveurs. Que dois-je prendre ?",
     answer:
-      "Choisissez directement notre Pack Intégral 4 Saveurs (24,90 €). Il réunit les 4 mélanges phares pour 400g d'épices nobles au total.",
+      "Choisissez directement notre Pack Intégral 4 Saveurs (23,96 €). Il réunit les 4 mélanges phares pour 400g d'épices nobles au total.",
     action: {
       type: "link",
       label: "Commander le Pack 4 Saveurs",
@@ -669,7 +669,7 @@ export const SULSON_KNOWLEDGE_BASE: FAQItem[] = [
     patterns: [/y\s+a[- ]t[- ]il\s+un\s+minimum\s+de\s+commande/i],
     question: "Y a-t-il un minimum de commande ?",
     answer:
-      "Aucun minimum de commande n'est imposé ! Vous pouvez commander un seul sachet à 6,90 €.",
+      "Aucun minimum de commande n'est imposé ! Vous pouvez commander un seul sachet à 5,99 €.",
     quickPrompts: ["Livraison gratuite dès 50 €", "Pack 4 Saveurs"],
   },
   {
@@ -1184,7 +1184,7 @@ export function generateBotReply(userQuery: string): {
   // « Je cherche des épices »
   if (lowerQuery.match(/^(je cherche des epices|je veux des epices|trouver des epices)/i)) {
     return {
-      text: "Vous êtes au bon endroit ! Nous proposons 4 mélanges 100% naturels (Poulet, Viande, Poisson, Secret de Sulson) en sachets 100g (6,90 €) ainsi que notre Pack Intégral 4 Saveurs à 24,90 € (400g).\n\nQuel type de plat souhaitez-vous sublimer aujourd'hui ?",
+      text: "Vous êtes au bon endroit ! Nous proposons 4 mélanges 100% naturels (Poulet, Viande, Poisson, Secret de Sulson) en sachets 100g (5,99 €) ainsi que notre Pack Intégral 4 Saveurs à 23,96 € (400g).\n\nQuel type de plat souhaitez-vous sublimer aujourd'hui ?",
       action: {
         type: "link",
         label: "Voir tous les produits",
@@ -1197,10 +1197,10 @@ export function generateBotReply(userQuery: string): {
   // « Je sais pas quoi prendre » / « Je ne sais pas »
   if (lowerQuery.match(/^(je (ne )?sais pas quoi prendre|je sais pas|aidez moi a choisir)/i)) {
     return {
-      text: "Pas d'inquiétude ! Dites-moi ce que vous préparez le plus souvent : volaille, poisson, viandes grillées, riz ou plats mijotés ?\n\nSi vous souhaitez tout tester, notre Pack Intégral 4 Saveurs (24,90 €) est la formule idéale !",
+      text: "Pas d'inquiétude ! Dites-moi ce que vous préparez le plus souvent : volaille, poisson, viandes grillées, riz ou plats mijotés ?\n\nSi vous souhaitez tout tester, notre Pack Intégral 4 Saveurs (23,96 €) est la formule idéale !",
       action: {
         type: "link",
-        label: "Voir le Pack 4 Saveurs (24,90 €)",
+        label: "Voir le Pack 4 Saveurs (23,96 €)",
         url: "/products/pack-integral-4-saveurs",
       },
       quickPrompts: ["Pour le poulet", "Pour la viande", "Pour le poisson", "Le Secret de Sulson"],
@@ -1210,7 +1210,7 @@ export function generateBotReply(userQuery: string): {
   // « C'est combien ? » / « Prix »
   if (lowerQuery.match(/^(c[' ]est combien|quel est le prix|les prix|combien ca coute)\??$/i)) {
     return {
-      text: "Voici nos tarifs officiels Les Épices de Sulson :\n\n• Sachet individuel (100g) : 6,90 €\n• Pack Intégral 4 Saveurs (400g) : 24,90 € (au lieu de 27,60 €)\n• Livraison GRATUITE dès 50 € d'achat !",
+      text: "Voici nos tarifs officiels Les Épices de Sulson :\n\n• Sachet individuel (100g) : 5,99 €\n• Pack Intégral 4 Saveurs (400g) : 23,96 €\n• Livraison GRATUITE dès 50 € d'achat !",
       action: {
         type: "link",
         label: "Voir le Pack 4 Saveurs",

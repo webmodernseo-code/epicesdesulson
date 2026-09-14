@@ -17,7 +17,7 @@ export default function CheckoutDialog({
   triggerText = "Paiement Rapide",
   title = "Confirmer et payer",
   description = "Paiement 100% sécurisé et garanti.",
-  amountFormatted = "6,90 €",
+  amountFormatted = "5,99 €",
   onPay,
 }: CheckoutDialogProps) {
   const [selectedPlan, setSelectedPlan] = useState<"standard" | "pack">("standard");

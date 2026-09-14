@@ -286,7 +286,7 @@ export default function BlogModal({ article, onClose }: BlogModalProps) {
                       ) : (
                         <>
                           <i className="hgi hgi-stroke hgi-shopping-cart-02 text-base text-white" />
-                          <span>Commander ce sachet (6,90 €)</span>
+                          <span>Commander ce sachet (5,99 €)</span>
                         </>
                       )}
                     </button>
