@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Loader2, CheckCircle2, ShieldCheck, Search, Check, Home } from "lucide-react";
+import { MapPin, Loader2, CheckCircle2, ShieldCheck, Search, Check, Home, ArrowRight } from "lucide-react";
 
 export interface ShippingAddressData {
   firstName: string;
@@ -21,6 +21,7 @@ interface ShippingAddressProps {
   data: ShippingAddressData;
   onChange: (field: keyof ShippingAddressData, value: string | boolean) => void;
   errors?: Partial<Record<keyof ShippingAddressData, string>>;
+  onContinue?: () => void;
 }
 
 interface AddressSuggestion {
@@ -38,6 +39,7 @@ export default function ShippingAddressV1({
   data,
   onChange,
   errors = {},
+  onContinue,
 }: ShippingAddressProps) {
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
@@ -468,6 +470,24 @@ export default function ShippingAddressV1({
               </select>
             </div>
           </div>
+
+          {/* Bouton d'action Étape 1 : Valider et Continuer */}
+          {onContinue && (
+            <div className="pt-5 mt-2 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-xs text-gray-500 flex items-center gap-1.5">
+                <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
+                <span>Adresse protégée et conforme aux normes postales</span>
+              </div>
+              <button
+                type="button"
+                onClick={onContinue}
+                className="w-full sm:w-auto px-6 py-3.5 bg-emerald-700 hover:bg-emerald-800 active:scale-[0.99] text-white font-bold text-sm rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Valider et passer au paiement</span>
+                <ArrowRight className="size-4" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

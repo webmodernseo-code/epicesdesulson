@@ -29,7 +29,7 @@ export async function GET() {
     let stripeEnabled = true;
 
     let paypalClientId = process.env.PAYPAL_CLIENT_ID || null;
-    let paypalSecret = process.env.PAYPAL_SECRET_KEY || null;
+    let paypalSecret = process.env.PAYPAL_SECRET_KEY || process.env.PAYPAL_CLIENT_SECRET || null;
     let paypalLive = false;
     let paypalEnabled = true;
 

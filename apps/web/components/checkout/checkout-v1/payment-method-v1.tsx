@@ -211,6 +211,8 @@ interface PaymentMethodProps {
   onSubmit?: (e: React.FormEvent) => void;
   errorMessage?: string | null;
   isPayPalAvailable?: boolean;
+  isLocked?: boolean;
+  onUnlockStep?: () => void;
 }
 
 export default function PaymentMethodV1({
@@ -223,6 +225,8 @@ export default function PaymentMethodV1({
   onSubmit = (e) => e.preventDefault(),
   errorMessage,
   isPayPalAvailable = false,
+  isLocked = false,
+  onUnlockStep,
 }: PaymentMethodProps = {}) {
   const [activeTab, setActiveTab] = useState<PaymentTabType>(selectedMethod);
   const [showCvcHelper, setShowCvcHelper] = useState(false);
@@ -276,33 +280,77 @@ export default function PaymentMethodV1({
   }, [selectedMethod]);
 
   return (
-    <div className="border border-gray-200/90 rounded-2xl bg-white shadow-2xs overflow-hidden transition-all">
+    <div
+      className={`border rounded-2xl bg-white shadow-2xs overflow-hidden transition-all duration-300 ${
+        isLocked ? "border-gray-200/70 opacity-90" : "border-gray-200/90"
+      }`}
+    >
       {/* ─── Header Apple / Stripe Style ─── */}
       <div className="py-4 sm:py-5 px-5 sm:px-7 bg-white border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
         <div className="flex items-center gap-3.5">
-          <span className="size-8 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs">
-            2
+          <span
+            className={`size-8 rounded-full font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs ${
+              isLocked
+                ? "bg-gray-100 text-gray-400 border border-gray-200"
+                : "bg-emerald-50 text-emerald-800 border border-emerald-200/90"
+            }`}
+          >
+            {isLocked ? <Lock className="size-4" /> : "2"}
           </span>
           <div>
             <h2 className="font-bold text-base sm:text-lg text-gray-950 tracking-tight">
               Paiement sécurisé
             </h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Toutes les transactions sont chiffrées et sécurisées
+              {isLocked
+                ? "Débloqué après validation de vos informations de livraison"
+                : "Toutes les transactions sont chiffrées et sécurisées"}
             </p>
           </div>
         </div>
 
         {/* Security badge */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50/90 px-3 py-1.5 rounded-full border border-emerald-200/70 font-semibold shadow-2xs whitespace-nowrap shrink-0">
-            <Lock className="size-3.5 text-emerald-600" />
-            <span>SSL 256-bit</span>
-          </span>
+          {isLocked ? (
+            <span className="inline-flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200/80 font-medium whitespace-nowrap shrink-0">
+              <Lock className="size-3 text-gray-400" />
+              <span>Étape 2 / 2</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50/90 px-3 py-1.5 rounded-full border border-emerald-200/70 font-semibold shadow-2xs whitespace-nowrap shrink-0">
+              <Lock className="size-3.5 text-emerald-600" />
+              <span>SSL 256-bit</span>
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="p-5 sm:p-7 space-y-6">
+      {isLocked ? (
+        <div className="p-6 sm:p-8 bg-gray-50/40 text-center space-y-3.5">
+          <div className="size-11 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto border border-gray-200/60 shadow-2xs">
+            <Lock className="size-5 text-gray-500" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-gray-900">
+              Étape 2 : Mode de paiement verrouillée
+            </p>
+            <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto leading-relaxed">
+              Veuillez renseigner et valider vos coordonnées de livraison à l'étape 1 ci-dessus pour débloquer les modes de paiement sécurisés (Carte Bancaire, Apple Pay, PayPal).
+            </p>
+          </div>
+          {onUnlockStep && (
+            <button
+              type="button"
+              onClick={onUnlockStep}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100/80 px-4 py-2 rounded-xl transition border border-emerald-200/60 shadow-2xs cursor-pointer"
+            >
+              <span>Compléter l'adresse de livraison</span>
+              <span aria-hidden="true">↑</span>
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="p-5 sm:p-7 space-y-6">
         {/* ─── Mode de Paiement : Liste Accordion Verticale (Style Stripe & Apple) ─── */}
         <div className="space-y-3.5">
           {/* ─── OPTION 1 : CARTE BANCAIRE (VISA / MASTERCARD) ─── */}
@@ -641,29 +689,46 @@ export default function PaymentMethodV1({
                     : "La passerelle de paiement PayPal est momentanément inactive. Veuillez privilégier le règlement par Carte Bancaire ou Apple Pay."}
                 </p>
 
+                {errorMessage && (
+                  <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200/80 text-xs text-amber-900 flex items-start gap-2.5">
+                    <AlertCircle className="size-4.5 text-amber-600 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-bold text-amber-950">Statut du paiement PayPal</p>
+                      <p className="leading-relaxed">{errorMessage}</p>
+                    </div>
+                  </div>
+                )}
+
                 <button
                   type="button"
                   disabled={!isPayPalAvailable || isProcessing}
                   onClick={(e) => {
                     e.preventDefault();
-                    if (isPayPalAvailable) onSubmit(e);
+                    if (isPayPalAvailable && !isProcessing) onSubmit(e);
                   }}
                   className={`w-full h-12 rounded-xl text-base border transition-all flex items-center justify-center gap-2.5 select-none ${
-                    isPayPalAvailable
+                    isPayPalAvailable && !isProcessing
                       ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 font-bold border-[#E5A800]/40 shadow-xs cursor-pointer"
-                      : "bg-[#FFC439]/50 text-gray-700 font-semibold border-amber-300/40 opacity-55 cursor-not-allowed shadow-none"
+                      : "bg-[#FFC439]/50 text-gray-700 font-semibold border-amber-300/40 opacity-70 cursor-not-allowed shadow-none"
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-2.5">
-                    <PaypalSvg
-                      className={`h-5.5 sm:h-6 w-auto shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
-                    />
-                    <span className="font-semibold text-xs sm:text-sm">
-                      {isPayPalAvailable
-                        ? `— Payer ${totalAmountFormatted}`
-                        : "Moyen de paiement indisponible"}
-                    </span>
-                  </div>
+                  {isProcessing ? (
+                    <div className="flex items-center justify-center gap-2 text-gray-900 font-bold text-sm">
+                      <Loader2 className="size-5 animate-spin text-gray-900" />
+                      <span>Connexion à PayPal en cours...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2.5">
+                      <PaypalSvg
+                        className={`h-5.5 sm:h-6 w-auto shrink-0 ${!isPayPalAvailable ? "opacity-60 grayscale-20" : ""}`}
+                      />
+                      <span className="font-semibold text-xs sm:text-sm">
+                        {isPayPalAvailable
+                          ? `— Payer ${totalAmountFormatted}`
+                          : "Moyen de paiement indisponible"}
+                      </span>
+                    </div>
+                  )}
                 </button>
               </div>
             )}
@@ -688,6 +753,7 @@ export default function PaymentMethodV1({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

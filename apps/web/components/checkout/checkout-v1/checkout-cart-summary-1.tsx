@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useCart, parseCartPrice } from "@/context/cart-context";
 import { toast } from "@/lib/toast";
-import { ShieldCheck, Lock, Trash2, Truck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Lock, Trash2, Truck, CheckCircle2, ArrowRight } from "lucide-react";
 import { PaypalSvg } from "./payment-method-v1";
 
 interface CheckoutCartSummaryProps {
@@ -13,6 +13,7 @@ interface CheckoutCartSummaryProps {
   shippingCountry?: string;
   onPlaceOrder?: (coupon?: string) => void;
   isPayPalAvailable?: boolean;
+  currentStep?: 1 | 2;
 }
 
 export default function CheckoutCartSummary1({
@@ -21,6 +22,7 @@ export default function CheckoutCartSummary1({
   shippingCountry = "France",
   onPlaceOrder,
   isPayPalAvailable = false,
+  currentStep = 1,
 }: CheckoutCartSummaryProps) {
   const { items, subtotal, removeItem } = useCart();
   const [couponCode, setCouponCode] = useState("");
@@ -231,10 +233,12 @@ export default function CheckoutCartSummary1({
       {/* Dynamic Place Order Action Button */}
       <button
         type="button"
-        disabled={isProcessing || (selectedMethod === "paypal" && !isPayPalAvailable)}
+        disabled={isProcessing || (currentStep === 2 && selectedMethod === "paypal" && !isPayPalAvailable)}
         onClick={handleTriggerCheckout}
         className={`w-full h-13 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2.5 ${
-          selectedMethod === "paypal"
+          currentStep === 1
+            ? "bg-emerald-800 hover:bg-emerald-900 active:scale-[0.99] text-white shadow-sm hover:shadow cursor-pointer"
+            : selectedMethod === "paypal"
             ? isPayPalAvailable
               ? "bg-[#FFC439] hover:bg-[#F4BB30] active:scale-[0.99] text-gray-950 border border-[#E5A800]/40 shadow-sm hover:shadow cursor-pointer"
               : "bg-[#FFC439]/50 text-gray-700 font-semibold border border-amber-300/40 opacity-55 cursor-not-allowed shadow-none"
@@ -248,6 +252,11 @@ export default function CheckoutCartSummary1({
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
             <span>Validation en cours...</span>
+          </>
+        ) : currentStep === 1 ? (
+          <>
+            <span>Continuer vers le paiement</span>
+            <ArrowRight className="size-5" />
           </>
         ) : selectedMethod === "paypal" ? (
           <div className="flex items-center justify-center gap-2.5">

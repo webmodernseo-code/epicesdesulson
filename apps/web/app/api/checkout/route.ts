@@ -145,27 +145,13 @@ export async function POST(req: Request) {
                   amount: {
                     currency_code: "EUR",
                     value: order.totalAmount.toFixed(2),
-                    breakdown: {
-                      item_total: {
-                        currency_code: "EUR",
-                        value: order.subtotal.toFixed(2),
-                      },
-                      shipping: {
-                        currency_code: "EUR",
-                        value: order.shippingCost.toFixed(2),
-                      },
-                      discount: {
-                        currency_code: "EUR",
-                        value: order.discountAmount.toFixed(2),
-                      },
-                    },
                   },
                 },
               ],
               application_context: {
                 brand_name: "Les Épices de Sulson",
                 locale: "fr-FR",
-                landing_page: "LOGIN",
+                landing_page: "NO_PREFERENCE",
                 shipping_preference: "NO_SHIPPING",
                 user_action: "PAY_NOW",
                 return_url: `${origin}/api/paypal/capture?orderNumber=${order.orderNumber}&orderId=${order.id}`,
@@ -182,34 +168,72 @@ export async function POST(req: Request) {
               body: JSON.stringify(paypalOrderPayload),
             });
 
+            const createData = await createRes.json();
+
             if (createRes.ok) {
-              const paypalOrder = await createRes.json();
-              const approveLink = paypalOrder.links?.find((l: any) => l.rel === "approve")?.href;
+              const approveLink = createData.links?.find((l: any) => l.rel === "approve")?.href;
 
               if (approveLink) {
                 await prisma.order.updateMany({
                   where: { id: order.id },
-                  data: { stripeSessionId: paypalOrder.id, paymentMethod: "paypal", paymentStatus: "PENDING" },
+                  data: { stripeSessionId: createData.id, paymentMethod: "paypal", paymentStatus: "PENDING" },
                 });
                 return NextResponse.json({
                   success: true,
                   orderId: order.id,
                   orderNumber: order.orderNumber,
                   checkoutUrl: approveLink,
-                  paypalOrderId: paypalOrder.id,
+                  paypalOrderId: createData.id,
                   mode: isLive ? "paypal_live" : "paypal_sandbox",
                 });
               }
+            } else {
+              console.error("PayPal Order Creation Error:", JSON.stringify(createData, null, 2));
+              let errorMessage = "Le paiement PayPal n'a pas pu être initialisé.";
+              const firstIssue = createData?.details?.[0]?.issue;
+              if (firstIssue === "PAYEE_ACCOUNT_RESTRICTED") {
+                errorMessage =
+                  "Votre compte marchand PayPal nécessite une validation de compte ou levée de restriction (compte restreint). Veuillez vérifier votre compte PayPal Business ou régler par Carte Bancaire.";
+              } else if (createData?.message) {
+                errorMessage = `Erreur PayPal: ${createData.message}`;
+              }
+              return NextResponse.json(
+                { success: false, error: errorMessage, details: createData },
+                { status: 400 }
+              );
             }
+          } else {
+            const tokenErr = await tokenRes.text();
+            console.error("PayPal Token Error:", tokenErr);
+            return NextResponse.json(
+              {
+                success: false,
+                error:
+                  "Authentification PayPal échouée. Veuillez vérifier les identifiants Client ID et Secret dans le tableau de bord.",
+              },
+              { status: 400 }
+            );
           }
         } catch (paypalErr: any) {
-          console.warn("PayPal API Integration notice (falling back to direct test confirmation):", paypalErr);
+          console.warn("PayPal API Integration notice:", paypalErr);
+          return NextResponse.json(
+            {
+              success: false,
+              error:
+                paypalErr.message ||
+                "Erreur de communication avec les serveurs PayPal. Veuillez réessayer ou régler par Carte Bancaire.",
+            },
+            { status: 500 }
+          );
         }
       }
 
-      // A failed or unavailable provider must never be converted into a paid order.
       return NextResponse.json(
-        { success: false, error: "PayPal est momentanément indisponible. Aucun débit n’a été effectué." },
+        {
+          success: false,
+          error:
+            "La passerelle PayPal n'est pas configurée ou est désactivée dans les paramètres de la boutique.",
+        },
         { status: 503 }
       );
 
