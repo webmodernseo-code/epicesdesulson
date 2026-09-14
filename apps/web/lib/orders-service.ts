@@ -422,12 +422,126 @@ export class OrdersService {
           })),
           invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
         }).catch(() => {});
+
+        // 4. Customer Post-Purchase Thank You & Tasting Advice Email
+        const { sendOrderThankYouNurturingEmail } = await import("./email");
+        sendOrderThankYouNurturingEmail({
+          to: order.customerEmail,
+          customerName: order.customerName,
+          orderNumber: order.orderNumber,
+          totalAmount: order.totalAmount,
+          items: order.items.map((it) => ({
+            productName: it.productName,
+            formatLabel: it.formatLabel,
+            quantity: it.quantity,
+            totalPrice: it.totalPrice,
+          })),
+        }).catch(() => {});
       } catch (mailErr) {
         console.warn("Could not dispatch emails on markOrderPaid:", mailErr);
       }
     }
 
     return orderToNotify;
+  }
+
+  // Traitement automatique des paniers abandonnés / échecs de paiement sous 1h
+  // Condition stricte : si et seulement si le client n'a pas encore acheté
+  static async processAbandonedOrdersRecovery(): Promise<{
+    scanned: number;
+    recovered: number;
+    skippedAlreadyPaid: number;
+    errors: string[];
+  }> {
+    const result = {
+      scanned: 0,
+      recovered: 0,
+      skippedAlreadyPaid: 0,
+      errors: [] as string[],
+    };
+
+    try {
+      if (!process.env.DATABASE_URL) return result;
+      const { prisma } = await import("./prisma");
+
+      const now = new Date();
+      const minAge = new Date(now.getTime() - 15 * 60 * 1000); // Au moins 15 minutes écoulées
+      const maxAge = new Date(now.getTime() - 24 * 60 * 60 * 1000); // Moins de 24h
+
+      const candidates = await prisma.order.findMany({
+        where: {
+          createdAt: {
+            lte: minAge,
+            gte: maxAge,
+          },
+          paymentStatus: {
+            in: ["UNPAID", "FAILED", "PENDING"],
+          },
+          status: {
+            in: ["PENDING", "CANCELLED"],
+          },
+        },
+        include: { items: true },
+        take: 30,
+      });
+
+      result.scanned = candidates.length;
+      const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://epicesdesulson.com";
+
+      for (const order of candidates) {
+        if (runtimeOrders.has(`recovered_${order.id}`) || runtimeOrders.has(`recovered_${order.orderNumber}`)) {
+          continue;
+        }
+
+        // 🛡️ VÉRIFICATION EN DIRECT : Le client a-t-il payé ou racheté entre-temps ?
+        const customerPaidOrder = await prisma.order.findFirst({
+          where: {
+            customerEmail: { equals: order.customerEmail.trim(), mode: "insensitive" },
+            paymentStatus: "PAID",
+          },
+        });
+
+        if (customerPaidOrder) {
+          // Client déjà client confirmé : on annule immédiatement la relance
+          result.skippedAlreadyPaid++;
+          runtimeOrders.set(`recovered_${order.id}`, order as any);
+          runtimeOrders.set(`recovered_${order.orderNumber}`, order as any);
+          continue;
+        }
+
+        // Envoi de la relance personnalisée
+        try {
+          const { sendAbandonedPaymentRecoveryEmail } = await import("./email");
+          const emailRes = await sendAbandonedPaymentRecoveryEmail({
+            to: order.customerEmail,
+            customerName: order.customerName,
+            orderNumber: order.orderNumber,
+            totalAmount: Number(order.totalAmount),
+            items: order.items.map((i) => ({
+              productName: i.productName,
+              formatLabel: i.formatLabel,
+              quantity: i.quantity,
+              totalPrice: Number(i.totalPrice),
+            })),
+            recoveryUrl: `${origin}/checkout?orderNumber=${order.orderNumber}&recovered=true`,
+          });
+
+          if (emailRes.success) {
+            runtimeOrders.set(`recovered_${order.id}`, order as any);
+            runtimeOrders.set(`recovered_${order.orderNumber}`, order as any);
+            result.recovered++;
+          } else if (emailRes.error) {
+            result.errors.push(`Order ${order.orderNumber}: ${emailRes.error}`);
+          }
+        } catch (err: any) {
+          result.errors.push(`Order ${order.orderNumber}: ${err.message}`);
+        }
+      }
+    } catch (err: any) {
+      result.errors.push(err.message || "Erreur de relance panier");
+    }
+
+    return result;
   }
 
   static async markOrderFailed(orderIdOrNumber: string): Promise<void> {

@@ -93,6 +93,9 @@ export default function CheckoutV1Page() {
     if (!shippingData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingData.email.trim())) {
       newErrors.email = "Veuillez renseigner une adresse email valide.";
     }
+    if (!shippingData.phone?.trim()) {
+      newErrors.phone = "Veuillez renseigner votre numéro de téléphone pour le suivi de livraison.";
+    }
     if (!shippingData.street.trim()) {
       newErrors.street = "Veuillez renseigner votre adresse de livraison.";
     } else if (!shippingData.isBanVerified && (!shippingData.postalCode || !shippingData.city)) {
@@ -176,6 +179,7 @@ export default function CheckoutV1Page() {
         body: JSON.stringify({
           customerName: fullName,
           customerEmail: shippingData.email.trim(),
+          customerPhone: shippingData.phone?.trim() || undefined,
           shippingStreet: fullStreet,
           shippingCity: (shippingData.city || "").trim(),
           shippingPostal: (shippingData.postalCode || "").trim(),
@@ -376,7 +380,7 @@ export default function CheckoutV1Page() {
                       </span>
                     </div>
                     <p className="text-xs sm:text-sm text-gray-700 mt-1 truncate">
-                      <span className="font-semibold">{shippingData.firstName} {shippingData.lastName}</span> • {shippingData.email}
+                      <span className="font-semibold">{shippingData.firstName} {shippingData.lastName}</span> • {shippingData.email}{shippingData.phone ? ` • ${shippingData.phone}` : ""}
                     </p>
                     <p className="text-xs text-gray-600 mt-0.5">
                       {shippingData.street}{shippingData.address2 ? `, ${shippingData.address2}` : ""}, {shippingData.postalCode} {shippingData.city}, {shippingData.country}

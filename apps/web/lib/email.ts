@@ -743,3 +743,168 @@ export async function sendCustomerDirectMessageEmail({
     return { success: false, error: error.message };
   }
 }
+
+// ── 9. EMAIL DE REMERCIEMENT ET CONSEILS DE DÉGUSTATION POST-ACHAT ──
+export async function sendOrderThankYouNurturingEmail({
+  to,
+  customerName,
+  orderNumber,
+  totalAmount,
+  items = [],
+}: {
+  to: string;
+  customerName: string;
+  orderNumber: string;
+  totalAmount: number;
+  items?: OrderItemSummary[];
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const smtp = await getSmtpTransporter();
+
+    const bodyHtml = `
+      <h2 style="margin: 0 0 14px 0; font-size: 20px; font-weight: 800; color: #0f172a;">Un immense merci pour votre confiance, ${customerName} !</h2>
+      <p style="margin: 0 0 20px 0; font-size: 15px; line-height: 24px; color: #475569;">
+        Toute l'équipe de la maison <strong>Les Épices de Sulson</strong> tenait à vous remercier personnellement pour votre commande <strong>${orderNumber}</strong>.
+        Votre choix valorise un artisanat d'excellence et la passion des saveurs authentiques.
+      </p>
+
+      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 22px; margin: 24px 0;">
+        <h3 style="margin: 0 0 10px 0; font-size: 15px; font-weight: 700; color: #047857;">Le secret du Chef pour préserver vos épices :</h3>
+        <p style="margin: 0 0 12px 0; font-size: 13px; line-height: 20px; color: #334155;">
+          • <strong>Conservation :</strong> Gardez vos sachets bien zippés à l'abri de la lumière directe et de l'humidité afin de conserver l'intensité des huiles essentielles.<br>
+          • <strong>Dégustation :</strong> Privilégiez un concassage minute au pilon ou au moulin en toute fin de cuisson pour révéler la richesse aromatique sur vos grillades, poissons et légumes rôtis.
+        </p>
+      </div>
+
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${BRAND_SITE}/recipes" target="_blank" style="display: inline-block; background-color: #047857; color: #ffffff; padding: 14px 30px; border-radius: 12px; font-size: 14px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(4,120,87,0.25);">
+          Découvrir les Recettes Exclusives du Chef
+        </a>
+      </div>
+
+      <p style="font-size: 13px; color: #64748b; line-height: 20px; text-align: center; margin-top: 24px;">
+        Votre colis est actuellement préparé avec soin dans notre atelier. Vous recevrez votre numéro de suivi postal très prochainement.
+      </p>
+    `;
+
+    const fullHtml = buildEmailTemplate({
+      title: `Merci pour votre commande ${orderNumber}`,
+      preheader: "Conseils de dégustation & Remerciements",
+      contentHtml: bodyHtml,
+    });
+
+    if (!smtp) {
+      console.log(`[Email Remerciement Nurturing simulé] Envoyé à ${to} pour commande ${orderNumber}`);
+      return { success: true };
+    }
+
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
+      to,
+      subject: `Merci pour votre commande ! Conseils & Secrets de Dégustation - Les Épices de Sulson`,
+      html: fullHtml,
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Erreur sendOrderThankYouNurturingEmail:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// ── 10. EMAIL DE RELANCE APRÈS ÉCHEC DE PAIEMENT OU PANIER ABANDONNÉ SOUS 1H ──
+export async function sendAbandonedPaymentRecoveryEmail({
+  to,
+  customerName,
+  orderNumber,
+  totalAmount,
+  items = [],
+  recoveryUrl,
+}: {
+  to: string;
+  customerName: string;
+  orderNumber: string;
+  totalAmount: number;
+  items?: OrderItemSummary[];
+  recoveryUrl?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const smtp = await getSmtpTransporter();
+    const finalRecoveryUrl = recoveryUrl || `${BRAND_SITE}/checkout?orderNumber=${orderNumber}`;
+
+    const itemsRows = items
+      .map(
+        (it) => `
+      <tr>
+        <td style="padding: 10px 0; font-size: 13px; color: #1e293b; border-bottom: 1px solid #f1f5f9;">
+          <strong>${it.quantity}x</strong> ${it.productName} <span style="color: #64748b; font-size: 12px;">(${it.formatLabel})</span>
+        </td>
+        <td style="padding: 10px 0; font-size: 13px; font-weight: 700; color: #0f172a; text-align: right; border-bottom: 1px solid #f1f5f9;">
+          ${it.totalPrice.toFixed(2)} €
+        </td>
+      </tr>
+    `
+      )
+      .join("");
+
+    const bodyHtml = `
+      <h2 style="margin: 0 0 14px 0; font-size: 20px; font-weight: 800; color: #0f172a;">Avez-vous rencontré une difficulté lors de votre règlement ?</h2>
+      <p style="margin: 0 0 20px 0; font-size: 15px; line-height: 24px; color: #475569;">
+        Bonjour <strong>${customerName}</strong>,<br><br>
+        Nous avons constaté que votre commande <strong>#${orderNumber}</strong> n'a pas pu aboutir. Vos épices d'exception sont temporairement réservées dans notre atelier pour vous permettre de finaliser votre panier en toute sérénité.
+      </p>
+
+      ${
+        items.length > 0
+          ? `
+      <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; margin: 20px 0;">
+        <p style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">Vos articles réservés :</p>
+        <table role="presentation" width="100%" style="border-collapse: collapse;">
+          ${itemsRows}
+          <tr>
+            <td style="padding: 12px 0 0 0; font-size: 15px; font-weight: 800; color: #0f172a;">Total TTC</td>
+            <td style="padding: 12px 0 0 0; font-size: 16px; font-weight: 800; color: #047857; text-align: right;">${totalAmount.toFixed(2)} €</td>
+          </tr>
+        </table>
+      </div>`
+          : ""
+      }
+
+      <div style="text-align: center; margin: 30px 0 26px 0;">
+        <a href="${finalRecoveryUrl}" target="_blank" style="display: inline-block; background-color: #047857; color: #ffffff; padding: 14px 34px; border-radius: 12px; font-size: 15px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(4,120,87,0.25);">
+          Finaliser ma commande en 1 clic
+        </a>
+      </div>
+
+      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-top: 20px;">
+        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 18px;">
+          <strong style="color: #0f172a;">Besoin d'assistance ?</strong><br>
+          Si vous avez rencontré un problème avec votre carte ou PayPal, répondez directement à cet e-mail ou contactez notre équipe à <a href="mailto:contact@epicesdesulson.com" style="color: #047857; text-decoration: none; font-weight: 600;">contact@epicesdesulson.com</a>.
+        </p>
+      </div>
+    `;
+
+    const fullHtml = buildEmailTemplate({
+      title: "Finalisez votre commande d'épices",
+      preheader: "Vos épices d'exception sont réservées",
+      contentHtml: bodyHtml,
+    });
+
+    if (!smtp) {
+      console.log(`[Email Relance Panier simulé] Envoyé à ${to} pour commande ${orderNumber}`);
+      return { success: true };
+    }
+
+    await smtp.transporter.sendMail({
+      from: smtp.fromAddress,
+      to,
+      subject: `Vos épices d'exception sont réservées (Commande #${orderNumber}) - Les Épices de Sulson`,
+      html: fullHtml,
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Erreur sendAbandonedPaymentRecoveryEmail:", error);
+    return { success: false, error: error.message };
+  }
+}

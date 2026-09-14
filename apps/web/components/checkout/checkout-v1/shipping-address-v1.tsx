@@ -252,26 +252,56 @@ export default function ShippingAddressV1({
             </div>
           </div>
 
-          {/* Email de confirmation */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-1.5">
-              Adresse e-mail <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              required
-              placeholder="jean.dupont@example.fr"
-              value={data.email}
-              onChange={(e) => onChange("email", e.target.value)}
-              className={`w-full h-12 px-4 rounded-xl border ${
-                errors.email
-                  ? "border-red-400 focus:border-red-500 focus:ring-red-500"
-                  : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-              } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
-            />
-            {errors.email && (
-              <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.email}</p>
-            )}
+          {/* Email & Téléphone de livraison (2 colonnes) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                Adresse e-mail <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                required
+                placeholder="jean.dupont@example.fr"
+                value={data.email}
+                onChange={(e) => onChange("email", e.target.value)}
+                className={`w-full h-12 px-4 rounded-xl border ${
+                  errors.email
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
+              />
+              {errors.email ? (
+                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.email}</p>
+              ) : (
+                <p className="text-[11px] text-gray-500 mt-1.5">Pour recevoir la facture acquittée et le lien de suivi</p>
+              )}
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-semibold text-gray-800">
+                  Numéro de téléphone <span className="text-red-500">*</span>
+                </label>
+                <span className="text-[11px] text-emerald-700 font-medium">Suivi Colis & SMS</span>
+              </div>
+              <input
+                type="tel"
+                required
+                placeholder="06 12 34 56 78"
+                value={data.phone || ""}
+                onChange={(e) => onChange("phone", e.target.value)}
+                className={`w-full h-12 px-4 rounded-xl border ${
+                  errors.phone
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
+                } bg-white text-base sm:text-sm text-gray-900 focus:outline-none focus:ring-1 shadow-2xs transition placeholder:text-gray-400`}
+              />
+              {errors.phone ? (
+                <p className="text-xs text-red-600 mt-1.5 font-medium">{errors.phone}</p>
+              ) : (
+                <p className="text-[11px] text-gray-500 mt-1.5">Pour l'avis de passage et la remise du colis par le livreur</p>
+              )}
+            </div>
           </div>
 
           {/* ─── Adresse Certifiée BAN (Base Adresse Nationale) avec priorité aux numéros de rue ─── */}
