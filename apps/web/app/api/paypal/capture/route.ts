@@ -58,6 +58,7 @@ export async function GET(req: Request) {
             const capture = await captureRes.json();
             const matchingOrder = await prisma.order.findFirst({
               where: { orderNumber, stripeSessionId: token, paymentMethod: "paypal" },
+              include: { items: true },
             });
             if (capture.status === "COMPLETED" && matchingOrder) {
               const captureId = capture.purchase_units?.[0]?.payments?.captures?.[0]?.id;
@@ -74,6 +75,12 @@ export async function GET(req: Request) {
                   shippingStreet: matchingOrder.shippingStreet,
                   shippingCity: matchingOrder.shippingCity,
                   shippingPostal: matchingOrder.shippingPostal,
+                  items: matchingOrder.items.map((i) => ({
+                    productName: i.productName,
+                    formatLabel: i.formatLabel,
+                    quantity: i.quantity,
+                    totalPrice: Number(i.totalPrice),
+                  })),
                   invoiceUrl: `${origin}/api/orders/${matchingOrder.orderNumber}/invoice`,
                 }).catch(() => {});
 
@@ -86,10 +93,38 @@ export async function GET(req: Request) {
                   totalAmount: Number(matchingOrder.totalAmount),
                   paymentMethod: "PayPal",
                   shippingAddress: `${matchingOrder.shippingStreet}, ${matchingOrder.shippingPostal} ${matchingOrder.shippingCity}`,
+                  items: matchingOrder.items.map((i) => ({
+                    productName: i.productName,
+                    formatLabel: i.formatLabel,
+                    quantity: i.quantity,
+                    totalPrice: Number(i.totalPrice),
+                  })),
                   dashboardUrl: "https://epicesdesulson.com/orders",
                 }).catch(() => {});
               } catch (mailErr) {
                 console.warn("PayPal emails dispatch notice:", mailErr);
+              }
+
+              // Dispatch Instant WhatsApp Alert to Merchant
+              try {
+                const { sendWhatsAppNewOrderAlert } = await import("@/lib/whatsapp");
+                sendWhatsAppNewOrderAlert({
+                  orderNumber: matchingOrder.orderNumber,
+                  customerName: matchingOrder.customerName,
+                  customerEmail: matchingOrder.customerEmail,
+                  customerPhone: matchingOrder.customerPhone || undefined,
+                  totalAmount: Number(matchingOrder.totalAmount),
+                  paymentMethod: "PayPal",
+                  shippingAddress: `${matchingOrder.shippingStreet}, ${matchingOrder.shippingPostal} ${matchingOrder.shippingCity}`,
+                  items: matchingOrder.items.map((i) => ({
+                    productName: i.productName,
+                    formatLabel: i.formatLabel,
+                    quantity: i.quantity,
+                    totalPrice: Number(i.totalPrice),
+                  })),
+                }).catch((waErr) => console.warn("WhatsApp notification notice:", waErr));
+              } catch (waErr) {
+                console.warn("WhatsApp dispatch error:", waErr);
               }
 
               return NextResponse.redirect(

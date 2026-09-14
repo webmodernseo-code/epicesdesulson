@@ -295,10 +295,13 @@ export class OrdersService {
   }
 
   static async markOrderPaid(orderIdOrNumber: string, stripePaymentId?: string): Promise<OrderResponseModel | null> {
+    let previouslyPaid = false;
+    let orderToNotify: OrderResponseModel | null = null;
+
     try {
       if (process.env.DATABASE_URL) {
         const { prisma } = await import("./prisma");
-        const updated = await prisma.order.updateMany({
+        const existing = await prisma.order.findFirst({
           where: {
             OR: [
               { id: orderIdOrNumber },
@@ -307,26 +310,124 @@ export class OrdersService {
               { stripePaymentId: orderIdOrNumber },
             ],
           },
-          data: {
+          include: { items: true },
+        });
+
+        if (existing) {
+          previouslyPaid = existing.paymentStatus === "PAID";
+          await prisma.order.update({
+            where: { id: existing.id },
+            data: {
+              status: "PAID",
+              paymentStatus: "PAID",
+              stripePaymentId: stripePaymentId || existing.stripePaymentId || undefined,
+            },
+          });
+
+          orderToNotify = {
+            id: existing.id,
+            orderNumber: existing.orderNumber,
+            customerName: existing.customerName,
+            customerEmail: existing.customerEmail,
+            subtotal: Number(existing.subtotal),
+            shippingCost: Number(existing.shippingCost),
+            discountAmount: Number(existing.discountAmount),
+            totalAmount: Number(existing.totalAmount),
             status: "PAID",
             paymentStatus: "PAID",
-            stripePaymentId: stripePaymentId || undefined,
-          },
-        });
-        if (updated.count > 0) {
-          return this.getOrderById(orderIdOrNumber);
+            items: existing.items.map((i) => ({
+              productId: i.productId || "SUL-301",
+              productName: i.productName,
+              formatLabel: i.formatLabel,
+              quantity: i.quantity,
+              unitPrice: Number(i.unitPrice),
+              totalPrice: Number(i.totalPrice),
+            })),
+            createdAt: existing.createdAt.toISOString(),
+          };
         }
       }
     } catch (err) {
       console.warn("Prisma markOrderPaid failed, updating runtime cache:", err);
     }
 
-    const order = runtimeOrders.get(orderIdOrNumber);
-    if (!order) return null;
+    if (!orderToNotify) {
+      const cached = runtimeOrders.get(orderIdOrNumber);
+      if (cached) {
+        previouslyPaid = cached.paymentStatus === "PAID";
+        cached.paymentStatus = "PAID";
+        cached.status = "PAID";
+        orderToNotify = cached;
+      }
+    }
 
-    order.paymentStatus = "PAID";
-    order.status = "PAID";
-    return order;
+    // Trigger confirmation & instant merchant notifications if newly paid
+    if (orderToNotify && !previouslyPaid) {
+      const order = orderToNotify;
+      const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://epicesdesulson.com";
+
+      // 1. WhatsApp Instant Alert to Merchant
+      try {
+        const { sendWhatsAppNewOrderAlert } = await import("./whatsapp");
+        sendWhatsAppNewOrderAlert({
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          totalAmount: order.totalAmount,
+          paymentMethod: stripePaymentId?.startsWith("tx_paypal") ? "PayPal" : "Carte Bancaire / Stripe",
+          shippingAddress: "Consulter la fiche commande dans le cockpit",
+          items: order.items.map((it) => ({
+            productName: it.productName,
+            formatLabel: it.formatLabel,
+            quantity: it.quantity,
+            totalPrice: it.totalPrice,
+          })),
+        }).catch((e) => console.warn("WhatsApp alert error:", e));
+      } catch (waErr) {
+        console.warn("Could not dispatch WhatsApp alert:", waErr);
+      }
+
+      // 2. Admin Alert Email
+      try {
+        const { sendAdminNewOrderAlertEmail, sendOrderConfirmationEmail } = await import("./email");
+        sendAdminNewOrderAlertEmail({
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          totalAmount: order.totalAmount,
+          paymentMethod: stripePaymentId?.startsWith("tx_paypal") ? "PayPal" : "Carte Bancaire / Stripe",
+          items: order.items.map((it) => ({
+            productName: it.productName,
+            formatLabel: it.formatLabel,
+            quantity: it.quantity,
+            totalPrice: it.totalPrice,
+          })),
+          dashboardUrl: "https://epicesdesulson.com/orders",
+        }).catch(() => {});
+
+        // 3. Customer Order Confirmation Email
+        sendOrderConfirmationEmail({
+          to: order.customerEmail,
+          customerName: order.customerName,
+          orderNumber: order.orderNumber,
+          totalAmount: order.totalAmount,
+          shippingStreet: "Adresse enregistrée",
+          shippingCity: "France",
+          shippingPostal: "75000",
+          items: order.items.map((it) => ({
+            productName: it.productName,
+            formatLabel: it.formatLabel,
+            quantity: it.quantity,
+            totalPrice: it.totalPrice,
+          })),
+          invoiceUrl: `${origin}/api/orders/${order.orderNumber}/invoice`,
+        }).catch(() => {});
+      } catch (mailErr) {
+        console.warn("Could not dispatch emails on markOrderPaid:", mailErr);
+      }
+    }
+
+    return orderToNotify;
   }
 
   static async markOrderFailed(orderIdOrNumber: string): Promise<void> {
